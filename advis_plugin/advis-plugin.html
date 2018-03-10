@@ -10,90 +10,90 @@ The Advis frontend, displayed as the content for a TensorBoard tab.
 @element advis-plugin
 -->
 <dom-module id="advis-plugin">
-  <template>
-    <tf-dashboard-layout>
-      <div class="sidebar">
-        <div class="sidebar-section">
-          <tf-runs-selector selected-runs="{{_selectedRuns}}">
-          </tf-runs-selector>
-        </div>
-      </div>
-      <div class="center">
-        <p>
-          Hello World.
-        <p>
-          The backend says the time is <span class="time">[[time]]</span>.
-      </div>
-    </tf-dashboard-layout>
-    <style include="dashboard-style"></style>
-    <style>
-      .time {
-        font-weight: bold;
-      }
-    </style>
-  </template>
-  <script>
-    Polymer({
-      is: 'advis-plugin',
-      properties: {
+	<template>
+		<tf-dashboard-layout>
+			<div class="sidebar">
+				<div class="sidebar-section">
+					<tf-runs-selector selected-runs="{{_selectedRuns}}">
+					</tf-runs-selector>
+				</div>
+			</div>
+			<div class="center">
+				<p>
+					Hello World.
+				<p>
+					The backend says the time is <span class="time">[[time]]</span>.
+			</div>
+		</tf-dashboard-layout>
+		<style include="dashboard-style"></style>
+		<style>
+			.time {
+				font-weight: bold;
+			}
+		</style>
+	</template>
+	<script>
+		Polymer({
+			is: 'advis-plugin',
+			properties: {
 
-        /**
-         * Formatted string of current time.
-         */
-        time: {
-          type: String,
-          value: 'unknown',
-        },
+				/**
+				 * Formatted string of current time.
+				 */
+				time: {
+					type: String,
+					value: 'unknown',
+				},
 
-        /**
-         * Indicates if reload button in tf-tensorboard should be shaded out.
-         */
-        isReloadDisabled: {
-          type: Boolean,
-          value: false,
-          readOnly: true,
-        },
+				/**
+				 * Indicates if reload button in tf-tensorboard should be shaded out.
+				 */
+				isReloadDisabled: {
+					type: Boolean,
+					value: false,
+					readOnly: true,
+				},
 
-        /**
-         * Request manager to communicate with Python code.
-         *
-         * @type {RequestManager}
-         */
-        _requestManager: {
-          type: Object,
-          value: () => new tf_backend.RequestManager(),
-        },
+				/**
+				 * Request manager to communicate with Python code.
+				 *
+				 * @type {RequestManager}
+				 */
+				_requestManager: {
+					type: Object,
+					value: () => new tf_backend.RequestManager(),
+				},
 
-        /**
-         * Array of run names currently checked by the user.
-         *
-         * This field is updated by tf-runs-selector automatically.
-         *
-         * @type {!Array<string>}
-         */
-        _selectedRuns: Array,
-      },
+				/**
+				 * Array of run names currently checked by the user.
+				 *
+				 * This field is updated by tf-runs-selector automatically.
+				 *
+				 * @type {!Array<string>}
+				 */
+				_selectedRuns: Array,
+			},
 
-      /**
-       * Initializes web component.
-       *
-       * @see https://www.polymer-project.org/1.0/docs/devguide/registering-elements#ready-method
-       */
-      ready() {
-        this.reload();
-      },
+			/**
+			 * Initializes web component.
+			 *
+			 * @see https://www.polymer-project.org/1.0/docs/devguide/registering-elements#ready-method
+			 */
+			ready() {
+				this.reload();
+			},
 
-      /**
-       * Reloads data displayed by this web component.
-       *
-       * This method is called by tf-tensorboard when the reload timer fires.
-       */
-      reload() {
-        const url = tf_backend.getRouter().pluginRoute('advis-plugin', '/time');
-        this._requestManager.request(url).then(response => {
-          this.set('time', response['time']);
-        });
-      },
-    });
-  </script>
+			/**
+			 * Reloads data displayed by this web component.
+			 *
+			 * This method is called by tf-tensorboard when the reload timer fires.
+			 */
+			reload() {
+				const url = tf_backend.getRouter().pluginRoute('advis-plugin', '/time');
+				this._requestManager.request(url).then(response => {
+					this.set('time', response['time']);
+				});
+			},
+		});
+	</script>
 </dom-module>

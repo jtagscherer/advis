@@ -7,21 +7,21 @@
 <link rel="import" href="tf-tensorboard/style.html">
 
 <script>
-  // It's required that Google Analytics be defined, or be faked an the
-  // following manner (which is the default behavior in the TensorBoard
-  // open source release.)
-  window['ga'] = function() {};
+	// It's required that Google Analytics be defined, or be faked an the
+	// following manner (which is the default behavior in the TensorBoard
+	// open source release.)
+	window['ga'] = function() {};
 </script>
 
 <!--
-  Load dashboards into UI for all first-party TensorBoard plugins.
+	Load dashboards into UI for all first-party TensorBoard plugins.
 
-  Each dashboard calls the registerDashboard() function to tell
-  <tf-tensorboard> that it exists, so it can be loaded dynamically via
-  document.createElement().
+	Each dashboard calls the registerDashboard() function to tell
+	<tf-tensorboard> that it exists, so it can be loaded dynamically via
+	document.createElement().
 
-  Ordering matters. The order in which these lines appear determines the
-  ordering of tabs in TensorBoard's GUI.
+	Ordering matters. The order in which these lines appear determines the
+	ordering of tabs in TensorBoard's GUI.
 -->
 <link rel="import" href="advis-plugin/advis-dashboard.html">
 <link rel="import" href="tf-tensorboard/default-plugins.html">

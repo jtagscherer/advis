@@ -11,6 +11,6 @@ import tensorflow as tf
 from advis_plugin import advis_plugin
 
 if __name__ == '__main__':
-  plugins = default.get_plugins() + [advis_plugin.AdvisPlugin]
-  assets = os.path.join(tf.resource_loader.get_data_files_path(), 'assets.zip')
-  program.main(plugins, lambda: open(assets, 'rb'))
+	plugins = default.get_plugins() + [advis_plugin.AdvisPlugin]
+	assets = os.path.join(tf.resource_loader.get_data_files_path(), 'assets.zip')
+	program.main(plugins, lambda: open(assets, 'rb'))

@@ -6,88 +6,88 @@
 <link rel="import" href="../tf-imports/lodash.html">
 
 <!--
-  This module is used as a container to present some test data.
+	This module is used as a container to present some test data.
 -->
 <dom-module id="test-card">
-  <template>
-    <tf-card-heading title="[[tag]]" color="[[_runColor]]">
-      [[run]]
-    </tf-card-heading>
-    <template is="dom-repeat" items="[[testData]]">
-      <div>[[item.text]]</div>
-    </template>
-    <style>
-      :host {
-        display: flex;
-        flex-direction: column;
-        width: 330px;
-        height: 235px;
-        margin-right: 10px;
-        margin-bottom: 15px;
-      }
-      :host[_expanded] {
-        width: 700px;
-        height: 500px;
-      }
+	<template>
+		<tf-card-heading title="[[tag]]" color="[[_runColor]]">
+			[[run]]
+		</tf-card-heading>
+		<template is="dom-repeat" items="[[testData]]">
+			<div>[[item.text]]</div>
+		</template>
+		<style>
+			:host {
+				display: flex;
+				flex-direction: column;
+				width: 330px;
+				height: 235px;
+				margin-right: 10px;
+				margin-bottom: 15px;
+			}
+			:host[_expanded] {
+				width: 700px;
+				height: 500px;
+			}
 
-    </style>
-  </template>
-  <script>
-    "use strict";
+		</style>
+	</template>
+	<script>
+		"use strict";
 
-    Polymer({
-      is: "test-card",
-      properties: {
-        run: String,
-        tag: String,
+		Polymer({
+			is: "test-card",
+			properties: {
+				run: String,
+				tag: String,
 
-        /** @type {Function} */
-        _colorScaleFunction: {
-          type: Object,  // function: string => string
-          value: () => tf_color_scale.runsColorScale,
-        },
-        _runColor: {
-          type: String,
-          computed: "_computeRunColor(run)",
-        },
-        requestManager: Object,
-        _canceller: {
-          type: Object,
-          value: () => new tf_backend.Canceller(),
-        },
-      },
+				/** @type {Function} */
+				_colorScaleFunction: {
+					type: Object,  // function: string => string
+					value: () => tf_color_scale.runsColorScale,
+				},
+				_runColor: {
+					type: String,
+					computed: "_computeRunColor(run)",
+				},
+				requestManager: Object,
+				_canceller: {
+					type: Object,
+					value: () => new tf_backend.Canceller(),
+				},
+			},
 
-      observers: ["_fetchNewData(run, tag)"],
+			observers: ["_fetchNewData(run, tag)"],
 
-      _computeRunColor(run) {
-        return this._colorScaleFunction(run);
-      },
-      attached() {
-        // Defer reloading until after we're attached, because that ensures that
-        // the requestManager has been set from above. (Polymer is tricky
-        // sometimes)
-        this._attached = true;
-        this.reload();
-      },
-      reload() {
-        this._fetchNewData(this.run, this.tag);
-      },
-      _fetchNewData(run, tag) {
-        if (!this._attached) {
-          return;
-        }
-        this._canceller.cancelAll();
-        const url = tf_backend.addParams(
-          tf_backend.getRouter().pluginRoute('advis', '/test'), {tag, run});
-        const updateData = this._canceller.cancellable(result => {
-          if (result.cancelled) {
-            return;
-          }
-          const backendData = result.value;
-          this.testData = backendData;
-        });
-        this.requestManager.request(url).then(updateData);
-      },
-    });
-  </script>
+			_computeRunColor(run) {
+				return this._colorScaleFunction(run);
+			},
+			attached() {
+				// Defer reloading until after we're attached, because that ensures that
+				// the requestManager has been set from above. (Polymer is tricky
+				// sometimes)
+				this._attached = true;
+				this.reload();
+			},
+			reload() {
+				this._fetchNewData(this.run, this.tag);
+			},
+			_fetchNewData(run, tag) {
+				if (!this._attached) {
+					return;
+				}
+				this._canceller.cancelAll();
+				const url = tf_backend.addParams(
+					tf_backend.getRouter().pluginRoute('advis', '/test'), {tag, run});
+				const updateData = this._canceller.cancellable(result => {
+					if (result.cancelled) {
+						return;
+					}
+					const backendData = result.value;
+					this.testData = backendData;
+				});
+				this.requestManager.request(url).then(updateData);
+			},
+		});
+	</script>
 </dom-module>
