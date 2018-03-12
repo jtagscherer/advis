@@ -4,12 +4,28 @@ from __future__ import print_function
 
 import os.path
 
+import argparse
+import argutil
+
 import tensorflow as tf
 
 import summary as advis_summary
 
+# Set up command line parameters, used to set the output directory
+parser = argparse.ArgumentParser(description='Create demo data to ' \
+	'showcase the visualization capabilities of Advis.')
+
+parser.add_argument(
+	'--logdir',
+	help='Directory where log files containing demo data will be written.',
+	metavar='DIR', type=lambda x: argutil.check_directory_validity(parser, x),
+	required=True
+)
+
+args = parser.parse_args()
+
 # Directory into which to write tensorboard data.
-LOGDIR = '/tmp/advis_demo'
+LOGDIR = args.logdir
 
 def run(logdir, run_name, data):
 	"""Run a session and write some test data that will be shown in our plugin."""
