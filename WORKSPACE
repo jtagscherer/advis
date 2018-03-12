@@ -1,4 +1,4 @@
-workspace(name = "io_github_tensorflow_tensorboard_plugin_example")
+workspace(name = "io_github_jtagscherer_advis")
 
 ################################################################################
 # CLOSURE RULES - Build rules and libraries for JavaScript development
