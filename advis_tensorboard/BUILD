@@ -13,7 +13,8 @@ py_binary(
 		"@org_pocoo_werkzeug",
 		"@org_tensorflow_tensorboard//tensorboard:default",
 		"@org_tensorflow_tensorboard//tensorboard:program"
-	]
+	],
+	visibility = ["//:__pkg__"]
 )
 
 tf_web_library(
