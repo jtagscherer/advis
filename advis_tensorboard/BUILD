@@ -4,12 +4,12 @@ load("@org_tensorflow_tensorboard//tensorboard/defs:zipper.bzl", "tensorboard_zi
 
 py_binary(
 	name = "advis_tensorboard",
-	srcs = ["main.py"],
+	srcs = ["src/main.py"],
 	data = ["assets.zip"],
-	main = "main.py",
+	main = "src/main.py",
 	srcs_version = "PY2AND3",
 	deps = [
-		"//advis_plugin",
+		"//advis_plugin:plugin",
 		"@org_pocoo_werkzeug",
 		"@org_tensorflow_tensorboard//tensorboard:default",
 		"@org_tensorflow_tensorboard//tensorboard:program"
@@ -19,10 +19,10 @@ py_binary(
 
 tf_web_library(
 	name = "index",
-	srcs = ["index.html"],
+	srcs = ["html/index.html"],
 	path = "/",
 	deps = [
-		"//advis_plugin:advis_dashboard",
+		"//advis_plugin:dashboard",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:webcomponentsjs",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_tensorboard",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_tensorboard:default_plugins"
@@ -31,7 +31,7 @@ tf_web_library(
 
 tensorboard_html_binary(
 	name = "index_bin",
-	input_path = "/index.html",
+	input_path = "/html/index.html",
 	output_path = "/index.html",
 	deps = [":index"]
 )

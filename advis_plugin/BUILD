@@ -3,8 +3,8 @@ package(default_visibility = ["//visibility:public"])
 load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 
 py_library(
-	name = "advis_plugin",
-	srcs = ["advis_plugin.py"],
+	name = "plugin",
+	srcs = ["plugin.py"],
 	srcs_version = "PY2AND3",
 	deps = [
 		"@org_pocoo_werkzeug",
@@ -16,23 +16,23 @@ py_library(
 )
 
 py_binary(
-	name = "advis_demo",
-	srcs = ["advis_demo.py"],
+	name = "demo",
+	srcs = ["src/demo.py"],
 	srcs_version = "PY2AND3",
-	deps = [":advis_summary"]
+	deps = [":summary"]
 )
 
 py_library(
-	name = "advis_summary",
-	srcs = ["advis_summary.py"],
+	name = "summary",
+	srcs = ["src/summary.py"],
 	srcs_version = "PY2AND3"
 )
 
 tf_web_library(
-	name = "advis_dashboard",
+	name = "dashboard",
 	srcs = [
-		"test-card.html",
-		"advis-dashboard.html"
+		"html/test-card.html",
+		"html/dashboard.html"
 	],
 	path = "/advis-plugin",
 	deps = [

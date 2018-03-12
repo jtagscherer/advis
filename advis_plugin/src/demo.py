@@ -6,7 +6,7 @@ import os.path
 
 import tensorflow as tf
 
-import advis_summary
+import summary as advis_summary
 
 # Directory into which to write tensorboard data.
 LOGDIR = '/tmp/advis_demo'

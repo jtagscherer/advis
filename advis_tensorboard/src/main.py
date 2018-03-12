@@ -8,9 +8,9 @@ from tensorboard import default
 from tensorboard import program
 import tensorflow as tf
 
-from advis_plugin import advis_plugin
+from advis_plugin import plugin
 
 if __name__ == '__main__':
-	plugins = default.get_plugins() + [advis_plugin.AdvisPlugin]
-	assets = os.path.join(tf.resource_loader.get_data_files_path(), 'assets.zip')
+	plugins = default.get_plugins() + [plugin.AdvisPlugin]
+	assets = os.path.join(tf.resource_loader.get_data_files_path(), '../assets.zip')
 	program.main(plugins, lambda: open(assets, 'rb'))

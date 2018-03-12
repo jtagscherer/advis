@@ -1,6 +1,6 @@
 alias(
   name = "demo",
-  actual = "//advis_plugin:advis_demo"
+  actual = "//advis_plugin:demo"
 )
 
 alias(
