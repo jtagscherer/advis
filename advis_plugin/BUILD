@@ -19,7 +19,8 @@ py_binary(
 	name = "demo",
 	srcs = ["src/demo.py", "src/argutil.py"],
 	srcs_version = "PY2AND3",
-	deps = [":summary"]
+	deps = [":summary"],
+	data = ["//models:inception_v3"]
 )
 
 py_library(

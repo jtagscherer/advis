@@ -111,3 +111,14 @@ load("@org_tensorflow_tensorboard//third_party:workspace.bzl", "tensorboard_work
 
 # Inherit external repositories defined by Closure Rules.
 tensorboard_workspace()
+
+################################################################################
+# MODEL DATA - Download data for pretrained models used to demo the plugin
+#
+
+new_http_archive(
+  name = "model_inception_v3",
+	sha256 = "b29eb7fa7cc5a4156ef12f293baddd38c8418f2739aaee6dcab4f4c32ab6d9a4",
+  url = "http://download.tensorflow.org/models/image/imagenet/inception-v3-2016-03-01.tar.gz",
+  build_file = "models/BUILD"
+)
