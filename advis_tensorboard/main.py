@@ -12,5 +12,5 @@ from advis_plugin import plugin
 
 if __name__ == '__main__':
 	plugins = default.get_plugins() + [plugin.AdvisPlugin]
-	assets = os.path.join(tf.resource_loader.get_data_files_path(), '../assets.zip')
+	assets = os.path.join(tf.resource_loader.get_data_files_path(), 'assets.zip')
 	program.main(plugins, lambda: open(assets, 'rb'))

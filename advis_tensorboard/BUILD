@@ -4,9 +4,9 @@ load("@org_tensorflow_tensorboard//tensorboard/defs:zipper.bzl", "tensorboard_zi
 
 py_binary(
 	name = "advis_tensorboard",
-	srcs = ["src/main.py"],
+	srcs = ["main.py"],
 	data = ["assets.zip"],
-	main = "src/main.py",
+	main = "main.py",
 	srcs_version = "PY2AND3",
 	deps = [
 		"//advis_plugin:plugin",
