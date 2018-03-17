@@ -11,11 +11,11 @@ Analyze how your deep learning model behaves when presented with randomly pertur
 
 2. *Optional:* If you don't have any actual data to visualize yet but want to try out Advis, you can build and run the plugin demo to generate some exemplary data. Choose a directory where the output data should be written using the `logdir` parameter. Remember to point TensorBoard to the same directory when launching it in step 3.
 
-    `bazel run //:demo -- --logdir /tmp/advis_demo/`
+    `bazel run //advis_plugin:demo -- --logdir /tmp/advis_demo`
 
 3. Build Tensorboard and the plugin, link them against each other and launch the modified Tensorboard version with Advis installed. This might take a while when compiling for the first time.
 
-    `bazel run //:tensorboard -- --logdir /tmp/advis_demo/`
+    `bazel run //advis_tensorboard -- --logdir /tmp/advis_demo`
 
 4. If everything went well, TensorBoard along with Advis should now be available at [`localhost:6006`](http://localhost:6006/).
 
