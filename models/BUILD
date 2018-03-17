@@ -4,11 +4,11 @@ py_library(
 	srcs_version = "PY2AND3",
   visibility = ["//visibility:public"],
   data = [
-    "@model_inception_v3//:inception-v3/model.ckpt-157585"
+    "@model_inception_v3//:inception_v3.ckpt"
   ]
 )
 
 exports_files(
-  ["inception-v3/model.ckpt-157585"],
+  ["inception_v3.ckpt"],
   visibility = ["//visibility:public"]
 )

@@ -20,7 +20,7 @@ def get_checkpoint_file(model):
   model_base = 'external'
 
   if model is Model.INCEPTION_V3:
-    model_path = 'model_inception_v3/inception-v3/model.ckpt-157585'
+    model_path = 'model_inception_v3/inception_v3.ckpt'
 
   model_path = path.join(model_base, model_path)
 
