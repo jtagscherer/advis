@@ -3,7 +3,7 @@ package(default_visibility = ["//visibility:public"])
 load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 
 py_library(
-	name = "plugin",
+	name = "advis_plugin",
 	srcs = ["plugin.py"],
 	srcs_version = "PY2AND3",
 	deps = [

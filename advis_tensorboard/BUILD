@@ -9,7 +9,7 @@ py_binary(
 	main = "main.py",
 	srcs_version = "PY2AND3",
 	deps = [
-		"//advis_plugin:plugin",
+		"//advis_plugin",
 		"@org_pocoo_werkzeug",
 		"@org_tensorflow_tensorboard//tensorboard:default",
 		"@org_tensorflow_tensorboard//tensorboard:program"
