@@ -1,6 +1,8 @@
 from os import path
 from enum import Enum
 
+from models import preprocessing
+
 class Model(Enum):
   '''An enumeration of all models used in the plugin demo'''
   INCEPTION_V3 = 1
@@ -25,3 +27,19 @@ def get_checkpoint_file(model):
   model_path = path.join(model_base, model_path)
 
   return path.join(path.dirname(path.dirname(__file__)), model_path)
+
+def preprocess_image(image, model):
+  """Different standard models require different input formats. Given image data
+  and a model, this function formats the image such that it can be processed by
+  this specific model.
+
+  Args:
+    image: The input image.
+    model: An enumeration value that references a specific model.
+
+  Returns:
+    The preprocessed input image that may now be passed to the model.
+  """
+
+  if model is Model.INCEPTION_V3:
+    return preprocessing.preprocess_image_inception(image)

@@ -1,6 +1,6 @@
 py_library(
 	name = "models",
-	srcs = ["models.py"],
+	srcs = ["models.py", "preprocessing.py"],
 	srcs_version = "PY2AND3",
   visibility = ["//visibility:public"],
   data = [
