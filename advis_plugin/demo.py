@@ -35,7 +35,7 @@ def run(logdir, run_name, data):
 
 	input_placeholder = tf.placeholder(tf.string)
 
-	summary_op = advis_summary.op("test_op", input_placeholder)
+	summary_op = advis_summary.op('test_op', input_placeholder)
 
 	writer = tf.summary.FileWriter(os.path.join(logdir, run_name))
 
@@ -50,7 +50,7 @@ def main(argv):
 	print('Model Checkpoint: {}'.format(models.get_checkpoint_file(models.Model.INCEPTION_V3)))
 
 	print('Saving output to {}.'.format(LOGDIR))
-	run(LOGDIR, "Test Run", "If you see this, our plugin is working!")
+	run(LOGDIR, 'Test Run', 'If you see this, our plugin is working!')
 	print('Done. Output saved to {}.'.format(LOGDIR))
 
 if __name__ == '__main__':
