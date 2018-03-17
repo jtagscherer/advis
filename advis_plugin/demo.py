@@ -10,6 +10,7 @@ import argutil
 import tensorflow as tf
 
 import summary as advis_summary
+from models import models
 
 # Set up command line parameters, used to set the output directory
 parser = argparse.ArgumentParser(description='Create demo data to ' \
@@ -46,7 +47,7 @@ def run(logdir, run_name, data):
 	writer.close()
 
 def main(argv):
-	print('Dir Name: {}'.format(os.path.dirname(__file__)))
+	print('Model Checkpoint: {}'.format(models.get_checkpoint_file(models.Model.INCEPTION_V3)))
 
 	print('Saving output to {}.'.format(LOGDIR))
 	run(LOGDIR, "Test Run", "If you see this, our plugin is working!")
