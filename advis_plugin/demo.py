@@ -46,9 +46,11 @@ def run(logdir, run_name, data):
 	writer.close()
 
 def main(argv):
-	print('Saving output to %s.' % LOGDIR)
+	print('Dir Name: {}'.format(os.path.dirname(__file__)))
+
+	print('Saving output to {}.'.format(LOGDIR))
 	run(LOGDIR, "Test Run", "If you see this, our plugin is working!")
-	print('Done. Output saved to %s.' % LOGDIR)
+	print('Done. Output saved to {}.'.format(LOGDIR))
 
 if __name__ == '__main__':
 	tf.app.run()
