@@ -69,6 +69,7 @@ def run(logdir, run_name, data):
 		with slim.arg_scope(inception.inception_v3_arg_scope()):
 			logits, _ = inception.inception_v3(processed_images, num_classes=num_classes, is_training=False)
 			probabilities = tf.nn.softmax(logits)
+			result_summary = tf.summary.histogram('Predictions', probabilities)
 
 			init_fn = slim.assign_from_checkpoint_fn(
 				models.get_checkpoint_file(models.Model.INCEPTION_V3),
@@ -78,12 +79,9 @@ def run(logdir, run_name, data):
 			with tf.Session() as sess:
 				init_fn(sess)
 				writer.add_graph(tf.get_default_graph())
-				np_image, probabilities = sess.run([image_summary, probabilities])
+				np_image, np_results = sess.run([image_summary, result_summary])
 				writer.add_summary(np_image)
-				probabilities = probabilities[0, 0:]
-				sorted_inds = [i[0] for i in sorted(enumerate(-probabilities), key=lambda x:x[1])]
-
-	print('Inception Predictions: {}'.format(sorted_inds))
+				writer.add_summary(np_results)
 
 	writer.close()
 
