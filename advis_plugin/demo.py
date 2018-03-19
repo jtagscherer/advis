@@ -75,6 +75,7 @@ def run(logdir, run_name, data):
 
 			with tf.Session() as sess:
 				init_fn(sess)
+				writer.add_graph(tf.get_default_graph())
 				np_image, probabilities = sess.run([image, probabilities])
 				probabilities = probabilities[0, 0:]
 				sorted_inds = [i[0] for i in sorted(enumerate(-probabilities), key=lambda x:x[1])]
