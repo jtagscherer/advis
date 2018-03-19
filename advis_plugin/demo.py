@@ -63,6 +63,8 @@ def run(logdir, run_name, data):
 		processed_image = models.preprocess_image(image, models.Model.INCEPTION_V3)
 		processed_images  = tf.expand_dims(processed_image, 0)
 
+		image_summary = tf.summary.image('Test Image Summary', processed_images)
+
 		# Create the model, use the default arg scope to configure the batch norm parameters.
 		with slim.arg_scope(inception.inception_v3_arg_scope()):
 			logits, _ = inception.inception_v3(processed_images, num_classes=num_classes, is_training=False)
@@ -76,7 +78,8 @@ def run(logdir, run_name, data):
 			with tf.Session() as sess:
 				init_fn(sess)
 				writer.add_graph(tf.get_default_graph())
-				np_image, probabilities = sess.run([image, probabilities])
+				np_image, probabilities = sess.run([image_summary, probabilities])
+				writer.add_summary(np_image)
 				probabilities = probabilities[0, 0:]
 				sorted_inds = [i[0] for i in sorted(enumerate(-probabilities), key=lambda x:x[1])]
 
