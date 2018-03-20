@@ -1,15 +1,19 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
+load("@io_bazel_rules_sass//sass:sass.bzl", "sass_binary")
 
+# Build the web library that contains the dashboard
 tf_web_library(
 	name = "dashboard",
 	srcs = [
 		"dashboard.html",
+		"dashboard.css",
 		"dashboard.ts"
 	],
 	path = "/advis/dashboard",
 	deps = [
+		"dashboard_css",
     "//advis_plugin/test_card",
 		"@org_polymer_iron_icon",
 		"@org_polymer_paper_input",
@@ -20,4 +24,18 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_runs_selector",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_tensorboard:registry"
 	]
+)
+
+# Compile the dashboard's Sass stylesheet to CSS
+sass_binary(
+  name = "dashboard_scss",
+  src = "dashboard.scss"
+)
+
+# Move the compiled CSS file to our desired path
+genrule(
+  name = "dashboard_css",
+  srcs = [":dashboard_scss"],
+  outs = ["dashboard.css"],
+  cmd = "cat $(locations :dashboard_scss) > $@",
 )
