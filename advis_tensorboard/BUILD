@@ -19,7 +19,7 @@ py_binary(
 
 tf_web_library(
 	name = "index",
-	srcs = ["html/index.html"],
+	srcs = ["index.html"],
 	path = "/",
 	deps = [
 		"//advis_plugin:dashboard",
@@ -31,7 +31,7 @@ tf_web_library(
 
 tensorboard_html_binary(
 	name = "index_bin",
-	input_path = "/html/index.html",
+	input_path = "/index.html",
 	output_path = "/index.html",
 	deps = [":index"]
 )
