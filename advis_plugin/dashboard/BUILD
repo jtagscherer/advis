@@ -4,7 +4,10 @@ load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 
 tf_web_library(
 	name = "dashboard",
-	srcs = ["dashboard.html"],
+	srcs = [
+		"dashboard.html",
+		"dashboard.ts"
+	],
 	path = "/advis/dashboard",
 	deps = [
     "//advis_plugin/test_card",

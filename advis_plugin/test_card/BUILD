@@ -4,7 +4,10 @@ load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 
 tf_web_library(
 	name = "test_card",
-	srcs = ["test-card.html"],
+	srcs = [
+		"test-card.html",
+		"test-card.ts"
+	],
 	path = "/test-card",
 	deps = [
 		"@org_polymer_paper_icon_button",
