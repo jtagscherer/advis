@@ -45,16 +45,14 @@
 						no-label-float
 						label="Filter tags (regular expressions supported)"
 						value="{{_tagFilter}}"
-						class="search-input"
-					>
+						class="search-input">
 						<iron-icon prefix icon="search"></iron-icon>
 					</paper-input>
 					<template is="dom-repeat" items="[[_categories]]" as="category">
 						<tf-category-pane category="[[category]]">
 							<tf-paginated-view
 								items="[[category.items]]"
-								pages="{{category._pages}}"
-							>
+								pages="{{category._pages}}">
 								<template is="dom-repeat" items="[[category._pages]]" as="page">
 									<template is="dom-if" if="[[page.active]]">
 										<div class="layout horizontal wrap">
