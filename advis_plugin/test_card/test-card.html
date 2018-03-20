@@ -16,20 +16,8 @@
 		<template is="dom-repeat" items="[[testData]]">
 			<div>[[item.text]]</div>
 		</template>
-		<style>
-			:host {
-				display: flex;
-				flex-direction: column;
-				width: 330px;
-				height: 235px;
-				margin-right: 10px;
-				margin-bottom: 15px;
-			}
-			:host[_expanded] {
-				width: 700px;
-				height: 500px;
-			}
-		</style>
+		
+		<link rel="stylesheet" type="text/css" href="test-card.css">
 	</template>
 
 	<script src="test-card.js"></script>
