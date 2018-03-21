@@ -15,6 +15,7 @@ tf_web_library(
 	deps = [
 		"dashboard_css",
     "//advis_plugin/test_card",
+		"//advis_plugin/layer_image",
 		"@org_polymer_iron_icon",
 		"@org_polymer_paper_input",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",

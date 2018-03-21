@@ -10,6 +10,7 @@
 <link rel="import" href="../../tf-tensorboard/registry.html">
 
 <link rel="import" href="../../test-card/test-card.html">
+<link rel="import" href="../../layer-image/layer-image.html">
 
 <!--
 	This frontend displays all Advis visualizations.
@@ -57,11 +58,11 @@
 									<template is="dom-if" if="[[page.active]]">
 										<div class="layout horizontal wrap">
 											<template is="dom-repeat" items="[[page.items]]">
-												<test-card
+												<layer-image
 													run="[[item.run]]"
 													tag="[[item.tag]]"
 													request-manager="[[_requestManager]]">
-												</test-card>
+												</layer-image>
 											</template>
 										</div>
 									</template>
