@@ -1,0 +1,24 @@
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../tf-imports/lodash.html">
+<link rel="import" href="../tf-backend/tf-backend.html">
+<link rel="import" href="../tf-card-heading/tf-card-heading.html">
+<link rel="import" href="../tf-color-scale/tf-color-scale.html">
+
+<!--
+	Advis exports activations and feature visualizations of a deep learning layer 
+	as a collection image tiles.
+	This module displays this kind of visualization.
+-->
+<dom-module id="layer-image">
+	<template>
+		<tf-card-heading title="[[tag]]">
+			[[run]]
+		</tf-card-heading>
+		<img id="image-container"></img>
+		
+		<link rel="stylesheet" type="text/css" href="layer-image.css">
+	</template>
+
+	<script src="layer-image.js"></script>
+</dom-module>
