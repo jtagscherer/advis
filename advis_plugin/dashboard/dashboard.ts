@@ -6,20 +6,16 @@ Polymer({
     _selectedRuns: Array,
     _runToTag: Object,  // map<run: string, tags: string[]>
     _dataNotFound: Boolean,
-    _tagFilter: {
-      type: String,  // upward bound from paper-input
-      value: '.*',
-    },
     _categories: {
       type: Array,
-      computed:
-        '_makeCategories(_runToTag, _selectedRuns, _tagFilter)',
+      computed: '_makeCategories(_runToTag, _selectedRuns)'
     },
     _requestManager: {
       type: Object,
-      value: () => new tf_backend.RequestManager(),
+      value: () => new tf_backend.RequestManager()
     }
   },
+	
   ready() {
     this.reload();
   },
@@ -28,6 +24,7 @@ Polymer({
       this._reloadCards();
     });
   },
+	
   _fetchTags() {
     const url = tf_backend.getRouter().pluginRoute('advis', '/tags');
     return this._requestManager.request(url).then(runToTag => {
@@ -40,13 +37,16 @@ Polymer({
       this.set('_runToTag', runToTag);
     });
   },
+	
   _reloadCards() {
     this.querySelectorAll('test-card').forEach(g => {
       g.reload();
     });
   },
-  _makeCategories(runToTag, selectedRuns, tagFilter) {
-    return tf_categorization_utils.categorizeRunTagCombinations(runToTag, selectedRuns, tagFilter);
+	
+  _makeCategories(runToTag, selectedRuns) {
+    return tf_categorization_utils.categorizeRunTagCombinations(
+			runToTag, selectedRuns);
   }
 });
 

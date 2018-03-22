@@ -42,13 +42,6 @@
 					</div>
 				</template>
 				<template is="dom-if" if="[[!_dataNotFound]]">
-					<paper-input
-						no-label-float
-						label="Filter tags (regular expressions supported)"
-						value="{{_tagFilter}}"
-						class="search-input">
-						<iron-icon prefix icon="search"></iron-icon>
-					</paper-input>
 					<template is="dom-repeat" items="[[_categories]]" as="category">
 						<tf-category-pane category="[[category]]">
 							<tf-paginated-view
