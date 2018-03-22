@@ -41,15 +41,8 @@ def run(logdir, run_name, data):
 	
 	# TODO: Pass a model array parameter instead of data and use it to run all 
 	# models and summarize their outputs.
-
-	tf.reset_default_graph()
-
-	input_placeholder = tf.placeholder(tf.string)
-	summary_op = layer_summary.op('layer_summary_test', input_placeholder)
+	
 	writer = tf.summary.FileWriter(os.path.join(logdir, run_name))
-	session = tf.Session()
-	summary = session.run(summary_op, feed_dict={input_placeholder: data})
-	writer.add_summary(summary)
 
 	"""
 	TEST: Set up and run the Inception model to test our infrastructure.
@@ -59,20 +52,17 @@ def run(logdir, run_name, data):
 	num_classes = 1001
 
 	with tf.Graph().as_default():
-		url = 'https://upload.wikimedia.org/wikipedia/commons/7/70/EnglishCockerSpaniel_simon.jpg'
+		url = 'https://upload.wikimedia.org/wikipedia/commons/9/93/Golden_Retriever_Carlos_%2810581910556%29.jpg'
 		image_string = urllib.urlopen(url).read()
 		image = tf.image.decode_jpeg(image_string, channels=color_channels)
 
 		processed_image = models.preprocess_image(image, models.Model.INCEPTION_V3)
 		processed_images  = tf.expand_dims(processed_image, 0)
 
-		image_summary = tf.summary.image('Test Image Summary', processed_images)
-
 		# Create the model, use the default arg scope to configure the batch norm parameters.
 		with slim.arg_scope(inception.inception_v3_arg_scope()):
 			logits, _ = inception.inception_v3(processed_images, num_classes=num_classes, is_training=False)
 			probabilities = tf.nn.softmax(logits)
-			result_summary = tf.summary.histogram('Predictions', probabilities)
 
 			init_fn = slim.assign_from_checkpoint_fn(
 				models.get_checkpoint_file(models.Model.INCEPTION_V3),
@@ -81,10 +71,29 @@ def run(logdir, run_name, data):
 
 			with tf.Session() as sess:
 				init_fn(sess)
-				writer.add_graph(tf.get_default_graph())
-				np_image, np_results = sess.run([image_summary, result_summary])
-				writer.add_summary(np_image)
-				writer.add_summary(np_results)
+				graph = tf.get_default_graph()
+				nodes = graph.as_graph_def().node
+				
+				# Write the graph structure before we add any of our summaries
+				writer.add_graph(graph)
+				
+				# Annotate all interesting nodes with layer summaries
+				for n in nodes:
+					if 'InceptionV3' not in n.name or 'save' in n.name or
+						'weights' in n.name or 'biases' in n.name or 'BatchNorm' in n.name:
+						continue
+
+					if n.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2', 'Identity']:
+						summary_op = layer_summary.op(
+							'{}/Activations'.format(n.name),
+							graph.get_tensor_by_name('{}:0'.format(n.name))
+						)
+						
+						count += 1
+				
+				# Run the session and log all output data
+				summary = sess.run(tf.summary.merge_all())
+				writer.add_summary(summary)
 
 	writer.close()
 
