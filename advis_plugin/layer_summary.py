@@ -37,11 +37,7 @@ def op(name, data, display_name=None, description=None, collections=None):
 		plugin_data=tf.SummaryMetadata.PluginData(plugin_name=PLUGIN_NAME)
 	)
 	
-	# DEBUG: Replace actual data with a cute golden retriever for testing purposes
-	url = 'https://upload.wikimedia.org/wikipedia/commons/9/93/Golden_Retriever_Carlos_%2810581910556%29.jpg'
-	test_image = tf.image.decode_jpeg(urllib.urlopen(url).read(), channels=3)
-	
-	images = [tf.cast(test_image, tf.float32) / 255.0]
+	images = _generate_image_from_tensor(data)
 	
 	with tf.name_scope('convert_to_uint8'):
 		images = tf.stack(
@@ -101,3 +97,30 @@ def pb(tag, data, display_name=None, description=None):
 										metadata=summary_metadata,
 										tensor=tensor)
 	return summary
+	
+def _generate_image_from_tensor(tensor):
+	"""Transform an input tensor as obtained from the graph into a list of 
+	tensors that each describe an appropriate image visualization of a unit's
+	activation in the layer described by the whole tensor.
+
+	Arguments:
+		tensor: An input tensor of shape [1, width, height, index]`.
+	"""
+	
+	# Unstack the data to get rid of the first dimension
+	tensor = tf.unstack(tensor)[0]
+	
+	# Transpose axes so the image index is first, followed by its dimensions
+	tensor = tf.transpose(tensor, [2, 0, 1])
+	
+	# Unstack images by their indices
+	tensors = tf.unstack(tensor)
+	
+	# Fill in RGB channels for each image tensor
+	tensors = [tf.stack([image_tensor, image_tensor, image_tensor])
+						for image_tensor in tensors]
+	
+	# Transpose axes again so that RGB channels are last for each image
+	tensors = [tf.transpose(image_tensor, [1, 2, 0]) for image_tensor in tensors]
+	
+	return tensors
