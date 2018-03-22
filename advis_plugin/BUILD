@@ -4,7 +4,7 @@ load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 
 py_library(
 	name = "advis_plugin",
-	srcs = ["plugin.py"],
+	srcs = ["plugin.py", "imgutil.py"],
 	srcs_version = "PY2AND3",
 	deps = [
 		"@org_pocoo_werkzeug",
@@ -20,13 +20,13 @@ py_binary(
 	srcs = ["demo.py", "argutil.py"],
 	srcs_version = "PY2AND3",
 	deps = [
-		":summary",
+		":layer_summary",
 		"//models"
 	]
 )
 
 py_library(
-	name = "summary",
-	srcs = ["summary.py"],
+	name = "layer_summary",
+	srcs = ["layer_summary.py"],
 	srcs_version = "PY2AND3"
 )

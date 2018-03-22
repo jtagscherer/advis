@@ -17,7 +17,7 @@ from tensorflow.python.ops import control_flow_ops
 from tensorflow.contrib.slim.python.slim.nets import inception
 slim = tf.contrib.slim
 
-import summary as advis_summary
+import layer_summary
 from models import models
 
 # Set up command line parameters, used to set the output directory
@@ -42,7 +42,7 @@ def run(logdir, run_name, data):
 	tf.reset_default_graph()
 
 	input_placeholder = tf.placeholder(tf.string)
-	summary_op = advis_summary.op('test_op', input_placeholder)
+	summary_op = layer_summary.op('layer_summary_test', input_placeholder)
 	writer = tf.summary.FileWriter(os.path.join(logdir, run_name))
 	session = tf.Session()
 	summary = session.run(summary_op, feed_dict={input_placeholder: data})
