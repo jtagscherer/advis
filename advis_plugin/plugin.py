@@ -7,6 +7,8 @@ import numpy as np
 import six
 from werkzeug import wrappers
 
+from advis_plugin import imgutil
+
 from tensorboard.backend import http_util
 from tensorboard.plugins import base_plugin
 
@@ -24,8 +26,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			context: A base_plugin.TBContext instance. A magic container that
 				TensorBoard uses to make objects available to the plugin.
 		"""
-		# We retrieve the multiplexer from the context and store a reference
-		# to it.
+		# Retrieve and store necessary contextual references
 		self._multiplexer = context.multiplexer
 
 	def get_plugin_apps(self):
@@ -41,7 +42,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# @wrappers.Request.application.
 		return {
 				'/tags': self.tags_route,
-				'/test': self.test_route
+				'/test': self.test_route,
+				'/layerImage': self.layer_image_route
 		}
 
 	def is_active(self):
@@ -112,3 +114,28 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		response = [self._process_string_tensor_event(ev) for
 								ev in tensor_events]
 		return http_util.Respond(request, response, 'application/json')
+	
+	@wrappers.Request.application
+	def layer_image_route(self, request):
+		"""A route that returns a tiled image of the activation and feature 
+		visualizations of a deep learning layer.
+
+		Returns:
+			A JSON list with some test data associated with the run and tag
+			combination.
+		"""
+		run = request.args.get('run')
+		tag = request.args.get('tag')
+
+		# Fetch all the tensor events that contain image layer data
+		tensor_events = self._multiplexer.Tensors(run, tag)
+
+		# Extract images from the tensor data
+		response = tensor_events[0].tensor_proto.string_val[2:][0]
+		
+		# Return the image data with proper headers set
+		return http_util.Respond(
+			request,
+			response,
+			imgutil.get_content_type(response)
+		)
