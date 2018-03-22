@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os.path
+import time
 
 import argparse
 import argutil
@@ -52,6 +53,10 @@ def run(logdir, run_name, data):
 	num_classes = 1001
 
 	with tf.Graph().as_default():
+		# Measure performance by keeping track of the time
+		starting_time = int(round(time.time()))
+		
+		# Load a test image
 		url = 'https://upload.wikimedia.org/wikipedia/commons/9/93/Golden_Retriever_Carlos_%2810581910556%29.jpg'
 		image_string = urllib.urlopen(url).read()
 		image = tf.image.decode_jpeg(image_string, channels=color_channels)
@@ -79,7 +84,7 @@ def run(logdir, run_name, data):
 				
 				# Annotate all interesting nodes with layer summaries
 				for n in nodes:
-					if 'InceptionV3' not in n.name or 'save' in n.name or
+					if 'InceptionV3' not in n.name or 'save' in n.name or \
 						'weights' in n.name or 'biases' in n.name or 'BatchNorm' in n.name:
 						continue
 
@@ -88,14 +93,15 @@ def run(logdir, run_name, data):
 							'{}/Activations'.format(n.name),
 							graph.get_tensor_by_name('{}:0'.format(n.name))
 						)
-						
-						count += 1
 				
 				# Run the session and log all output data
 				summary = sess.run(tf.summary.merge_all())
 				writer.add_summary(summary)
 
 	writer.close()
+	
+	ending_time = int(round(time.time()))
+	print('Session took {} seconds.'.format(ending_time - starting_time))
 
 def main(argv):
 	print('Saving output to {}.'.format(LOGDIR))
