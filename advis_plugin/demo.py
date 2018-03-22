@@ -38,6 +38,9 @@ LOGDIR = args.logdir
 
 def run(logdir, run_name, data):
 	"""Run a session and write some test data that will be shown in our plugin."""
+	
+	# TODO: Pass a model array parameter instead of data and use it to run all 
+	# models and summarize their outputs.
 
 	tf.reset_default_graph()
 

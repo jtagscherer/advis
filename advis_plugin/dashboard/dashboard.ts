@@ -39,7 +39,7 @@ Polymer({
   },
 	
   _reloadCards() {
-    this.querySelectorAll('test-card').forEach(g => {
+    this.querySelectorAll('layer-image').forEach(g => {
       g.reload();
     });
   },

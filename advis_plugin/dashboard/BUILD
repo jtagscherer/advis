@@ -14,7 +14,6 @@ tf_web_library(
 	path = "/advis/dashboard",
 	deps = [
 		"dashboard_css",
-    "//advis_plugin/test_card",
 		"//advis_plugin/layer_image",
 		"@org_polymer_iron_icon",
 		"@org_polymer_paper_input",
