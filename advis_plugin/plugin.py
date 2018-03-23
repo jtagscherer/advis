@@ -41,8 +41,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# Note that the methods handling routes are decorated with
 		# @wrappers.Request.application.
 		return {
-				'/tags': self.tags_route,
-				'/layerImage': self.layer_image_route
+			'/tags': self.tags_route,
+			'/layer/meta': self.layer_meta_route,
+			'/layer/image': self.layer_image_route
 		}
 
 	def is_active(self):
@@ -55,7 +56,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			Whether this plugin is active.
 		"""
 		all_runs = self._multiplexer.PluginRunToTagToContent(
-				AdvisPlugin.plugin_name)
+			AdvisPlugin.plugin_name)
 
 		# The plugin is active if any of the runs has a tag relevant
 		# to the plugin.
@@ -73,16 +74,38 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# This is a dictionary mapping from run to (tag to string content).
 		# To be clear, the values of the dictionary are dictionaries.
 		all_runs = self._multiplexer.PluginRunToTagToContent(
-				AdvisPlugin.plugin_name)
+			AdvisPlugin.plugin_name)
 
 		# tagToContent is itself a dictionary mapping tag name to string
 		# content. We retrieve the keys of that dictionary to obtain a
 		# list of tags associated with each run.
 		response = {
-				run: list(tagToContent.keys())
-				for (run, tagToContent) in all_runs.items()
+			run: list(tagToContent.keys())
+			for (run, tagToContent) in all_runs.items()
 		}
 
+		return http_util.Respond(request, response, 'application/json')
+	
+	@wrappers.Request.application
+	def layer_meta_route(self, request):
+		"""A route that returns meta information about a network layer of which 
+		visualizations exist. These are identified by their tag which equals the 
+		name of the corresponding graph node.
+
+		Returns:
+			A JSON document containing meta information about the layer.
+		"""
+		run = request.args.get('run')
+		tag = request.args.get('tag')
+
+		# Fetch all the tensor events that contain image layer data
+		tensor_events = self._multiplexer.Tensors(run, tag)
+
+		# Construct meta information using the tensor data
+		response = {
+			'unitCount': len(tensor_events[0].tensor_proto.string_val[2:])
+		}
+		
 		return http_util.Respond(request, response, 'application/json')
 	
 	@wrappers.Request.application
