@@ -5,9 +5,12 @@ Polymer({
   properties: {
     run: String,
     tag: String,
-		url: String,
+		_url: String,
+		_requestManager: {
+      type: Object,
+      value: () => new tf_backend.RequestManager()
+    },
 		
-    requestManager: Object,
     _canceller: {
       type: Object,
       value: () => new tf_backend.Canceller(),
@@ -23,17 +26,37 @@ Polymer({
     this.reload();
   },
   reload() {
-    this._fetchNewData(this.run, this.tag);
+		if (this._hasValidData()) {
+			this._fetchNewData(this.run, this.tag);
+		}
   },
 	
   _fetchNewData(run, tag) {
     if (this._attached) {
 			// Update the URL of the current image shown
-      this.url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layerImage'), {
+      this._url = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/image'), {
         tag: this.tag,
         run: this.run
       });
+			
+			this._testMetaRoute(run, tag);
     }
-  }
+  },
+	_hasValidData() {
+		return this.run != null && this.tag != null;
+	},
+	
+	// DEBUG: Remove after finishing testing
+	_testMetaRoute(run, tag) {
+		const testUrl = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/layer/meta'), {
+			tag: this.tag,
+			run: this.run
+		});
+		
+		this._requestManager.request(testUrl).then(metaData => {
+			console.log(metaData);
+		});
+	}
 });
