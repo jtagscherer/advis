@@ -118,12 +118,13 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""
 		run = request.args.get('run')
 		tag = request.args.get('tag')
+		unit_index = int(request.args.get('unitIndex'))
 
 		# Fetch all the tensor events that contain image layer data
 		tensor_events = self._multiplexer.Tensors(run, tag)
 
 		# Extract images from the tensor data
-		response = tensor_events[0].tensor_proto.string_val[2:][0]
+		response = tensor_events[0].tensor_proto.string_val[2:][unit_index]
 		
 		# Return the image data with proper headers set
 		return http_util.Respond(

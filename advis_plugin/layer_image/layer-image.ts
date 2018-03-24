@@ -37,7 +37,8 @@ Polymer({
       this._url = tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('advis', '/layer/image'), {
         tag: this.tag,
-        run: this.run
+        run: this.run,
+				unitIndex: '0'
       });
 			
 			this._testMetaRoute(run, tag);
