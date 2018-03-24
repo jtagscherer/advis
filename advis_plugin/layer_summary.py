@@ -43,7 +43,7 @@ def op(name, parent_node_name, data, description=None, collections=None):
 
 	# Return a summary op that is properly configured.
 	return tf.summary.tensor_summary(
-		name=parent_node_name,
+		name='{}/LayerImage'.format(parent_node_name),
 		tensor=images,
 		summary_metadata=summary_metadata,
 		collections=collections
