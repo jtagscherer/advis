@@ -41,27 +41,11 @@
 					</div>
 				</template>
 				<template is="dom-if" if="[[!_dataNotFound]]">
-					<template is="dom-repeat" items="[[_categories]]" as="category">
-						<tf-category-pane category="[[category]]">
-							<tf-paginated-view
-								items="[[category.items]]"
-								pages="{{category._pages}}">
-								<template is="dom-repeat" items="[[category._pages]]" as="page">
-									<template is="dom-if" if="[[page.active]]">
-										<div class="layout horizontal wrap">
-											<template is="dom-repeat" items="[[page.items]]">
-												<layer-image
-													run="[[item.run]]"
-													tag="[[item.tag]]"
-													request-manager="[[_requestManager]]">
-												</layer-image>
-											</template>
-										</div>
-									</template>
-								</template>
-							</tf-paginated-view>
-						</tf-category-pane>
-					</template>
+					<layer-image
+						run="[[_currentRun]]"
+						tag="[[_currentTag]]"
+						request-manager="[[_requestManager]]">
+					</layer-image>
 				</template>
 			</div>
 		</tf-dashboard-layout>
