@@ -22,7 +22,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 	def __init__(self, context):
 		"""Instantiates an AdvisPlugin.
 
-		Args:
+		Arguments:
 			context: A base_plugin.TBContext instance. A magic container that
 				TensorBoard uses to make objects available to the plugin.
 		"""
@@ -61,11 +61,30 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# The plugin is active if any of the runs has a tag relevant
 		# to the plugin.
 		return bool(self._multiplexer and any(six.itervalues(all_runs)))
+	
+	def _get_tensor_string_value(self, run, tag):
+		"""Given a request containing valid run and tag identifiers, fetch the 
+		corresponding tensors and return their string value.
+		
+		Arguments:
+			run: The run which contains the tensor.
+			tag: The tag of the tensor which must be contained in the run.
+		Returns:
+			The corresponding tensor's string value.
+		"""
+		
+		# Fetch all the tensor events that contain image layer data
+		tensor_events = self._multiplexer.Tensors(run, tag)
+
+		return tensor_events[0].tensor_proto.string_val[2:]
 
 	@wrappers.Request.application
 	def tags_route(self, request):
 		"""A route (HTTP handler) that returns a response with tags.
 
+		Arguments:
+			request: The request for the runs and tags which may contain no actual 
+				parameters since none are needed.
 		Returns:
 			A response that contains a JSON object. The keys of the object
 			are all the runs. Each run is mapped to a (potentially empty)
@@ -92,18 +111,17 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		visualizations exist. These are identified by their tag which equals the 
 		name of the corresponding graph node.
 
+		Arguments:
+			request: A request containing the meta information's run and tag.
 		Returns:
 			A JSON document containing meta information about the layer.
 		"""
 		run = request.args.get('run')
 		tag = request.args.get('tag')
 
-		# Fetch all the tensor events that contain image layer data
-		tensor_events = self._multiplexer.Tensors(run, tag)
-
 		# Construct meta information using the tensor data
 		response = {
-			'unitCount': len(tensor_events[0].tensor_proto.string_val[2:])
+			'unitCount': len(self._get_tensor_string_value(run, tag))
 		}
 		
 		return http_util.Respond(request, response, 'application/json')
@@ -113,6 +131,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""A route that returns a tiled image of the activation and feature 
 		visualizations of a deep learning layer.
 
+		Arguments:
+			request: A request containing the layer image's run and tag as well as its
+			unit index.
 		Returns:
 			Image data containing the requested visualization.
 		"""
@@ -120,11 +141,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		tag = request.args.get('tag')
 		unit_index = int(request.args.get('unitIndex'))
 
-		# Fetch all the tensor events that contain image layer data
-		tensor_events = self._multiplexer.Tensors(run, tag)
-
-		# Extract images from the tensor data
-		response = tensor_events[0].tensor_proto.string_val[2:][unit_index]
+		# Fetch the image summary tensor corresponding to the request's values
+		response = self._get_tensor_string_value(run, tag)[unit_index]
 		
 		# Return the image data with proper headers set
 		return http_util.Respond(
