@@ -4,44 +4,46 @@ from __future__ import print_function
 
 import tensorflow as tf
 
-# DEBUG: Urllib is only needed for testing purposes
-try:
-	import urllib2 as urllib
-except ImportError:
-	import urllib.request as urllib
+import json
 
 PLUGIN_NAME = 'advis'
 
-def op(name, data, display_name=None, description=None, collections=None):
+def op(name, parent_node_name, data, description=None, collections=None):
 	"""Create a TensorFlow summary op that collects activation and feature 
 	visualization data of a deep learning layer and outputs them as tiled 
 	image maps.
 
 	Arguments:
 		name: A name for this summary operation.
+		parent_node_name: The name of the graph node that is being visualized by 
+			this summary. This is used to connect the visualization and the model 
+			node.
 		data: A rank-4 `Tensor` containing all image data.
-		display_name: If set, will be used as the display name
-			in TensorBoard. Defaults to `name`.
 		description: A longform readable description of the summary data.
 		collections: Which TensorFlow graph collections to add the summary
 			op to. Defaults to `['summaries']`. Can usually be ignored.
 	"""
 	
-	if display_name is None:
-		display_name = name
+	plugin_metadata = {
+		'nodeName': name,
+		'parentNodeName': parent_node_name
+	}
 
 	# The plugin name in the metadata allows us to keep track of the data
 	summary_metadata = tf.SummaryMetadata(
-		display_name=display_name,
+		display_name=name,
 		summary_description=description,
-		plugin_data=tf.SummaryMetadata.PluginData(plugin_name=PLUGIN_NAME)
+		plugin_data=tf.SummaryMetadata.PluginData(
+			plugin_name=PLUGIN_NAME,
+			content=json.dumps(plugin_metadata).encode('utf-8')
+		)
 	)
 	
 	images = _generate_image_from_tensor(data, name_scope=name)
 
 	# Return a summary op that is properly configured.
 	return tf.summary.tensor_summary(
-		name=name,
+		name=parent_node_name,
 		tensor=images,
 		summary_metadata=summary_metadata,
 		collections=collections

@@ -90,8 +90,9 @@ def run(logdir, run_name, data):
 
 					if n.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2', 'Identity']:
 						summary_op = layer_summary.op(
-							n.name,
-							graph.get_tensor_by_name('{}:0'.format(n.name))
+							name='ActivationVisualization',
+							parent_node_name=n.name,
+							data=graph.get_tensor_by_name('{}:0'.format(n.name))
 						)
 				
 				# Run the session and log all output data
