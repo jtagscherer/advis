@@ -1,8 +1,6 @@
 from os import path
 from enum import Enum
 
-from models import preprocessing
-
 from models import inception
 
 class Model(Enum):
@@ -42,7 +40,7 @@ def get_model_name(model):
   """
 	
 	return {
-    Model.INCEPTION_V3: 'Inception_V3'
+    Model.INCEPTION_V3: 'InceptionV3'
   }[model]
 
 def run_model(model, input, writer):
@@ -56,23 +54,9 @@ def run_model(model, input, writer):
 		writer: A `tf.summary.FileWriter` for recording summary data.
   """
 	
+	checkpoint_file = get_checkpoint_file(model)
+	
 	if model is Model.INCEPTION_V3:
-		inception.run(input, writer)
+		inception.run(input, writer, checkpoint_file)
 	else:
 		raise KeyError('Cannot run the model {} since it is invalid'.format(model))
-
-def preprocess_image(image, model):
-  """Different standard models require different input formats. Given image data
-  and a model, this function formats the image such that it can be processed by
-  this specific model.
-
-  Arguments:
-    image: The input image.
-    model: An enumeration value that references a specific model.
-
-  Returns:
-    The preprocessed input image that may now be passed to the model.
-  """
-
-  if model is Model.INCEPTION_V3:
-    return preprocessing.preprocess_image_inception(image)
