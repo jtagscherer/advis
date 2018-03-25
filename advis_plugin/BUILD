@@ -21,7 +21,8 @@ py_binary(
 	srcs_version = "PY2AND3",
 	deps = [
 		":layer_summary",
-		"//models"
+		"//models",
+		"//models:inception"
 	]
 )
 

@@ -14,11 +14,6 @@ except ImportError:
 	import urllib.request as urllib
 
 import tensorflow as tf
-from tensorflow.python.ops import control_flow_ops
-from tensorflow.contrib.slim.python.slim.nets import inception
-slim = tf.contrib.slim
-
-import layer_summary
 from models import models
 
 # Set up command line parameters, used to set the output directory
@@ -34,80 +29,49 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-# Directory into which to write tensorboard data.
+# Directory into which to write TensorBoard data.
 LOGDIR = args.logdir
 
-def run(logdir, run_name, data):
-	"""Run a session and write some test data that will be shown in our plugin."""
+def run(logdir, model, verbose=True):
+	"""Run a model and generate summary data that can be shown in our plugin.
+
+  Arguments:
+		logdir: The directory where data will be written.
+		run_name: A file writer that will be used to log the graph and summaries.
+		verbose: True if additional data such as the time taken to run a model 
+			should be written to the terminal.
+  """
 	
-	# TODO: Pass a model array parameter instead of data and use it to run all 
-	# models and summarize their outputs.
+	model_name = models.get_model_name(model)
 	
-	writer = tf.summary.FileWriter(os.path.join(logdir, run_name))
-
-	"""
-	TEST: Set up and run the Inception model to test our infrastructure.
-	"""
-
-	color_channels = 3
-	num_classes = 1001
-
+	# Measure performance by keeping track of the time
+	starting_time = int(round(time.time()))
+	
+	# Set up a writer for our summary data, using the model name as the run name
+	writer = tf.summary.FileWriter(os.path.join(logdir, model_name))
+	
 	with tf.Graph().as_default():
-		# Measure performance by keeping track of the time
-		starting_time = int(round(time.time()))
-		
 		# Load a test image
 		url = 'https://upload.wikimedia.org/wikipedia/commons/9/93/Golden_Retriever_Carlos_%2810581910556%29.jpg'
 		image_string = urllib.urlopen(url).read()
-		image = tf.image.decode_jpeg(image_string, channels=color_channels)
-
-		processed_image = models.preprocess_image(image, models.Model.INCEPTION_V3)
-		processed_images  = tf.expand_dims(processed_image, 0)
-
-		# Create the model, use the default arg scope to configure the batch norm parameters.
-		with slim.arg_scope(inception.inception_v3_arg_scope()):
-			logits, _ = inception.inception_v3(processed_images, num_classes=num_classes, is_training=False)
-			probabilities = tf.nn.softmax(logits)
-
-			init_fn = slim.assign_from_checkpoint_fn(
-				models.get_checkpoint_file(models.Model.INCEPTION_V3),
-				slim.get_model_variables('InceptionV3')
-			)
-
-			with tf.Session() as sess:
-				init_fn(sess)
-				graph = tf.get_default_graph()
-				nodes = graph.as_graph_def().node
-				
-				# Write the graph structure before we add any of our summaries
-				writer.add_graph(graph)
-				
-				# Annotate all interesting nodes with layer summaries
-				for n in nodes:
-					if 'InceptionV3' not in n.name or 'save' in n.name or \
-						'weights' in n.name or 'biases' in n.name or 'BatchNorm' in n.name:
-						continue
-
-					if n.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2', 'Identity']:
-						summary_op = layer_summary.op(
-							name='ActivationVisualization',
-							parent_node_name=n.name,
-							data=graph.get_tensor_by_name('{}:0'.format(n.name))
-						)
-				
-				# Run the session and log all output data
-				summary = sess.run(tf.summary.merge_all())
-				writer.add_summary(summary)
+		image = tf.image.decode_jpeg(image_string, channels=3)
+		
+		# Run the model on our input data
+		models.run_model(model=model, input=image, writer=writer)
 
 	writer.close()
 	
 	ending_time = int(round(time.time()))
-	print('Session took {} seconds.'.format(ending_time - starting_time))
+	
+	if verbose:
+		print('Running the model \"{}\" took {} seconds.'.format(model_name,
+			ending_time - starting_time))
 
 def main(argv):
-	print('Saving output to {}.'.format(LOGDIR))
-	run(LOGDIR, 'Test Run', 'If you see this, our plugin is working!')
-	print('Done. Output saved to {}.'.format(LOGDIR))
+	for model in list(models.Model):
+		run(LOGDIR, model)
+	
+	print('All models have been run. Output saved to {}.'.format(LOGDIR))
 
 if __name__ == '__main__':
 	tf.app.run()

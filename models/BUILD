@@ -8,6 +8,16 @@ py_library(
   ]
 )
 
+py_library(
+	name = "inception",
+	srcs = ["inception.py"],
+	srcs_version = "PY2AND3",
+  visibility = ["//visibility:public"],
+  deps = [
+    ":models"
+  ]
+)
+
 exports_files(
   ["inception_v3.ckpt"],
   visibility = ["//visibility:public"]
