@@ -18,6 +18,8 @@ def run(input, writer, checkpoint_file):
   """
 
 	processed_image = preprocess_image(input)
+	
+	# Make a batch of only one image by inserting a new dimension
 	processed_images = tf.expand_dims(processed_image, 0)
 
 	# Create the model, use the default arg scope to configure the batch norm

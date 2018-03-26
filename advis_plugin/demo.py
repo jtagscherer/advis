@@ -8,13 +8,10 @@ import time
 import argparse
 import argutil
 
-try:
-	import urllib2 as urllib
-except ImportError:
-	import urllib.request as urllib
-
 import tensorflow as tf
+
 from models import models
+from data import demo_data
 
 # Set up command line parameters, used to set the output directory
 parser = argparse.ArgumentParser(description='Create demo data to ' \
@@ -51,10 +48,8 @@ def run(logdir, model, verbose=True):
 	writer = tf.summary.FileWriter(os.path.join(logdir, model_name))
 	
 	with tf.Graph().as_default():
-		# Load a test image
-		url = 'https://upload.wikimedia.org/wikipedia/commons/9/93/Golden_Retriever_Carlos_%2810581910556%29.jpg'
-		image_string = urllib.urlopen(url).read()
-		image = tf.image.decode_jpeg(image_string, channels=3)
+		# Retrieve a test image
+		image = demo_data.get_demo_image()
 		
 		# Run the model on our input data
 		models.run_model(model=model, input=image, writer=writer)
