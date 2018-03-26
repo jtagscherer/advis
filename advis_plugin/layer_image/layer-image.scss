@@ -1,6 +1,9 @@
 #image-container {
-	image-rendering: -moz-crisp-edges;
-	image-rendering: pixelated;
 	width: 100%;
 	height: auto;
+	
+	.image-tile {
+		image-rendering: -moz-crisp-edges;
+		image-rendering: pixelated;
+	}
 }

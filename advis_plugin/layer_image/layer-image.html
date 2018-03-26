@@ -15,7 +15,11 @@
 		<tf-card-heading title="[[run]]">
 			[[tag]]
 		</tf-card-heading>
-		<img id="image-container" src$="[[_url]]"></img>
+		<div id="image-container">
+			<template is="dom-repeat" items="[[urls]]">
+				<img class="image-tile" src$={{item}}></img>
+			</template>
+		</div>
 		
 		<link rel="stylesheet" type="text/css" href="layer-image.css">
 	</template>

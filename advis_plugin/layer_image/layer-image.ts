@@ -5,7 +5,7 @@ Polymer({
   properties: {
     run: String,
     tag: String,
-		_url: String,
+		urls: Array,
 		_requestManager: {
       type: Object,
       value: () => new tf_backend.RequestManager()
@@ -33,31 +33,34 @@ Polymer({
 	
   _fetchNewData(run, tag) {
     if (this._attached) {
-			// Update the URL of the current image shown
-      this._url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layer/image'), {
-        tag: this.tag,
-        run: this.run,
-				unitIndex: '0'
-      });
-			
-			this._testMetaRoute(run, tag);
+			this._constructTileUrlList();
     }
   },
 	_hasValidData() {
 		return this.run != null && this.tag != null;
 	},
-	
-	// DEBUG: Remove after finishing testing
-	_testMetaRoute(run, tag) {
-		const testUrl = tf_backend.addParams(tf_backend.getRouter()
+	_constructTileUrlList() {
+		// First of all, request some meta data about the model layer shown
+		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/layer/meta'), {
 			tag: this.tag,
 			run: this.run
 		});
 		
-		this._requestManager.request(testUrl).then(metaData => {
-			console.log(metaData);
+		this._requestManager.request(metaUrl).then(metaData => {
+			var tileUrls = []
+			
+			// List all available image tiles and put them into our array
+			for (let i in Array.from(Array(metaData.unitCount).keys())) {
+				tileUrls.push(tf_backend.addParams(tf_backend.getRouter()
+					.pluginRoute('advis', '/layer/image'), {
+	        tag: this.tag,
+	        run: this.run,
+					unitIndex: String(i)
+	      }));
+			}
+			
+			this.urls = tileUrls;
 		});
 	}
 });
