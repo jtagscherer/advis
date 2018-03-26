@@ -7,7 +7,7 @@ import numpy as np
 import six
 from werkzeug import wrappers
 
-from advis_plugin import imgutil
+from advis_plugin import imgutil, argutil
 
 from tensorboard.backend import http_util
 from tensorboard.plugins import base_plugin
@@ -116,6 +116,16 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Returns:
 			A JSON document containing meta information about the layer.
 		"""
+		# Check for missing arguments and possibly return an error
+		missing_arguments = argutil.check_missing_arguments(
+			request, ['run', 'tag']
+		)
+		
+		if missing_arguments != None:
+			return missing_arguments
+		
+		# Now that we are sure all necessary arguments are available, extract them 
+		# from the request
 		run = request.args.get('run')
 		tag = request.args.get('tag')
 
@@ -132,11 +142,21 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		visualizations of a deep learning layer.
 
 		Arguments:
-			request: A request containing the layer image's run and tag as well as its
-			unit index.
+			request: A request containing the layer image's run and tag as well as 
+			its unit index.
 		Returns:
-			Image data containing the requested visualization.
+			A URL for the image data containing the requested visualization.
 		"""
+		# Check for missing arguments and possibly return an error
+		missing_arguments = argutil.check_missing_arguments(
+			request, ['run', 'tag', 'unitIndex']
+		)
+		
+		if missing_arguments != None:
+			return missing_arguments
+		
+		# Now that we are sure all necessary arguments are available, extract them 
+		# from the request
 		run = request.args.get('run')
 		tag = request.args.get('tag')
 		unit_index = int(request.args.get('unitIndex'))
