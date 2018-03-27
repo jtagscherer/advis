@@ -7,6 +7,9 @@
 <link rel="import" href="../../tf-dashboard-common/dashboard-style.html">
 <link rel="import" href="../../tf-dashboard-common/tf-dashboard-layout.html">
 <link rel="import" href="../../tf-runs-selector/tf-runs-selector.html">
+<link rel="import" href="../../tf-graph-board/tf-graph-board.html">
+<link rel="import" href="../../tf-graph-controls/tf-graph-controls.html">
+<link rel="import" href="../../tf-graph-loader/tf-graph-loader.html">
 <link rel="import" href="../../tf-tensorboard/registry.html">
 
 <link rel="import" href="../../layer-image/layer-image.html">
@@ -41,7 +44,24 @@
 					</div>
 				</template>
 				<template is="dom-if" if="[[!_dataNotFound]]">
-					<layer-image
+					<div id="graph">
+			      <tf-graph-loader id="loader"
+		          out-graph-hierarchy="{{graphHierarchy}}"
+		          out-graph="{{graph}}"
+		          out-stats="{{stats}}"
+		          progress="{{_progress}}">
+						</tf-graph-loader>
+						<tf-graph-board id="graphboard"
+		          graph-hierarchy="[[graphHierarchy]]"
+		          graph="[[graph]]"
+		          stats="[[stats]]"
+		          progress="[[_progress]]"
+		          color-by="[[colorBy]]"
+		          color-by-params="{{colorByParams}}"
+		          render-hierarchy="{{_renderHierarchy}}">
+						</tf-graph-board>
+					</div>
+					<layer-image id="layer-visualization"
 						run="[[_currentRun]]"
 						tag="[[_currentTag]]"
 						request-manager="[[_requestManager]]">

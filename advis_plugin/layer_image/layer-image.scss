@@ -1,6 +1,8 @@
 #image-container {
 	width: 100%;
-	height: auto;
+	height: 45vh;
+	
+	overflow: scroll;
 	
 	.image-tile {
 		image-rendering: -moz-crisp-edges;
