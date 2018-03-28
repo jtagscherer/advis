@@ -1,5 +1,5 @@
 .center {
-	padding: 30px;
+	padding: 0;
 }
 
 .no-data-warning {
@@ -11,6 +11,10 @@
 	height: 41vh;
 }
 
-#layer-visualization {
-	height: 45vh;
+#bottom-container {
+	margin: 20px;
+	
+	> #layer-visualization {
+		height: 45vh;
+	}
 }
