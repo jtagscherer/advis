@@ -13,7 +13,6 @@ tf_web_library(
 	],
 	path = "/layer-image",
 	deps = [
-		"layer_image_css",
 		"@org_polymer_paper_icon_button",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:lodash",
