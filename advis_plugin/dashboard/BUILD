@@ -14,14 +14,14 @@ tf_web_library(
 	path = "/advis/dashboard",
 	deps = [
 		"//advis_plugin/layer_image",
+		"//advis_plugin/graph_view",
 		"@org_polymer_iron_icon",
 		"@org_polymer_paper_input",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_categorization_utils",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_dashboard_common",
-		"@org_tensorflow_tensorboard//tensorboard/components/tf_tensorboard:registry",
-		"@org_tensorflow_tensorboard//tensorboard/plugins/graph/tf_graph_app"
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_tensorboard:registry"
 	]
 )
 

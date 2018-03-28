@@ -1,0 +1,39 @@
+:host /deep/ {
+  font-family: 'Roboto', sans-serif;
+}
+
+.main {
+  position: absolute;
+  right: 0;
+  left: 250px;
+  height: 100%;
+}
+
+.side {
+  position: absolute;
+  left: 0;
+  width: 250px;
+  height: 100%;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.all {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  height: 650px;
+	
+	&.no-toolbar {
+		.main {
+			left: 0;
+		}
+		
+		.side {
+			display: none;
+		}
+	}
+}
