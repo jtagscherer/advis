@@ -23,9 +23,7 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_dashboard_common",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_runs_selector",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_tensorboard:registry",
-		"@org_tensorflow_tensorboard//tensorboard/plugins/graph/tf_graph_board",
-		"@org_tensorflow_tensorboard//tensorboard/plugins/graph/tf_graph_controls",
-		"@org_tensorflow_tensorboard//tensorboard/plugins/graph/tf_graph_loader"
+		"@org_tensorflow_tensorboard//tensorboard/plugins/graph/tf_graph_app"
 	]
 )
 
