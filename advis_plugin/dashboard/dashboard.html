@@ -34,11 +34,11 @@
 					</div>
 				</template>
 				<template is="dom-if" if="[[!_dataNotFound]]">
-					<graph-view id="graph" pbtxt-file-location="https://raw.githubusercontent.com/jtagscherer/tensorboard/master/tensorboard/plugins/graph/tf_graph_app/demo/data/graph.pbtxt"></graph-view>
+					<graph-view id="graph" pbtxt-file-location="[[_graphUrl]]"></graph-view>
 					<div id="bottom-container">
 						<layer-image id="layer-visualization"
-							run="[[_currentRun]]"
-							tag="[[_currentTag]]"
+							run="[[currentRun]]"
+							tag="[[currentTag]]"
 							request-manager="[[_requestManager]]">
 						</layer-image>
 					</div>

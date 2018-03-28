@@ -3,8 +3,9 @@
 Polymer({
   is: 'advis-dashboard',
   properties: {
-    _currentRun: String,
-    _currentTag: String,
+    currentRun: String,
+    currentTag: String,
+		_graphUrl: String,
     _dataNotFound: Boolean,
     _requestManager: {
       type: Object,
@@ -16,9 +17,18 @@ Polymer({
     this.reload();
   },
   reload() {
-    this._fetchTags().then(() => {
-      this.$$('layer-image').reload();
-    });
+		if (this.currentRun != null) {
+			// Update the graph
+			this._graphUrl = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('graphs', '/graph'), {
+				run: this.currentRun
+			});
+		}
+		
+		// Update the layer visualization
+		this._fetchTags().then(() => {
+			this.$$('layer-image').reload();
+		});
   },
 	
   _fetchTags() {
@@ -28,8 +38,8 @@ Polymer({
 			// Check for data availability before assigning variables
 			if (Object.keys(runToTag).length > 0) {
 				// Statically use both the first run and the first tag for now
-				this._currentRun = Object.keys(runToTag)[0];
-				this._currentTag = runToTag[this._currentRun][0];
+				this.currentRun = Object.keys(runToTag)[0];
+				this.currentTag = runToTag[this.currentRun][0];
 				
 				this._dataNotFound = false;
 			} else {
