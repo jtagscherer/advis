@@ -8,6 +8,7 @@ Polymer({
   properties: {
     currentRun: String,
     currentTag: String,
+		_availableTags: Array,
 		_graphUrl: String,
     _dataNotFound: Boolean,
     _requestManager: {
@@ -35,7 +36,12 @@ Polymer({
   },
 	
 	_nodeSelected(e) {
-		console.log('Node Selected: ' + e.detail.selectedNode);
+		const visualizationNode = e.detail.selectedNode + '/LayerImage';
+		
+		// If we have a visualization for the selected node, show it
+		if (this._availableTags.includes(visualizationNode)) {
+			this.currentTag = visualizationNode;
+		}
 	},
   _fetchTags() {
     const url = tf_backend.getRouter().pluginRoute('advis', '/tags');
@@ -43,9 +49,9 @@ Polymer({
     return this._requestManager.request(url).then(runToTag => {
 			// Check for data availability before assigning variables
 			if (Object.keys(runToTag).length > 0) {
-				// Statically use both the first run and the first tag for now
+				// Statically use the first run for now
 				this.currentRun = Object.keys(runToTag)[0];
-				this.currentTag = runToTag[this.currentRun][0];
+				this._availableTags = runToTag[this.currentRun];
 				
 				this._dataNotFound = false;
 			} else {
