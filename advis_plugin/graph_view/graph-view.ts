@@ -5,6 +5,11 @@ Polymer({
   properties: {
     stats: Object,
 		
+		selectedNode: {
+			type: String,
+			observer: '_updateNodeSelection'
+		},
+		
     pbtxtFileLocation: {
       type: String,
       observer: '_updateGraph'
@@ -31,6 +36,11 @@ Polymer({
     _progress: Object
   },
 	
+	_updateNodeSelection: function() {
+		this.fire('nodeSelectedEvent', {
+      selectedNode: this.selectedNode
+    });
+	},
   _updateToolbar: function() {
     this.$$('.container').classList.toggle('no-toolbar', !this.toolbar);
   },
@@ -42,17 +52,13 @@ Polymer({
   },
   _updateGraph: function() {
     if (this.pbtxtFileLocation) {
-      // Fetch a pbtxt file. The fetching will be part of the loading sequence.
       this.$.loader.datasets = [{
-        // Just name the dataset based on the file location.
-        "name": this.pbtxtFileLocation,
-        "path": this.pbtxtFileLocation,
+        'name': this.pbtxtFileLocation,
+        'path': this.pbtxtFileLocation
       }];
       this.$.loader.set('selectedDataset', 0);
     } else if (this.pbtxt) {
-      // Render the provided pbtxt.
       var blob = new Blob([this.pbtxt]);
-			
       this.$.loader._parseAndConstructHierarchicalGraph(null, blob);
     }
   }

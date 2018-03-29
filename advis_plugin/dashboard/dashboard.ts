@@ -2,6 +2,9 @@
 
 Polymer({
   is: 'advis-dashboard',
+	listeners: {
+    'nodeSelectedEvent': '_nodeSelected'
+  },
   properties: {
     currentRun: String,
     currentTag: String,
@@ -31,6 +34,9 @@ Polymer({
 		});
   },
 	
+	_nodeSelected(e) {
+		console.log('Node Selected: ' + e.detail.selectedNode);
+	},
   _fetchTags() {
     const url = tf_backend.getRouter().pluginRoute('advis', '/tags');
 		
