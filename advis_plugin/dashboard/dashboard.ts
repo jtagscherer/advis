@@ -11,6 +11,7 @@ Polymer({
 		_availableTags: Array,
 		_graphUrl: String,
     _dataNotFound: Boolean,
+		_graphNotFound: Boolean,
     _requestManager: {
       type: Object,
       value: () => new tf_backend.RequestManager()
@@ -23,10 +24,28 @@ Polymer({
   reload() {
 		if (this.currentRun != null) {
 			// Update the graph
-			this._graphUrl = tf_backend.addParams(tf_backend.getRouter()
+			const graphUrl = tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('graphs', '/graph'), {
 				run: this.currentRun
 			});
+			
+			// Check whether graph data is available
+			var request = new XMLHttpRequest();
+			request.open('GET', graphUrl, true);
+			
+			var self = this;
+			request.onload = function(e) {
+				if (request.status === 200) {
+					// Update the graph URL which will trigger the graph view to update
+					self._graphUrl = graphUrl;
+					self._graphNotFound = false;
+				} else {
+					// Show an error message within the UI
+					self._graphNotFound = true;
+				}
+			};
+			
+			request.send(null);
 		}
 		
 		// Update the layer visualization

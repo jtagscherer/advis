@@ -20,7 +20,7 @@
 			<div class="center">
 				<template is="dom-if" if="[[_dataNotFound]]">
 					<div class="no-data-warning">
-						<h3>No Advis data was found.</h3>
+						<h3>No Advis data could be found.</h3>
 						<p>Probable causes:</p>
 						<ul>
 							<li>You haven’t written any appropriate data to your event files.
@@ -28,13 +28,29 @@
 						</ul>
 						<p>
 							Check out the
-							<a href="https://github.com/jtagscherer/advis#usage">documentation
-							</a> for a quick start on how to visualize your model using Advis.
+							<a href="https://github.com/jtagscherer/advis#usage">documentation</a> 
+							for a quick start on how to visualize your model using Advis.
 						</p>
 					</div>
 				</template>
 				<template is="dom-if" if="[[!_dataNotFound]]">
-					<graph-view id="graph" pbtxt-file-location="[[_graphUrl]]"></graph-view>
+					<template is="dom-if" if="[[_graphNotFound]]">
+						<div class="no-data-warning">
+							<h3>No Graph data could be found.</h3>
+							<p>
+								Please make sure you are exporting graph definitions with each 
+								run.
+							</p>
+							<p>
+								Refer to the
+								<a href="https://github.com/jtagscherer/advis#usage">documentation</a> 
+								for more information.
+							</p>
+						</div>
+					</template>
+					<template is="dom-if" if="[[!_graphNotFound]]">
+						<graph-view id="graph" pbtxt-file-location="[[_graphUrl]]"></graph-view>
+					</template>
 					<div id="bottom-container">
 						<layer-image id="layer-visualization"
 							run="[[currentRun]]"
