@@ -6,7 +6,7 @@ Polymer({
     'nodeSelectedEvent': '_nodeSelected'
   },
   properties: {
-    currentRun: String,
+    currentRun: Object,
     currentTag: String,
 		_availableTags: Array,
 		_graphUrl: String,
@@ -26,7 +26,7 @@ Polymer({
 			// Update the graph
 			const graphUrl = tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('graphs', '/graph'), {
-				run: this.currentRun
+				run: this.currentRun.name
 			});
 			
 			// Check whether graph data is available
@@ -69,8 +69,17 @@ Polymer({
 			// Check for data availability before assigning variables
 			if (Object.keys(runToTag).length > 0) {
 				// Statically use the first run for now
-				this.currentRun = Object.keys(runToTag)[0];
-				this._availableTags = runToTag[this.currentRun];
+				const runIndex = 0;
+				
+				this.currentRun = {
+					name: Object.keys(runToTag)[runIndex],
+					index: runIndex
+				}
+				
+				this._availableTags = runToTag[this.currentRun.name];
+				
+				// DEBUG: Statically use the first tag for faster testing
+				this.currentTag = this._availableTags[0];
 				
 				this._dataNotFound = false;
 			} else {
