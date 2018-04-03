@@ -11,7 +11,7 @@ tf_web_library(
 		"unit-details-dialog.css",
 		"unit-details-dialog.ts"
 	],
-	path = "/unit-details-dialog",
+	path = "/dialogs/unit-details-dialog",
 	deps = [
 		"@org_polymer_paper_dialog",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer"
