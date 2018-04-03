@@ -1,4 +1,4 @@
-$content-size: 70vh; 
+$content-size: 80vh; 
 
 dialog-header {
 	padding: 0;
@@ -20,4 +20,14 @@ dialog-header {
 	height: $content-size;
 	
 	margin: 10px;
+	padding: 8px;
+	
+	img {
+		image-rendering: pixelated;
+		
+		min-width: 100%;
+    min-height: 100%;
+		max-width: 100%;
+    max-height: 100%;
+	}
 }

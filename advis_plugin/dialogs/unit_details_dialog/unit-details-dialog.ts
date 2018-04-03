@@ -7,12 +7,14 @@ Polymer({
   },
   properties: {
     model: Object,
-		unit: Object
+		unit: Object,
+		imageUrl: String
   },
 
   open(content) {
 		this.model = content.model;
 		this.unit = content.unit;
+		this.imageUrl = content.url;
 		
 		this.$$('paper-dialog').open();
 	},
