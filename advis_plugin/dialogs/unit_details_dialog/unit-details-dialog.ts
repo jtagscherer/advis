@@ -7,7 +7,10 @@ Polymer({
 		unit: Object
   },
 
-  open() {
+  open(content) {
+		this.model = content.model;
+		this.unit = content.unit;
+		
 		this.$$('paper-dialog').open();
 	}
 });

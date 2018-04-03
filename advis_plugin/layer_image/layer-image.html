@@ -5,6 +5,8 @@
 <link rel="import" href="../tf-card-heading/tf-card-heading.html">
 <link rel="import" href="../tf-color-scale/tf-color-scale.html">
 
+<link rel="import" href="../unit-details-dialog/unit-details-dialog.html">
+
 <!--
 	Advis exports activations and feature visualizations of a deep learning layer 
 	as a collection image tiles.
@@ -17,9 +19,11 @@
 		</tf-card-heading>
 		<div id="image-container">
 			<template is="dom-repeat" items="[[urls]]">
-				<img class="image-tile" src$={{item}}></img>
+				<img class="image-tile" src$={{item}} data-args$={{index}} on-tap="tileTapped"></img>
 			</template>
 		</div>
+		
+		<unit-details-dialog></unit-details-dialog>
 		
 		<link rel="stylesheet" type="text/css" href="layer-image.css">
 	</template>

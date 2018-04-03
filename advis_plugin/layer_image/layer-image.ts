@@ -3,7 +3,7 @@
 Polymer({
   is: 'layer-image',
   properties: {
-    run: String,
+    run: Object,
     tag: String,
 		urls: Array,
 		_requestManager: {
@@ -18,7 +18,7 @@ Polymer({
   },
 
   observers: [
-		'_fetchNewData(run, tag)'
+		'_fetchNewData(run.name, tag)'
 	],
 	
   attached() {
@@ -27,9 +27,23 @@ Polymer({
   },
   reload() {
 		if (this._hasValidData()) {
-			this._fetchNewData(this.run, this.tag);
+			this._fetchNewData(this.run.name, this.tag);
 		}
   },
+	
+	tileTapped(e) {
+		// Show the enlarged image tile in a dialog
+		this.$$('unit-details-dialog').open({
+			model: {
+				title: this.run.name,
+				caption: `Run ${this.run.index + 1}`
+			},
+			unit: {
+				title: `Tensor ${Number(e.target.dataset.args) + 1}`,
+				caption: this.tag.slice(0, -11)
+			}
+		});
+	},
 	
   _fetchNewData(run, tag) {
     if (this._attached) {
@@ -44,7 +58,7 @@ Polymer({
 		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/layer/meta'), {
 			tag: this.tag,
-			run: this.run
+			run: this.run.name
 		});
 		
 		this._requestManager.request(metaUrl).then(metaData => {
@@ -55,7 +69,7 @@ Polymer({
 				tileUrls.push(tf_backend.addParams(tf_backend.getRouter()
 					.pluginRoute('advis', '/layer/image'), {
 	        tag: this.tag,
-	        run: this.run,
+	        run: this.run.name,
 					unitIndex: String(i)
 	      }));
 			}
