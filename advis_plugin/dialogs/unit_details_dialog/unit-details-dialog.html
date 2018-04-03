@@ -1,0 +1,24 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+
+<!--
+	When opened, this module displays a zoomed version of a unit's activation or 
+	feature visualization and some additional information in a dialog.
+-->
+<dom-module id="unit-details-dialog">
+	<template>
+		<paper-dialog>
+			<h2>Header</h2>
+				<paper-dialog-scrollable id="dialog-content">
+					Here shall be the enhanced unit visualization.
+				</paper-dialog-scrollable>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Dismiss</paper-button>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="unit-details-dialog.css">
+	</template>
+
+	<script src="unit-details-dialog.js"></script>
+</dom-module>
