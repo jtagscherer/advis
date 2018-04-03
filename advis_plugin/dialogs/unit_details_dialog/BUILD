@@ -13,8 +13,9 @@ tf_web_library(
 	],
 	path = "/dialogs/unit-details-dialog",
 	deps = [
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_paper_dialog",
-		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer"
+		"//advis_plugin/dialogs/dialog_header"
 	]
 )
 

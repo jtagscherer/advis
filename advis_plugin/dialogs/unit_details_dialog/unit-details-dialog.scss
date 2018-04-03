@@ -1,5 +1,20 @@
 $content-size: 70vh; 
 
+dialog-header {
+	padding: 0;
+	
+	#header-items {
+		display: flex;
+		align-items: center;
+		padding: 5px;
+		
+		* {
+			display: inline-block;
+			margin: 5px;
+		}
+	}
+}
+
 #dialog-content {
 	width: $content-size;
 	height: $content-size;
