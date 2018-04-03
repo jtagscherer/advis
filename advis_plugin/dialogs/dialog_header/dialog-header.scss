@@ -1,0 +1,16 @@
+$dark-foreground-color: #5B5C5C;
+
+#container {
+	display: flex;
+	align-items: center;
+	
+	margin: 10px;
+	
+	#content {
+		flex: 1;
+	}
+	
+	#close-button {
+		color: $dark-foreground-color;
+	}
+}

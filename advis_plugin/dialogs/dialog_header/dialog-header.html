@@ -1,0 +1,26 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+
+<!--
+	This component can be included as a generic dialog header with a close button.
+	It can contain left-aligned and vertically centered child nodes.
+-->
+<dom-module id="dialog-header">
+	<template>
+		<div id="container">
+			<div id="content">
+				<slot></slot>
+			</div>
+			<paper-icon-button
+				id="close-button"
+				icon="close"
+				on-tap="closeButtonClicked">
+			</paper-icon-button>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="dialog-header.css">
+	</template>
+
+	<script src="dialog-header.js"></script>
+</dom-module>
