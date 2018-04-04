@@ -160,13 +160,21 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		run = request.args.get('run')
 		tag = request.args.get('tag')
 		unit_index = int(request.args.get('unitIndex'))
-
-		# Fetch the image summary tensor corresponding to the request's values
-		response = self._get_tensor_string_value(run, tag)[unit_index]
+		
+		tensor_string_value = self._get_tensor_string_value(run, tag)
+		
+		# Check the index value for validity
+		if unit_index >= 0 and unit_index < len(tensor_string_value):
+			# Fetch the image summary tensor corresponding to the request's values
+			response = tensor_string_value[unit_index]
+		else:
+			# Something has gone wrong, return a placeholder
+			response = imgutil.get_placeholder_image()
 		
 		# Return the image data with proper headers set
 		return http_util.Respond(
 			request,
 			response,
-			imgutil.get_content_type(response)
+			'image/png'
+			# imgutil.get_content_type(response)
 		)
