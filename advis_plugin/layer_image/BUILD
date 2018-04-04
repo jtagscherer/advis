@@ -34,5 +34,5 @@ genrule(
   name = "layer_image_css",
   srcs = [":layer_image_scss"],
   outs = ["layer-image.css"],
-  cmd = "cat $(locations :layer_image_scss) > $@",
+  cmd = "cat $(locations :layer_image_scss) > $@"
 )

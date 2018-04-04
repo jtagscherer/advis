@@ -36,5 +36,5 @@ genrule(
   name = "dashboard_css",
   srcs = [":dashboard_scss"],
   outs = ["dashboard.css"],
-  cmd = "cat $(locations :dashboard_scss) > $@",
+  cmd = "cat $(locations :dashboard_scss) > $@"
 )

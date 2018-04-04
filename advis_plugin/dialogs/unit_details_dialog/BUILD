@@ -32,5 +32,5 @@ genrule(
   name = "unit_details_dialog_css",
   srcs = [":unit_details_dialog_scss"],
   outs = ["unit-details-dialog.css"],
-  cmd = "cat $(locations :unit_details_dialog_scss) > $@",
+  cmd = "cat $(locations :unit_details_dialog_scss) > $@"
 )

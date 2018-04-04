@@ -29,5 +29,5 @@ genrule(
   name = "graph_view_css",
   srcs = [":graph_view_scss"],
   outs = ["graph-view.css"],
-  cmd = "cat $(locations :graph_view_scss) > $@",
+  cmd = "cat $(locations :graph_view_scss) > $@"
 )

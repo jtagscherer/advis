@@ -29,5 +29,5 @@ genrule(
   name = "categorized_header_item_css",
   srcs = [":categorized_header_item_scss"],
   outs = ["categorized-header-item.css"],
-  cmd = "cat $(locations :categorized_header_item_scss) > $@",
+  cmd = "cat $(locations :categorized_header_item_scss) > $@"
 )

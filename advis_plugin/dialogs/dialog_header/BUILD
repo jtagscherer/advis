@@ -15,7 +15,7 @@ tf_web_library(
 	path = "/dialog-header",
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
-		"@org_polymer_paper_icon_button",
+		"@org_polymer_paper_icon_button"
 	]
 )
 
@@ -30,5 +30,5 @@ genrule(
   name = "dialog_header_css",
   srcs = [":dialog_header_scss"],
   outs = ["dialog-header.css"],
-  cmd = "cat $(locations :dialog_header_scss) > $@",
+  cmd = "cat $(locations :dialog_header_scss) > $@"
 )
