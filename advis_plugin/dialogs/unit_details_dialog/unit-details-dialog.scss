@@ -1,4 +1,9 @@
 $content-size: 80vh; 
+$header-item-spacing: 40px;
+
+#dialog {
+	border-radius: 3px;
+}
 
 dialog-header {
 	padding: 0;
@@ -6,11 +11,15 @@ dialog-header {
 	#header-items {
 		display: flex;
 		align-items: center;
-		padding: 5px;
 		
 		* {
 			display: inline-block;
-			margin: 5px;
+			
+			padding-right: $header-item-spacing;
+		}
+		
+		*:last-child {
+			padding-right: 0;
 		}
 	}
 }
@@ -19,8 +28,8 @@ dialog-header {
 	width: $content-size;
 	height: $content-size;
 	
-	margin: 10px;
-	padding: 8px;
+	margin: 5px;
+	padding: 5px;
 	
 	img {
 		image-rendering: pixelated;

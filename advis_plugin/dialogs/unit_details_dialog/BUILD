@@ -15,7 +15,8 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_paper_dialog",
-		"//advis_plugin/dialogs/dialog_header"
+		"//advis_plugin/dialogs/dialog_header",
+		"//advis_plugin/dialogs/dialog_header/categorized_header_item"
 	]
 )
 

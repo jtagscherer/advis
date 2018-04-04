@@ -2,6 +2,7 @@
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
 
 <link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
 
 <!--
 	When opened, this module displays a zoomed version of a unit's activation or 
@@ -9,11 +10,19 @@
 -->
 <dom-module id="unit-details-dialog">
 	<template>
-		<paper-dialog>
+		<paper-dialog id="dialog">
 			<dialog-header event-id="unit-details-dialog">
 				<div id="header-items">
-					<h1>Item 1</h1>
-					<h2>Item 2</h2>
+					<categorized-header-item
+						category="Model"
+						title=[[model.title]]
+						caption=[[model.caption]]>
+					</categorized-header-item>
+					<categorized-header-item
+						category="Unit"
+						title=[[unit.title]]
+						caption=[[unit.caption]]>
+					</categorized-header-item>
 				</div>
 			</dialog-header>
 			<div id="dialog-content">
