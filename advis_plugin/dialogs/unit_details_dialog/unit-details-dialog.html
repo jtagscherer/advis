@@ -1,6 +1,11 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
 
+<link rel="import" href="../../neon-animation/web-animations.html">
+<link rel="import" href="../../neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../../neon-animation/animations/ripple-animation.html">
+
 <link rel="import" href="../../dialog-header/dialog-header.html">
 <link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
 
@@ -10,7 +15,7 @@
 -->
 <dom-module id="unit-details-dialog">
 	<template>
-		<paper-dialog modal id="dialog">
+		<paper-dialog with-backdrop id="dialog">
 			<dialog-header event-id="unit-details-dialog">
 				<div id="header-items">
 					<categorized-header-item
