@@ -1,0 +1,19 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+	This component can be included as a three-tiered item in a dialog header. It 
+	includes a category, a title, and a caption.
+-->
+<dom-module id="categorized-header-item">
+	<template>
+		<div id="container">
+			<p id="category">[[category]]</p>
+			<p id="title">[[title]]</p>
+			<p id="caption">[[caption]]</p>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="categorized-header-item.css">
+	</template>
+
+	<script src="categorized-header-item.js"></script>
+</dom-module>
