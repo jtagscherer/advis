@@ -42,7 +42,8 @@ Polymer({
 				title: `Tensor ${Number(e.target.dataset.args) + 1}`,
 				caption: this.tag.slice(0, -11)
 			},
-			url: this.urls[e.target.dataset.args]
+			url: this.urls[e.target.dataset.args],
+			animationTarget: e.target.getBoundingClientRect()
 		});
 	},
 	
