@@ -28,7 +28,10 @@ tf_web_library(
 # Compile the dashboard's Sass stylesheet to CSS
 sass_binary(
   name = "dashboard_scss",
-  src = "dashboard.scss"
+  src = "dashboard.scss",
+	deps = [
+		"//advis_plugin/shared:color"
+	]
 )
 
 # Move the compiled CSS file to our desired path

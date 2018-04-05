@@ -1,20 +1,30 @@
+@import 'advis_plugin/shared/color';
+
+.sidebar {
+	min-width: 250px;
+	width: 250px;
+	
+	border-right: 1px solid $light-foreground-color;
+	margin-right: 0;
+}
+
 .center {
 	padding: 0;
-}
-
-.no-data-warning {
-	max-width: 540px;
-	margin: 80px auto 0 auto;
-}
-
-#graph {
-	height: 41vh;
-}
-
-#bottom-container {
-	margin: 20px;
 	
-	> #layer-visualization {
-		height: 45vh;
+	.no-data-warning {
+		max-width: 540px;
+		margin: 80px auto 0 auto;
+	}
+
+	#graph {
+		height: 41vh;
+	}
+
+	#bottom-container {
+		margin: 20px;
+		
+		> #layer-visualization {
+			height: 45vh;
+		}
 	}
 }
