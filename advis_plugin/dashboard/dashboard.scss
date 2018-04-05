@@ -1,30 +1,35 @@
 @import 'advis_plugin/shared/color';
 
+$sidebar-width: 250px;
+
 .sidebar {
-	min-width: 250px;
-	width: 250px;
+	min-width: $sidebar-width;
+	width: $sidebar-width;
 	
 	border-right: 1px solid $light-foreground-color;
 	margin-right: 0;
 }
 
 .center {
+	display: flex;
+	flex-direction: column;
+	
+	height: 100%;
 	padding: 0;
+	
+	overflow: hidden;
 	
 	.no-data-warning {
 		max-width: 540px;
 		margin: 80px auto 0 auto;
 	}
 
-	#graph {
-		height: 41vh;
+	#graph-container {
+		flex: 1;
 	}
 
 	#bottom-container {
-		margin: 20px;
-		
-		> #layer-visualization {
-			height: 45vh;
-		}
+		flex: 1;
+		overflow: scroll;
 	}
 }

@@ -51,11 +51,13 @@
 							</p>
 						</div>
 					</template>
-					<template is="dom-if" if="[[!_graphNotFound]]">
-						<graph-view id="graph" pbtxt-file-location="[[_graphUrl]]"></graph-view>
-					</template>
+					<div id="graph-container">
+						<template is="dom-if" if="[[!_graphNotFound]]">
+							<graph-view id="graph" pbtxt-file-location="[[_graphUrl]]"></graph-view>
+						</template>
+					</div>
 					<div id="bottom-container">
-						<layer-image id="layer-visualization"
+						<layer-image
 							run="[[currentRun]]"
 							tag="[[currentTag]]"
 							request-manager="[[_requestManager]]">
