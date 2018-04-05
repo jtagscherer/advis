@@ -11,9 +11,9 @@
 -->
 <dom-module id="unit-details-dialog">
 	<template>
-		<paper-dialog with-backdrop id="dialog">
+		<paper-dialog with-backdrop>
 			<dialog-header event-id="unit-details-dialog">
-				<div id="header-items">
+				<div class="header-items">
 					<categorized-header-item
 						category="Model"
 						title=[[model.title]]
@@ -26,7 +26,7 @@
 					</categorized-header-item>
 				</div>
 			</dialog-header>
-			<div id="dialog-content">
+			<div id="content">
 				<img src$=[[imageUrl]]></img>
 			</div>
 		</paper-dialog>

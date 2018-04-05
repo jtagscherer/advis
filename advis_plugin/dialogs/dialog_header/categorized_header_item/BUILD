@@ -21,7 +21,11 @@ tf_web_library(
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
   name = "categorized_header_item_scss",
-  src = "categorized-header-item.scss"
+  src = "categorized-header-item.scss",
+	deps = [
+		"//advis_plugin/shared:style",
+		"//advis_plugin/shared:text"
+	]
 )
 
 # Move the compiled CSS file to our desired path

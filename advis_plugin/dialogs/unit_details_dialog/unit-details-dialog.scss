@@ -1,30 +1,8 @@
-$content-size: 80vh; 
-$header-item-spacing: 40px;
+@import 'advis_plugin/shared/style';
 
-#dialog {
-	border-radius: 3px;
-}
+$content-size: 80vh;
 
-dialog-header {
-	padding: 0;
-	
-	#header-items {
-		display: flex;
-		align-items: center;
-		
-		* {
-			display: inline-block;
-			
-			padding-right: $header-item-spacing;
-		}
-		
-		*:last-child {
-			padding-right: 0;
-		}
-	}
-}
-
-#dialog-content {
+#content {
 	width: $content-size;
 	height: $content-size;
 	

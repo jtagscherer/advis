@@ -24,7 +24,10 @@ tf_web_library(
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
   name = "unit_details_dialog_scss",
-  src = "unit-details-dialog.scss"
+  src = "unit-details-dialog.scss",
+	deps = [
+		"//advis_plugin/shared:style"
+	]
 )
 
 # Move the compiled CSS file to our desired path
