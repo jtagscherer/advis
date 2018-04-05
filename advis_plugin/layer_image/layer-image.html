@@ -10,11 +10,13 @@
 -->
 <dom-module id="layer-image">
 	<template>
-		<p>[[tag]]</p>
-		<div id="image-container">
-			<template is="dom-repeat" items="[[urls]]">
-				<img class="image-tile" src$={{item}} data-args$={{index}} on-tap="tileTapped"></img>
-			</template>
+		<div id="container">
+			<p class="title">[[tag]]</p>
+			<div id="image-container">
+				<template is="dom-repeat" items="[[urls]]">
+					<img class="image-tile" src$={{item}} data-args$={{index}} on-tap="tileTapped"></img>
+				</template>
+			</div>
 		</div>
 		
 		<unit-details-dialog></unit-details-dialog>
