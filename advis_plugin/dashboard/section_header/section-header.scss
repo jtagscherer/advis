@@ -1,0 +1,19 @@
+@import 'advis_plugin/shared/text';
+@import 'advis_plugin/shared/style';
+
+$text-side-padding: 20px;
+
+#container {
+	display: flex;
+	align-items: center;
+	
+	p {
+		padding-left: $text-side-padding;
+		padding-right: $text-side-padding;
+		text-align: center;
+	}
+
+	#background-line {
+		flex: 1;
+	}
+}
