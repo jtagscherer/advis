@@ -1,0 +1,35 @@
+@import 'advis_plugin/shared/color';
+
+// Thin horizontal divider line
+.horizontal-divider {
+	display: block;
+	height: 0;
+	border: 0;
+	border-top: 1px solid $light-foreground-color;
+	margin: 0;
+	padding: 0;
+}
+
+// Custom dialog with specific header items
+paper-dialog {
+	border-radius: 3px;
+	
+	dialog-header {
+		padding: 0;
+		
+		.header-items {
+			display: flex;
+			align-items: center;
+			
+			* {
+				display: inline-block;
+				
+				padding-right: 40px;
+			}
+			
+			*:last-child {
+				padding-right: 0;
+			}
+		}
+	}
+}

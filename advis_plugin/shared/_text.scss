@@ -1,0 +1,23 @@
+@import 'advis_plugin/shared/color';
+
+$font-size-title: 14px;
+$font-size-body: 12px;
+
+.category {
+	color: $accent-color;
+	font-size: $font-size-body;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.title {
+	color: $dark-foreground-color;
+	font-size: $font-size-title;
+	font-weight: bold;
+}
+
+.caption {
+	color: $medium-foreground-color;
+	font-size: $font-size-body;
+	font-weight: normal;
+}
