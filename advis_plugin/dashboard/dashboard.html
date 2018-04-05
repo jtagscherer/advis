@@ -8,6 +8,7 @@
 <link rel="import" href="../../tf-dashboard-common/tf-dashboard-layout.html">
 <link rel="import" href="../../tf-tensorboard/registry.html">
 
+<link rel="import" href="../../section-header/section-header.html">
 <link rel="import" href="../../layer-image/layer-image.html">
 <link rel="import" href="../../graph-view/graph-view.html">
 
@@ -18,7 +19,7 @@
 	<template>
 		<tf-dashboard-layout>
 			<div class="sidebar">
-				Here Be Runs
+				<section-header text="Models"></section-header>
 			</div>
 			<div class="center">
 				<template is="dom-if" if="[[_dataNotFound]]">

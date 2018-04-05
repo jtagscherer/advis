@@ -10,6 +10,13 @@ $font-size-body: 12px;
 	text-transform: uppercase;
 }
 
+.header {
+	color: $dark-foreground-color;
+	font-size: $font-size-title;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
 .title {
 	color: $dark-foreground-color;
 	font-size: $font-size-title;

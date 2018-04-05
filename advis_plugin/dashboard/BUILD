@@ -13,6 +13,7 @@ tf_web_library(
 	],
 	path = "/advis/dashboard",
 	deps = [
+		"//advis_plugin/dashboard/section_header",
 		"//advis_plugin/layer_image",
 		"//advis_plugin/graph_view",
 		"@org_polymer_iron_icon",
