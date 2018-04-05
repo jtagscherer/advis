@@ -17,7 +17,7 @@ tf_web_library(
 		"@org_polymer_paper_dialog",
 		"//advis_plugin/dialogs/components/dialog_header",
 		"//advis_plugin/dialogs/components/dialog_header/categorized_header_item",
-		"//advis_plugin/dialogs/components/reveal_animation"
+		"//advis_plugin/dialogs/components/dialog_behavior"
 	]
 )
 
