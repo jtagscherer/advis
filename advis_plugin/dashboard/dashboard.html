@@ -28,7 +28,8 @@
 						<div class="list-item models" data-args$=[[item.index]]>
 							<model-list-item
 								title="[[item.name]]"
-								caption="Run [[item.index]]">
+								caption="Run [[item.index]]"
+								last-item="[[_isLastModelItem(index)]]">
 							</model-list-item>
 						</div>
 					</template>

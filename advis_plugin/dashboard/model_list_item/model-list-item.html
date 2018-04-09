@@ -15,7 +15,9 @@
 			<paper-ripple></paper-ripple>
 		</div>
 		
-		<hr class="horizontal-divider">
+		<template is="dom-if" if="[[!lastItem]]">
+			<hr class="horizontal-divider">
+		</template>
 		
 		<link rel="stylesheet" type="text/css" href="model-list-item.css">
 	</template>

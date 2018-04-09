@@ -84,6 +84,14 @@ Polymer({
 		}
 	},
 	
+	_isLastModelItem(index) {
+		if (this._availableRuns == null) {
+			return false;
+		} else {
+			return (index + 1) == this._availableRuns.length;
+		}
+	},
+	
   _fetchTags() {
     const url = tf_backend.getRouter().pluginRoute('advis', '/tags');
 		
