@@ -1,0 +1,20 @@
+@import 'advis_plugin/shared/text';
+@import 'advis_plugin/shared/style';
+
+$line-spacing: 2px;
+
+#container {
+	position: relative;
+	padding: 10px;
+	cursor: pointer;
+	
+	#main {
+		display: flex;
+		flex-direction: column;
+		
+		p {
+			margin-top: $line-spacing;
+			margin-bottom: $line-spacing;
+		}
+	}
+}

@@ -1,0 +1,24 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-ripple/paper-ripple.html">
+
+<!--
+	Can be used as a selectable list item representing a Machine Learning model.
+-->
+<dom-module id="model-list-item">
+	<template>
+		<div id="container">
+			<div id="main">
+				<p class="title">[[title]]</p>
+				<p class="caption">[[caption]]</p>
+			</div>
+			
+			<paper-ripple></paper-ripple>
+		</div>
+		
+		<hr class="horizontal-divider">
+		
+		<link rel="stylesheet" type="text/css" href="model-list-item.css">
+	</template>
+
+	<script src="model-list-item.js"></script>
+</dom-module>
