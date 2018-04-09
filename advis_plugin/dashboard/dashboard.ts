@@ -7,10 +7,12 @@ Polymer({
 		'iron-select': '_itemSelected'
   },
   properties: {
-    currentRun: Object,
+    currentRun: {
+			type: Object,
+			observer: 'reload'
+		},
     currentTag: String,
 		_availableRuns: Array,
-		_availableTags: Array,
 		_graphUrl: String,
     _dataNotFound: Boolean,
 		_graphNotFound: Boolean,
@@ -57,10 +59,14 @@ Polymer({
   },
 	
 	_nodeSelected(e) {
+		if (this.currentRun == null) {
+			return;
+		}
+		
 		const visualizationNode = e.detail.selectedNode + '/LayerImage';
 		
 		// If we have a visualization for the selected node, show it
-		if (this._availableTags.includes(visualizationNode)) {
+		if (this.currentRun.tags.includes(visualizationNode)) {
 			this.currentTag = visualizationNode;
 		}
 	},
@@ -73,7 +79,8 @@ Polymer({
 			// Extract the index of the selected run
 			let runIndex = Number(e.detail.item.dataset.args);
 			
-			console.log(`Selected run number ${runIndex}!`);
+			// Select the associated run
+			this.currentRun = this._availableRuns[runIndex];
 		}
 	},
 	
@@ -91,14 +98,11 @@ Polymer({
 					availableRuns.push({
 						name: runName,
 						index: runIndex,
-						availableTags: runToTag[runName]
+						tags: runToTag[runName]
 					});
 				}
 				
 				this._availableRuns = availableRuns;
-				
-				// TODO: Set this.currentRun and available tags upon interaction
-				// this._availableTags = runToTag[this.currentRun.name];
 				
 				this._dataNotFound = false;
 			} else {
