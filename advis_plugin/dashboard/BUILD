@@ -14,9 +14,11 @@ tf_web_library(
 	path = "/advis/dashboard",
 	deps = [
 		"//advis_plugin/dashboard/section_header",
+		"//advis_plugin/dashboard/model_list_item",
 		"//advis_plugin/layer_image",
 		"//advis_plugin/graph_view",
 		"@org_polymer_iron_icon",
+		"@org_polymer_iron_selector",
 		"@org_polymer_paper_input",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
@@ -31,7 +33,8 @@ sass_binary(
   name = "dashboard_scss",
   src = "dashboard.scss",
 	deps = [
-		"//advis_plugin/shared:color"
+		"//advis_plugin/shared:color",
+		"//advis_plugin/shared:style"
 	]
 )
 

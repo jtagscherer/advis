@@ -3,11 +3,13 @@
 Polymer({
   is: 'advis-dashboard',
 	listeners: {
-    'nodeSelectedEvent': '_nodeSelected'
+    'nodeSelectedEvent': '_nodeSelected',
+		'iron-select': '_itemSelected'
   },
   properties: {
     currentRun: Object,
     currentTag: String,
+		_availableRuns: Array,
 		_availableTags: Array,
 		_graphUrl: String,
     _dataNotFound: Boolean,
@@ -62,24 +64,41 @@ Polymer({
 			this.currentTag = visualizationNode;
 		}
 	},
+	_itemSelected(e) {
+		let item = e.detail.item;
+		
+		// Make sure this event came from a model list item
+		if (item.classList.contains('list-item')
+			&& item.classList.contains('models')) {
+			// Extract the index of the selected run
+			let runIndex = Number(e.detail.item.dataset.args);
+			
+			console.log(`Selected run number ${runIndex}!`);
+		}
+	},
+	
   _fetchTags() {
     const url = tf_backend.getRouter().pluginRoute('advis', '/tags');
 		
     return this._requestManager.request(url).then(runToTag => {
 			// Check for data availability before assigning variables
 			if (Object.keys(runToTag).length > 0) {
-				// Statically use the first run for now
-				const runIndex = 0;
+				var availableRuns = [];
 				
-				this.currentRun = {
-					name: Object.keys(runToTag)[runIndex],
-					index: runIndex
+				for (let runIndex in Object.keys(runToTag)) {
+					let runName = Object.keys(runToTag)[runIndex];
+					
+					availableRuns.push({
+						name: runName,
+						index: runIndex,
+						availableTags: runToTag[runName]
+					});
 				}
 				
-				this._availableTags = runToTag[this.currentRun.name];
+				this._availableRuns = availableRuns;
 				
-				// DEBUG: Statically use the first tag for faster testing
-				this.currentTag = this._availableTags[0];
+				// TODO: Set this.currentRun and available tags upon interaction
+				// this._availableTags = runToTag[this.currentRun.name];
 				
 				this._dataNotFound = false;
 			} else {

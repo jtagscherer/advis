@@ -33,3 +33,13 @@ paper-dialog {
 		}
 	}
 }
+
+// Highlight selected list items by animating their background color
+.list-item {
+	background-color: transparent;
+	transition: background-color 0.25s linear;
+	
+	&.iron-selected {
+		background-color: $dark-background-color;
+	}
+}

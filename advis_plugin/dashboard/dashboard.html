@@ -1,4 +1,5 @@
 <link rel="import" href="../../iron-icon/iron-icon.html">
+<link rel="import" href="../../iron-selector/iron-selector.html">
 <link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../tf-backend/tf-backend.html">
@@ -9,6 +10,8 @@
 <link rel="import" href="../../tf-tensorboard/registry.html">
 
 <link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../model-list-item/model-list-item.html">
+
 <link rel="import" href="../../layer-image/layer-image.html">
 <link rel="import" href="../../graph-view/graph-view.html">
 
@@ -20,6 +23,16 @@
 		<tf-dashboard-layout>
 			<div class="sidebar">
 				<section-header text="Models"></section-header>
+				<iron-selector>
+					<template is="dom-repeat" items="[[_availableRuns]]">
+						<div class="list-item models" data-args$=[[item.index]]>
+							<model-list-item
+								title="[[item.name]]"
+								caption="Run [[item.index]]">
+							</model-list-item>
+						</div>
+					</template>
+				</iron-selector>
 			</div>
 			<div class="center">
 				<template is="dom-if" if="[[_dataNotFound]]">
