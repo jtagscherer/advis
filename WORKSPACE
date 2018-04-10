@@ -131,6 +131,30 @@ load("@org_tensorflow_tensorboard//third_party:workspace.bzl", "tensorboard_work
 tensorboard_workspace()
 
 ################################################################################
+# PIP DEPENDENCIES - Load Python dependencies from Pip.
+#
+
+git_repository(
+	name = "io_bazel_rules_python",
+	remote = "https://github.com/bazelbuild/rules_python.git",
+	commit = "b25495c47eb7446729a2ed6b1643f573afa47d99"
+)
+
+load("@io_bazel_rules_python//python:pip.bzl", "pip_repositories")
+
+pip_repositories()
+
+load("@io_bazel_rules_python//python:pip.bzl", "pip_import")
+
+pip_import(
+	name = "python_dependencies",
+	requirements = "//advis_plugin:requirements.txt"
+)
+
+load("@python_dependencies//:requirements.bzl", "pip_install")
+pip_install()
+
+################################################################################
 # MODEL DATA - Download data for pretrained models used to demo the plugin
 #
 
