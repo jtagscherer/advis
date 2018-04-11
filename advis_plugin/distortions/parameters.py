@@ -2,6 +2,7 @@ import os.path
 
 from enum import Enum
 import numbers
+import random
 import json
 
 class ParameterType(Enum):
@@ -94,6 +95,15 @@ def randomize(parameters):
 		A dictionary mapping each parameter name to its chosen value.
 	"""
 	
-	# TODO: Randomize parameters
+	configuration = {}
 	
-	return {'rotation_range': 45}
+	for parameter_name in parameters.keys():
+		parameter = parameters[parameter_name]
+		
+		if parameter.type is ParameterType.RANGE:
+			configuration[parameter_name] = random.uniform(
+				parameter.get_value()['lower'],
+				parameter.get_value()['upper']
+			)
+	
+	return configuration

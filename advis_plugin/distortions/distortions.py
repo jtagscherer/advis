@@ -27,10 +27,15 @@ class Distortion:
 			self._parameters[parameter['name']] = parameters.Parameter(parameter,
 				join(self._directory, '{}.json'.format(self.name)))
 	
-	def distort(self, image):
-		# TODO: Randomize parameters and call the module's distortion function with 
-		# the right configuration
-		return None
+	def distort(self, image, amount=1):
+		distorted_images = []
+		
+		for i in range(0, amount):
+			distorted_images.append(
+				self._module.distort(image, parameters.randomize(self._parameters))
+			)
+		
+		return distorted_images
 	
 	def get_parameters(self):
 		return self.module.get_parameters()
