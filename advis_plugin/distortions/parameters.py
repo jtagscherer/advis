@@ -5,8 +5,9 @@ import numbers
 import json
 
 class ParameterType(Enum):
-  '''An enumeration of all available parameter types'''
-  RANGE = 1
+	'''An enumeration of all available parameter types'''
+	CONSTANT = 1,
+	RANGE = 2
 
 class Parameter:
 	name = None
@@ -81,6 +82,8 @@ def _is_valid_value(value, type):
 		 	and isinstance(value['lower'], numbers.Number) \
 			and isinstance(value['upper'], numbers.Number) \
 			and value['lower'] <= value['upper']
+	elif type is ParameterType.CONSTANT:
+		return isinstance(value, numbers.Number)
 	else:
 		return False
 
@@ -101,7 +104,9 @@ def generate_configuration(parameters, percentage):
 	for parameter_name in parameters.keys():
 		parameter = parameters[parameter_name]
 		
-		if parameter.type is ParameterType.RANGE:
+		if parameter.type is ParameterType.CONSTANT:
+			configuration[parameter_name] = parameter.get_value()
+		elif parameter.type is ParameterType.RANGE:
 			configuration[parameter_name] = parameter.get_value()['lower'] + \
 				percentage * (parameter.get_value()['upper'] - \
 				parameter.get_value()['lower'])
