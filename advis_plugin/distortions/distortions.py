@@ -1,11 +1,51 @@
 import traceback
 import logging
+import importlib.util
 
 from os import makedirs, path, listdir
 from os.path import isfile, join, splitext
 from shutil import copyfile
 
-import importlib.util
+from distortions import parameters
+
+class Distortion:
+	name = None
+	display_name = None
+	_module = None
+	_directory = None
+	_parameters = {}
+	
+	def __init__(self, name, module, directory):
+		self._module = module
+		self.name = name
+		self._directory = directory
+		
+		self.display_name = self._module.get_display_name()
+		
+		# Fetch and set up the module's parameters
+		for parameter in self._module.get_parameters():
+			self._parameters[parameter['name']] = parameters.Parameter(parameter,
+				join(self._directory, '{}.json'.format(self.name)))
+	
+	def distort(self, image):
+		# TODO: Randomize parameters and call the module's distortion function with 
+		# the right configuration
+		return None
+	
+	def get_parameters(self):
+		return self.module.get_parameters()
+	
+	def get_parameter_value(self, name):
+		if name not in self._parameters.keys():
+			raise ValueError('No parameter with name {} found.'.format(name))
+		
+		return self._parameters[name].get_value()
+	
+	def set_parameter_value(self, name, value):
+		if name not in self._parameters.keys():
+			raise ValueError('No parameter with name {} found.'.format(name))
+		
+		self._parameters[name].set_value(value)
 
 class DistortionManager:
 	directory = None
@@ -47,7 +87,7 @@ class DistortionManager:
 			
 			try:
 				spec.loader.exec_module(module)
-				self.distortion_modules[name] = module
+				self.distortion_modules[name] = Distortion(name, module, self.directory)
 			except Exception as e:
 				logging.error('Could not import the distortion module "{}": {}'
 					.format(name, traceback.format_exc()))

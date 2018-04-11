@@ -1,5 +1,3 @@
-from distortions import parameters
-
 from skimage.transform import rotate
 
 def get_display_name():
@@ -15,7 +13,7 @@ def get_parameters():
 				'min': -180,
 				'max': 180
 			},
-			'values': {
+			'default': {
 				'lower': -45,
 				'upper': 45
 			}
@@ -23,5 +21,4 @@ def get_parameters():
 	]
 
 def distort(image, configuration):
-	parameter_values = parameters.randomize(configuration)
-	return rotate(image, parameter_values['rotation_range'], mode='symmetric')
+	return rotate(image, configuration['rotation_range'], mode='symmetric')
