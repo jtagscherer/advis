@@ -43,6 +43,17 @@ class Parameter:
 			raise ValueError('The value {} is invalid for the parameter {} of type {}'
 				.format(value, self.name, self.type))
 		
+		# Clamp the value according to the constraints
+		min_value = self.constraints['min']
+		max_value = self.constraints['max']
+		
+		if self.type is ParameterType.CONSTANT:
+			value = max(min(value, max_value), min_value)
+		elif self.type is ParameterType.RANGE:
+			value['lower'] = max(min(value['lower'], max_value), min_value)
+			value['upper'] = max(min(value['upper'], max_value), min_value)
+		
+		# Update the non-persistent representation of the value
 		self._value = value
 		
 		# Write the new value to the configuration file for persistent storage
