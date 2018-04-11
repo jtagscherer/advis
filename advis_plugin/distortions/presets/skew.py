@@ -10,11 +10,11 @@ def get_parameters():
 			'display_name': 'Rotation Range',
 			'type': 'range',
 			'constraints': {
-				'min': 0,
+				'min': -1,
 				'max': 1
 			},
 			'default': {
-				'lower': 0,
+				'lower': -0.5,
 				'upper': 0.5
 			}
 		}
