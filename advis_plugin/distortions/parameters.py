@@ -2,7 +2,6 @@ import os.path
 
 from enum import Enum
 import numbers
-import random
 import json
 
 class ParameterType(Enum):
@@ -85,12 +84,14 @@ def _is_valid_value(value, type):
 	else:
 		return False
 
-def randomize(parameters):
-	"""Given a set of parameters, select a random valid value for each of them 
+def generate_configuration(parameters, percentage):
+	"""Given a set of parameters, select a valid value for each of them 
 	respecting given parameter types and constraints.
 
 	Arguments:
 		parameters: A valid set of configuration parameters.
+		percentage: A floating point number between 0 and 1 according to which 
+			values will be chosen from available ranges.
 	Returns:
 		A dictionary mapping each parameter name to its chosen value.
 	"""
@@ -101,9 +102,8 @@ def randomize(parameters):
 		parameter = parameters[parameter_name]
 		
 		if parameter.type is ParameterType.RANGE:
-			configuration[parameter_name] = random.uniform(
-				parameter.get_value()['lower'],
-				parameter.get_value()['upper']
-			)
+			configuration[parameter_name] = parameter.get_value()['lower'] + \
+				percentage * (parameter.get_value()['upper'] - \
+				parameter.get_value()['lower'])
 	
 	return configuration

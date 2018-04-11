@@ -31,9 +31,8 @@ class Distortion:
 		distorted_images = []
 		
 		for i in range(0, amount):
-			distorted_images.append(
-				self._module.distort(image, parameters.randomize(self._parameters))
-			)
+			distorted_images.append(self._module.distort(image, 
+				parameters.generate_configuration(self._parameters, i / float(amount))))
 		
 		return distorted_images
 	
