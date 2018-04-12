@@ -24,15 +24,25 @@ class Distortion:
 		
 		# Fetch and set up the module's parameters
 		for parameter in self._module.get_parameters():
+			print(parameter)
 			self._parameters[parameter['name']] = parameters.Parameter(parameter,
 				join(self._directory, '{}.json'.format(self.name)))
 	
-	def distort(self, image, amount=1):
+	def distort(self, image, amount=1, mode='randomized'):
 		distorted_images = []
 		
+		# Reset the random seed for repeatable randomization
+		if mode == 'randomized':
+			parameters.reset_random_seed()
+		
 		for i in range(0, amount):
-			distorted_images.append(self._module.distort(image, 
-				parameters.generate_configuration(self._parameters, i / float(amount))))
+			if mode == 'sequential':
+				distorted_images.append(self._module.distort(image, parameters
+					.generate_configuration(self._parameters,
+					percentage=i / float(amount))))
+			elif mode == 'randomized':
+				distorted_images.append(self._module.distort(image, parameters
+					.generate_configuration(self._parameters, randomize=True)))
 		
 		return distorted_images
 	

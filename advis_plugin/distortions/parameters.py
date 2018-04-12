@@ -3,6 +3,7 @@ import os.path
 from enum import Enum
 import numbers
 import json
+import random
 
 class ParameterType(Enum):
 	'''An enumeration of all available parameter types'''
@@ -98,14 +99,21 @@ def _is_valid_value(value, type):
 	else:
 		return False
 
-def generate_configuration(parameters, percentage):
+def reset_random_seed():
+	random.seed(42)
+
+def generate_configuration(parameters, percentage=None, randomize=True):
 	"""Given a set of parameters, select a valid value for each of them 
-	respecting given parameter types and constraints.
+	respecting given parameter types and constraints. By default, this will 
+	randomize parameters.
 
 	Arguments:
 		parameters: A valid set of configuration parameters.
 		percentage: A floating point number between 0 and 1 according to which 
-			values will be chosen from available ranges.
+			values will be chosen from available ranges. Can be None if randomized 
+			values should be generated.
+		randomize: True if random values should be chosen instead of sequentially 
+		 	choosing them from the available range.
 	Returns:
 		A dictionary mapping each parameter name to its chosen value.
 	"""
@@ -118,8 +126,13 @@ def generate_configuration(parameters, percentage):
 		if parameter.type is ParameterType.CONSTANT:
 			configuration[parameter_name] = parameter.get_value()
 		elif parameter.type is ParameterType.RANGE:
-			configuration[parameter_name] = parameter.get_value()['lower'] + \
-				percentage * (parameter.get_value()['upper'] - \
-				parameter.get_value()['lower'])
+			lower = parameter.get_value()['lower']
+			upper = parameter.get_value()['upper']
+			
+			if randomize:
+				configuration[parameter_name] = random.uniform(lower, upper)
+				print('{}: {}'.format(parameter_name, configuration[parameter_name]))
+			elif percentage != None:
+				configuration[parameter_name] = lower + percentage * (upper - lower)
 	
 	return configuration
