@@ -7,7 +7,7 @@ def get_parameters():
 	return [
 		{
 			'name': 'skew_range',
-			'display_name': 'Rotation Range',
+			'display_name': 'Skew Range',
 			'type': 'range',
 			'constraints': {
 				'min': -1,
