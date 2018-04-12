@@ -13,7 +13,7 @@ class Distortion:
 	display_name = None
 	_module = None
 	_directory = None
-	_parameters = {}
+	_parameters = None
 	
 	def __init__(self, name, module, directory):
 		self._module = module
@@ -23,6 +23,8 @@ class Distortion:
 		self.display_name = self._module.get_display_name()
 		
 		# Fetch and set up the module's parameters
+		self._parameters = {}
+		
 		for parameter in self._module.get_parameters():
 			self._parameters[parameter['name']] = parameters.Parameter(parameter,
 				join(self._directory, '{}.json'.format(self.name)))
@@ -62,10 +64,11 @@ class Distortion:
 
 class DistortionManager:
 	directory = None
-	distortion_modules = {}
+	distortion_modules = None
 	
 	def __init__(self, directory):
 		self.directory = path.join(directory, 'distortions')
+		self.distortion_modules = {}
 		
 		if not path.exists(self.directory):
 			makedirs(self.directory)
