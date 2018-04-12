@@ -24,7 +24,6 @@ class Distortion:
 		
 		# Fetch and set up the module's parameters
 		for parameter in self._module.get_parameters():
-			print(parameter)
 			self._parameters[parameter['name']] = parameters.Parameter(parameter,
 				join(self._directory, '{}.json'.format(self.name)))
 	

@@ -131,7 +131,6 @@ def generate_configuration(parameters, percentage=None, randomize=True):
 			
 			if randomize:
 				configuration[parameter_name] = random.uniform(lower, upper)
-				print('{}: {}'.format(parameter_name, configuration[parameter_name]))
 			elif percentage != None:
 				configuration[parameter_name] = lower + percentage * (upper - lower)
 	
