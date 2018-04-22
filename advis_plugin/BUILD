@@ -21,7 +21,7 @@ py_binary(
 	srcs_version = "PY2AND3",
 	deps = [
 		":layer_summary",
-		"//models",
+		"//advis_plugin/models:models",
 		"//data:demo_data"
 	]
 )
