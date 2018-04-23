@@ -29,17 +29,18 @@ args = parser.parse_args()
 # Directory into which to write TensorBoard data.
 LOGDIR = args.logdir
 
-def run(logdir, model, verbose=True):
+model_manager = models.ModelManager(LOGDIR)
+
+def run(logdir, model_name, verbose=True):
 	"""Run a model and generate summary data that can be shown in our plugin.
 
   Arguments:
 		logdir: The directory where data will be written.
-		run_name: A file writer that will be used to log the graph and summaries.
 		verbose: True if additional data such as the time taken to run a model 
 			should be written to the terminal.
   """
 	
-	model_name = models.get_model_name(model)
+	model = model_manager.get_model_modules()[model_name]
 	
 	# Measure performance by keeping track of the time
 	starting_time = int(round(time.time()))
@@ -52,19 +53,18 @@ def run(logdir, model, verbose=True):
 		image = demo_data.get_demo_image()
 		
 		# Run the model on our input data
-		models.run_model(model=model, input=image, writer=writer)
+		model.run(image, writer)
 
 	writer.close()
 	
 	ending_time = int(round(time.time()))
 	
 	if verbose:
-		print('Running the model \"{}\" took {} seconds.'.format(model_name,
+		print('Running the model \"{}\" took {} seconds.'.format(model.display_name,
 			ending_time - starting_time))
 
 def main(argv):
-	for model in list(models.Model):
-		run(LOGDIR, model)
+	run(LOGDIR, 'inception_v3')
 	
 	print('All models have been run. Output saved to {}.'.format(LOGDIR))
 

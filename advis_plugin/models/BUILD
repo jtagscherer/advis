@@ -3,19 +3,9 @@ py_library(
 	srcs = ["models.py"],
 	srcs_version = "PY2AND3",
   visibility = ["//visibility:public"],
-	deps = [
-		":inception"
-	],
   data = [
     "@model_inception_v3//:inception_v3.ckpt"
-  ]
-)
-
-py_library(
-	name = "inception",
-	srcs = ["inception.py"],
-	srcs_version = "PY2AND3",
-  visibility = ["//visibility:public"]
+  ] + glob(["presets/*.py"])
 )
 
 exports_files(

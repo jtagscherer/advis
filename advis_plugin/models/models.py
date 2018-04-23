@@ -1,65 +1,91 @@
-from os import path
-from enum import Enum
+import traceback
+import logging
+import importlib.util
 
-from models import inception
+from os import makedirs, path, listdir
+from os.path import isfile, join, dirname, splitext
+from shutil import copyfile
 
-class Model(Enum):
-	'''An enumeration of all models used in the plugin demo'''
-	INCEPTION_V3 = 1
-
-def get_checkpoint_file(model):
-	"""Retrieves a checkpoint file for a given model. This can be used to set up
-	a pre-trained model for demo purposes.
-
-	Arguments:
-		model: An enumeration value that references a specific model used in the
-			plugin demo.
-
-	Returns:
-		A path to the checkpoint file of the desired model.
-	"""
+class Model:
+	name = None
+	display_name = None
+	_checkpoint_path = None
+	_module = None
+	_directory = None
 	
-	path_base = path.dirname(path.dirname(path.dirname(__file__)))
-	model_base = 'bazel-advis/external'
+	def __init__(self, name, module, directory):
+		self._module = module
+		self.name = name
+		self._directory = directory
+		
+		self.display_name = self._module.get_display_name()
+		
+		# Fetch the model's checkpoint path
+		path_base = dirname(dirname(dirname(__file__)))
+		model_base = 'bazel-advis/external'
+		model_path = join(model_base, self._module.get_checkpoint_file())
+		self._checkpoint_path = join(path_base, model_path)
 	
-	print('PATH: {}'.format(path_base))
+	def run(self, input, writer):
+		processed_input = self._module.preprocess_input(input)
+		self._module.run(processed_input, writer, self._checkpoint_path)
+
+class ModelManager:
+	directory = None
+	model_modules = None
 	
-	if model is Model.INCEPTION_V3:
-		model_path = 'model_inception_v3/inception_v3.ckpt'
-
-	model_path = path.join(model_base, model_path)
-
-	return path.join(path_base, model_path)
-
-def get_model_name(model):
-	"""Given a specific model, return a human-readable name.
-
-	Arguments:
-		model: An enumeration value that references a specific model used in the
-		plugin demo.
-
-	Returns:
-		A human-readable name of the model.
-	"""
+	def __init__(self, directory):
+		self.directory = path.join(directory, 'models')
+		self.model_modules = {}
+		
+		if not path.exists(self.directory):
+			makedirs(self.directory)
+		
+		self._copy_preset_models()
+		self._update_model_modules()
 	
-	return {
-		Model.INCEPTION_V3: 'InceptionV3'
-	}[model]
-
-def run_model(model, input, writer):
-	"""Given a specific model, input data and a file writer, run the model on the 
-	input data and record its summaries.
-
-	Arguments:
-		model: An enumeration value that references a specific model used in the
-		plugin demo.
-		input: The model's input data.
-		writer: A `tf.summary.FileWriter` for recording summary data.
-	"""
+	def is_setup(self):
+		return self.directory != None
 	
-	checkpoint_file = get_checkpoint_file(model)
+	def get_model_modules(self):
+		return self.model_modules
 	
-	if model is Model.INCEPTION_V3:
-		inception.run(input, writer, checkpoint_file)
-	else:
-		raise KeyError('Cannot run the model {} since it is invalid'.format(model))
+	def _update_model_modules(self):
+		self.model_modules = {}
+		
+		# Retrieve a list of all Python files describing models
+		model_files = [f for f in listdir(self.directory) \
+			if isfile(join(self.directory, f)) \
+			and splitext(join(self.directory, f))[1] == '.py']
+		
+		# Load each file as a module
+		for f in model_files:
+			name = splitext(f)[0]
+			
+			spec = importlib.util.spec_from_file_location(
+				'models.{}'.format(name),
+				join(self.directory, f)
+			)
+			
+			module = importlib.util.module_from_spec(spec)
+			
+			try:
+				spec.loader.exec_module(module)
+				self.model_modules[name] = Model(name, module, self.directory)
+			except Exception as e:
+				logging.error('Could not import the model module "{}": {}'
+					.format(name, traceback.format_exc()))
+	
+	def _copy_preset_models(self):
+		if not self.is_setup():
+			return
+		
+		# Extract a list of presets supplied during the build
+		preset_directory = path.join(path.dirname(__file__), 'presets')
+		presets = [f for f in listdir(preset_directory) \
+			if isfile(join(preset_directory, f)) \
+			and splitext(join(preset_directory, f))[1] == '.py']
+		
+		# Copy each preset to the working directory
+		for file in presets:
+			copyfile(join(preset_directory, file), join(self.directory, file))
