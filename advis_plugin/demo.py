@@ -53,7 +53,7 @@ def run(logdir, model_name, verbose=True):
 		image = demo_data.get_demo_image()
 		
 		# Run the model on our input data
-		model.run(image, writer)
+		model.run(image)
 
 	writer.close()
 	

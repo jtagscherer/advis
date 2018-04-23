@@ -26,9 +26,9 @@ class Model:
 		model_path = join(model_base, self._module.get_checkpoint_file())
 		self._checkpoint_path = join(path_base, model_path)
 	
-	def run(self, input, writer):
+	def run(self, input):
 		processed_input = self._module.preprocess_input(input)
-		self._module.run(processed_input, writer, self._checkpoint_path)
+		self._module.run(processed_input, self._checkpoint_path)
 
 class ModelManager:
 	directory = None

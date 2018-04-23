@@ -11,7 +11,7 @@ def get_display_name():
 def get_checkpoint_file():
 	return 'model_inception_v3/inception_v3.ckpt'
 
-def run(input, writer, checkpoint_path):
+def run(input, checkpoint_path):
 	color_channels = 3
 	num_classes = 1001
 	
@@ -35,9 +35,6 @@ def run(input, writer, checkpoint_path):
 			graph = tf.get_default_graph()
 			nodes = graph.as_graph_def().node
 			
-			# Write the graph structure before we add any of our summaries
-			writer.add_graph(graph)
-			
 			# Annotate all interesting nodes with layer summaries
 			for n in nodes:
 				if 'InceptionV3' not in n.name or 'save' in n.name or \
@@ -52,9 +49,8 @@ def run(input, writer, checkpoint_path):
 						data=graph.get_tensor_by_name('{}:0'.format(n.name))
 					)
 			
-			# Run the session and log all output data
+			# Run the session
 			summary = sess.run(tf.summary.merge_all())
-			writer.add_summary(summary)
 
 def preprocess_input(image):
 	central_fraction = 0.875
