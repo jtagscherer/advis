@@ -56,7 +56,8 @@ class ModelManager:
 		# Retrieve a list of all Python files describing models
 		model_files = [f for f in listdir(self.directory) \
 			if isfile(join(self.directory, f)) \
-			and splitext(join(self.directory, f))[1] == '.py']
+			and splitext(join(self.directory, f))[1] == '.py' \
+			and f != '__init__.py']
 		
 		# Load each file as a module
 		for f in model_files:
