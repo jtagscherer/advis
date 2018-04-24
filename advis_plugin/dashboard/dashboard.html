@@ -24,11 +24,11 @@
 			<div class="sidebar">
 				<section-header text="Models"></section-header>
 				<iron-selector>
-					<template is="dom-repeat" items="[[_availableRuns]]">
+					<template is="dom-repeat" items="[[_availableModels]]">
 						<div class="list-item models" data-args$=[[item.index]]>
 							<model-list-item
-								title="[[item.name]]"
-								caption="Run [[item.index]]"
+								title="[[item.displayName]]"
+								caption="Version [[item.version]]"
 								last-item="[[_isLastModelItem(index)]]">
 							</model-list-item>
 						</div>

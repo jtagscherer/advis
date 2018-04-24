@@ -9,6 +9,7 @@ from shutil import copyfile
 class Model:
 	name = None
 	display_name = None
+	version = None
 	_checkpoint_path = None
 	_module = None
 	_directory = None
@@ -19,16 +20,17 @@ class Model:
 		self._directory = directory
 		
 		self.display_name = self._module.get_display_name()
+		self.version = self._module.get_version()
 		
 		# Fetch the model's checkpoint path
 		path_base = dirname(dirname(dirname(__file__)))
-		model_base = 'bazel-advis/external'
+		model_base = 'external'
 		model_path = join(model_base, self._module.get_checkpoint_file())
 		self._checkpoint_path = join(path_base, model_path)
 	
-	def run(self, input):
+	def run(self, input, writer, meta_data):
 		processed_input = self._module.preprocess_input(input)
-		self._module.run(processed_input, self._checkpoint_path)
+		return self._module.run(processed_input, writer, self._checkpoint_path, meta_data)
 
 class ModelManager:
 	directory = None

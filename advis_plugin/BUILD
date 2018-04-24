@@ -7,6 +7,8 @@ py_library(
 	srcs = ["plugin.py", "imgutil.py", "argutil.py"],
 	srcs_version = "PY2AND3",
 	deps = [
+		"//advis_plugin/models:models",
+		"//data:demo_data",
 		"@org_pocoo_werkzeug",
 		"@org_pythonhosted_six",
 		"@org_tensorflow_tensorboard//tensorboard/backend:http_util",

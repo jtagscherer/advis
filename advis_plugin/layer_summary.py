@@ -48,34 +48,6 @@ def op(name, parent_node_name, data, description=None, collections=None):
 		summary_metadata=summary_metadata,
 		collections=collections
 	)
-
-# TODO: Adapt direct protobuf implementation
-def pb(tag, data, display_name=None, description=None):
-	"""Directly create a summary protobuf.
-
-	Arguments:
-		tag: The string tag associated with the summary.
-		data: The string data used to test the plugin.
-		display_name: If set, will be used as the display name in
-			TensorBoard. Defaults to `tag`.
-		description: A longform readable description of the summary data.
-			Markdown is supported.
-	"""
-	tensor = tf.make_tensor_proto(data, dtype=tf.string)
-
-	# We have no metadata to store, but we do need to add a plugin_data entry
-	# so that we know this summary is associated with the Advis plugin.
-	summary_metadata = tf.SummaryMetadata(
-			display_name=display_name,
-			summary_description=description,
-			plugin_data=tf.SummaryMetadata.PluginData(
-					plugin_name=PLUGIN_NAME))
-
-	summary = tf.Summary()
-	summary.value.add(tag=tag,
-										metadata=summary_metadata,
-										tensor=tensor)
-	return summary
 	
 def _generate_image_from_tensor(tensor, name_scope=None):
 	"""Transform an input tensor as obtained from the graph into a tensor that 
