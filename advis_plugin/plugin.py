@@ -172,40 +172,15 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		model = self.model_manager.get_model_modules()[model_name]
 		
-		# Set up a writer for our summary data, using the model name as the run name
-		self._clear_model_logs(model_name)
-		writer = tf.summary.FileWriter(path.join(self.storage_path, model_name))
-		
 		with tf.Graph().as_default():
 			# Retrieve a test image
 			image = demo_data.get_demo_image()
 			
 			# Run the model on our input data
-			print('Running model...')
-			response = model.run(image, writer, meta_data)
-			print(response.shape)
-			response = {'shape': repr(response.shape)}
-			# response = response.string_val[2:]
+			result = model.run(image, meta_data)
 		
-		writer.flush()
-		writer.close()
-		
-		'''# After the model has run, construct meta information using the tensor data
-		response = {}
-		
-		self._multiplexer.Reload()
-		
-		run_to_tags = self._multiplexer.PluginRunToTagToContent(
-			AdvisPlugin.plugin_name)
-		
-		if model_name in run_to_tags.keys():
-			run = run_to_tags[model_name]
-			tag = '{}/LayerImage'.format(layer_name)
-			
-			if tag in run.keys():
-				response = {
-					'unitCount': len(self._get_tensor_string_value(model_name, tag))
-				}'''
+		# After the model has run, construct meta information using the tensor data
+		response = {'unitCount': result.shape[0] - 2}
 		
 		return http_util.Respond(request, response, 'application/json')
 	

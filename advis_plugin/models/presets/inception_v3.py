@@ -14,7 +14,7 @@ def get_version():
 def get_checkpoint_file():
 	return 'model_inception_v3/inception_v3.ckpt'
 
-def run(input, writer, checkpoint_path, meta_data):
+def run(input, checkpoint_path, meta_data):
 	color_channels = 3
 	num_classes = 1001
 	
@@ -47,14 +47,13 @@ def run(input, writer, checkpoint_path, meta_data):
 						n.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2', \
 						'Identity']:
 						
-						summary_op = _generate_image_from_tensor(tf.get_default_graph().get_tensor_by_name('{}:0'.format(n.name)))
+						image_node = _generate_image_from_tensor(tf.get_default_graph().get_tensor_by_name('{}:0'.format(n.name)))
 						break
 			
-			# Run the session and log all output data
-			summary = sess.run(summary_op)
-			# writer.add_summary(summary)
+			# Run the session and record its result
+			result = sess.run(image_node)
 	
-	return summary
+	return result
 
 def _generate_image_from_tensor(tensor, name_scope=None):
 	"""Transform an input tensor as obtained from the graph into a tensor that 
