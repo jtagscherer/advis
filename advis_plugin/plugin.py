@@ -29,6 +29,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 	
 	# Manager objects to keep track of resources
 	model_manager = None
+	
+	# Data caches for easier access
+	_layer_visualization_cache = {}
 
 	def __init__(self, context):
 		"""Instantiates an AdvisPlugin.
@@ -91,6 +94,28 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		tensor_events = self._multiplexer.Tensors(run, tag)
 
 		return tensor_events[0].tensor_proto.string_val[2:]
+	
+	def _get_layer_visualization(self, model, layer):
+		if model in self._layer_visualization_cache:
+			if layer in self._layer_visualization_cache[model]:
+				return self._layer_visualization_cache[model][layer]
+		
+		_model = self.model_manager.get_model_modules()[model]
+		
+		meta_data = {
+			'run_type': 'single_activation_visualization',
+			'layer': layer
+		}
+		
+		with tf.Graph().as_default():
+			image = demo_data.get_demo_image()
+			result = _model.run(image, meta_data)
+		
+		if model not in self._layer_visualization_cache:
+			self._layer_visualization_cache[model] = {}
+		
+		self._layer_visualization_cache[model][layer] = result
+		return result
 
 	@wrappers.Request.application
 	def models_route(self, request):
@@ -164,20 +189,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		model_name = request.args.get('model')
 		layer_name = request.args.get('layer')
 		
-		# Gather meta data for our model run
-		meta_data = {
-			'run_type': 'single_activation_visualization',
-			'layer': layer_name
-		}
-		
-		model = self.model_manager.get_model_modules()[model_name]
-		
-		with tf.Graph().as_default():
-			# Retrieve a test image
-			image = demo_data.get_demo_image()
-			
-			# Run the model on our input data
-			result = model.run(image, meta_data)
+		result = self._get_layer_visualization(model_name, layer_name)
 		
 		# After the model has run, construct meta information using the tensor data
 		response = {'unitCount': result.shape[0] - 2}
@@ -190,14 +202,14 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		visualizations of a deep learning layer.
 
 		Arguments:
-			request: A request containing the layer image's run and tag as well as 
-			its unit index.
+			request: A request containing the model name, the layer name as well as 
+				the unit index.
 		Returns:
 			A URL for the image data containing the requested visualization.
 		"""
 		# Check for missing arguments and possibly return an error
 		missing_arguments = argutil.check_missing_arguments(
-			request, ['run', 'tag', 'unitIndex']
+			request, ['model', 'layer', 'unitIndex']
 		)
 		
 		if missing_arguments != None:
@@ -205,16 +217,16 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		# Now that we are sure all necessary arguments are available, extract them 
 		# from the request
-		run = request.args.get('run')
-		tag = request.args.get('tag')
-		unit_index = int(request.args.get('unitIndex'))
+		model_name = request.args.get('model')
+		layer_name = request.args.get('layer')
+		unit_index = int(request.args.get('unitIndex')) + 2
 		
-		tensor_string_value = self._get_tensor_string_value(run, tag)
+		result = self._get_layer_visualization(model_name, layer_name)
 		
 		# Check the index value for validity
-		if unit_index >= 0 and unit_index < len(tensor_string_value):
+		if unit_index >= 0 and unit_index < len(result):
 			# Fetch the image summary tensor corresponding to the request's values
-			response = tensor_string_value[unit_index]
+			response = response = result[unit_index]
 		else:
 			# Something has gone wrong, return a placeholder
 			response = imgutil.get_placeholder_image()
@@ -223,5 +235,5 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		return http_util.Respond(
 			request,
 			response,
-			'image/png'
+			'text/plain'
 		)

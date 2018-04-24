@@ -70,12 +70,16 @@ Polymer({
 			this.currentModel = this._availableModels[modelIndex];
 			
 			// DEBUG: Run a route
-			/*const url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/graphs'), {
-				model: this.currentModel.name
+			const url = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/image'), {
+				model: this.currentModel.name,
+				layer: 'InceptionV3/InceptionV3/Conv2d_1a_3x3/Conv2D',
+				unitIndex: '5'
 			});
 			
-	    this._requestManager.request(url).then(data => {
+			console.log(url);
+			
+	    /*this._requestManager.request(url).then(data => {
 				console.log(data);
 			});*/
 		}
