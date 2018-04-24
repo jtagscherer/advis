@@ -32,6 +32,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 	
 	# Data caches for easier access
 	_layer_visualization_cache = {}
+	_graph_structure_cache = {}
 
 	def __init__(self, context):
 		"""Instantiates an AdvisPlugin.
@@ -116,6 +117,16 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		self._layer_visualization_cache[model][layer] = result
 		return result
+	
+	def _get_graph_structure(self, model):
+		if model in self._graph_structure_cache:
+			return self._graph_structure_cache[model]
+		
+		_model = self.model_manager.get_model_modules()[model]
+		result = _model.get_graph_structure()
+		
+		self._graph_structure_cache[model] = result
+		return result
 
 	@wrappers.Request.application
 	def models_route(self, request):
@@ -160,8 +171,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		model_name = request.args.get('model')
 		
-		model = self.model_manager.get_model_modules()[model_name]
-		response = {'graph': model.get_graph_structure()}
+		result = self._get_graph_structure(model_name)
+		
+		response = {'graph': result}
 		
 		return http_util.Respond(request, response, 'application/json')
 	
@@ -235,5 +247,5 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		return http_util.Respond(
 			request,
 			response,
-			'text/plain'
+			'image/png'
 		)
