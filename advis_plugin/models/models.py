@@ -31,6 +31,9 @@ class Model:
 	def run(self, input, meta_data):
 		processed_input = self._module.preprocess_input(input)
 		return self._module.run(processed_input, self._checkpoint_path, meta_data)
+	
+	def get_graph_structure(self):
+		return self._module.get_graph_structure()
 
 class ModelManager:
 	directory = None

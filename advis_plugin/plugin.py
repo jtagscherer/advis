@@ -2,8 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from os import path, makedirs
-from shutil import rmtree
+from os import path
 
 import tensorflow as tf
 import numpy as np
@@ -42,13 +41,6 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		self._multiplexer = context.multiplexer
 		self.storage_path = context.logdir
 		self.model_manager = models.ModelManager(self.storage_path)
-		
-		# Setup the log directory
-		for model in self.model_manager.get_model_modules().keys():
-			model_path = path.join(self.storage_path, model)
-			
-			if not path.exists(model_path):
-				makedirs(model_path)
 
 	def get_plugin_apps(self):
 		"""Gets all routes offered by the plugin.
@@ -63,6 +55,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# @wrappers.Request.application.
 		return {
 			'/models': self.models_route,
+			'/graphs': self.graphs_route,
 			'/layer/meta': self.layer_meta_route,
 			'/layer/image': self.layer_image_route
 		}
@@ -98,9 +91,6 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		tensor_events = self._multiplexer.Tensors(run, tag)
 
 		return tensor_events[0].tensor_proto.string_val[2:]
-	
-	def _clear_model_logs(self, model_name):
-		rmtree(path.join(self.storage_path, model_name))
 
 	@wrappers.Request.application
 	def models_route(self, request):
@@ -124,21 +114,31 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			})
 		
 		return http_util.Respond(request, response, 'application/json')
+	
+	@wrappers.Request.application
+	def graphs_route(self, request):
+		"""A route that returns a response with the graph structure of a specific 
+		model.
+
+		Arguments:
+			request: The request which has to contain the model's name.
+		Returns:
+			A response that contains the graph structure of the specified model.
+		"""
+		# Check for missing arguments and possibly return an error
+		missing_arguments = argutil.check_missing_arguments(
+			request, ['model']
+		)
 		
-		'''# This is a dictionary mapping from run to (tag to string content).
-		# To be clear, the values of the dictionary are dictionaries.
-		all_runs = self._multiplexer.PluginRunToTagToContent(
-			AdvisPlugin.plugin_name)
-
-		# tagToContent is itself a dictionary mapping tag name to string
-		# content. We retrieve the keys of that dictionary to obtain a
-		# list of tags associated with each run.
-		response = {
-			run: list(tagToContent.keys())
-			for (run, tagToContent) in all_runs.items()
-		}
-
-		return http_util.Respond(request, response, 'application/json')'''
+		if missing_arguments != None:
+			return missing_arguments
+		
+		model_name = request.args.get('model')
+		
+		model = self.model_manager.get_model_modules()[model_name]
+		response = {'graph': model.get_graph_structure()}
+		
+		return http_util.Respond(request, response, 'application/json')
 	
 	@wrappers.Request.application
 	def layer_meta_route(self, request):

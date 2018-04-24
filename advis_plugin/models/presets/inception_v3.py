@@ -5,6 +5,9 @@ slim = tf.contrib.slim
 
 from advis_plugin import layer_summary
 
+color_channels = 3
+num_classes = 1001
+
 def get_display_name():
 	return 'Inception V3'
 
@@ -14,10 +17,18 @@ def get_version():
 def get_checkpoint_file():
 	return 'model_inception_v3/inception_v3.ckpt'
 
-def run(input, checkpoint_path, meta_data):
-	color_channels = 3
-	num_classes = 1001
+def get_graph_structure():
+	image_size = inception.inception_v3.default_image_size
+	input_placeholder = tf.placeholder(tf.float32, 
+		shape=(1, image_size, image_size, 3))
 	
+	with slim.arg_scope(inception.inception_v3_arg_scope()):
+		logits, _ = inception.inception_v3(input_placeholder,
+			num_classes=num_classes, is_training=False)
+		
+		return str(tf.get_default_graph().as_graph_def())
+
+def run(input, checkpoint_path, meta_data):
 	# Make a batch of only one image by inserting a new dimension
 	input_images = tf.expand_dims(input, 0)
 

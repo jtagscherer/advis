@@ -12,7 +12,7 @@ Polymer({
 			observer: 'reload'
 		},
 		_availableModels: Array,
-		_graphUrl: String,
+		_graphStructure: String,
     _dataNotFound: Boolean,
 		_graphNotFound: Boolean,
     _requestManager: {
@@ -25,31 +25,19 @@ Polymer({
     this.reload();
   },
   reload() {
-		/*if (this.currentModel != null) {
-			// TODO: Update the graph
-			const graphUrl = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('graphs', '/graph'), {
-				run: this.currentModel
+		if (this.currentModel != null) {
+			// Update the graph
+			const url = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/graphs'), {
+				model: this.currentModel.name
 			});
 			
-			// Check whether graph data is available
-			var request = new XMLHttpRequest();
-			request.open('GET', graphUrl, true);
-			
 			var self = this;
-			request.onload = function(e) {
-				if (request.status === 200) {
-					// Update the graph URL which will trigger the graph view to update
-					self._graphUrl = graphUrl;
-					self._graphNotFound = false;
-				} else {
-					// Show an error message within the UI
-					self._graphNotFound = true;
-				}
-			};
-			
-			request.send(null);
-		}*/
+			this._requestManager.request(url).then(data => {
+				self._graphStructure = data.graph;
+				self._graphNotFound = false;
+			});
+		}
 		
 		// Update the layer visualization
 		this._fetchModels().then(() => {
@@ -82,25 +70,14 @@ Polymer({
 			this.currentModel = this._availableModels[modelIndex];
 			
 			// DEBUG: Run a route
-			const url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layer/meta'), {
-				model: this.currentModel.name,
-				layer: 'InceptionV3/InceptionV3/Conv2d_1a_3x3/Conv2D'
+			/*const url = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/graphs'), {
+				model: this.currentModel.name
 			});
 			
 	    this._requestManager.request(url).then(data => {
 				console.log(data);
-			});
-			
-			const url2 = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layer/meta'), {
-				model: this.currentModel.name,
-				layer: 'InceptionV3/InceptionV3/Conv2d_4a_3x3/Conv2D'
-			});
-			
-	    this._requestManager.request(url2).then(data => {
-				console.log(data);
-			});
+			});*/
 		}
 	},
 	
@@ -135,27 +112,6 @@ Polymer({
 			} else {
 				this._dataNotFound = true;
 			}
-			
-			// Check for data availability before assigning variables
-			/*if (Object.keys(runToTag).length > 0) {
-				var availableRuns = [];
-				
-				for (let runIndex in Object.keys(runToTag)) {
-					let runName = Object.keys(runToTag)[runIndex];
-					
-					availableRuns.push({
-						name: runName,
-						index: runIndex,
-						tags: runToTag[runName]
-					});
-				}
-				
-				this._availableRuns = availableRuns;
-				
-				this._dataNotFound = false;
-			} else {
-				this._dataNotFound = true;
-			}*/
     });
   }
 });
