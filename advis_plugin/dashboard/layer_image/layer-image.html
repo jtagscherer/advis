@@ -11,9 +11,9 @@
 <dom-module id="layer-image">
 	<template>
 		<div id="container">
-			<p class="title">[[tag]]</p>
+			<p class="title">[[layer]]</p>
 			<div id="image-container">
-				<template is="dom-repeat" items="[[urls]]">
+				<template is="dom-repeat" items="[[_urls]]">
 					<img class="image-tile" src$={{item}} data-args$={{index}} on-tap="tileTapped"></img>
 				</template>
 			</div>

@@ -28,9 +28,9 @@ class Model:
 		model_path = join(model_base, self._module.get_checkpoint_file())
 		self._checkpoint_path = join(path_base, model_path)
 	
-	def run(self, input, meta_data):
+	def run(self, input, meta_data, graph):
 		processed_input = self._module.preprocess_input(input)
-		return self._module.run(processed_input, self._checkpoint_path, meta_data)
+		return self._module.run(processed_input, self._checkpoint_path, meta_data, graph)
 	
 	def get_graph_structure(self):
 		return self._module.get_graph_structure()

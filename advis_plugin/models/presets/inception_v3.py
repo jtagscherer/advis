@@ -28,28 +28,23 @@ def get_graph_structure():
 		
 		return str(tf.get_default_graph().as_graph_def())
 
-def run(input, checkpoint_path, meta_data):
-	# Make a batch of only one image by inserting a new dimension
-	input_images = tf.expand_dims(input, 0)
-
+def run(input, checkpoint_path, meta_data, graph):
 	# Create the model, use the default arg scope to configure the batch norm
 	# parameters.
 	with slim.arg_scope(inception.inception_v3_arg_scope()):
-		logits, _ = inception.inception_v3(input_images,
-			num_classes=num_classes, is_training=False)
-		probabilities = tf.nn.softmax(logits)
-
-		init_fn = slim.assign_from_checkpoint_fn(
-			checkpoint_path,
-			slim.get_model_variables('InceptionV3')
-		)
-
-		with tf.Session() as sess:
-			init_fn(sess)
+		session = tf.Session(graph=graph)
+		
+		with graph.as_default():
+			# Make a batch of only one image by inserting a new dimension
+			input_images = tf.expand_dims(input, 0)
+			
+			logits, _ = inception.inception_v3(input_images,
+				num_classes=num_classes, is_training=False)
+			
 			graph = tf.get_default_graph()
 			nodes = graph.as_graph_def().node
 			
-			logged_node = None
+			valid_node_found = False
 			
 			if meta_data['run_type'] == 'single_activation_visualization':
 				# Only annotate the node whose visualization has been requested
@@ -59,10 +54,22 @@ def run(input, checkpoint_path, meta_data):
 						'Identity']:
 						
 						image_node = _generate_image_from_tensor(tf.get_default_graph().get_tensor_by_name('{}:0'.format(n.name)))
+						valid_node_found = True
 						break
-			
+		
+		if not valid_node_found:
+			result = None
+		else:
 			# Run the session and record its result
-			result = sess.run(image_node)
+			with session:
+				with graph.as_default():
+					init_fn = slim.assign_from_checkpoint_fn(
+						checkpoint_path,
+						slim.get_model_variables('InceptionV3')
+					)
+				
+					init_fn(session)
+					result = session.run(image_node)
 	
 	return result
 

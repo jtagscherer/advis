@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 from os import path
+import threading
 
 import tensorflow as tf
 import numpy as np
@@ -108,9 +109,12 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'layer': layer
 		}
 		
-		with tf.Graph().as_default():
+		graph = tf.Graph()
+		
+		with graph.as_default():
 			image = demo_data.get_demo_image()
-			result = _model.run(image, meta_data)
+		
+		result = _model.run(image, meta_data, graph)
 		
 		if model not in self._layer_visualization_cache:
 			self._layer_visualization_cache[model] = {}
@@ -123,6 +127,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			return self._graph_structure_cache[model]
 		
 		_model = self.model_manager.get_model_modules()[model]
+		
 		result = _model.get_graph_structure()
 		
 		self._graph_structure_cache[model] = result
@@ -204,7 +209,10 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		result = self._get_layer_visualization(model_name, layer_name)
 		
 		# After the model has run, construct meta information using the tensor data
-		response = {'unitCount': result.shape[0] - 2}
+		if isinstance(result, np.ndarray):
+			response = {'unitCount': result.shape[0] - 2}
+		else:
+			response = {'unitCount': 0}
 		
 		return http_util.Respond(request, response, 'application/json')
 	
@@ -236,7 +244,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		result = self._get_layer_visualization(model_name, layer_name)
 		
 		# Check the index value for validity
-		if unit_index >= 0 and unit_index < len(result):
+		if isinstance(result, np.ndarray) and unit_index >= 0 and \
+			unit_index < len(result):
 			# Fetch the image summary tensor corresponding to the request's values
 			response = response = result[unit_index]
 		else:

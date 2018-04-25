@@ -7,17 +7,18 @@ Polymer({
 		'iron-select': '_itemSelected'
   },
   properties: {
-    currentModel: {
+    selectedModel: {
 			type: String,
 			observer: 'reload'
 		},
+		selectedLayer: String,
 		_availableModels: Array,
 		_graphStructure: String,
     _dataNotFound: Boolean,
 		_graphNotFound: Boolean,
     _requestManager: {
       type: Object,
-      value: () => new tf_backend.RequestManager(1)
+      value: () => new tf_backend.RequestManager(1, 1)
     }
   },
 	
@@ -25,11 +26,11 @@ Polymer({
     this.reload();
   },
   reload() {
-		if (this.currentModel != null) {
+		if (this.selectedModel != null) {
 			// Update the graph
 			const url = tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('advis', '/graphs'), {
-				model: this.currentModel.name
+				model: this.selectedModel.name
 			});
 			
 			var self = this;
@@ -46,13 +47,14 @@ Polymer({
   },
 	
 	_nodeSelected(e) {
-		if (this.currentModel == null) {
-			return;
+		if (this.selectedModel != null) {
+			this.selectedLayer = e.detail.selectedNode;
 		}
 		
-		const visualizationNode = e.detail.selectedNode + '/LayerImage';
+		// const visualizationNode = e.detail.selectedNode + '/LayerImage';
 		
-		// TODO: If we have a visualization for the selected node, show it
+		// Try showing a visualization for the selected node
+		
 		/*if (this.currentRun.tags.includes(visualizationNode)) {
 			this.currentTag = visualizationNode;
 		}*/
@@ -67,17 +69,15 @@ Polymer({
 			let modelIndex = Number(e.detail.item.dataset.args);
 			
 			// Select the associated model
-			this.currentModel = this._availableModels[modelIndex];
+			this.selectedModel = this._availableModels[modelIndex];
 			
+			// TODO: Remove after testing
 			// DEBUG: Run a route
 			const url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layer/image'), {
-				model: this.currentModel.name,
-				layer: 'InceptionV3/InceptionV3/Conv2d_1a_3x3/Conv2D',
-				unitIndex: '5'
+				.pluginRoute('advis', '/layer/meta'), {
+				model: this.selectedModel.name,
+				layer: 'InceptionV3/InceptionV3/Conv2d_1a_3x3/Conv2D'
 			});
-			
-			console.log(url);
 			
 	    /*this._requestManager.request(url).then(data => {
 				console.log(data);

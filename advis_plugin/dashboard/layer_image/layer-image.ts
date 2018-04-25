@@ -3,12 +3,12 @@
 Polymer({
   is: 'layer-image',
   properties: {
-    run: Object,
-    tag: String,
-		urls: Array,
+    model: Object,
+    layer: String,
+		_urls: Array,
 		_requestManager: {
       type: Object,
-      value: () => new tf_backend.RequestManager()
+      value: () => new tf_backend.RequestManager(1, 1)
     },
 		
     _canceller: {
@@ -18,7 +18,7 @@ Polymer({
   },
 
   observers: [
-		'_fetchNewData(run.name, tag)'
+		'_fetchNewData(model.name, layer)'
 	],
 	
   attached() {
@@ -27,7 +27,7 @@ Polymer({
   },
   reload() {
 		if (this._hasValidData()) {
-			this._fetchNewData(this.run.name, this.tag);
+			this._fetchNewData(this.model.name, this.layer);
 		}
   },
 	
@@ -35,48 +35,53 @@ Polymer({
 		// Show the enlarged image tile in a dialog
 		this.$$('unit-details-dialog').open({
 			model: {
-				title: this.run.name,
-				caption: `Run ${this.run.index + 1}`
+				title: this.model.name,
+				caption: `Version ${this.model.version}`
 			},
 			unit: {
 				title: `Tensor ${Number(e.target.dataset.args) + 1}`,
-				caption: this.tag.slice(0, -11)
+				caption: this.layer
 			},
-			url: this.urls[e.target.dataset.args],
+			url: this._urls[e.target.dataset.args],
 			animationTarget: e.target.getBoundingClientRect()
 		});
 	},
 	
-  _fetchNewData(run, tag) {
+  _fetchNewData(model, layer) {
     if (this._attached) {
 			this._constructTileUrlList();
     }
   },
 	_hasValidData() {
-		return this.run != null && this.tag != null;
+		return this.model != null && this.layer != null;
 	},
 	_constructTileUrlList() {
 		// First of all, request some meta data about the model layer shown
 		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/layer/meta'), {
-			tag: this.tag,
-			run: this.run.name
+			model: this.model.name,
+			layer: this.layer
 		});
 		
+		console.log('Fetching ' + metaUrl + '...');
+		
 		this._requestManager.request(metaUrl).then(metaData => {
+			console.log(metaUrl + ' finished.');
+			
 			var tileUrls = []
 			
 			// List all available image tiles and put them into our array
 			for (let i in Array.from(Array(metaData.unitCount).keys())) {
 				tileUrls.push(tf_backend.addParams(tf_backend.getRouter()
 					.pluginRoute('advis', '/layer/image'), {
-	        tag: this.tag,
-	        run: this.run.name,
+					model: this.model.name,
+					layer: this.layer,
 					unitIndex: String(i)
 	      }));
 			}
 			
-			this.urls = tileUrls;
+			this._urls = tileUrls;
+			console.log(this._urls);
 		});
 	}
 });
