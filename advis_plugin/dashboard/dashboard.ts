@@ -50,14 +50,6 @@ Polymer({
 		if (this.selectedModel != null) {
 			this.selectedLayer = e.detail.selectedNode;
 		}
-		
-		// const visualizationNode = e.detail.selectedNode + '/LayerImage';
-		
-		// Try showing a visualization for the selected node
-		
-		/*if (this.currentRun.tags.includes(visualizationNode)) {
-			this.currentTag = visualizationNode;
-		}*/
 	},
 	_itemSelected(e) {
 		let item = e.detail.item;
@@ -70,18 +62,6 @@ Polymer({
 			
 			// Select the associated model
 			this.selectedModel = this._availableModels[modelIndex];
-			
-			// TODO: Remove after testing
-			// DEBUG: Run a route
-			const url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layer/meta'), {
-				model: this.selectedModel.name,
-				layer: 'InceptionV3/InceptionV3/Conv2d_1a_3x3/Conv2D'
-			});
-			
-	    /*this._requestManager.request(url).then(data => {
-				console.log(data);
-			});*/
 		}
 	},
 	

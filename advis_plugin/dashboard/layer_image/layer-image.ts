@@ -63,11 +63,7 @@ Polymer({
 			layer: this.layer
 		});
 		
-		console.log('Fetching ' + metaUrl + '...');
-		
 		this._requestManager.request(metaUrl).then(metaData => {
-			console.log(metaUrl + ' finished.');
-			
 			var tileUrls = []
 			
 			// List all available image tiles and put them into our array
@@ -81,7 +77,6 @@ Polymer({
 			}
 			
 			this._urls = tileUrls;
-			console.log(this._urls);
 		});
 	}
 });

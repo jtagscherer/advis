@@ -81,22 +81,6 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# to the plugin.
 		return bool(self._multiplexer and any(six.itervalues(all_runs)))
 	
-	def _get_tensor_string_value(self, run, tag):
-		"""Given a request containing valid run and tag identifiers, fetch the 
-		corresponding tensors and return their string value.
-		
-		Arguments:
-			run: The run which contains the tensor.
-			tag: The tag of the tensor which must be contained in the run.
-		Returns:
-			The corresponding tensor's string value.
-		"""
-		
-		# Fetch all the tensor events that contain image layer data
-		tensor_events = self._multiplexer.Tensors(run, tag)
-
-		return tensor_events[0].tensor_proto.string_val[2:]
-	
 	def _get_layer_visualization(self, model, layer):
 		if model in self._layer_visualization_cache:
 			if layer in self._layer_visualization_cache[model]:
