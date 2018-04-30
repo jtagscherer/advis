@@ -2,9 +2,6 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from os import path
-import threading
-
 import tensorflow as tf
 import numpy as np
 import six
@@ -45,6 +42,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# Retrieve and store necessary contextual references
 		self._multiplexer = context.multiplexer
 		self.storage_path = context.logdir
+		
+		tf.logging.warn('Setting up all models. This might take a while.')
 		self.model_manager = models.ModelManager(self.storage_path)
 
 	def get_plugin_apps(self):
@@ -93,12 +92,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'layer': layer
 		}
 		
-		graph = tf.Graph()
-		
-		with graph.as_default():
-			image = demo_data.get_demo_image()
-		
-		result = _model.run(image, meta_data, graph)
+		image = demo_data.get_demo_image()
+		result = _model.run(image, meta_data)
 		
 		if model not in self._layer_visualization_cache:
 			self._layer_visualization_cache[model] = {}
@@ -111,8 +106,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			return self._graph_structure_cache[model]
 		
 		_model = self.model_manager.get_model_modules()[model]
-		
-		result = _model.get_graph_structure()
+		result = _model.graph_structure
 		
 		self._graph_structure_cache[model] = result
 		return result

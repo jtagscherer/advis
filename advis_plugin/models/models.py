@@ -1,3 +1,5 @@
+import tensorflow as tf
+
 import traceback
 import logging
 import importlib.util
@@ -10,7 +12,7 @@ class Model:
 	name = None
 	display_name = None
 	version = None
-	_checkpoint_path = None
+	graph_structure = None
 	_module = None
 	_directory = None
 	
@@ -22,18 +24,18 @@ class Model:
 		self.display_name = self._module.get_display_name()
 		self.version = self._module.get_version()
 		
-		# Fetch the model's checkpoint path
-		path_base = dirname(dirname(dirname(__file__)))
-		model_base = 'external'
-		model_path = join(model_base, self._module.get_checkpoint_file())
-		self._checkpoint_path = join(path_base, model_path)
+		tf.logging.warn('Setting up \"{}\", version {}...'
+			.format(self.display_name, self.version))
+		
+		# Initialize the model
+		# TODO: Include checkpoint files from a separate repository
+		self.graph_structure = self._module.initialize(
+			'/Users/jan/Desktop/inception_v3/inception_v3_checkpoint.meta',
+			'/Users/jan/Desktop/inception_v3/inception_v3_checkpoint'
+		)
 	
-	def run(self, input, meta_data, graph):
-		processed_input = self._module.preprocess_input(input)
-		return self._module.run(processed_input, self._checkpoint_path, meta_data, graph)
-	
-	def get_graph_structure(self):
-		return self._module.get_graph_structure()
+	def run(self, input, meta_data):
+		return self._module.run(input, meta_data)
 
 class ModelManager:
 	directory = None

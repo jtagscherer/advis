@@ -1,12 +1,36 @@
 import tensorflow as tf
-from tensorflow.python.ops import control_flow_ops
-from tensorflow.contrib.slim.python.slim.nets import inception
-slim = tf.contrib.slim
 
-from advis_plugin import layer_summary
+# Tensorflow structures that will be kept throughout the whole lifecycle
+graph = tf.Graph()
+session = tf.Session(graph=graph)
+saver = None
 
-color_channels = 3
-num_classes = 1001
+# All nodes with this operation type will be annotated for visualization
+image_visualization_nodes = ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', \
+	'ConcatV2']
+
+# A dictionary mapping node names to their image tensor annotations
+image_tensors = {}
+
+def initialize(meta_file, data_file):
+	with graph.as_default():
+		# Load the graph's structure
+		saver = tf.train.import_meta_graph(meta_file)
+		
+		# Initialize all variable values, e.g. weights
+		saver.restore(session, data_file)
+		
+		# Store the graph structure before adding visualization nodes
+		graph_structure = str(graph.as_graph_def())
+		
+		# Annotate all viable nodes with image tensor operations
+		for n in graph.as_graph_def().node:
+			if n.op in image_visualization_nodes:
+				image_node = _generate_image_from_tensor(graph.get_tensor_by_name(
+					'{}:0'.format(n.name)))
+				image_tensors[n.name] = image_node
+	
+	return graph_structure
 
 def get_display_name():
 	return 'Inception V3'
@@ -14,62 +38,16 @@ def get_display_name():
 def get_version():
 	return 1.0
 
-def get_checkpoint_file():
-	return 'model_inception_v3/inception_v3.ckpt'
-
-def get_graph_structure():
-	image_size = inception.inception_v3.default_image_size
-	input_placeholder = tf.placeholder(tf.float32, 
-		shape=(1, image_size, image_size, 3))
-	
-	with slim.arg_scope(inception.inception_v3_arg_scope()):
-		logits, _ = inception.inception_v3(input_placeholder,
-			num_classes=num_classes, is_training=False)
-		
-		return str(tf.get_default_graph().as_graph_def())
-
-def run(input, checkpoint_path, meta_data, graph):
-	# Create the model, use the default arg scope to configure the batch norm
-	# parameters.
-	with slim.arg_scope(inception.inception_v3_arg_scope()):
-		session = tf.Session(graph=graph)
-		
-		with graph.as_default():
-			# Make a batch of only one image by inserting a new dimension
-			input_images = tf.expand_dims(input, 0)
+def run(input, meta_data):
+	with graph.as_default():
+		if meta_data['run_type'] == 'single_activation_visualization':
+			layer_name = meta_data['layer']
 			
-			logits, _ = inception.inception_v3(input_images,
-				num_classes=num_classes, is_training=False)
-			
-			graph = tf.get_default_graph()
-			nodes = graph.as_graph_def().node
-			
-			valid_node_found = False
-			
-			if meta_data['run_type'] == 'single_activation_visualization':
-				# Only annotate the node whose visualization has been requested
-				for n in nodes:
-					if n.name == meta_data['layer'] and \
-						n.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2', \
-						'Identity']:
-						
-						image_node = _generate_image_from_tensor(tf.get_default_graph().get_tensor_by_name('{}:0'.format(n.name)))
-						valid_node_found = True
-						break
-		
-		if not valid_node_found:
-			result = None
-		else:
-			# Run the session and record its result
-			with session:
-				with graph.as_default():
-					init_fn = slim.assign_from_checkpoint_fn(
-						checkpoint_path,
-						slim.get_model_variables('InceptionV3')
-					)
-				
-					init_fn(session)
-					result = session.run(image_node)
+			if layer_name in image_tensors:
+				result = session.run(image_tensors[layer_name],
+					feed_dict={'input:0': input})
+			else:
+				result = None
 	
 	return result
 
@@ -117,28 +95,3 @@ def _generate_image_from_tensor(tensor, name_scope=None):
 		image_tensor = tf.concat([dimensions, encoded_images], axis=0)
 	
 	return image_tensor
-
-def preprocess_input(image):
-	central_fraction = 0.875
-	scope = None
-	
-	image_size = inception.inception_v3.default_image_size
-
-	with tf.name_scope(scope, 'eval_image', [image, image_size, image_size]):
-		if image.dtype != tf.float32:
-			image = tf.image.convert_image_dtype(image, dtype=tf.float32)
-			# Crop the central region of the image with an area containing 87.5% of
-			# the original image.
-			if central_fraction:
-				image = tf.image.central_crop(image, central_fraction=central_fraction)
-
-		# Resize the image to the specified height and width.
-		image = tf.expand_dims(image, 0)
-		image = tf.image.resize_bilinear(image, [image_size, image_size],
-			align_corners=False)
-		image = tf.squeeze(image, [0])
-
-		image = tf.subtract(image, 0.5)
-		image = tf.multiply(image, 2.0)
-
-		return image
