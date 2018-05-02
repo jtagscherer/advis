@@ -106,6 +106,8 @@ class ModelManager:
 		
 		self._copy_preset_models()
 		self._update_model_modules()
+		
+		tf.logging.warn('Model setup finished!')
 	
 	def is_setup(self):
 		return self.directory != None
