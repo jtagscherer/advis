@@ -8,6 +8,8 @@ from os import makedirs, path, listdir
 from os.path import isfile, join, dirname, splitext
 from shutil import copyfile
 
+from data.checkpoints import checkpoints
+
 class Model:
 	name = None
 	display_name = None
@@ -27,12 +29,20 @@ class Model:
 		tf.logging.warn('Setting up \"{}\", version {}...'
 			.format(self.display_name, self.version))
 		
-		# Initialize the model
-		# TODO: Include checkpoint files from a separate repository
-		self.graph_structure = self._module.initialize(
-			'/Users/jan/Desktop/inception_v3/inception_v3_checkpoint.meta',
-			'/Users/jan/Desktop/inception_v3/inception_v3_checkpoint'
-		)
+		# Retrieve the checkpoint directory as declared by the model module
+		declared_directory = self._module.get_checkpoint_directory()
+		checkpoint_directory = None
+		
+		if declared_directory['type'] == 'preset':
+			checkpoint_directory = checkpoints.get_checkpoint_directory(
+				declared_directory['directory'])
+		else:
+			tf.logging.error('Invalid checkpoint directory type {} for model {}!'
+				.format(declared_directory['type'], self.display_name))
+		
+		# Initialize the model using its declared checkpoint directory
+		if checkpoint_directory != None:
+			self.graph_structure = self._module.initialize(checkpoint_directory)
 	
 	def run(self, input, meta_data):
 		return self._module.run(input, meta_data)

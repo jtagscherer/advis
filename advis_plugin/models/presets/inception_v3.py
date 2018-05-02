@@ -12,13 +12,13 @@ image_visualization_nodes = ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', \
 # A dictionary mapping node names to their image tensor annotations
 image_tensors = {}
 
-def initialize(meta_file, data_file):
+def initialize(checkpoint_directory):
 	with graph.as_default():
 		# Load the graph's structure
-		saver = tf.train.import_meta_graph(meta_file)
+		saver = tf.train.import_meta_graph('{}.meta'.format(checkpoint_directory))
 		
 		# Initialize all variable values, e.g. weights
-		saver.restore(session, data_file)
+		saver.restore(session, checkpoint_directory)
 		
 		# Store the graph structure before adding visualization nodes
 		graph_structure = str(graph.as_graph_def())
@@ -37,6 +37,12 @@ def get_display_name():
 
 def get_version():
 	return 1.0
+
+def get_checkpoint_directory():
+	return {
+		'type': 'preset',
+		'directory': 'inception_v3/inception_v3_checkpoint'
+	}
 
 def run(input, meta_data):
 	with graph.as_default():
