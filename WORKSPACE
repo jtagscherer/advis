@@ -153,14 +153,3 @@ pip_import(
 
 load("@python_dependencies//:requirements.bzl", "pip_install")
 pip_install()
-
-################################################################################
-# MODEL DATA - Download data for pretrained models used to demo the plugin
-#
-
-new_http_archive(
-  name = "model_inception_v3",
-	sha256 = "9430692d3002277fa1e1a94fb82331fe5da68b9afd725c2679c21a0319933228",
-  url = "http://download.tensorflow.org/models/inception_v3_2016_08_28.tar.gz",
-  build_file = "advis_plugin/models/BUILD"
-)
