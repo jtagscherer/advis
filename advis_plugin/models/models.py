@@ -8,17 +8,30 @@ from os import makedirs, path, listdir
 from os.path import isfile, join, dirname, splitext
 from shutil import copyfile
 
+from advis_plugin.models import util
 from data.checkpoints import checkpoints
 
 class Model:
+	# Common variables describing the model and its module
 	name = None
 	display_name = None
 	version = None
 	graph_structure = None
+	
+	# The loaded Python module and its directory
 	_module = None
 	_directory = None
 	
+	# Tensorflow structures retained throughout the whole lifecycle
+	_graph = None
+	_session = None
+	_saver = None
+	
+	# A dictionary mapping node names to their image tensor annotations
+	_image_tensors = {}
+	
 	def __init__(self, name, module, directory):
+		# Initialize common variables
 		self._module = module
 		self.name = name
 		self._directory = directory
@@ -37,15 +50,48 @@ class Model:
 			checkpoint_directory = checkpoints.get_checkpoint_directory(
 				declared_directory['directory'])
 		else:
-			tf.logging.error('Invalid checkpoint directory type {} for model {}!'
+			tf.logging.error('Invalid checkpoint directory type {} for model \"{}\"!'
 				.format(declared_directory['type'], self.display_name))
 		
 		# Initialize the model using its declared checkpoint directory
 		if checkpoint_directory != None:
-			self.graph_structure = self._module.initialize(checkpoint_directory)
+			self._initialize_graph(checkpoint_directory)
+	
+	def _initialize_graph(self, checkpoint_directory):
+		self._graph = tf.Graph()
+		self._session = tf.Session(graph=self._graph)
+		
+		with self._graph.as_default():
+			# Load the graph's structure
+			saver = tf.train.import_meta_graph('{}.meta'.format(checkpoint_directory))
+			
+			# Initialize all variable values, e.g. weights
+			saver.restore(self._session, checkpoint_directory)
+			
+			# Store the graph structure before adding visualization nodes
+			self.graph_structure = str(self._graph.as_graph_def())
+			
+			# Annotate all viable nodes with image tensor operations
+			for n in self._graph.as_graph_def().node:
+				if self._module.annotate_node(n):
+					image_node = util.generate_image_from_tensor(
+						self._graph.get_tensor_by_name('{}:0'.format(n.name))
+					)
+					
+					self._image_tensors[n.name] = image_node
 	
 	def run(self, input, meta_data):
-		return self._module.run(input, meta_data)
+		with self._graph.as_default():
+			if meta_data['run_type'] == 'single_activation_visualization':
+				layer_name = meta_data['layer']
+				
+				if layer_name in self._image_tensors:
+					result = self._session.run(self._image_tensors[layer_name],
+						feed_dict={'input:0': input})
+				else:
+					result = None
+		
+		return result
 
 class ModelManager:
 	directory = None
