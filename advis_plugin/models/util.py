@@ -1,11 +1,13 @@
 import tensorflow as tf
 
-def generate_image_from_tensor(tensor, name_scope=None):
+def generate_image_from_tensor(name, tensor, name_scope=None):
 	"""Transform an input tensor as obtained from the graph into a tensor that 
 	describes all appropriate image visualizations of each unit's activation in 
 	the layer.
 
 	Arguments:
+		name: The name of the final image tensor node. Should be unique in the 
+			graph.
 		tensor: An input tensor of shape `[1, width, height, index]`.
 		name_scope: Optional name scope for all tensor operations
 	"""
@@ -41,6 +43,6 @@ def generate_image_from_tensor(tensor, name_scope=None):
 		)
 		
 		# Concatenate dimensions and encoded images for the final image tensor
-		image_tensor = tf.concat([dimensions, encoded_images], axis=0)
+		image_tensor = tf.concat([dimensions, encoded_images], axis=0, name=name)
 	
 	return image_tensor
