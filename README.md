@@ -13,7 +13,7 @@ Analyze how your deep learning model behaves when presented with randomly pertur
 
     `bazel run //advis_tensorboard -- --logdir /tmp/advis_demo`
 		
-	Afterwards, the server will prepare all data needed to speed up interaction with the interface. You will be informed about the progress withiin your terminal. Please wait until TensorBoard outputs that the server has been started.
+	Afterwards, the server will prepare all data needed to speed up interaction with the interface. You will be informed about the progress within your terminal. Please wait until TensorBoard outputs that the server has been started.
 
 3. If everything went well, TensorBoard along with Advis should now be available at [`localhost:6006/#advis`](http://localhost:6006/#advis).
 
