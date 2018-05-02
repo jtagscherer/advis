@@ -16,20 +16,3 @@ py_library(
 		"@org_tensorflow_tensorboard//tensorboard/plugins:base_plugin"
 	]
 )
-
-py_binary(
-	name = "demo",
-	srcs = ["demo.py", "argutil.py"],
-	srcs_version = "PY2AND3",
-	deps = [
-		":layer_summary",
-		"//advis_plugin/models:models",
-		"//data:demo_data"
-	]
-)
-
-py_library(
-	name = "layer_summary",
-	srcs = ["layer_summary.py"],
-	srcs_version = "PY2AND3"
-)
