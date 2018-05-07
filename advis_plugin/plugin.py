@@ -65,6 +65,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		return {
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
+			'/prediction': self.prediction_route,
 			'/layer/meta': self.layer_meta_route,
 			'/layer/image': self.layer_image_route
 		}
@@ -94,11 +95,11 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		meta_data = {
 			'run_type': 'single_activation_visualization',
-			'layer': layer
+			'layer': layer,
+			'input': demo_data.get_demo_image()
 		}
 		
-		image = demo_data.get_demo_image()
-		result = _model.run(image, meta_data)
+		result = _model.run(meta_data)
 		
 		if model not in self._layer_visualization_cache:
 			self._layer_visualization_cache[model] = {}
@@ -162,6 +163,37 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		result = self._get_graph_structure(model_name)
 		
 		response = {'graph': result}
+		
+		return http_util.Respond(request, response, 'application/json')
+	
+	@wrappers.Request.application
+	def prediction_route(self, request):
+		"""A route that returns a model's prediction of an input image.
+
+		Arguments:
+			request: The request which has to contain the model's name and an image 
+				number.
+		Returns:
+			A response that contains information about the input image as well as the 
+				model's prediction.
+		"""
+		# Check for missing arguments and possibly return an error
+		missing_arguments = argutil.check_missing_arguments(
+			request, ['model', 'imageIndex']
+		)
+		
+		if missing_arguments != None:
+			return missing_arguments
+		
+		model_name = request.args.get('model')
+		_model = self.model_manager.get_model_modules()[model_name]
+		
+		meta_data = {
+			'run_type': 'prediction',
+			'image': int(request.args.get('imageIndex'))
+		}
+		
+		response = _model.run(meta_data)
 		
 		return http_util.Respond(request, response, 'application/json')
 	
