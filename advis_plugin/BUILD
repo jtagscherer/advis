@@ -8,6 +8,7 @@ py_library(
 	srcs_version = "PY2AND3",
 	deps = [
 		"//advis_plugin/models:models",
+		"//advis_plugin/datasets:datasets",
 		"//data:demo_data",
 		"@org_pocoo_werkzeug",
 		"@org_pythonhosted_six",

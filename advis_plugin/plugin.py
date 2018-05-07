@@ -9,6 +9,7 @@ from werkzeug import wrappers
 
 from advis_plugin import imgutil, argutil
 from advis_plugin.models import models
+from advis_plugin.datasets import datasets
 
 from data import demo_data
 
@@ -27,6 +28,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 	
 	# Manager objects to keep track of resources
 	model_manager = None
+	dataset_manager = None
 	
 	# Data caches for easier access
 	_layer_visualization_cache = {}
@@ -42,6 +44,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# Retrieve and store necessary contextual references
 		self._multiplexer = context.multiplexer
 		self.storage_path = context.logdir
+		
+		self.dataset_manager = datasets.DatasetManager(self.storage_path)
 		
 		tf.logging.warn('Setting up all models. This might take a while.')
 		self.model_manager = models.ModelManager(self.storage_path)
