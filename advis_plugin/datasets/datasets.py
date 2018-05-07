@@ -1,3 +1,7 @@
+from __future__ import division
+from skimage.io import imread
+import numpy as np
+
 import traceback
 import logging
 import importlib.util
@@ -25,6 +29,9 @@ class Dataset:
 		# Retrieve all other data from within the module
 		self.display_name = self._module.get_display_name()
 		self.images = self._module.get_all_images()
+	
+	def load_image(self, index):
+		return imread(self.images[index]['path']) / 255
 
 class DatasetManager:
 	directory = None
