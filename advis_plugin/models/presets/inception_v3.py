@@ -10,5 +10,8 @@ def get_checkpoint_directory():
 		'directory': 'inception_v3/inception_v3_checkpoint'
 	}
 
+def get_dataset():
+	return 'nips_2017'
+
 def annotate_node(node):
 	return node.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2']

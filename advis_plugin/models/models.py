@@ -23,6 +23,9 @@ class Model:
 	version = None
 	graph_structure = None
 	
+	# Internal references
+	_dataset = None
+	
 	# The loaded Python module and its directory
 	_module = None
 	_directory = None
@@ -35,17 +38,21 @@ class Model:
 	# A dictionary mapping node names to their image tensor annotations
 	_image_tensors = {}
 	
-	def __init__(self, name, module, directory):
+	def __init__(self, name, module, directory, dataset):
 		# Initialize common variables
 		self._module = module
 		self.name = name
 		self._directory = directory
+		self._dataset = dataset
 		
 		self.display_name = self._module.get_display_name()
 		self.version = self._module.get_version()
 		
 		tf.logging.warn('Setting up \"{}\", version {}...'
 			.format(self.display_name, self.version))
+		
+		tf.logging.info('Initialized with {} images from the dataset \"{}\".'
+			.format(len(self._dataset.images), self._dataset.display_name))
 		
 		# Retrieve the checkpoint directory as declared by the model module
 		declared_directory = self._module.get_checkpoint_directory()
@@ -161,8 +168,10 @@ class Model:
 class ModelManager:
 	directory = None
 	model_modules = None
+	_dataset_manager = None
 	
-	def __init__(self, directory):
+	def __init__(self, directory, dataset_manager):
+		self._dataset_manager = dataset_manager
 		self.directory = path.join(directory, 'models')
 		
 		if not path.exists(self.directory):
@@ -198,7 +207,9 @@ class ModelManager:
 			
 			try:
 				spec.loader.exec_module(module)
-				self.model_modules[name] = Model(name, module, model_directory)
+				dataset = self._dataset_manager.get_dataset_modules()[module
+					.get_dataset()]
+				self.model_modules[name] = Model(name, module, model_directory, dataset)
 			except Exception as e:
 				logging.error('Could not import the model module \"{}\": {}'
 					.format(name, traceback.format_exc()))

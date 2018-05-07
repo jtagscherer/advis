@@ -48,7 +48,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		self.dataset_manager = datasets.DatasetManager(self.storage_path)
 		
 		tf.logging.warn('Setting up all models. This might take a while.')
-		self.model_manager = models.ModelManager(self.storage_path)
+		self.model_manager = models.ModelManager(self.storage_path,
+			self.dataset_manager)
 
 	def get_plugin_apps(self):
 		"""Gets all routes offered by the plugin.
