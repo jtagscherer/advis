@@ -38,6 +38,9 @@ class Model:
 	# A dictionary mapping node names to their image tensor annotations
 	_image_tensors = {}
 	
+	# The node containing the model's final output
+	_output_node = None
+	
 	def __init__(self, name, module, directory, dataset):
 		# Initialize common variables
 		self._module = module
@@ -151,17 +154,39 @@ class Model:
 				
 				with open(join(cached_model_directory, 'meta.json'), 'w') as meta_file:
 					json.dump(cache_meta_data, meta_file)
+			
+			# Store the tensor containing the model's prediction
+			self._output_node = self._graph.get_tensor_by_name('{}:0'
+				.format(self._module.get_output_node()))
 	
-	def run(self, input, meta_data):
+	def run(self, meta_data):
 		with self._graph.as_default():
 			if meta_data['run_type'] == 'single_activation_visualization':
 				layer_name = meta_data['layer']
 				
 				if layer_name in self._image_tensors:
 					result = self._session.run(self._image_tensors[layer_name],
-						feed_dict={'input:0': input})
+						feed_dict={'input:0': meta_data['input']})
 				else:
 					result = None
+			if meta_data['run_type'] == 'prediction':
+				input_image = self._dataset.images[meta_data['image']]
+				
+				model_output = self._session.run(
+					self._output_node,
+					feed_dict={'input:0': self._dataset.load_image(meta_data['image'])}
+				)[0]
+				
+				top_5_predictions = [{
+					'categoryId': int(index),
+					'categoryName': self._dataset.categories[int(index) - 1],
+					'certainty': float(model_output[index])
+				} for index in model_output.argsort()[-5:][::-1]]
+				
+				result = {
+					'input': input_image,
+					'predictions': top_5_predictions
+				}
 		
 		return result
 

@@ -13,5 +13,8 @@ def get_checkpoint_directory():
 def get_dataset():
 	return 'nips_2017'
 
+def get_output_node():
+	return 'Softmax'
+
 def annotate_node(node):
 	return node.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2']
