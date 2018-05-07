@@ -15,6 +15,7 @@ class Dataset:
 	name = None
 	display_name = None
 	images = None
+	categories = None
 	
 	# The loaded Python module and its directory
 	_module = None
@@ -29,6 +30,7 @@ class Dataset:
 		# Retrieve all other data from within the module
 		self.display_name = self._module.get_display_name()
 		self.images = self._module.get_all_images()
+		self.categories = self._module.get_categories()
 	
 	def load_image(self, index):
 		return imread(self.images[index]['path']) / 255

@@ -4,6 +4,14 @@ import json
 def get_display_name():
 	return 'NIPS 2017 Adversarial Learning Challenge'
 
+def get_categories():
+	categories_file = join(dirname(__file__), 'data/categories.json')
+	
+	with open(categories_file, 'r') as categories_data:
+		categories = json.load(categories_data)
+	
+	return categories
+
 def get_all_images():
 	# Retrieve image descriptions from their file
 	images_file = join(dirname(__file__), 'data/images.json')
