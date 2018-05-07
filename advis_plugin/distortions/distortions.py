@@ -68,7 +68,6 @@ class DistortionManager:
 	
 	def __init__(self, directory):
 		self.directory = path.join(directory, 'distortions')
-		self.distortion_modules = {}
 		
 		if not path.exists(self.directory):
 			makedirs(self.directory)
@@ -106,7 +105,7 @@ class DistortionManager:
 				spec.loader.exec_module(module)
 				self.distortion_modules[name] = Distortion(name, module, self.directory)
 			except Exception as e:
-				logging.error('Could not import the distortion module "{}": {}'
+				logging.error('Could not import the distortion module \"{}\": {}'
 					.format(name, traceback.format_exc()))
 	
 	def _copy_preset_distortions(self):

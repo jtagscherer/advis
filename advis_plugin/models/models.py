@@ -164,7 +164,6 @@ class ModelManager:
 	
 	def __init__(self, directory):
 		self.directory = path.join(directory, 'models')
-		self.model_modules = {}
 		
 		if not path.exists(self.directory):
 			makedirs(self.directory)
@@ -201,7 +200,7 @@ class ModelManager:
 				spec.loader.exec_module(module)
 				self.model_modules[name] = Model(name, module, model_directory)
 			except Exception as e:
-				logging.error('Could not import the model module "{}": {}'
+				logging.error('Could not import the model module \"{}\": {}'
 					.format(name, traceback.format_exc()))
 	
 	def _copy_preset_models(self):
