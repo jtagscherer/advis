@@ -9,6 +9,7 @@ py_library(
 	deps = [
 		"//advis_plugin/models:models",
 		"//advis_plugin/datasets:datasets",
+		"//advis_plugin/distortions:distortions",
 		"//data:demo_data",
 		"@org_pocoo_werkzeug",
 		"@org_pythonhosted_six",

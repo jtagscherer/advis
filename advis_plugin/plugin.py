@@ -10,6 +10,7 @@ from werkzeug import wrappers
 from advis_plugin import imgutil, argutil
 from advis_plugin.models import models
 from advis_plugin.datasets import datasets
+from advis_plugin.distortions import distortions
 
 from data import demo_data
 
@@ -29,6 +30,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 	# Manager objects to keep track of resources
 	model_manager = None
 	dataset_manager = None
+	distortion_manager = None
 	
 	# Data caches for easier access
 	_layer_visualization_cache = {}
@@ -46,6 +48,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		self.storage_path = context.logdir
 		
 		self.dataset_manager = datasets.DatasetManager(self.storage_path)
+		self.distortion_manager = distortions.DistortionManager(self.storage_path)
 		
 		tf.logging.warn('Setting up all models. This might take a while.')
 		self.model_manager = models.ModelManager(self.storage_path,
