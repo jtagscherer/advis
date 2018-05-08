@@ -68,6 +68,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		return {
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
+			'/distortions': self.distortions_route,
 			'/prediction': self.prediction_route,
 			'/datasets': self.datasets_route,
 			'/datasets/images/list': self.datasets_images_list_route,
@@ -169,6 +170,24 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		result = self._get_graph_structure(model_name)
 		
 		response = {'graph': result}
+		
+		return http_util.Respond(request, response, 'application/json')
+	
+	@wrappers.Request.application
+	def distortions_route(self, request):
+		"""A route that returns a list of all available distortion methods.
+
+		Arguments:
+			request: The request which has to contain no additional information.
+		Returns:
+			A response that contains a list of all available distortion methods.
+		"""
+		
+		response = [{
+			'name': name,
+			'displayName': distortion.display_name
+		} for name, distortion in self.distortion_manager.get_distortion_modules()
+			.items()]
 		
 		return http_util.Respond(request, response, 'application/json')
 	
