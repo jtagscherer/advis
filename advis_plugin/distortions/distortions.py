@@ -2,7 +2,7 @@ import traceback
 import logging
 import importlib.util
 
-from os import makedirs, path, listdir
+from os import makedirs, path, listdir, walk
 from os.path import isfile, join, splitext
 from shutil import copyfile
 
@@ -84,26 +84,24 @@ class DistortionManager:
 	def _update_distortion_modules(self):
 		self.distortion_modules = {}
 		
-		# Retrieve a list of all Python files describing distortions
-		distortion_files = [f for f in listdir(self.directory) \
-			if isfile(join(self.directory, f)) \
-			and splitext(join(self.directory, f))[1] == '.py' \
-			and f != '__init__.py']
+		# Retrieve a list of all directories describing distortions
+		distortion_directories = next(walk(self.directory))[1]
 		
 		# Load each file as a module
-		for f in distortion_files:
-			name = splitext(f)[0]
+		for name in distortion_directories:
+			distortion_directory = join(self.directory, name)
 			
 			spec = importlib.util.spec_from_file_location(
 				'distortions.{}'.format(name),
-				join(self.directory, f)
+				join(distortion_directory, '{}.py'.format(name))
 			)
 			
 			module = importlib.util.module_from_spec(spec)
 			
 			try:
 				spec.loader.exec_module(module)
-				self.distortion_modules[name] = Distortion(name, module, self.directory)
+				self.distortion_modules[name] = Distortion(name, module, 
+					distortion_directory)
 			except Exception as e:
 				logging.error('Could not import the distortion module \"{}\": {}'
 					.format(name, traceback.format_exc()))
@@ -116,8 +114,17 @@ class DistortionManager:
 		preset_directory = path.join(path.dirname(__file__), 'presets')
 		presets = [f for f in listdir(preset_directory) \
 			if isfile(join(preset_directory, f)) \
-			and splitext(join(preset_directory, f))[1] == '.py']
+			and splitext(join(preset_directory, f))[1] == '.py' \
+			and f != '__init__.py']
 		
-		# Copy each preset to the working directory
+		# Copy each preset to its own directory in the working directory
 		for file in presets:
-			copyfile(join(preset_directory, file), join(self.directory, file))
+			distortion_directory = join(self.directory, splitext(file)[0])
+			
+			if not path.exists(distortion_directory):
+				makedirs(distortion_directory)
+			
+			copyfile(
+				join(preset_directory, file),
+				join(distortion_directory, file)
+			)
