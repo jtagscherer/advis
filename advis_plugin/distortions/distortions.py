@@ -6,7 +6,7 @@ from os import makedirs, path, listdir
 from os.path import isfile, join, splitext
 from shutil import copyfile
 
-from distortions import parameters
+from advis_plugin.distortions import parameters
 
 class Distortion:
 	name = None
