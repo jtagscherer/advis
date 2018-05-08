@@ -66,7 +66,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
 			'/prediction': self.prediction_route,
-			'/datasets': None, # TODO
+			'/datasets': self.datasets_route,
 			'/datasets/images': self.datasets_images_route,
 			'/datasets/image': None, # TODO
 			'/layer/meta': self.layer_meta_route,
@@ -197,6 +197,23 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		}
 		
 		response = _model.run(meta_data)
+		
+		return http_util.Respond(request, response, 'application/json')
+	
+	@wrappers.Request.application
+	def datasets_route(self, request):
+		"""A route that returns a list of all available datasets.
+
+		Arguments:
+			request: The request which has to contain no additional information.
+		Returns:
+			A response that contains a list of all available datasets.
+		"""
+		
+		response = [{
+			'name': name,
+			'imageCount': len(dataset.images)
+		} for name, dataset in self.dataset_manager.get_dataset_modules().items()]
 		
 		return http_util.Respond(request, response, 'application/json')
 	
