@@ -67,8 +67,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/graphs': self.graphs_route,
 			'/prediction': self.prediction_route,
 			'/datasets': self.datasets_route,
-			'/datasets/images/list': self.datasets_images_route,
-			'/datasets/images/image': None, # TODO
+			'/datasets/images/list': self.datasets_images_list_route,
+			'/datasets/images/image': self.datasets_images_image_route,
 			'/layer/meta': self.layer_meta_route,
 			'/layer/image': self.layer_image_route
 		}
@@ -218,7 +218,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		return http_util.Respond(request, response, 'application/json')
 	
 	@wrappers.Request.application
-	def datasets_images_route(self, request):
+	def datasets_images_list_route(self, request):
 		"""A route that returns a list of all input images inside a dataset.
 
 		Arguments:
@@ -246,6 +246,52 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		} for index, image in enumerate(images)]
 		
 		return http_util.Respond(request, response, 'application/json')
+	
+	@wrappers.Request.application
+	def datasets_images_image_route(self, request):
+		"""A route that returns a single input image from a dataset.
+
+		Arguments:
+			request: A request containing the dataset's name and either the desired 
+				image's index or ID.
+		Returns:
+			The desired image as retrieved from the dataset.
+		"""
+		# Check for missing arguments and possibly return an error
+		missing_arguments = argutil.check_missing_arguments(
+			request, ['dataset']
+		)
+		
+		if missing_arguments != None:
+			return missing_arguments
+		
+		# We always need the name of the desired dataset
+		dataset_name = request.args.get('dataset')
+		dataset = self.dataset_manager.get_dataset_modules()[dataset_name]
+		
+		# On top, we either need the desired image's index or ID
+		if 'index' in request.args:
+			response = dataset.load_image(int(request.args.get('index')),
+				output='bytes')
+		elif 'id' in request.args:
+			image_id = request.args.get('id')
+			image_index = None
+			
+			for index, image in enumerate(dataset.images):
+				if image['id'] == image_id:
+					image_index = index
+					break
+			
+			if image_index != None:
+				response = dataset.load_image(image_index, output='bytes')
+			else:
+				response = imgutil.get_placeholder_image()
+		else:
+			# No image has been specified, return a placeholder
+			response = imgutil.get_placeholder_image()
+		
+		# Return the image data with proper headers set
+		return http_util.Respond(request, response, 'image/png')
 	
 	@wrappers.Request.application
 	def layer_meta_route(self, request):
@@ -318,8 +364,4 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			response = imgutil.get_placeholder_image()
 		
 		# Return the image data with proper headers set
-		return http_util.Respond(
-			request,
-			response,
-			'image/png'
-		)
+		return http_util.Respond(request, response, 'image/png')
