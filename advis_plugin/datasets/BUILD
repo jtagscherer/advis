@@ -7,6 +7,7 @@ py_library(
 	srcs_version = "PY2AND3",
 	data = glob(["presets/**"]),
 	deps = [
-		requirement('scikit-image')
+		requirement('scikit-image'),
+		requirement('Pillow')
 	]
 )

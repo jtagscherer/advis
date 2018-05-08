@@ -1,6 +1,8 @@
 from __future__ import division
-from skimage.io import imread
 import numpy as np
+from skimage.io import imread
+from PIL import Image
+from io import BytesIO
 
 import traceback
 import logging
@@ -32,8 +34,19 @@ class Dataset:
 		self.images = self._module.get_all_images()
 		self.categories = self._module.get_categories()
 	
-	def load_image(self, index):
-		return imread(self.images[index]['path']) / 255
+	def load_image(self, index, output='array'):
+		image_data = imread(self.images[index]['path'])
+		
+		if output == 'array':
+			return image_data / 255
+		elif output == 'bytes':
+			image = Image.fromarray(image_data, 'RGB')
+			
+			with BytesIO() as byte_array:
+				image.save(byte_array, 'PNG')
+				output_array = byte_array.getvalue()
+			
+			return output_array
 
 class DatasetManager:
 	directory = None
