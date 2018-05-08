@@ -24,6 +24,7 @@ def get_all_images():
 	
 	return [
 		{
+			'id': image['id'],
 			'path': join(image_base_path, '{}.png'.format(image['id'])),
 			'categoryId': image['categoryId'],
 			'categoryName': image['categoryName']
