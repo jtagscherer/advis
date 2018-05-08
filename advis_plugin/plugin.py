@@ -67,8 +67,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/graphs': self.graphs_route,
 			'/prediction': self.prediction_route,
 			'/datasets': self.datasets_route,
-			'/datasets/images': self.datasets_images_route,
-			'/datasets/image': None, # TODO
+			'/datasets/images/list': self.datasets_images_route,
+			'/datasets/images/image': None, # TODO
 			'/layer/meta': self.layer_meta_route,
 			'/layer/image': self.layer_image_route
 		}
@@ -239,10 +239,11 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		images = self.dataset_manager.get_dataset_modules()[dataset_name].images
 		response = [{
+			'index': index,
 			'id': image['id'],
 			'categoryId': image['categoryId'],
 			'categoryName': image['categoryName']
-		} for image in images]
+		} for index, image in enumerate(images)]
 		
 		return http_util.Respond(request, response, 'application/json')
 	
