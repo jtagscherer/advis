@@ -66,6 +66,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
 			'/prediction': self.prediction_route,
+			'/datasets': None, # TODO
+			'/datasets/images': self.datasets_images_route,
+			'/datasets/image': None, # TODO
 			'/layer/meta': self.layer_meta_route,
 			'/layer/image': self.layer_image_route
 		}
@@ -194,6 +197,35 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		}
 		
 		response = _model.run(meta_data)
+		
+		return http_util.Respond(request, response, 'application/json')
+	
+	@wrappers.Request.application
+	def datasets_images_route(self, request):
+		"""A route that returns a list of all input images inside a dataset.
+
+		Arguments:
+			request: The request which has to contain the dataset's name.
+		Returns:
+			A response that contains a list of all input images in the dataset 
+				alongside meta data such as their category ID and label.
+		"""
+		# Check for missing arguments and possibly return an error
+		missing_arguments = argutil.check_missing_arguments(
+			request, ['dataset']
+		)
+		
+		if missing_arguments != None:
+			return missing_arguments
+		
+		dataset_name = request.args.get('dataset')
+		
+		images = self.dataset_manager.get_dataset_modules()[dataset_name].images
+		response = [{
+			'id': image['id'],
+			'categoryId': image['categoryId'],
+			'categoryName': image['categoryName']
+		} for image in images]
 		
 		return http_util.Respond(request, response, 'application/json')
 	
