@@ -185,7 +185,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		response = [{
 			'name': name,
-			'displayName': distortion.display_name
+			'displayName': distortion.display_name,
+			'parameters': list(distortion._parameters.keys())
 		} for name, distortion in self.distortion_manager.get_distortion_modules()
 			.items()]
 		
