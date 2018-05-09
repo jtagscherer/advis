@@ -139,6 +139,9 @@ class Model:
 					)
 					
 					self._image_tensors[n.name] = image_node
+					
+					# DEBUG: Only annotate the first node for now, allowing faster testing
+					break
 			
 			if USE_MODEL_CACHING:
 				# Cache the annotated graph for later use
@@ -166,7 +169,7 @@ class Model:
 				
 				if layer_name in self._image_tensors:
 					result = self._session.run(self._image_tensors[layer_name],
-						feed_dict={'input:0': meta_data['input']})
+						feed_dict={'input:0': self._dataset.load_image(meta_data['image'])})
 				else:
 					result = None
 			if meta_data['run_type'] == 'prediction':

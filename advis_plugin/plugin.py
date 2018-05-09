@@ -12,8 +12,6 @@ from advis_plugin.models import models
 from advis_plugin.datasets import datasets
 from advis_plugin.distortions import distortions
 
-from data import demo_data
-
 from tensorboard.backend import http_util
 from tensorboard.plugins import base_plugin
 
@@ -103,7 +101,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		meta_data = {
 			'run_type': 'single_activation_visualization',
 			'layer': layer,
-			'input': demo_data.get_demo_image()
+			'image': 0
 		}
 		
 		result = _model.run(meta_data)

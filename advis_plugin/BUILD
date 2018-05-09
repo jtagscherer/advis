@@ -10,7 +10,6 @@ py_library(
 		"//advis_plugin/models:models",
 		"//advis_plugin/datasets:datasets",
 		"//advis_plugin/distortions:distortions",
-		"//data:demo_data",
 		"@org_pocoo_werkzeug",
 		"@org_pythonhosted_six",
 		"@org_tensorflow_tensorboard//tensorboard/backend:http_util",
