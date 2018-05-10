@@ -1,3 +1,5 @@
+from skimage.transform import resize
+
 def get_display_name():
 	return 'Crop'
 
@@ -44,6 +46,7 @@ def get_parameters():
 def distort(image, configuration):
 	original_height, original_width, _ = image.shape
 	
+	# Crop the image accordingly
 	cropped_width = int(original_width / configuration['zoom_factor'])
 	cropped_height = int(original_height / configuration['zoom_factor'])
 	
@@ -52,4 +55,7 @@ def distort(image, configuration):
 	top = int(configuration['horizontal_crop_range'] \
 	 	* (original_height - cropped_height))
 	
-	return image[top : top + cropped_height, left : left + cropped_width]
+	cropped_image = image[top : top + cropped_height, left : left + cropped_width]
+	
+	# Resize the cropped image to its original size
+	return resize(cropped_image, (original_height, original_width))
