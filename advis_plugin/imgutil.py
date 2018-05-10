@@ -3,6 +3,8 @@ Utility methods for dealing with images and image tensors.
 """
 
 import imghdr
+from PIL import Image
+from io import BytesIO
 
 _IMGHDR_TO_MIMETYPE = {
 	'bmp': 'image/bmp',
@@ -26,6 +28,22 @@ def get_content_type(image):
 		imghdr.what(None, image),
 		_DEFAULT_IMAGE_MIMETYPE
 	)
+
+def blend_images(images):
+	result = Image.open(BytesIO(images[0]))
+	
+	for i in range(1, len(images)):
+		result = Image.blend(
+			result,
+			Image.open(BytesIO(images[i])),
+			1.0 / len(images)
+		)
+	
+	with BytesIO() as byte_array:
+		result.save(byte_array, 'PNG')
+		output_array = byte_array.getvalue()
+	
+	return output_array
 
 def get_placeholder_image():
 	"""Get a placeholder for images that have not been found.

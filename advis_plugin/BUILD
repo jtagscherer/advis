@@ -1,12 +1,14 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@python_dependencies//:requirements.bzl", "requirement")
 load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 
 py_library(
 	name = "advis_plugin",
-	srcs = ["plugin.py", "imgutil.py", "argutil.py"],
+	srcs = ["plugin.py"],
 	srcs_version = "PY2AND3",
 	deps = [
+		"//advis_plugin:util",
 		"//advis_plugin/models:models",
 		"//advis_plugin/datasets:datasets",
 		"//advis_plugin/distortions:distortions",
@@ -15,5 +17,15 @@ py_library(
 		"@org_tensorflow_tensorboard//tensorboard/backend:http_util",
 		"@org_tensorflow_tensorboard//tensorboard/backend/event_processing:event_accumulator",
 		"@org_tensorflow_tensorboard//tensorboard/plugins:base_plugin"
+	]
+)
+
+py_library(
+	name = "util",
+	srcs = ["imgutil.py", "argutil.py"],
+	srcs_version = "PY2AND3",
+	deps = [
+		requirement('scikit-image'),
+		requirement('Pillow')
 	]
 )

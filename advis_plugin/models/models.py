@@ -1,4 +1,5 @@
 import tensorflow as tf
+import numpy as np
 
 import traceback
 import logging
@@ -11,6 +12,7 @@ from shutil import copyfile, rmtree
 import json
 
 from advis_plugin.models import util
+from advis_plugin import imgutil
 from checkpoints import checkpoints
 
 # True if models annotated with visualization nodes should be cached
@@ -25,6 +27,7 @@ class Model:
 	
 	# Internal references
 	_dataset = None
+	_distortions = None
 	
 	# The loaded Python module and its directory
 	_module = None
@@ -41,12 +44,13 @@ class Model:
 	# The node containing the model's final output
 	_output_node = None
 	
-	def __init__(self, name, module, directory, dataset):
+	def __init__(self, name, module, directory, dataset, distortions):
 		# Initialize common variables
 		self._module = module
 		self.name = name
 		self._directory = directory
 		self._dataset = dataset
+		self._distortions = distortions
 		
 		self.display_name = self._module.get_display_name()
 		self.version = self._module.get_version()
@@ -165,14 +169,67 @@ class Model:
 	def run(self, meta_data):
 		with self._graph.as_default():
 			if meta_data['run_type'] == 'single_activation_visualization':
+				# Create a simple activation visualization of one layer with one input
+				# image
+				
 				layer_name = meta_data['layer']
 				
-				if layer_name in self._image_tensors:
-					result = self._session.run(self._image_tensors[layer_name],
-						feed_dict={'input:0': self._dataset.load_image(meta_data['image'])})
-				else:
-					result = None
-			if meta_data['run_type'] == 'prediction':
+				# Do nothing if the desired layer has now visualization annotation
+				if layer_name not in self._image_tensors:
+					return None
+				
+				return self._session.run(
+					self._image_tensors[layer_name],
+					feed_dict={'input:0': self._dataset.load_image(meta_data['image'])}
+				)[2:]
+			elif meta_data['run_type'] == 'distorted_activation_visualization':
+				# Get one input image, distort it multiple times, run all distorted 
+				# images through the network and blend all activation visualizations
+				
+				layer_name = meta_data['layer']
+				distortion_name = meta_data['distortion'][0]
+				image_amount = meta_data['distortion'][1]
+				
+				# Do nothing if the desired layer has now visualization annotation or if
+				# the visualization does not exist
+				if layer_name not in self._image_tensors \
+					or distortion_name not in self._distortions:
+					return None
+				
+				# Distort the input image multiple times
+				distorted_images = self._distortions[distortion_name].distort(
+					self._dataset.load_image(meta_data['image']),
+					amount=image_amount
+				)
+				
+				# Visualize the activation that each distorted image causes in the layer
+				# we are interested in
+				visualizations = []
+				
+				for image in distorted_images:
+					visualizations.append(
+						self._session.run(
+							self._image_tensors[layer_name],
+							feed_dict={'input:0': image}
+						)[2:]
+					)
+				
+				# Blend the visualizations of each unit
+				blended_visualizations = np.array([])
+				
+				for unit_index in range(0, len(visualizations[0])):
+					unit_visualizations = []
+					
+					for visualization in visualizations:
+						unit_visualizations.append(visualization[unit_index])
+					
+					blended_visualizations = np.append(
+						blended_visualizations,
+						imgutil.blend_images(unit_visualizations)
+					)
+				
+				return blended_visualizations
+			elif meta_data['run_type'] == 'prediction':
 				input_image = self._dataset.images[meta_data['image']]
 				
 				model_output = self._session.run(
@@ -186,20 +243,21 @@ class Model:
 					'certainty': float(model_output[index])
 				} for index in model_output.argsort()[-5:][::-1]]
 				
-				result = {
+				return {
 					'input': input_image,
 					'predictions': top_5_predictions
 				}
-		
-		return result
 
 class ModelManager:
 	directory = None
 	model_modules = None
 	_dataset_manager = None
+	_distortion_manager = None
 	
-	def __init__(self, directory, dataset_manager):
+	def __init__(self, directory, dataset_manager, distortion_manager):
 		self._dataset_manager = dataset_manager
+		self._distortion_manager = distortion_manager
+		
 		self.directory = path.join(directory, 'models')
 		
 		if not path.exists(self.directory):
@@ -235,9 +293,15 @@ class ModelManager:
 			
 			try:
 				spec.loader.exec_module(module)
+				
 				dataset = self._dataset_manager.get_dataset_modules()[module
 					.get_dataset()]
-				self.model_modules[name] = Model(name, module, model_directory, dataset)
+				distortions = self._distortion_manager.get_distortion_modules()
+				
+				self.model_modules[name] = Model(
+					name, module, model_directory,
+					dataset, distortions
+				)
 			except Exception as e:
 				logging.error('Could not import the model module \"{}\": {}'
 					.format(name, traceback.format_exc()))

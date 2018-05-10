@@ -50,7 +50,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		tf.logging.warn('Setting up all models. This might take a while.')
 		self.model_manager = models.ModelManager(self.storage_path,
-			self.dataset_manager)
+			self.dataset_manager, self.distortion_manager)
 
 	def get_plugin_apps(self):
 		"""Gets all routes offered by the plugin.
@@ -91,25 +91,37 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# to the plugin.
 		return bool(self._multiplexer and any(six.itervalues(all_runs)))
 	
-	def _get_layer_visualization(self, model, layer):
-		if model in self._layer_visualization_cache:
-			if layer in self._layer_visualization_cache[model]:
-				return self._layer_visualization_cache[model][layer]
+	def _get_layer_visualization(self, model, layer, image_index,
+		distortion=None):
+		key_tuple = (model, layer, image_index, distortion)
+		
+		if key_tuple in self._layer_visualization_cache:
+			return self._layer_visualization_cache[key_tuple]
 		
 		_model = self.model_manager.get_model_modules()[model]
+		result = None
 		
-		meta_data = {
-			'run_type': 'single_activation_visualization',
-			'layer': layer,
-			'image': 0
-		}
+		if distortion == None:
+			meta_data = {
+				'run_type': 'single_activation_visualization',
+				'layer': layer,
+				'image': image_index
+			}
+			
+			result = _model.run(meta_data)
+		else:
+			meta_data = {
+				'run_type': 'distorted_activation_visualization',
+				'layer': layer,
+				'image': image_index,
+				'distortion': distortion
+			}
+			
+			result = _model.run(meta_data)
 		
-		result = _model.run(meta_data)
+		# Cache the result for later use
+		self._layer_visualization_cache[key_tuple] = result
 		
-		if model not in self._layer_visualization_cache:
-			self._layer_visualization_cache[model] = {}
-		
-		self._layer_visualization_cache[model][layer] = result
 		return result
 	
 	def _get_graph_structure(self, model):
@@ -317,17 +329,19 @@ class AdvisPlugin(base_plugin.TBPlugin):
 	@wrappers.Request.application
 	def layer_meta_route(self, request):
 		"""A route that returns meta information about a network layer of which 
-		visualizations exist. These are identified by their tag which equals the 
-		name of the corresponding graph node.
+		visualizations exist.
 
 		Arguments:
-			request: A request containing the meta information's run and tag.
+			request: A request containing the model name, the layer name as well as 
+				the index of the input image as retrieved from the dataset. It might 
+				also contain the name of a distortion that should be applied to the 
+				input image.
 		Returns:
 			A JSON document containing meta information about the layer.
 		"""
 		# Check for missing arguments and possibly return an error
 		missing_arguments = argutil.check_missing_arguments(
-			request, ['model', 'layer']
+			request, ['model', 'layer', 'imageIndex']
 		)
 		
 		if missing_arguments != None:
@@ -337,12 +351,34 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# from the request
 		model_name = request.args.get('model')
 		layer_name = request.args.get('layer')
+		image_index = int(request.args.get('imageIndex'))
 		
-		result = self._get_layer_visualization(model_name, layer_name)
+		# If a distortion should be applied, extract its name
+		if 'distortion' in request.args:
+			distortion_name = request.args.get('distortion')
+			
+			if 'imageAmount' not in request.args:
+				return http_util.Respond(
+					request,
+					'In order to retrieve an activation visualization of distorted '
+					+ 'images you have to specify the amount of distorted images to '
+					+ 'create using the \"imageAmount\" parameter.',
+					'text/plain',
+					code=400
+				)
+			else:
+				distorted_image_amount = int(request.args.get('imageAmount'))
+				distortion = (distortion_name, distorted_image_amount)
+		else:
+			distortion = None
+		
+		result = self._get_layer_visualization(
+			model_name, layer_name, image_index, distortion=distortion
+		)
 		
 		# After the model has run, construct meta information using the tensor data
 		if isinstance(result, np.ndarray):
-			response = {'unitCount': result.shape[0] - 2}
+			response = {'unitCount': result.shape[0]}
 		else:
 			response = {'unitCount': 0}
 		
@@ -354,14 +390,16 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		visualizations of a deep learning layer.
 
 		Arguments:
-			request: A request containing the model name, the layer name as well as 
-				the unit index.
+			request: A request containing the model name, the layer name, the unit 
+				index as well as the index of the input image as retrieved from the 
+				dataset. It might also contain the name of a distortion that should be 
+				applied to the input image.
 		Returns:
 			A URL for the image data containing the requested visualization.
 		"""
 		# Check for missing arguments and possibly return an error
 		missing_arguments = argutil.check_missing_arguments(
-			request, ['model', 'layer', 'unitIndex']
+			request, ['model', 'layer', 'unitIndex', 'imageIndex']
 		)
 		
 		if missing_arguments != None:
@@ -371,15 +409,37 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# from the request
 		model_name = request.args.get('model')
 		layer_name = request.args.get('layer')
-		unit_index = int(request.args.get('unitIndex')) + 2
+		unit_index = int(request.args.get('unitIndex'))
+		image_index = int(request.args.get('imageIndex'))
 		
-		result = self._get_layer_visualization(model_name, layer_name)
+		# If a distortion should be applied, extract its name
+		if 'distortion' in request.args:
+			distortion_name = request.args.get('distortion')
+			
+			if 'imageAmount' not in request.args:
+				return http_util.Respond(
+					request,
+					'In order to retrieve an activation visualization of distorted '
+					+ 'images you have to specify the amount of distorted images to '
+					+ 'create using the \"imageAmount\" parameter.',
+					'text/plain',
+					code=400
+				)
+			else:
+				distorted_image_amount = int(request.args.get('imageAmount'))
+				distortion = (distortion_name, distorted_image_amount)
+		else:
+			distortion = None
+		
+		result = self._get_layer_visualization(
+			model_name, layer_name, image_index, distortion=distortion
+		)
 		
 		# Check the index value for validity
 		if isinstance(result, np.ndarray) and unit_index >= 0 and \
 			unit_index < len(result):
 			# Fetch the image summary tensor corresponding to the request's values
-			response = response = result[unit_index]
+			response = result[unit_index]
 		else:
 			# Something has gone wrong, return a placeholder
 			response = imgutil.get_placeholder_image()
