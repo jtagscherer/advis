@@ -73,18 +73,12 @@ class AdvisPlugin(base_plugin.TBPlugin):
 	def is_active(self):
 		"""Determines whether this plugin is active.
 
-		This plugin is only active if TensorBoard sampled any summaries
-		relevant to the advis plugin.
-
 		Returns:
-			Whether this plugin is active.
+			True if this plugin is active, false otherwise
 		"""
-		all_runs = self._multiplexer.PluginRunToTagToContent(
-			AdvisPlugin.plugin_name)
-
-		# The plugin is active if any of the runs has a tag relevant
-		# to the plugin.
-		return bool(self._multiplexer and any(six.itervalues(all_runs)))
+		
+		# The plugin is active if at least one model has been loaded.
+		return len(self.model_manager.get_model_modules()) > 0
 	
 	@wrappers.Request.application
 	def models_route(self, request):
