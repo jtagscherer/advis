@@ -1,0 +1,55 @@
+@import 'advis_plugin/shared/text';
+@import 'advis_plugin/shared/color';
+
+$image-preview-size: 50px;
+$inner-padding: 5px;
+
+#container {
+	padding: 5px;
+	cursor: pointer;
+	
+	#content {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		
+		position: relative;
+		
+		padding: 5px;
+		border: 1px solid $light-foreground-color;
+		border-radius: 3px;
+		
+		#left {
+			flex: 0;
+			
+			display: flex;
+			align-items: center;
+			
+			img {
+				border: 1px solid $light-foreground-color;
+				
+				width: $image-preview-size;
+				height: $image-preview-size;
+			}
+		}
+		
+		#center {
+			display: flex;
+			flex-direction: column;
+			
+			flex: 1;
+			
+			padding-left: $inner-padding;
+			padding-right: $inner-padding;
+			min-width: 0;
+			
+			p {
+				margin: 2px;
+			}
+		}
+		
+		#dropdown-icon {
+			flex: 0;
+		}
+	}
+}

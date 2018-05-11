@@ -9,6 +9,7 @@ Polymer({
 			observer: '_fetchAvailableImages'
 		},
 		selectedLayer: String,
+		associatedDataset: String,
 		selectedImage: Object,
 		_availableImages: Array,
 		requestManager: Object
@@ -41,10 +42,12 @@ Polymer({
 				return;
 			}
 			
+			self.associatedDataset = dataset;
+			
 			// Now that we know which dataset we are using, fetch a list of its images
 			const datasetUrl = tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('advis', '/datasets/images/list'), {
-				dataset: dataset
+				dataset: self.associatedDataset
 			});
 			
 			self.requestManager.request(datasetUrl).then(images => {

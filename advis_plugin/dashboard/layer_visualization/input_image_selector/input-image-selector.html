@@ -1,0 +1,37 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../tf-backend/tf-backend.html">
+
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<!--
+	This module displays an input image that has been selected. When clicked a 
+	dialog is shown that allows selecting another image.
+-->
+<dom-module id="input-image-selector">
+	<template>
+		<div id="container">
+			<div id="content">
+				<div id="left">
+					<img src$="[[_selectedImageUrl]]"></img>
+				</div>
+				
+				<div id="center">
+					<p class="single-line title">[[selectedImage.categoryName]]</p>
+					<p class="single-line monospaced caption">[[selectedImage.id]]</p>
+				</div>
+				
+				<div id="dropdown-icon">
+					<iron-icon icon="arrow-drop-down"></iron-icon>
+				</div>
+				
+				<paper-ripple></paper-ripple>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="input-image-selector.css">
+	</template>
+
+	<script src="input-image-selector.js"></script>
+</dom-module>
