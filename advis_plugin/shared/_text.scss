@@ -28,3 +28,13 @@ $font-size-body: 12px;
 	font-size: $font-size-body;
 	font-weight: normal;
 }
+
+.monospaced {
+	font-family: monospace;
+}
+
+.single-line {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

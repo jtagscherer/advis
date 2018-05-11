@@ -15,7 +15,7 @@ tf_web_library(
 	deps = [
 		"//advis_plugin/dashboard/section_header",
 		"//advis_plugin/dashboard/model_list_item",
-		"//advis_plugin/dashboard/layer_image",
+		"//advis_plugin/dashboard/layer_visualization",
 		"//advis_plugin/dashboard/graph_view",
 		"@org_polymer_iron_icon",
 		"@org_polymer_iron_selector",

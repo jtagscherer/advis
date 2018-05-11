@@ -42,13 +42,14 @@ Polymer({
 		
 		// Update the layer visualization
 		this._fetchModels().then(() => {
-			this.$$('layer-image').reload();
+			this.$$('layer-visualization').reload();
 		});
   },
 	
 	_nodeSelected(e) {
 		if (this.selectedModel != null) {
 			this.selectedLayer = e.detail.selectedNode;
+			this.$$('layer-visualization').reload();
 		}
 	},
 	_itemSelected(e) {

@@ -11,8 +11,7 @@
 
 <link rel="import" href="../../section-header/section-header.html">
 <link rel="import" href="../../model-list-item/model-list-item.html">
-
-<link rel="import" href="../../layer-image/layer-image.html">
+<link rel="import" href="../../layer-visualization/layer-visualization.html">
 <link rel="import" href="../../graph-view/graph-view.html">
 
 <!--
@@ -72,11 +71,11 @@
 						</template>
 					</div>
 					<div id="bottom-container">
-						<layer-image
-							model="[[selectedModel]]"
-							layer="[[selectedLayer]]"
+						<layer-visualization
+							selected-model="[[selectedModel]]"
+							selected-layer="[[selectedLayer]]"
 							request-manager="[[_requestManager]]">
-						</layer-image>
+						</layer-visualization>
 					</div>
 				</template>
 			</div>
