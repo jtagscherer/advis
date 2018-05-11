@@ -8,15 +8,11 @@ py_library(
 	srcs = ["plugin.py"],
 	srcs_version = "PY2AND3",
 	deps = [
-		"//advis_plugin:util",
 		"//advis_plugin/models:models",
 		"//advis_plugin/datasets:datasets",
 		"//advis_plugin/distortions:distortions",
 		"//advis_plugin/routers",
 		"@org_pocoo_werkzeug",
-		"@org_pythonhosted_six",
-		"@org_tensorflow_tensorboard//tensorboard/backend:http_util",
-		"@org_tensorflow_tensorboard//tensorboard/backend/event_processing:event_accumulator",
 		"@org_tensorflow_tensorboard//tensorboard/plugins:base_plugin"
 	]
 )

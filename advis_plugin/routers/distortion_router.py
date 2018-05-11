@@ -1,5 +1,4 @@
 from tensorboard.backend import http_util
-from advis_plugin import argutil
 
 def distortions_route(request, distortion_manager):
 	response = [{

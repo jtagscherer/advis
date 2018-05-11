@@ -14,12 +14,7 @@ py_library(
 	srcs_version = "PY2AND3",
 	deps = [
 		"//advis_plugin:util",
-		"//advis_plugin/models:models",
-		"//advis_plugin/datasets:datasets",
-		"//advis_plugin/distortions:distortions",
 		"@org_tensorflow_tensorboard//tensorboard/backend:http_util",
-		requirement('numpy'),
-		requirement('scikit-image'),
-		requirement('Pillow')
+		requirement('numpy')
 	]
 )

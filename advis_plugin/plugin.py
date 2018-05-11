@@ -3,20 +3,15 @@ from __future__ import division
 from __future__ import print_function
 
 import tensorflow as tf
-import numpy as np
-import six
+from tensorboard.plugins import base_plugin
 from werkzeug import wrappers
 
-from advis_plugin import imgutil, argutil
 from advis_plugin.models import models
 from advis_plugin.datasets import datasets
 from advis_plugin.distortions import distortions
 
 from advis_plugin.routers import \
 	model_router, distortion_router, dataset_router, visualization_router
-
-from tensorboard.backend import http_util
-from tensorboard.plugins import base_plugin
 
 class AdvisPlugin(base_plugin.TBPlugin):
 	"""A plugin for visualizing random perturbations of input data and their 
