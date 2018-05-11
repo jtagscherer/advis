@@ -5,10 +5,14 @@ Polymer({
   properties: {
     model: Object,
     layer: String,
+		imageIndex: {
+			type: Number,
+			value: 0
+		},
 		_urls: Array,
 		_requestManager: {
       type: Object,
-      value: () => new tf_backend.RequestManager(1, 1)
+      value: () => new tf_backend.RequestManager()
     },
 		
     _canceller: {
@@ -60,7 +64,8 @@ Polymer({
 		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/layer/meta'), {
 			model: this.model.name,
-			layer: this.layer
+			layer: this.layer,
+			imageIndex: this.imageIndex
 		});
 		
 		this._requestManager.request(metaUrl).then(metaData => {
@@ -72,6 +77,7 @@ Polymer({
 					.pluginRoute('advis', '/layer/image'), {
 					model: this.model.name,
 					layer: this.layer,
+					imageIndex: this.imageIndex,
 					unitIndex: String(i)
 	      }));
 			}
