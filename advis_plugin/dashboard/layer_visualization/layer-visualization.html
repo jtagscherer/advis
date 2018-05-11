@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../tf-backend/tf-backend.html">
 
-<!-- <link rel="import" href="../input-image-selector/input-image-selector.html"> -->
+<link rel="import" href="../input-image-selector/input-image-selector.html">
 <link rel="import" href="../layer-image/layer-image.html">
 
 <!--
@@ -9,11 +9,14 @@
 -->
 <dom-module id="layer-visualization">
 	<template>
-		<!-- <input-image-selector></input-image-selector> -->
+		<input-image-selector
+			selected-image="{{selectedImage}}">
+		</input-image-selector>
 		
 		<layer-image
 			model="[[selectedModel]]"
 			layer="[[selectedLayer]]"
+			image-index="[[selectedImage.index]]"
 			request-manager="[[requestManager]]">
 		</layer-image>
 		

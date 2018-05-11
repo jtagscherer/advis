@@ -5,10 +5,7 @@ Polymer({
   properties: {
     model: Object,
     layer: String,
-		imageIndex: {
-			type: Number,
-			value: 0
-		},
+		imageIndex: Number,
 		_urls: Array,
 		_requestManager: {
       type: Object,
@@ -57,7 +54,7 @@ Polymer({
     }
   },
 	_hasValidData() {
-		return this.model != null && this.layer != null;
+		return this.model != null && this.layer != null && this.imageIndex != null;
 	},
 	_constructTileUrlList() {
 		// First of all, request some meta data about the model layer shown
