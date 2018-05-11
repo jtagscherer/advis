@@ -12,13 +12,16 @@ from advis_plugin.models import models
 from advis_plugin.datasets import datasets
 from advis_plugin.distortions import distortions
 
+from advis_plugin.routers import \
+	model_router, distortion_router, dataset_router, visualization_router
+
 from tensorboard.backend import http_util
 from tensorboard.plugins import base_plugin
 
 class AdvisPlugin(base_plugin.TBPlugin):
-	"""A plugin plugin for visualizing random perturbations of input data and
-	their effects on deep learning models."""
-
+	"""A plugin for visualizing random perturbations of input data and their 
+	effects on deep learning models."""
+	
 	# Unique plugin identifier
 	plugin_name = 'advis'
 	
@@ -29,10 +32,6 @@ class AdvisPlugin(base_plugin.TBPlugin):
 	model_manager = None
 	dataset_manager = None
 	distortion_manager = None
-	
-	# Data caches for easier access
-	_layer_visualization_cache = {}
-	_graph_structure_cache = {}
 
 	def __init__(self, context):
 		"""Instantiates an AdvisPlugin.
@@ -61,13 +60,14 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Returns:
 			A dictionary mapping URL path to route that handles it.
 		"""
+		
 		# Note that the methods handling routes are decorated with
 		# @wrappers.Request.application.
 		return {
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
-			'/distortions': self.distortions_route,
 			'/prediction': self.prediction_route,
+			'/distortions': self.distortions_route,
 			'/datasets': self.datasets_route,
 			'/datasets/images/list': self.datasets_images_list_route,
 			'/datasets/images/image': self.datasets_images_image_route,
@@ -91,49 +91,6 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# to the plugin.
 		return bool(self._multiplexer and any(six.itervalues(all_runs)))
 	
-	def _get_layer_visualization(self, model, layer, image_index,
-		distortion=None):
-		key_tuple = (model, layer, image_index, distortion)
-		
-		if key_tuple in self._layer_visualization_cache:
-			return self._layer_visualization_cache[key_tuple]
-		
-		_model = self.model_manager.get_model_modules()[model]
-		result = None
-		
-		if distortion == None:
-			meta_data = {
-				'run_type': 'single_activation_visualization',
-				'layer': layer,
-				'image': image_index
-			}
-			
-			result = _model.run(meta_data)
-		else:
-			meta_data = {
-				'run_type': 'distorted_activation_visualization',
-				'layer': layer,
-				'image': image_index,
-				'distortion': distortion
-			}
-			
-			result = _model.run(meta_data)
-		
-		# Cache the result for later use
-		self._layer_visualization_cache[key_tuple] = result
-		
-		return result
-	
-	def _get_graph_structure(self, model):
-		if model in self._graph_structure_cache:
-			return self._graph_structure_cache[model]
-		
-		_model = self.model_manager.get_model_modules()[model]
-		result = _model.graph_structure
-		
-		self._graph_structure_cache[model] = result
-		return result
-
 	@wrappers.Request.application
 	def models_route(self, request):
 		"""A route that returns a response with all models.
@@ -146,16 +103,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 				models.
 		"""
 		
-		response = []
-		
-		for name, model in self.model_manager.get_model_modules().items():
-			response.append({
-				'name': name,
-				'displayName': model.display_name,
-				'version': model.version
-			})
-		
-		return http_util.Respond(request, response, 'application/json')
+		return model_router.models_route(request, self.model_manager)
 	
 	@wrappers.Request.application
 	def graphs_route(self, request):
@@ -167,40 +115,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Returns:
 			A response that contains the graph structure of the specified model.
 		"""
-		# Check for missing arguments and possibly return an error
-		missing_arguments = argutil.check_missing_arguments(
-			request, ['model']
-		)
 		
-		if missing_arguments != None:
-			return missing_arguments
-		
-		model_name = request.args.get('model')
-		
-		result = self._get_graph_structure(model_name)
-		
-		response = {'graph': result}
-		
-		return http_util.Respond(request, response, 'application/json')
-	
-	@wrappers.Request.application
-	def distortions_route(self, request):
-		"""A route that returns a list of all available distortion methods.
-
-		Arguments:
-			request: The request which has to contain no additional information.
-		Returns:
-			A response that contains a list of all available distortion methods.
-		"""
-		
-		response = [{
-			'name': name,
-			'displayName': distortion.display_name,
-			'parameters': list(distortion._parameters.keys())
-		} for name, distortion in self.distortion_manager.get_distortion_modules()
-			.items()]
-		
-		return http_util.Respond(request, response, 'application/json')
+		return model_router.graphs_route(request, self.model_manager)
 	
 	@wrappers.Request.application
 	def prediction_route(self, request):
@@ -213,25 +129,20 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			A response that contains information about the input image as well as the 
 				model's prediction.
 		"""
-		# Check for missing arguments and possibly return an error
-		missing_arguments = argutil.check_missing_arguments(
-			request, ['model', 'imageIndex']
-		)
 		
-		if missing_arguments != None:
-			return missing_arguments
+		return model_router.prediction_route(request, self.model_manager)
+	
+	@wrappers.Request.application
+	def distortions_route(self, request):
+		"""A route that returns a list of all available distortion methods.
+
+		Arguments:
+			request: The request which has to contain no additional information.
+		Returns:
+			A response that contains a list of all available distortion methods.
+		"""
 		
-		model_name = request.args.get('model')
-		_model = self.model_manager.get_model_modules()[model_name]
-		
-		meta_data = {
-			'run_type': 'prediction',
-			'image': int(request.args.get('imageIndex'))
-		}
-		
-		response = _model.run(meta_data)
-		
-		return http_util.Respond(request, response, 'application/json')
+		return distortion_router.distortions_route(request, self.distortion_manager)
 	
 	@wrappers.Request.application
 	def datasets_route(self, request):
@@ -243,12 +154,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			A response that contains a list of all available datasets.
 		"""
 		
-		response = [{
-			'name': name,
-			'imageCount': len(dataset.images)
-		} for name, dataset in self.dataset_manager.get_dataset_modules().items()]
-		
-		return http_util.Respond(request, response, 'application/json')
+		return dataset_router.datasets_route(request, self.dataset_manager)
 	
 	@wrappers.Request.application
 	def datasets_images_list_route(self, request):
@@ -260,25 +166,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			A response that contains a list of all input images in the dataset 
 				alongside meta data such as their category ID and label.
 		"""
-		# Check for missing arguments and possibly return an error
-		missing_arguments = argutil.check_missing_arguments(
-			request, ['dataset']
-		)
 		
-		if missing_arguments != None:
-			return missing_arguments
-		
-		dataset_name = request.args.get('dataset')
-		
-		images = self.dataset_manager.get_dataset_modules()[dataset_name].images
-		response = [{
-			'index': index,
-			'id': image['id'],
-			'categoryId': image['categoryId'],
-			'categoryName': image['categoryName']
-		} for index, image in enumerate(images)]
-		
-		return http_util.Respond(request, response, 'application/json')
+		return dataset_router.datasets_images_list_route(request,
+			self.dataset_manager)
 	
 	@wrappers.Request.application
 	def datasets_images_image_route(self, request):
@@ -290,41 +180,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Returns:
 			The desired image as retrieved from the dataset.
 		"""
-		# Check for missing arguments and possibly return an error
-		missing_arguments = argutil.check_missing_arguments(
-			request, ['dataset']
-		)
 		
-		if missing_arguments != None:
-			return missing_arguments
-		
-		# We always need the name of the desired dataset
-		dataset_name = request.args.get('dataset')
-		dataset = self.dataset_manager.get_dataset_modules()[dataset_name]
-		
-		# On top, we either need the desired image's index or ID
-		if 'index' in request.args:
-			response = dataset.load_image(int(request.args.get('index')),
-				output='bytes')
-		elif 'id' in request.args:
-			image_id = request.args.get('id')
-			image_index = None
-			
-			for index, image in enumerate(dataset.images):
-				if image['id'] == image_id:
-					image_index = index
-					break
-			
-			if image_index != None:
-				response = dataset.load_image(image_index, output='bytes')
-			else:
-				response = imgutil.get_placeholder_image()
-		else:
-			# No image has been specified, return a placeholder
-			response = imgutil.get_placeholder_image()
-		
-		# Return the image data with proper headers set
-		return http_util.Respond(request, response, 'image/png')
+		return dataset_router.datasets_images_image_route(request,
+			self.dataset_manager)
 	
 	@wrappers.Request.application
 	def layer_meta_route(self, request):
@@ -339,50 +197,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Returns:
 			A JSON document containing meta information about the layer.
 		"""
-		# Check for missing arguments and possibly return an error
-		missing_arguments = argutil.check_missing_arguments(
-			request, ['model', 'layer', 'imageIndex']
-		)
 		
-		if missing_arguments != None:
-			return missing_arguments
-		
-		# Now that we are sure all necessary arguments are available, extract them 
-		# from the request
-		model_name = request.args.get('model')
-		layer_name = request.args.get('layer')
-		image_index = int(request.args.get('imageIndex'))
-		
-		# If a distortion should be applied, extract its name
-		if 'distortion' in request.args:
-			distortion_name = request.args.get('distortion')
-			
-			if 'imageAmount' not in request.args:
-				return http_util.Respond(
-					request,
-					'In order to retrieve an activation visualization of distorted '
-					+ 'images you have to specify the amount of distorted images to '
-					+ 'create using the \"imageAmount\" parameter.',
-					'text/plain',
-					code=400
-				)
-			else:
-				distorted_image_amount = int(request.args.get('imageAmount'))
-				distortion = (distortion_name, distorted_image_amount)
-		else:
-			distortion = None
-		
-		result = self._get_layer_visualization(
-			model_name, layer_name, image_index, distortion=distortion
-		)
-		
-		# After the model has run, construct meta information using the tensor data
-		if isinstance(result, np.ndarray):
-			response = {'unitCount': result.shape[0]}
-		else:
-			response = {'unitCount': 0}
-		
-		return http_util.Respond(request, response, 'application/json')
+		return visualization_router.layer_meta_route(request, self.model_manager)
 	
 	@wrappers.Request.application
 	def layer_image_route(self, request):
@@ -397,52 +213,5 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Returns:
 			A URL for the image data containing the requested visualization.
 		"""
-		# Check for missing arguments and possibly return an error
-		missing_arguments = argutil.check_missing_arguments(
-			request, ['model', 'layer', 'unitIndex', 'imageIndex']
-		)
 		
-		if missing_arguments != None:
-			return missing_arguments
-		
-		# Now that we are sure all necessary arguments are available, extract them 
-		# from the request
-		model_name = request.args.get('model')
-		layer_name = request.args.get('layer')
-		unit_index = int(request.args.get('unitIndex'))
-		image_index = int(request.args.get('imageIndex'))
-		
-		# If a distortion should be applied, extract its name
-		if 'distortion' in request.args:
-			distortion_name = request.args.get('distortion')
-			
-			if 'imageAmount' not in request.args:
-				return http_util.Respond(
-					request,
-					'In order to retrieve an activation visualization of distorted '
-					+ 'images you have to specify the amount of distorted images to '
-					+ 'create using the \"imageAmount\" parameter.',
-					'text/plain',
-					code=400
-				)
-			else:
-				distorted_image_amount = int(request.args.get('imageAmount'))
-				distortion = (distortion_name, distorted_image_amount)
-		else:
-			distortion = None
-		
-		result = self._get_layer_visualization(
-			model_name, layer_name, image_index, distortion=distortion
-		)
-		
-		# Check the index value for validity
-		if isinstance(result, np.ndarray) and unit_index >= 0 and \
-			unit_index < len(result):
-			# Fetch the image summary tensor corresponding to the request's values
-			response = result[unit_index]
-		else:
-			# Something has gone wrong, return a placeholder
-			response = imgutil.get_placeholder_image()
-		
-		# Return the image data with proper headers set
-		return http_util.Respond(request, response, 'image/png')
+		return visualization_router.layer_image_route(request, self.model_manager)
