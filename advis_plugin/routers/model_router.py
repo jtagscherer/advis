@@ -21,6 +21,7 @@ def models_route(request, model_manager):
 		response.append({
 			'name': name,
 			'displayName': model.display_name,
+			'dataset': model._dataset.name,
 			'version': model.version
 		})
 	
