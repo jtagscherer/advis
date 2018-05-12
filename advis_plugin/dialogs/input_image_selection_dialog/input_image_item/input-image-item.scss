@@ -1,4 +1,4 @@
-@import 'advis_plugin/shared/style';
+@import 'advis_plugin/shared/color';
 @import 'advis_plugin/shared/text';
 
 $line-margin: 2px;
@@ -6,6 +6,18 @@ $line-margin: 2px;
 paper-card {
 	width: 150px;
 	height: 228px;
+	
+	cursor: pointer;
+}
+
+.selected-card {
+	background-color: $accent-color;
+	transition: background-color 0.5s ease;
+}
+
+.selected-text {
+	color: white;
+	transition: color 0.5s ease;
 }
 
 p {

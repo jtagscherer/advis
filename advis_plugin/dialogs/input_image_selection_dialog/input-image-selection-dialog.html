@@ -26,11 +26,14 @@
 				</div>
 			</dialog-header>
 			<div id="content">
-				<iron-list class="flex" items="[[availableImages]]" as="image" grid>
+				<iron-list
+					class="flex"
+					items="[[availableImages]]" as="image" grid
+					selection-enabled selected-item="{{selectedImage}}">
 					<template>
 						<input-image-item
 							image=[[image]]
-							on-tap="inputImageTapped">
+							selected="{{selected}}">
 						</input-image-item>
 					</template>
 				</iron-list>

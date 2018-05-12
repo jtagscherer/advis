@@ -1,5 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-card/paper-card.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 
 <!--
@@ -8,15 +9,17 @@
 -->
 <dom-module id="input-image-item">
 	<template>
-		<paper-card image=[[image.url]]>
+		<paper-card image=[[image.url]] class$="[[_getClass(selected, 'card')]]">
 			<div class="card-content">
-				<p id="title" class="single-line title">[[image.categoryName]]</p>
-				<p id="caption" class="single-line monospaced caption">[[image.id]]</p>
+				<p id="title" class$="[[_getClass(selected, 'title')]]">[[image.categoryName]]</p>
+				<p id="caption" class$="[[_getClass(selected, 'caption')]]">[[image.id]]</p>
 				
-				<paper-tooltip for="title" fit-to-visible-bounds="true">
+				<paper-tooltip for="title">
 					[[image.categoryName]]
 				</paper-tooltip>
 			</div>
+			
+			<paper-ripple></paper-ripple>
 		</paper-card>
 		
 		<link rel="stylesheet" type="text/css" href="input-image-item.css">

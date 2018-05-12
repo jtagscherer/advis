@@ -16,6 +16,7 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_paper_card",
+		"@org_polymer_paper_ripple",
 		"@org_polymer_paper_tooltip"
 	]
 )
@@ -25,7 +26,7 @@ sass_binary(
   name = "input_image_item_scss",
   src = "input-image-item.scss",
 	deps = [
-		"//advis_plugin/shared:style",
+		"//advis_plugin/shared:color",
 		"//advis_plugin/shared:text"
 	]
 )
