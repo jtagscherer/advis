@@ -1,0 +1,14 @@
+@import 'advis_plugin/shared/style';
+@import 'advis_plugin/shared/text';
+
+$line-margin: 2px;
+
+paper-card {
+	width: 150px;
+	height: 228px;
+}
+
+p {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}

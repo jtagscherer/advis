@@ -1,11 +1,21 @@
 @import 'advis_plugin/shared/style';
 
 $content-size: 80vh;
+$inner-padding: 5px;
 
 #content {
 	width: $content-size;
 	height: $content-size;
 	
-	margin: 5px;
-	padding: 5px;
+	margin: 0;
+	padding: 0;
+	
+	iron-list {
+		width: $content-size;
+		height: $content-size;
+	}
+	
+	input-image-item {
+		padding: $inner-padding;
+	}
 }

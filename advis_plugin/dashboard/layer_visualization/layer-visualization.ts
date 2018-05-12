@@ -67,7 +67,18 @@ Polymer({
 				});
 				
 				self.requestManager.request(datasetUrl).then(images => {
-					self._availableImages = images;
+					self._availableImages = [];
+					
+					// Add each image's URL
+					for (var image of images) {
+						image.url = tf_backend.addParams(tf_backend.getRouter()
+							.pluginRoute('advis', '/datasets/images/image'), {
+							dataset: self.associatedDataset.name,
+							index: image.index
+						});
+						
+						self._availableImages.push(image);
+					}
 					
 					// Select the first available image per default
 					if (self._availableImages != null

@@ -8,6 +8,7 @@ Polymer({
 	
   properties: {
 		dataset: Object,
+		availableImages: Array,
 		eventId: {
 			type: String,
 			value: 'input-image-selection-dialog'
@@ -16,5 +17,6 @@ Polymer({
 	
 	setContent(content) {
 		this.dataset = content.dataset;
+		this.availableImages = content.availableImages;
 	}
 });

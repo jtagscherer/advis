@@ -1,0 +1,26 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-card/paper-card.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+
+<!--
+	This component can be used as an item in a list, representing a single 
+	selectable input image along with additional meta information.
+-->
+<dom-module id="input-image-item">
+	<template>
+		<paper-card image=[[image.url]]>
+			<div class="card-content">
+				<p id="title" class="single-line title">[[image.categoryName]]</p>
+				<p id="caption" class="single-line monospaced caption">[[image.id]]</p>
+				
+				<paper-tooltip for="title" fit-to-visible-bounds="true">
+					[[image.categoryName]]
+				</paper-tooltip>
+			</div>
+		</paper-card>
+		
+		<link rel="stylesheet" type="text/css" href="input-image-item.css">
+	</template>
+
+	<script src="input-image-item.js"></script>
+</dom-module>

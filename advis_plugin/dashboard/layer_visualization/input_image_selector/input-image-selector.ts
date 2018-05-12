@@ -4,12 +4,9 @@ Polymer({
   is: 'input-image-selector',
 	
   properties: {
-		selectedImage: {
-			type: Object,
-			observer: '_selectedImageChanged'
-		},
+		selectedImage: Object,
 		associatedDataset: Object,
-		_selectedImageUrl: String
+		availableImages: Array
 	},
 	
 	tapped: function() {
@@ -17,21 +14,14 @@ Polymer({
 		if (this.hasValidData()) {
 			this.$$('input-image-selection-dialog').open({
 				dataset: this.associatedDataset,
+				availableImages: this.availableImages,
 				animationTarget: this.$$('#left').getBoundingClientRect()
 			});
 		}
 	},
 	
 	hasValidData: function() {
-		return this.associatedDataset != null;
-	},
-	
-	_selectedImageChanged: function(value) {
-		// Build the URL for retrieving the currently selected image
-		this._selectedImageUrl = tf_backend.addParams(tf_backend.getRouter()
-			.pluginRoute('advis', '/datasets/images/image'), {
-			dataset: this.associatedDataset.name,
-			index: this.selectedImage.index
-		});
+		return this.associatedDataset != null && this.availableImages != null
+			&& this.availableImages.length > 0;
 	}
 });
