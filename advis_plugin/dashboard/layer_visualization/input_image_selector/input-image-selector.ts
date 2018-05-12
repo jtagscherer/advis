@@ -14,10 +14,16 @@ Polymer({
 	
 	tapped: function() {
 		// Open a dialog that lets the user view all input images and select one
-		this.$$('input-image-selection-dialog').open({
-			dataset: this.associatedDataset,
-			animationTarget: this.$$('#left').getBoundingClientRect()
-		});
+		if (this.hasValidData()) {
+			this.$$('input-image-selection-dialog').open({
+				dataset: this.associatedDataset,
+				animationTarget: this.$$('#left').getBoundingClientRect()
+			});
+		}
+	},
+	
+	hasValidData: function() {
+		return this.associatedDataset != null;
 	},
 	
 	_selectedImageChanged: function(value) {
