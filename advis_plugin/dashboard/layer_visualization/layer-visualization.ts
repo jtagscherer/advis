@@ -9,7 +9,7 @@ Polymer({
 			observer: '_fetchAvailableImages'
 		},
 		selectedLayer: String,
-		associatedDataset: String,
+		associatedDataset: Object,
 		selectedImage: Object,
 		_availableImages: Array,
 		requestManager: Object
@@ -24,39 +24,57 @@ Polymer({
 			return;
 		}
 		
-		// First of all, get the dataset associated with the selected model
+		// First of all, get the name of the dataset associated with the selected 
+		// model
 		const modelUrl = tf_backend.getRouter().pluginRoute('advis', '/models');
 		
 		var self = this;
 		this.requestManager.request(modelUrl).then(models => {
-			var dataset;
+			var datasetName;
 			
 			for (var model of models) {
 				if (model.name == self.selectedModel.name) {
-					dataset = model.dataset;
+					datasetName = model.dataset;
 					break;
 				}
 			}
 			
-			if (dataset == null) {
+			if (datasetName == null) {
 				return;
 			}
 			
-			self.associatedDataset = dataset;
+			// Fetch some more information about the dataset
+			const datasetUrl = tf_backend.getRouter()
+				.pluginRoute('advis', '/datasets');
 			
-			// Now that we know which dataset we are using, fetch a list of its images
-			const datasetUrl = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/datasets/images/list'), {
-				dataset: self.associatedDataset
-			});
-			
-			self.requestManager.request(datasetUrl).then(images => {
-				self._availableImages = images;
-				
-				// Select the first available image per default
-				if (self._availableImages != null && self._availableImages.length > 0) {
-					self.selectedImage = self._availableImages[0];
+			this.requestManager.request(datasetUrl).then(datasets => {
+				for (var dataset of datasets) {
+					if (dataset.name == datasetName) {
+						self.associatedDataset = dataset;
+						break;
+					}
 				}
+				
+				if (self.associatedDataset == null) {
+					return;
+				}
+				
+				// Now that we know which dataset we are using, fetch a list of its 
+				// images
+				const datasetUrl = tf_backend.addParams(tf_backend.getRouter()
+					.pluginRoute('advis', '/datasets/images/list'), {
+					dataset: self.associatedDataset.name
+				});
+				
+				self.requestManager.request(datasetUrl).then(images => {
+					self._availableImages = images;
+					
+					// Select the first available image per default
+					if (self._availableImages != null
+					 	&& self._availableImages.length > 0) {
+						self.selectedImage = self._availableImages[0];
+					}
+				});
 			});
 		});
 	}

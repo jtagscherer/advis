@@ -1,0 +1,11 @@
+@import 'advis_plugin/shared/style';
+
+$content-size: 80vh;
+
+#content {
+	width: $content-size;
+	height: $content-size;
+	
+	margin: 5px;
+	padding: 5px;
+}

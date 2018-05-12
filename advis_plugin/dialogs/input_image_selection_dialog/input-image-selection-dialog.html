@@ -1,0 +1,34 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+
+<!--
+	When opened, this module displays a list of all images within a dataset. By 
+	clicking on one of them they can be selected as the input image for further 
+	visualizations.
+-->
+<dom-module id="input-image-selection-dialog">
+	<template>
+		<paper-dialog with-backdrop>
+			<dialog-header event-id="input-image-selection-dialog">
+				<div class="header-items">
+					<categorized-header-item
+						category="Dataset"
+						title=[[dataset.displayName]]
+						caption="[[dataset.imageCount]] images">
+					</categorized-header-item>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<!-- TODO -->
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="input-image-selection-dialog.css">
+	</template>
+
+	<script src="input-image-selection-dialog.js"></script>
+</dom-module>

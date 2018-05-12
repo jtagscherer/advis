@@ -10,15 +10,15 @@
 <dom-module id="layer-visualization">
 	<template>
 		<input-image-selector
-			associated-dataset="[[associatedDataset]]"
-			selected-image="{{selectedImage}}">
+			associated-dataset=[[associatedDataset]]
+			selected-image={{selectedImage}}>
 		</input-image-selector>
 		
 		<layer-image
-			model="[[selectedModel]]"
-			layer="[[selectedLayer]]"
-			image-index="[[selectedImage.index]]"
-			request-manager="[[requestManager]]">
+			model=[[selectedModel]]
+			layer=[[selectedLayer]]
+			image-index=[[selectedImage.index]]
+			request-manager=[[requestManager]]>
 		</layer-image>
 		
 		<link rel="stylesheet" type="text/css" href="layer-visualization.css">

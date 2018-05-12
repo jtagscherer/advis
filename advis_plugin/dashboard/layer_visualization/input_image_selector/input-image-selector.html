@@ -5,6 +5,8 @@
 <link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
 
+<link rel="import" href="../dialogs/input-image-selection-dialog/input-image-selection-dialog.html">
+
 <!--
 	This module displays an input image that has been selected. When clicked a 
 	dialog is shown that allows selecting another image.
@@ -12,7 +14,7 @@
 <dom-module id="input-image-selector">
 	<template>
 		<div id="container">
-			<div id="content">
+			<div id="content" on-tap="tapped">
 				<div id="left">
 					<img src$="[[_selectedImageUrl]]"></img>
 				</div>
@@ -29,6 +31,8 @@
 				<paper-ripple></paper-ripple>
 			</div>
 		</div>
+		
+		<input-image-selection-dialog></input-image-selection-dialog>
 		
 		<link rel="stylesheet" type="text/css" href="input-image-selector.css">
 	</template>
