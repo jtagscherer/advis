@@ -2,20 +2,32 @@
 
 const DialogBehavior = {
 	listeners: {
-    'closeButtonClickedEvent': '_handleCloseEvent'
+    'closeButtonClickedEvent': '_handleCloseEvent',
+		'iron-overlay-canceled': '_handleCancelEvent'
   },
 	
 	setContent(content) {
 		// Empty by default, should be implemented in specific dialogs
 	},
 	
+	getContentOnDismiss() {
+		// Empty by default, should be implemented in specific dialogs
+	},
+	
+	getContentOnApply() {
+		// Empty by default, should be implemented in specific dialogs
+	},
+	
 	open(content) {
+		const paperDialog = this.$$('paper-dialog');
+		
 		if (content != null) {
 			this.setContent(content);
 			this._setupAnimations(content.animationTarget);
 		}
 		
-		this.$$('paper-dialog').open();
+		paperDialog.eventId = this.eventId;
+		paperDialog.open();
 	},
 	close() {
 		this.$$('paper-dialog').close();
@@ -72,9 +84,28 @@ const DialogBehavior = {
 		};
 	},
 	
+	_handleCancelEvent(e) {
+		if (e.target.eventId === this.eventId) {
+			this._dismissDialog();
+		}
+	},
+	
 	_handleCloseEvent(e) {
 		if (e.detail.eventId === this.eventId) {
-			this.close();
+			this._dismissDialog();
+		}
+	},
+	
+	_dismissDialog() {
+		// Close the dialog
+		this.close();
+		
+		// Fire an event with potential output data
+		if (this.getContentOnDismiss() != null) {
+			this.fire('dialogReturnedEvent', {
+				eventId: this.eventId,
+				content: this.getContentOnDismiss()
+			});
 		}
 	}
 };
