@@ -1,32 +1,37 @@
 <!doctype html>
 
-<meta charset="utf-8">
-<title>AdvisBoard</title>
-<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAfCAYAAAAfrhY5AAAAAXNSR0IArs4c6QAABJBJREFUSA3FV12IVVUU/vY5d5w7DpHhi/1NYVoPlUKCRYQx04RaoFAQ/dhLRolCND7081BRPRQ+OCEUJdVL9kMSlFBTqTNgMaRoUNGDmVJjWS/iiEzzc+85u/WtM/tw9rn73jvzEC047Lv2+tb69u9a+xrMUf4ZwOXWYAMs7hSXHvkuk2+xfGflOyPfGAz2G4t9Cwfxp+htxbRDTG5Hb2rxspDeaiHh24gArKBGI4PnunZipBW8abCpASxLLHYJ4fpWAVrZJPhQbPBEdRC/hnBBciHurwMfyxwuCTmxr3tQhjUrEwPBMJnV4FwFuE8GcMDhXRu5H66d2I5HZMZftiJ22Dm1MgHGY9wy3iPnjJFit8wpLgOdbi5agvj6DU7Vljr7m4nGk7gavwDK14t7LEt9pNmMo6VrsGDtC4iW98KY3C0PZa1FemIEM1+9iPTUobzf+5FtwWp3BvKZ83AFiaMOdNz9CqrbRhBf2xckJgEHRDtxxEP8GiTbgl2uX8l5nYKnWgJUtw1jQf8zMFEEO3ketdHdmHpzrfPXlnpt9C21E0c8/UIDIA/56Kjkeo+9cJnSsf4lxEtvUyU5+Q0md6zAzN7HkRz/2kNTn9m7Rew3gjgK/egfEsdnNHNZnJYReRvJPeYScibJyUOYer1P0keSx2p61Uyss46vWQObpuLX23AGhMjKLl0ZMWWWicnAw5Ut9Tim33vII6add9t91HORAU7v2SRbMK7+jFMW8pFXNlJztWfnteGpptSPfQB7/g/P3k6x46dR//5DhentCF1D4eWes0h4El11c36q6z9+4tmomEU9qG7Zj4WvXtCWelnqP2R+vAVRz+qymXqPmRjAGbmil1Ir7iP1srg0SuL4uv7cnBw/IDeAxW7uMWRMf3HmLIvzkujqWzx8WfeMzZXFJGc9npekv33n4cu6Z2yunOWyH5VlX1XExDdsRHXzp9o1+Yak+xMHi2bd88773wFnTOLpjzbDjo95mGj5HejamhWyqbc3Ivl5n2eXZT8m1U5eIPDJ098Pg7mah6Wy8l7MlMhJ5PbYi1hQKivuUU1z/tiRgiX/ORbx6ZOrsz/shb+1SFCt3PQAzMVXlCEtdeIrqx5UDIsN4zWI8EZ8czHjlI2sTsxQpmsROh9+X+6XX2V5M9zn+Qquc9Me9aM/45RFM5zwRvrYkzdXGcCyWBveod1MldWtB9uuAGfMghIvu1396B8sr8JHXu45+NiTkiplyJfa0PNaIFgkGLDr6Z8045UTDw8Xz4ZukawUJTn1LegfEvKxX1Ygk4kn8YWsfeNjkfVcqlNH31Oaqx2+Wcul5oyVOK01wIRwqPs13EUD77kKX5kylHNOz1sJUPv8Wa1OyS/DegtyW+EHTzXtrGLEI0DM+Moz65fPnDrfWHzsyQr4p6tAokVHcnX10c/yXt7jVK5T8FTPooQoEeJ1xVesR06cvjLbPCKJK9YBl/PZHxISyxo/1r0T7xbt+bK7TgI4wuAWONB82myp15WJGaJh5i4uX7N8VAYPoQO1aSX4/P+xFGP+L//VigPg7//iX+q/Q0HRhPu5ngoAAAAASUVORK5CYII=">
-<script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
-<link rel="import" href="../tf-tensorboard/style.html">
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>AdvisBoard</title>
+		<link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAfCAYAAAAfrhY5AAAAAXNSR0IArs4c6QAABJBJREFUSA3FV12IVVUU/vY5d5w7DpHhi/1NYVoPlUKCRYQx04RaoFAQ/dhLRolCND7081BRPRQ+OCEUJdVL9kMSlFBTqTNgMaRoUNGDmVJjWS/iiEzzc+85u/WtM/tw9rn73jvzEC047Lv2+tb69u9a+xrMUf4ZwOXWYAMs7hSXHvkuk2+xfGflOyPfGAz2G4t9Cwfxp+htxbRDTG5Hb2rxspDeaiHh24gArKBGI4PnunZipBW8abCpASxLLHYJ4fpWAVrZJPhQbPBEdRC/hnBBciHurwMfyxwuCTmxr3tQhjUrEwPBMJnV4FwFuE8GcMDhXRu5H66d2I5HZMZftiJ22Dm1MgHGY9wy3iPnjJFit8wpLgOdbi5agvj6DU7Vljr7m4nGk7gavwDK14t7LEt9pNmMo6VrsGDtC4iW98KY3C0PZa1FemIEM1+9iPTUobzf+5FtwWp3BvKZ83AFiaMOdNz9CqrbRhBf2xckJgEHRDtxxEP8GiTbgl2uX8l5nYKnWgJUtw1jQf8zMFEEO3ketdHdmHpzrfPXlnpt9C21E0c8/UIDIA/56Kjkeo+9cJnSsf4lxEtvUyU5+Q0md6zAzN7HkRz/2kNTn9m7Rew3gjgK/egfEsdnNHNZnJYReRvJPeYScibJyUOYer1P0keSx2p61Uyss46vWQObpuLX23AGhMjKLl0ZMWWWicnAw5Ut9Tim33vII6add9t91HORAU7v2SRbMK7+jFMW8pFXNlJztWfnteGpptSPfQB7/g/P3k6x46dR//5DhentCF1D4eWes0h4El11c36q6z9+4tmomEU9qG7Zj4WvXtCWelnqP2R+vAVRz+qymXqPmRjAGbmil1Ir7iP1srg0SuL4uv7cnBw/IDeAxW7uMWRMf3HmLIvzkujqWzx8WfeMzZXFJGc9npekv33n4cu6Z2yunOWyH5VlX1XExDdsRHXzp9o1+Yak+xMHi2bd88773wFnTOLpjzbDjo95mGj5HejamhWyqbc3Ivl5n2eXZT8m1U5eIPDJ098Pg7mah6Wy8l7MlMhJ5PbYi1hQKivuUU1z/tiRgiX/ORbx6ZOrsz/shb+1SFCt3PQAzMVXlCEtdeIrqx5UDIsN4zWI8EZ8czHjlI2sTsxQpmsROh9+X+6XX2V5M9zn+Qquc9Me9aM/45RFM5zwRvrYkzdXGcCyWBveod1MldWtB9uuAGfMghIvu1396B8sr8JHXu45+NiTkiplyJfa0PNaIFgkGLDr6Z8045UTDw8Xz4ZukawUJTn1LegfEvKxX1Ygk4kn8YWsfeNjkfVcqlNH31Oaqx2+Wcul5oyVOK01wIRwqPs13EUD77kKX5kylHNOz1sJUPv8Wa1OyS/DegtyW+EHTzXtrGLEI0DM+Moz65fPnDrfWHzsyQr4p6tAokVHcnX10c/yXt7jVK5T8FTPooQoEeJ1xVesR06cvjLbPCKJK9YBl/PZHxISyxo/1r0T7xbt+bK7TgI4wuAWONB82myp15WJGaJh5i4uX7N8VAYPoQO1aSX4/P+xFGP+L//VigPg7//iX+q/Q0HRhPu5ngoAAAAASUVORK5CYII=">
+		<script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
+		<link rel="import" href="../tf-tensorboard/style.html">
 
-<script>
-	// It's required that Google Analytics be defined, or be faked in the
-	// following manner (which is the default behavior in the TensorBoard
-	// open source release.)
-	window['ga'] = function() {};
-</script>
+		<script>
+			// It's required that Google Analytics be defined, or be faked in the
+			// following manner (which is the default behavior in the TensorBoard
+			// open source release.)
+			window['ga'] = function() {};
+		</script>
 
-<!--
-	Load dashboards into UI for all first-party TensorBoard plugins.
+		<!--
+			Load dashboards into UI for all first-party TensorBoard plugins.
 
-	Each dashboard calls the registerDashboard() function to tell
-	<tf-tensorboard> that it exists, so it can be loaded dynamically via
-	document.createElement().
+			Each dashboard calls the registerDashboard() function to tell
+			<tf-tensorboard> that it exists, so it can be loaded dynamically via
+			document.createElement().
 
-	Ordering matters. The order in which these lines appear determines the
-	ordering of tabs in TensorBoard's GUI.
--->
-<link rel="import" href="../advis/dashboard/dashboard.html">
-<link rel="import" href="../tf-tensorboard/default-plugins.html">
+			Ordering matters. The order in which these lines appear determines the
+			ordering of tabs in TensorBoard's GUI.
+		-->
+		<link rel="import" href="../advis/dashboard/dashboard.html">
+		<link rel="import" href="../tf-tensorboard/default-plugins.html">
 
-<!-- Now we load the TensorBoard UI. -->
-<link rel="import" href="../tf-tensorboard/tf-tensorboard.html">
-<body>
-<tf-tensorboard use-hash title="AdvisBoard"></tf-tensorboard>
+		<!-- Now we load the TensorBoard UI. -->
+		<link rel="import" href="../tf-tensorboard/tf-tensorboard.html">
+	</head>
+	<body>
+		<tf-tensorboard brand="AdvisBoard"></tf-tensorboard>
+	</body>
+</html>
