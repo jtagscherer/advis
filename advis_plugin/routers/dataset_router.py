@@ -4,6 +4,7 @@ from advis_plugin import argutil, imgutil
 def datasets_route(request, dataset_manager):
 	response = [{
 		'name': name,
+		'displayName': dataset.display_name,
 		'imageCount': len(dataset.images)
 	} for name, dataset in dataset_manager.get_dataset_modules().items()]
 	
