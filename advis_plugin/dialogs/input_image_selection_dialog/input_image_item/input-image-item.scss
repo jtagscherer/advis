@@ -13,6 +13,8 @@ paper-card {
 .selected-card {
 	background-color: $accent-color;
 	transition: background-color 0.5s ease;
+	
+	cursor: default;
 }
 
 .selected-text {

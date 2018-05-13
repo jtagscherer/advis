@@ -33,7 +33,9 @@
 					<template>
 						<input-image-item
 							image=[[image]]
-							selected="{{selected}}">
+							selected={{selected}}
+							data-image-index$={{index}}
+							on-tap="_inputImageClicked">
 						</input-image-item>
 					</template>
 				</iron-list>

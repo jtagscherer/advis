@@ -26,5 +26,33 @@ Polymer({
 	
 	getContentOnDismiss() {
 		return this.selectedImage;
+	},
+	
+	_inputImageClicked(e) {
+		let findParentNode = function(parentName, node) {
+			if (node.nodeName == parentName) {
+				return node;
+			} else if (node.parentNode == null) {
+				return null;
+			} else {
+				return findParentNode(parentName, node.parentNode);
+			}
+		}
+		
+		// Walk through the target's parent nodes until we reach the root node
+		let inputImageItemNode = findParentNode('INPUT-IMAGE-ITEM', e.target);
+		
+		// Extract the attached image index attribute
+		if (inputImageItemNode != null && inputImageItemNode.dataset != null) {
+			if ('imageIndex' in inputImageItemNode.dataset) {
+				let imageIndex = inputImageItemNode.dataset.imageIndex;
+				
+				// If the input image item that has been clicked is the one that is 
+				// already selected, prevent it from being deselected
+				if (imageIndex == this.selectedImage.index) {
+					e.stopPropagation();
+				}
+			}
+		}
 	}
 });
