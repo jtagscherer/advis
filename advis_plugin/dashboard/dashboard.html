@@ -21,18 +21,23 @@
 	<template>
 		<tf-dashboard-layout>
 			<div class="sidebar">
-				<section-header text="Models"></section-header>
-				<iron-selector>
-					<template is="dom-repeat" items="[[_availableModels]]">
-						<div class="list-item models" data-args$=[[item.index]]>
-							<model-list-item
-								title="[[item.displayName]]"
-								caption="Version [[item.version]]"
-								last-item="[[_isLastModelItem(index)]]">
-							</model-list-item>
-						</div>
-					</template>
-				</iron-selector>
+				<div class="sidebar-item" id="distortion-list">
+					<section-header text="Distortions"></section-header>
+				</div>
+				<div class="sidebar-item" id="model-list">
+					<section-header text="Models"></section-header>
+					<iron-selector>
+						<template is="dom-repeat" items="[[_availableModels]]">
+							<div class="list-item models" data-args$=[[item.index]]>
+								<model-list-item
+									title="[[item.displayName]]"
+									caption="Version [[item.version]]"
+									last-item="[[_isLastModelItem(index)]]">
+								</model-list-item>
+							</div>
+						</template>
+					</iron-selector>
+				</div>
 			</div>
 			<div class="center">
 				<template is="dom-if" if="[[_dataNotFound]]">
