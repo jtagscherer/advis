@@ -22,10 +22,7 @@ tf_web_library(
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
   name = "layer_image_scss",
-  src = "layer-image.scss",
-	deps = [
-		"//advis_plugin/shared:text"
-	]
+  src = "layer-image.scss"
 )
 
 # Move the compiled CSS file to our desired path
