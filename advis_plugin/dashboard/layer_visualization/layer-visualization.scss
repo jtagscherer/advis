@@ -1,1 +1,8 @@
-
+#content {
+	display: flex;
+	flex-direction: row;
+	
+	div {
+		flex: 0.5;
+	}
+}

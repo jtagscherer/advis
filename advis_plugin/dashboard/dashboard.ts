@@ -13,6 +13,7 @@ Polymer({
 		},
 		selectedLayer: String,
 		_availableModels: Array,
+		_availableDistortions: Array,
 		_graphStructure: String,
     _dataNotFound: Boolean,
 		_graphNotFound: Boolean,
@@ -26,6 +27,25 @@ Polymer({
     this.reload();
   },
   reload() {
+		var self = this;
+		
+		// Update the list of available distortions
+		const distortionUrl = tf_backend.getRouter()
+			.pluginRoute('advis', '/distortions');
+		
+		this._requestManager.request(distortionUrl).then(distortions => {
+			var newDistortions = []
+			
+			for (var distortion of distortions) {
+				// The image amount is hardcoded for now, this can be changed when 
+				// configuring distortions is possible
+				distortion.imageAmount = 10;
+				newDistortions.push(distortion);
+			}
+			
+			self._availableDistortions = newDistortions;
+		});
+		
 		if (this.selectedModel != null) {
 			// Update the graph
 			const url = tf_backend.addParams(tf_backend.getRouter()
@@ -33,7 +53,6 @@ Polymer({
 				model: this.selectedModel.name
 			});
 			
-			var self = this;
 			this._requestManager.request(url).then(data => {
 				self._graphStructure = data.graph;
 				self._graphNotFound = false;

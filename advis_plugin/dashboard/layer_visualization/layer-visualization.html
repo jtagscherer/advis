@@ -9,18 +9,32 @@
 -->
 <dom-module id="layer-visualization">
 	<template>
-		<input-image-selector
-			associated-dataset=[[associatedDataset]]
-			available-images=[[_availableImages]]
-			selected-image={{selectedImage}}>
-		</input-image-selector>
-		
-		<layer-image
-			model=[[selectedModel]]
-			layer=[[selectedLayer]]
-			image-index=[[selectedImage.index]]
-			request-manager=[[requestManager]]>
-		</layer-image>
+		<div id="content">
+			<div class="left">
+				<input-image-selector
+					associated-dataset=[[associatedDataset]]
+					available-images=[[_availableImages]]
+					selected-image={{selectedImage}}>
+				</input-image-selector>
+				
+				<layer-image id="normal-layer-image"
+					model=[[selectedModel]]
+					layer=[[selectedLayer]]
+					image-index=[[selectedImage.index]]
+					request-manager=[[requestManager]]>
+				</layer-image>
+			</div>
+			
+			<div class="right">
+				<layer-image id="distorted-layer-image"
+					model=[[selectedModel]]
+					layer=[[selectedLayer]]
+					image-index=[[selectedImage.index]]
+					distortion=[[selectedDistortion]]
+					request-manager=[[requestManager]]>
+				</layer-image>
+			</div>
+		</div>
 		
 		<link rel="stylesheet" type="text/css" href="layer-visualization.css">
 	</template>

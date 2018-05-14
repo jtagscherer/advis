@@ -10,13 +10,65 @@ Polymer({
 		},
 		selectedLayer: String,
 		associatedDataset: Object,
-		selectedImage: Object,
+		selectedImage: {
+			type: Object,
+			observer: '_selectedImageChanged'
+		},
+		distortions: {
+			type: Array,
+			observer: '_distortionsChanged'
+		},
+		selectedDistortion: {
+			type: Object,
+			observer: '_selectedDistortionChanged'
+		},
 		_availableImages: Array,
 		requestManager: Object
 	},
 	
 	reload() {
-		this.$$('layer-image').reload();
+		this.$$('#normal-layer-image').reload();
+		this.$$('#distorted-layer-image').reload();
+	},
+	
+	_selectedImageChanged() {
+		// If the selected image has changed we have to reload both the normal and 
+		// the distorted layer image visualization.
+		this.reload();
+	},
+	
+	_selectedDistortionChanged() {
+		// If only the distortion has changed, reloading the distorted layer image 
+		// visualization suffices.
+		this.$$('#distorted-layer-image').reload();
+	},
+	
+	_distortionsChanged() {
+		// Bail out if the distortion list is invalid
+		if (this.distortions == null || this.distortions.length == 0) {
+			return;
+		}
+		
+		// Put all available distortions into a dictionary for convenience's sake
+		var distortionDictionary = {};
+		
+		for (var distortion of this.distortions) {
+			distortionDictionary[distortion.name] = distortion;
+		}
+		
+		if (this.selectedDistortion == null) {
+			// If no distortion had been selected yet, select the first one
+			this.selectedDistortion = this.distortions[0];
+		} else if (this.selectedDistortion.name in distortionDictionary) {
+			// If the currently selected distortion is still present in the list of 
+			// available distortions, keep it selected
+			this.selectedDistortion = distortionDictionary[this.selectedDistortion
+				.name];
+		} else {
+			// If the list of available selections no longer contains the selected 
+			// one, select the first one instead
+			this.selectedDistortion = this.distortions[0];
+		}
 	},
 	
 	_fetchAvailableImages() {

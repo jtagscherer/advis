@@ -6,15 +6,14 @@ Polymer({
     model: Object,
     layer: String,
 		imageIndex: Number,
+		distortion: {
+			type: Object,
+			observer: 'reload'
+		},
 		_urls: Array,
 		_requestManager: {
       type: Object,
       value: () => new tf_backend.RequestManager()
-    },
-		
-    _canceller: {
-      type: Object,
-      value: () => new tf_backend.Canceller(),
     }
   },
 
@@ -33,6 +32,12 @@ Polymer({
   },
 	
 	tileTapped(e) {
+		var unitTitle = `Tensor ${Number(e.target.dataset.args) + 1}`;
+		
+		if (this.distortion != null) {
+			unitTitle += ' (Distorted)'
+		}
+		
 		// Show the enlarged image tile in a dialog
 		this.$$('unit-details-dialog').open({
 			model: {
@@ -40,7 +45,7 @@ Polymer({
 				caption: `Version ${this.model.version}`
 			},
 			unit: {
-				title: `Tensor ${Number(e.target.dataset.args) + 1}`,
+				title: unitTitle,
 				caption: this.layer
 			},
 			url: this._urls[e.target.dataset.args],
@@ -58,28 +63,58 @@ Polymer({
 	},
 	_constructTileUrlList() {
 		// First of all, request some meta data about the model layer shown
-		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
-			.pluginRoute('advis', '/layer/meta'), {
-			model: this.model.name,
-			layer: this.layer,
-			imageIndex: this.imageIndex
-		});
+		const metaUrl = this._getMetaUrl();
 		
 		this._requestManager.request(metaUrl).then(metaData => {
 			var tileUrls = []
 			
 			// List all available image tiles and put them into our array
 			for (let i in Array.from(Array(metaData.unitCount).keys())) {
-				tileUrls.push(tf_backend.addParams(tf_backend.getRouter()
-					.pluginRoute('advis', '/layer/image'), {
-					model: this.model.name,
-					layer: this.layer,
-					imageIndex: this.imageIndex,
-					unitIndex: String(i)
-	      }));
+				tileUrls.push(this._getImageUrl(i));
 			}
 			
 			this._urls = tileUrls;
 		});
+	},
+	
+	_getMetaUrl() {
+		if (this.distortion != null) {
+			return tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/meta'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex,
+				distortion: this.distortion.name,
+				imageAmount: this.distortion.imageAmount
+			});
+		} else {
+			return tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/meta'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex
+			});
+		}
+	},
+	_getImageUrl(unitIndex) {
+		if (this.distortion != null) {
+			return tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/image'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex,
+				unitIndex: unitIndex,
+				distortion: this.distortion.name,
+				imageAmount: this.distortion.imageAmount
+			});
+		} else {
+			return tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/image'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex,
+				unitIndex: unitIndex
+			});
+		}
 	}
 });

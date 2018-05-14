@@ -4,7 +4,10 @@ Polymer({
   is: 'input-image-selector',
 	
   properties: {
-		selectedImage: Object,
+		selectedImage: {
+			type: Object,
+			notify: true
+		},
 		associatedDataset: Object,
 		availableImages: Array
 	},
