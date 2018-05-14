@@ -14,14 +14,24 @@
 	<template>
 		<paper-menu-button id="dropdown-button"
 			vertical-align="top"
-			horizontal-align="right"
+			horizontal-align="left"
 			vertical-offset="75"
 			horizontal-offset="6">
 			<div id="container" class="dropdown-trigger">
 				<div id="content" class="selector-content" slot="dropdown-trigger">
 					<div id="left">
-						<!-- TODO: Icon -->
-						<img src$="[[]]"></img>
+						<div id="icon">
+							<div class="icon-background"></div>
+							<svg
+								width="24px" height="24px" viewBox="0 0 24 24"
+								version="1.1"
+								xmlns="http://www.w3.org/2000/svg"
+								xmlns:xlink="http://www.w3.org/1999/xlink">
+								<g stroke="none" stroke-width="1">
+									<path d$=[[selectedDistortion.icon]]></path>
+								</g>
+							</svg>
+						</div>
 					</div>
 					
 					<div id="center">

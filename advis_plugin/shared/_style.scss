@@ -48,3 +48,16 @@ paper-dialog {
 .selector-content {
 	height: 52px;
 }
+
+// Circle that can be used as the background of an icon
+$icon-background-size: 40px;
+
+.icon-background {
+	width: $icon-background-size;
+	height: $icon-background-size;
+	
+	border: 2px solid $dark-foreground-color;
+	border-radius: 100%;
+	
+	background-color: $icon-background-color;
+}
