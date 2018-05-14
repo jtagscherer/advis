@@ -1,0 +1,55 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../tf-backend/tf-backend.html">
+
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<!--
+	This module displays a distortion method that has been selected. When clicked 
+	a dropdown menu opens that allows selecting another distortion method.
+-->
+<dom-module id="distortion-selector">
+	<template>
+		<paper-menu-button id="dropdown-button"
+			vertical-align="top"
+			horizontal-align="right"
+			vertical-offset="75"
+			horizontal-offset="6">
+			<div id="container" class="dropdown-trigger">
+				<div id="content" class="selector-content" slot="dropdown-trigger">
+					<div id="left">
+						<!-- TODO: Icon -->
+						<img src$="[[]]"></img>
+					</div>
+					
+					<div id="center">
+						<p class="single-line title">[[selectedDistortion.displayName]]</p>
+						<p class="single-line caption">
+							Distorting [[selectedDistortion.imageAmount]] images
+						</p>
+					</div>
+					
+					<div id="dropdown-icon">
+						<iron-icon icon="arrow-drop-down"></iron-icon>
+					</div>
+					
+					<paper-ripple></paper-ripple>
+				</div>
+			</div>
+			
+			<paper-listbox class="dropdown-content"
+				on-iron-select="_distortionSelected"
+				selected="[[selectedDistortion.index]]">
+				<template is="dom-repeat" items="{{availableDistortions}}">
+					<paper-item value=[[index]]>[[item.displayName]]</paper-item>
+				</template>
+			</paper-listbox>
+		</paper-menu-button>
+		
+		<link rel="stylesheet" type="text/css" href="distortion-selector.css">
+	</template>
+
+	<script src="distortion-selector.js"></script>
+</dom-module>

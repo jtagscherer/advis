@@ -17,6 +17,7 @@ tf_web_library(
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"//advis_plugin/dashboard/layer_visualization/input_image_selector",
+		"//advis_plugin/dashboard/layer_visualization/distortion_selector",
 		"//advis_plugin/dashboard/layer_visualization/layer_image"
 	]
 )

@@ -36,12 +36,20 @@ Polymer({
 		this._requestManager.request(distortionUrl).then(distortions => {
 			var newDistortions = []
 			
-			for (var distortion of distortions) {
+			distortions.forEach((distortion, index) => {
+				// The image amount is hardcoded for now, this can be changed when 
+				// configuring distortions is possible
+				distortion.imageAmount = 10;
+				distortion.index = index;
+				newDistortions.push(distortion);
+			});
+			
+			/*for (var distortion of distortions) {
 				// The image amount is hardcoded for now, this can be changed when 
 				// configuring distortions is possible
 				distortion.imageAmount = 10;
 				newDistortions.push(distortion);
-			}
+			}*/
 			
 			self._availableDistortions = newDistortions;
 		});

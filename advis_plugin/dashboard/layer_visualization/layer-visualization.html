@@ -2,6 +2,7 @@
 <link rel="import" href="../tf-backend/tf-backend.html">
 
 <link rel="import" href="../input-image-selector/input-image-selector.html">
+<link rel="import" href="../distortion-selector/distortion-selector.html">
 <link rel="import" href="../layer-image/layer-image.html">
 
 <!--
@@ -26,6 +27,11 @@
 			</div>
 			
 			<div class="right">
+				<distortion-selector
+					available-distortions=[[distortions]]
+					selected-distortion={{selectedDistortion}}>
+				</distortion-selector>
+				
 				<layer-image id="distorted-layer-image"
 					model=[[selectedModel]]
 					layer=[[selectedLayer]]
