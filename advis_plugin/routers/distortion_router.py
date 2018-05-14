@@ -4,7 +4,8 @@ def distortions_route(request, distortion_manager):
 	response = [{
 		'name': name,
 		'displayName': distortion.display_name,
-		'parameters': list(distortion._parameters.keys())
+		'parameters': list(distortion._parameters.keys()),
+		'icon': distortion.icon
 	} for name, distortion in distortion_manager.get_distortion_modules().items()]
 	
 	return http_util.Respond(request, response, 'application/json')

@@ -59,3 +59,8 @@ def distort(image, configuration):
 	
 	# Resize the cropped image to its original size
 	return resize(cropped_image, (original_height, original_width))
+
+def get_icon():
+	return 'M7,17 L7,1 L5,1 L5,5 L1,5 L1,7 L5,7 L5,17 C5,18.1045695 ' \
+		+ '5.8954305,19 7,19 L17,19 L17,23 L19,23 L19,19 L23,19 L23,17 L7,17 Z ' \
+		+ 'M17,15 L19,15 L19,7 C19,5.89 18.1,5 17,5 L9,5 L9,7 L17,7 L17,15 Z'
