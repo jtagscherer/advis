@@ -4,7 +4,8 @@ Polymer({
   is: 'advis-dashboard',
 	listeners: {
     'nodeSelectedEvent': '_nodeSelected',
-		'iron-select': '_itemSelected'
+		'iron-select': '_itemSelected',
+		'iron-deselect': '_itemDeselected'
   },
   properties: {
     selectedModel: {
@@ -14,6 +15,7 @@ Polymer({
 		selectedLayer: String,
 		_availableModels: Array,
 		_availableDistortions: Array,
+		_selectedDistortions: Array,
 		_graphStructure: String,
     _dataNotFound: Boolean,
 		_graphNotFound: Boolean,
@@ -44,14 +46,14 @@ Polymer({
 				newDistortions.push(distortion);
 			});
 			
-			/*for (var distortion of distortions) {
-				// The image amount is hardcoded for now, this can be changed when 
-				// configuring distortions is possible
-				distortion.imageAmount = 10;
-				newDistortions.push(distortion);
-			}*/
-			
 			self._availableDistortions = newDistortions;
+			
+			// Select all available distortions
+			for (var distortion of self._availableDistortions) {
+				self.$$('#distortion-selector').select(distortion.index);
+			}
+			
+			this._selectedDistortions = this._availableDistortions;
 		});
 		
 		if (this.selectedModel != null) {
@@ -79,17 +81,42 @@ Polymer({
 			this.$$('layer-visualization').reload();
 		}
 	},
+	
 	_itemSelected(e) {
 		let item = e.detail.item;
 		
-		// Make sure this event came from a model list item
-		if (item.classList.contains('list-item')
-			&& item.classList.contains('models')) {
-			// Extract the index of the selected model
-			let modelIndex = Number(e.detail.item.dataset.args);
+		// Find out which kind of list item this event originated from
+		if (item.classList.contains('list-item')) {
+			if (item.classList.contains('models')) {
+				// Extract the index of the selected model
+				let modelIndex = Number(e.detail.item.dataset.args);
+				
+				// Select the associated model
+				this.selectedModel = this._availableModels[modelIndex];
+			} else if (item.classList.contains('distortions')) {
+				this._updateDistortionSelection();
+			}
+		}
+	},
+	
+	_itemDeselected(e) {
+		let item = e.detail.item;
+		
+		if (item.classList.contains('list-item') 
+			&& item.classList.contains('distortions')) {
+			this._updateDistortionSelection();
+		}
+	},
+	
+	_updateDistortionSelection() {
+		if (this._availableDistortions != null) {
+			var newSelectedDistortions = [];
 			
-			// Select the associated model
-			this.selectedModel = this._availableModels[modelIndex];
+			for (var index of this.$$('#distortion-selector').selectedValues) {
+				newSelectedDistortions.push(this._availableDistortions[index]);
+			}
+			
+			this._selectedDistortions = newSelectedDistortions;
 		}
 	},
 	

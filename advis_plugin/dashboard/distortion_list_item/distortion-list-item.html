@@ -1,0 +1,30 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-ripple/paper-ripple.html">
+
+<!--
+	Can be used as a selectable list item representing a distortion method.
+-->
+<dom-module id="distortion-list-item">
+	<template>
+		<div id="container">
+			<div id="main">
+				<svg id="icon"
+					width="24px" height="24px" viewBox="0 0 24 24"
+					version="1.1"
+					xmlns="http://www.w3.org/2000/svg"
+					xmlns:xlink="http://www.w3.org/1999/xlink">
+					<g stroke="none" stroke-width="1">
+						<path d$=[[distortion.icon]]></path>
+					</g>
+				</svg>
+				<p class="single-line title">[[distortion.displayName]]</p>
+			</div>
+			
+			<paper-ripple></paper-ripple>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="distortion-list-item.css">
+	</template>
+
+	<script src="distortion-list-item.js"></script>
+</dom-module>

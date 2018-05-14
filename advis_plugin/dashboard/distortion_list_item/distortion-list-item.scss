@@ -1,0 +1,26 @@
+@import 'advis_plugin/shared/text';
+@import 'advis_plugin/shared/color';
+
+$line-spacing: 2px;
+
+#container {
+	position: relative;
+	padding: 10px;
+	cursor: pointer;
+	
+	#main {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		
+		#icon {
+			transition: fill 0.5s ease;
+		}
+		
+		.title {
+			margin-left: 10px;
+			margin-top: $line-spacing;
+			margin-bottom: $line-spacing;
+		}
+	}
+}

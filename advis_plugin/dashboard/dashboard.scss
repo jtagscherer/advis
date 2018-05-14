@@ -17,6 +17,14 @@ $sidebar-width: 450px;
 	
 	#distortion-list {
 		flex: 0.5;
+		
+		.list-item {
+			fill: $medium-foreground-color;
+			
+			&.iron-selected {
+				fill: $accent-color;
+			}
+		}
 	}
 	
 	#model-list {

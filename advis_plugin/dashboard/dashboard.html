@@ -11,6 +11,7 @@
 
 <link rel="import" href="../../section-header/section-header.html">
 <link rel="import" href="../../model-list-item/model-list-item.html">
+<link rel="import" href="../../distortion-list-item/distortion-list-item.html">
 <link rel="import" href="../../layer-visualization/layer-visualization.html">
 <link rel="import" href="../../graph-view/graph-view.html">
 
@@ -23,6 +24,15 @@
 			<div class="sidebar">
 				<div class="sidebar-item" id="distortion-list">
 					<section-header text="Distortions"></section-header>
+					<iron-selector id="distortion-selector" multi>
+						<template is="dom-repeat" items="[[_availableDistortions]]">
+							<div class="list-item distortions" data-args$=[[item.index]]>
+								<distortion-list-item
+									distortion=[[item]]>
+								</distortion-list-item>
+							</div>
+						</template>
+					</iron-selector>
 				</div>
 				<div class="sidebar-item" id="model-list">
 					<section-header text="Models"></section-header>
