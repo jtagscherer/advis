@@ -8,20 +8,16 @@ Polymer({
 		percent: {
 			type: Boolean,
 			value: true
-		},
-		floatingPointPrecision: {
-			type: Number,
-			value: 2
 		}
 	},
 	
-	_getFormattedValue(value, percent, floatingPointPrecision) {
-		let roundedValue = this._round(value, floatingPointPrecision);
+	_getFormattedValue(value, percent) {
+		let roundedValue = (Math.round(value * 100) / 100.0).toFixed(2);
 		
 		if (percent) {
-			return `${roundedValue * 100}%`;
+			return `${(Number(roundedValue) * 100).toFixed(0)}%`;
 		} else {
-			return String(roundedValue);
+			return roundedValue;
 		}
 	},
 	
@@ -31,15 +27,5 @@ Polymer({
 		} else {
 			return 'single-line number positive';
 		}
-	},
-	
-	_round(number, precision) {
-		var shift = function(number, precision) {
-			var numArray = ('' + number).split("e");
-			return +(numArray[0] + 'e'
-			 	+ (numArray[1] ? (+numArray[1] + precision) : precision));
-		};
-		
-		return shift(Math.round(shift(number, +precision)), -precision);
 	}
 });
