@@ -10,8 +10,8 @@ from advis_plugin.models import models
 from advis_plugin.datasets import datasets
 from advis_plugin.distortions import distortions
 
-from advis_plugin.routers import \
-	model_router, distortion_router, dataset_router, visualization_router
+from advis_plugin.routers import model_router, prediction_router, \
+	distortion_router, dataset_router, visualization_router
 
 class AdvisPlugin(base_plugin.TBPlugin):
 	"""A plugin for visualizing random perturbations of input data and their 
@@ -61,7 +61,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		return {
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
-			'/prediction': self.prediction_route,
+			'/predictions/single': self.single_prediction_route,
 			'/distortions': self.distortions_route,
 			'/datasets': self.datasets_route,
 			'/datasets/images/list': self.datasets_images_list_route,
@@ -108,8 +108,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		return model_router.graphs_route(request, self.model_manager)
 	
 	@wrappers.Request.application
-	def prediction_route(self, request):
-		"""A route that returns a model's prediction of an input image.
+	def single_prediction_route(self, request):
+		"""A route that returns a model's prediction of a single input image.
 
 		Arguments:
 			request: The request which has to contain the model's name and an image 
@@ -119,7 +119,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 				model's prediction.
 		"""
 		
-		return model_router.prediction_route(request, self.model_manager)
+		return prediction_router.single_prediction_route(request, 
+			self.model_manager)
 	
 	@wrappers.Request.application
 	def distortions_route(self, request):

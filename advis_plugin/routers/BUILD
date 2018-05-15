@@ -7,6 +7,7 @@ py_library(
 	name = "routers",
 	srcs = [
 		"model_router.py",
+		"prediction_router.py",
 		"distortion_router.py",
 		"dataset_router.py",
 		"visualization_router.py"
