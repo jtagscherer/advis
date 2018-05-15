@@ -3,6 +3,10 @@ from advis_plugin import argutil
 
 from random import randrange
 
+# Caches for prediction results
+_single_prediction_cache = {}
+_prediction_accuracy_cache = {}
+
 def single_prediction_route(request, model_manager):
 	# Check for missing arguments and possibly return an error
 	missing_arguments = argutil.check_missing_arguments(
@@ -12,15 +16,21 @@ def single_prediction_route(request, model_manager):
 	if missing_arguments != None:
 		return missing_arguments
 	
-	model_name = request.args.get('model')
-	_model = model_manager.get_model_modules()[model_name]
+	key_tuple = (request.args.get('model'), request.args.get('imageIndex'))
 	
-	meta_data = {
-		'run_type': 'prediction',
-		'image': int(request.args.get('imageIndex'))
-	}
-	
-	response = _model.run(meta_data)
+	if key_tuple in _single_prediction_cache:
+		response = _single_prediction_cache[key_tuple]
+	else:
+		model_name = request.args.get('model')
+		_model = model_manager.get_model_modules()[model_name]
+		
+		meta_data = {
+			'run_type': 'prediction',
+			'image': int(request.args.get('imageIndex'))
+		}
+		
+		response = _model.run(meta_data)
+		_single_prediction_cache[key_tuple] = response
 	
 	return http_util.Respond(request, response, 'application/json')
 
@@ -35,53 +45,63 @@ def accuracy_prediction_route(request, model_manager, distortion_manager):
 	
 	# Extract all parameters
 	model_name = request.args.get('model')
-	_model = model_manager.get_model_modules()[model_name]
-	
 	input_image_amount = int(request.args.get('inputImageAmount'))
 	
-	# Pick random input images
-	input_images = [
-		_model._dataset.images[randrange(0, len(_model._dataset.images))] \
-		for i in range(0, input_image_amount)
-	]
+	distortion_name = None
+	if 'distortion' in request.args:
+		distortion_name = request.args.get('distortion')
 	
-	# Create a list that will contain all prediction results
-	predictions = []
+	key_tuple = (model_name, input_image_amount, distortion_name)
 	
-	# Predict accuracies for all input images and distortions
-	for input_image in input_images:
-		meta_data = {
-			'run_type': 'prediction',
-			'image': input_image['index']
+	if key_tuple in _prediction_accuracy_cache:
+		response = _prediction_accuracy_cache[key_tuple]
+	else:
+		_model = model_manager.get_model_modules()[model_name]
+		
+		# Pick random input images
+		input_images = [
+			_model._dataset.images[randrange(0, len(_model._dataset.images))] \
+			for i in range(0, input_image_amount)
+		]
+		
+		# Create a list that will contain all prediction results
+		predictions = []
+		
+		# Predict accuracies for all input images and distortions
+		for input_image in input_images:
+			meta_data = {
+				'run_type': 'prediction',
+				'image': input_image['index']
+			}
+			
+			# If a distortion has been supplied, apply it to the input image
+			if 'distortion' in request.args:
+				meta_data['input_image_data'] = distortion_manager \
+					.distortion_modules[request.args.get('distortion')].distort(
+						_model._dataset.load_image(input_image['index']),
+						amount=1, mode='non-repeatable-randomized'
+					)[0]
+			
+			predictions.append(_model.run(meta_data))
+		
+		# Compile some information about the input data
+		input_meta_data = {
+			'imageAmount': input_image_amount
 		}
 		
-		# If a distortion has been supplied, apply it to the input image
 		if 'distortion' in request.args:
-			meta_data['input_image_data'] = distortion_manager \
-				.distortion_modules[request.args.get('distortion')].distort(
-					_model._dataset.load_image(input_image['index']),
-					amount=1, mode='non-repeatable-randomized'
-				)[0]
+			input_meta_data['distortion'] = request.args.get('distortion')
 		
-		predictions.append(_model.run(meta_data))
-	
-	# Compile some information about the input data
-	input_meta_data = {
-		'imageAmount': input_image_amount
-	}
-	
-	if 'distortion' in request.args:
-		input_meta_data['distortion'] = request.args.get('distortion')
-	
-	# Return all valuable information
-	response = {
-		'model': {
-			'name': _model.name,
-			'displayName': _model.display_name
-		},
-		'input': input_meta_data,
-		'accuracy': _calculate_accuracy(predictions)
-	}
+		# Return all valuable information
+		response = {
+			'model': {
+				'name': _model.name,
+				'displayName': _model.display_name
+			},
+			'input': input_meta_data,
+			'accuracy': _calculate_accuracy(predictions)
+		}
+		_prediction_accuracy_cache[key_tuple] = response
 	
 	return http_util.Respond(request, response, 'application/json')
 
