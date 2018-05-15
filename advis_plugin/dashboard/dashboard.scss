@@ -11,6 +11,8 @@ $sidebar-width: 450px;
 	width: $sidebar-width;
 	margin-right: 0;
 	
+	z-index: 1;
+	
 	.sidebar-item {
 		border-right: 1px solid $light-foreground-color;
 	}
@@ -41,6 +43,8 @@ $sidebar-width: 450px;
 	
 	overflow: hidden;
 	
+	background-color: white;
+	
 	.no-data-warning {
 		max-width: 540px;
 		margin: 80px auto 0 auto;
@@ -48,6 +52,8 @@ $sidebar-width: 450px;
 
 	#graph-container {
 		flex: 1;
+		
+		border-bottom: 1px solid $light-foreground-color;
 	}
 
 	#bottom-container {

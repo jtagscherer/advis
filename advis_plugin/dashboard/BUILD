@@ -21,6 +21,7 @@ tf_web_library(
 		"@org_polymer_iron_icon",
 		"@org_polymer_iron_selector",
 		"@org_polymer_paper_input",
+		"@org_polymer_paper_material",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_categorization_utils",

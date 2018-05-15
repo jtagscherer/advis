@@ -1,6 +1,7 @@
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-selector/iron-selector.html">
 <link rel="import" href="../../paper-input/paper-input.html">
+<link rel="import" href="../../paper-material/paper-material.html">
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../tf-categorization-utils/tf-categorization-utils.html">
@@ -21,7 +22,7 @@
 <dom-module id="advis-dashboard">
 	<template>
 		<tf-dashboard-layout>
-			<div class="sidebar">
+			<paper-material class="sidebar" elevation="1">
 				<div class="sidebar-item" id="distortion-list">
 					<section-header text="Distortions"></section-header>
 					<iron-selector id="distortion-selector" multi>
@@ -48,7 +49,7 @@
 						</template>
 					</iron-selector>
 				</div>
-			</div>
+			</paper-material>
 			<div class="center">
 				<template is="dom-if" if="[[_dataNotFound]]">
 					<div class="no-data-warning">
