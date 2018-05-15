@@ -232,9 +232,14 @@ class Model:
 			elif meta_data['run_type'] == 'prediction':
 				input_image = self._dataset.images[meta_data['image']]
 				
+				if 'input_image_data' in meta_data:
+					input_data = meta_data['input_image_data']
+				else:
+					input_data = self._dataset.load_image(meta_data['image'])
+				
 				model_output = self._session.run(
 					self._output_node,
-					feed_dict={'input:0': self._dataset.load_image(meta_data['image'])}
+					feed_dict={'input:0': input_data}
 				)[0]
 				
 				top_5_predictions = [{

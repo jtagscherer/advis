@@ -43,7 +43,7 @@ class Distortion:
 				distorted_images.append(self._module.distort(image, parameters
 					.generate_configuration(self._parameters,
 					percentage=i / float(amount))))
-			elif mode == 'randomized':
+			elif mode == 'randomized' or mode == 'non-repeatable-randomized':
 				distorted_images.append(self._module.distort(image, parameters
 					.generate_configuration(self._parameters, randomize=True)))
 		

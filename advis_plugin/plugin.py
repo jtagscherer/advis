@@ -62,6 +62,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
 			'/predictions/single': self.single_prediction_route,
+			'/predictions/accuracy': self.accuracy_prediction_route,
 			'/distortions': self.distortions_route,
 			'/datasets': self.datasets_route,
 			'/datasets/images/list': self.datasets_images_list_route,
@@ -121,6 +122,27 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		return prediction_router.single_prediction_route(request, 
 			self.model_manager)
+	
+	@wrappers.Request.application
+	def accuracy_prediction_route(self, request):
+		"""A route that returns the accuracy of a model's predictions on a set of 
+		input images, as well as its accuracy when these input images are distorted.
+		
+		Arguments:
+			request: The request which has to contain the model's name and an amount
+				of input images to be fetched from the input data set. Optionally, a
+				distortion method can be supplied, which will be used to manipulate the 
+				input image before its evaluation.
+				Keep in mind that depending on your hardware, the model's complexity 
+				and the amount of input images this calculation can take a while.
+		Returns:
+			A response that contains the top 5 and top 1 accuracy of the model's 
+				predictions on the original input images as well as on each set of 
+				distorted images.
+		"""
+		
+		return prediction_router.accuracy_prediction_route(request, 
+			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
 	def distortions_route(self, request):
