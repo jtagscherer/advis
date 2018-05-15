@@ -10,11 +10,26 @@ $line-spacing: 2px;
 	
 	#main {
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		
-		p {
-			margin-top: $line-spacing;
-			margin-bottom: $line-spacing;
+		#content {
+			flex: 1;
+			
+			display: flex;
+			flex-direction: column;
+			
+			p {
+				margin-top: $line-spacing;
+				margin-bottom: $line-spacing;
+			}
+		}
+		
+		#metrics {
+			flex: 0;
+			
+			display: flex;
+			flex-direction: row;
+			align-items: center;
 		}
 	}
 }

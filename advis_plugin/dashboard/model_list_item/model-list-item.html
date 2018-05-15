@@ -1,5 +1,8 @@
+<link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-ripple/paper-ripple.html">
+
+<link rel="import" href="../../model-metric/model-metric.html">
 
 <!--
 	Can be used as a selectable list item representing a Machine Learning model.
@@ -8,8 +11,17 @@
 	<template>
 		<div id="container">
 			<div id="main">
-				<p class="title">[[title]]</p>
-				<p class="caption">[[caption]]</p>
+				<div id="content">
+					<p class="title">[[model.displayName]]</p>
+					<p class="caption">Version [[model.version]]</p>
+				</div>
+				
+				<div id="metrics">
+					<model-metric
+						title="ACC"
+						value="[[_modelAccuracy]]">
+					</model-metric>
+				</div>
 			</div>
 			
 			<paper-ripple></paper-ripple>

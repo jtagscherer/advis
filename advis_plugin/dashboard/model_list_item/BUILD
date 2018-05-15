@@ -13,6 +13,8 @@ tf_web_library(
 	],
 	path = "/model-list-item",
 	deps = [
+		"//advis_plugin/dashboard/model_list_item/model_metric",
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_paper_ripple"
 	]

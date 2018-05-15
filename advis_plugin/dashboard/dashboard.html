@@ -41,8 +41,9 @@
 						<template is="dom-repeat" items="[[_availableModels]]">
 							<div class="list-item models" data-args$=[[item.index]]>
 								<model-list-item
-									title="[[item.displayName]]"
-									caption="Version [[item.version]]"
+									model=[[item]]
+									distortions=[[_selectedDistortions]]
+									request-manager=[[_requestManager]]
 									last-item="[[_isLastModelItem(index)]]">
 								</model-list-item>
 							</div>

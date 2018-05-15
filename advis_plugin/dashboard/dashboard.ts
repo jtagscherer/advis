@@ -21,7 +21,7 @@ Polymer({
 		_graphNotFound: Boolean,
     _requestManager: {
       type: Object,
-      value: () => new tf_backend.RequestManager(1, 1)
+      value: () => new tf_backend.RequestManager()
     }
   },
 	

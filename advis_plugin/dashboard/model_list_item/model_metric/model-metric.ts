@@ -27,9 +27,9 @@ Polymer({
 	
 	_getTextClass(value) {
 		if (value < 0) {
-			return 'number negative';
+			return 'single-line number negative';
 		} else {
-			return 'number positive';
+			return 'single-line number positive';
 		}
 	},
 	
