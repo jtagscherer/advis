@@ -118,10 +118,10 @@ sass_repositories()
 
 http_archive(
 	name = "org_tensorflow_tensorboard",
-	sha256 = "31145825d351f767328e205e56178e1a7388ffde177a3c9a72817fce6bfd256a",
-	strip_prefix = "tensorboard-1.6",
+	sha256 = "442bd44202b625a4de13a7783231b840a4004105facbe48ebff5e81fa722b1e3",
+	strip_prefix = "tensorboard-1.8",
 	urls = [
-		"https://github.com/jtagscherer/tensorboard/archive/1.6.tar.gz"
+		"https://github.com/jtagscherer/tensorboard/archive/1.8.tar.gz"
 	]
 )
 
