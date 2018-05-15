@@ -29,4 +29,4 @@ def get_all_images():
 			'path': join(image_base_path, '{}.png'.format(image['id'])),
 			'categoryId': image['categoryId'],
 			'categoryName': image['categoryName']
-		} for index, image in images.list()]
+		} for index, image in enumerate(images)]
