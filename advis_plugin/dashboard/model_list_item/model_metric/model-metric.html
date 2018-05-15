@@ -1,0 +1,21 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<!--
+	This component displays a numeric value alongside a title.
+-->
+<dom-module id="model-metric">
+	<template>
+		<div id="container">
+			<p class$="[[_getTextClass(value)]]">
+				[[_getFormattedValue(value, percent, floatingPointPrecision)]]
+			</p>
+			<p class="caption">
+				[[title]]
+			</p>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="model-metric.css">
+	</template>
+
+	<script src="model-metric.js"></script>
+</dom-module>

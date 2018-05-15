@@ -1,5 +1,6 @@
 @import 'advis_plugin/shared/color';
 
+$font-size-header: 16px;
 $font-size-title: 14px;
 $font-size-body: 12px;
 
@@ -27,6 +28,19 @@ $font-size-body: 12px;
 	color: $medium-foreground-color;
 	font-size: $font-size-body;
 	font-weight: normal;
+}
+
+.number {
+	font-size: $font-size-header;
+	font-weight: bold;
+	
+	&.positive {
+		color: $positive-color;
+	}
+	
+	&.negative {
+		color: $negative-color;
+	}
 }
 
 .monospaced {
