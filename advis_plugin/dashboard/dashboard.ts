@@ -10,7 +10,7 @@ Polymer({
   properties: {
     selectedModel: {
 			type: String,
-			observer: 'reload'
+			observer: '_reloadModels'
 		},
 		selectedLayer: String,
 		_availableModels: Array,
@@ -26,9 +26,33 @@ Polymer({
   },
 	
   ready() {
-    this.reload();
+		this._reloadDistortions();
+    this._reloadModels();
   },
-  reload() {
+	
+  _reloadModels() {
+		var self = this;
+		
+		if (this.selectedModel != null) {
+			// Update the graph
+			const url = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/graphs'), {
+				model: this.selectedModel.name
+			});
+			
+			this._requestManager.request(url).then(data => {
+				self._graphStructure = data.graph;
+				self._graphNotFound = false;
+			});
+		}
+		
+		// Update the layer visualization
+		this._fetchModels().then(() => {
+			this.$$('layer-visualization').reload();
+		});
+  },
+	
+	_reloadDistortions() {
 		var self = this;
 		
 		// Update the list of available distortions
@@ -55,25 +79,7 @@ Polymer({
 			
 			this._selectedDistortions = this._availableDistortions;
 		});
-		
-		if (this.selectedModel != null) {
-			// Update the graph
-			const url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/graphs'), {
-				model: this.selectedModel.name
-			});
-			
-			this._requestManager.request(url).then(data => {
-				self._graphStructure = data.graph;
-				self._graphNotFound = false;
-			});
-		}
-		
-		// Update the layer visualization
-		this._fetchModels().then(() => {
-			this.$$('layer-visualization').reload();
-		});
-  },
+	},
 	
 	_nodeSelected(e) {
 		if (this.selectedModel != null) {

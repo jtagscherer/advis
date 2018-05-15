@@ -37,7 +37,7 @@
 				</div>
 				<div class="sidebar-item" id="model-list">
 					<section-header text="Models"></section-header>
-					<iron-selector>
+					<iron-selector id="model-selector">
 						<template is="dom-repeat" items="[[_availableModels]]">
 							<div class="list-item models" data-args$=[[item.index]]>
 								<model-list-item
