@@ -25,7 +25,8 @@ def get_all_images():
 	return [
 		{
 			'id': image['id'],
+			'index': index,
 			'path': join(image_base_path, '{}.png'.format(image['id'])),
 			'categoryId': image['categoryId'],
 			'categoryName': image['categoryName']
-		} for image in images]
+		} for index, image in images.list()]
