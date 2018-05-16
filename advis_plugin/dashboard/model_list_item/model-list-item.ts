@@ -8,28 +8,27 @@ Polymer({
 	properties: {
 		model: {
 			type: Object,
-			observer: '_modelChanged'
+			observer: '_modelChanged',
+			notify: true
 		},
 		distortions: {
 			type: Array,
-			observer: '_calculateAccuracy'
+			observer: '_calculateAccuracyDifference'
+		},
+		accuracyCalculationFlag: {
+			type: Boolean,
+			observer: '_calculateAccuracyDifference'
 		},
 		lastItem: Boolean,
-		requestManager: Object,
 		_selected: Boolean,
-		_modelAccuracy: Number,
-		_inputImageAmount: {
-			type: Number,
-			value: 20,
-			observer: '_calculateAccuracy'
-		}
+		_modelAccuracyDifference: Number
 	},
 	
 	_modelChanged() {
 		this._selected = this.model.selectedForStatistics;
 		this.$$('#checkbox').checked = this._selected;
 		
-		this._calculateAccuracy();
+		this._calculateAccuracyDifference();
 	},
 	
 	_computeTitleStyle(model, _selected) {
@@ -62,68 +61,41 @@ Polymer({
 		});
 	},
 	
-	_calculateAccuracy() {
-		if (this.distortions == null || this.requestManager == null) {
+	_calculateAccuracyDifference() {
+		if (this.model == null || this.distortions == null) {
 			return;
 		}
 		
-		var originalAccuracy = null;
-		var accuracies = {};
-		let self = this;
-		
-		// Define a function that will calculate the overall accuracy difference 
-		// after all singular accuracies have been retrieved
-		let evaluateAccuracies = async function(accuracies) {
-			if (Object.keys(accuracies).length == self.distortions.length
-				&& originalAccuracy != null) {
-				// All distortion accuracies and the original accuracy have been 
-				// retrieved, we can calculate their difference
-				if (self.distortions.length == 0) {
-					self._modelAccuracy = 0;
-				} else {
-					var deltaSum = 0;
-					
-					// Calculate the difference between the accuracy of each distorted 
-					// prediction and the original one
-					for (let distortion in accuracies) {
-						deltaSum += (accuracies[distortion] - originalAccuracy);
+		// Only calculate the accuracy difference if accuracies for all selected 
+		// distortions and the original input have been retrieved
+		if (Object.keys(this.model.accuracy).length >= this.distortions
+			.length + 1 && 'original' in this.model.accuracy) {
+			if (this.distortions.length == 0) {
+				this._modelAccuracyDifference = 0;
+			} else {
+				var deltaSum = 0;
+				
+				// Calculate the difference between the accuracy of each distorted 
+				// prediction and the original one
+				for (let selectedDistortion in this.distortions) {
+					for (let distortion in this.model.accuracy) {
+						if (distortion == this.distortions[selectedDistortion].name) {
+							deltaSum += (this.model.accuracy[distortion].top5 
+								- this.model.accuracy.original.top5);
+							break;
+						}
 					}
-					
-					// Calculate the average of the differences
-					let result = (deltaSum * 1.0) / Object.keys(accuracies).length;
-					
-					// Finally, set the variable that will be shown
-					self._modelAccuracy = result;
 				}
+				
+				// Calculate the average of the differences
+				let result = (deltaSum * 1.0)
+				 	/ (Object.keys(this.model.accuracy).length - 1);
+				
+				// Finally, set the variable that will be shown
+				this._modelAccuracyDifference = result;
 			}
-		};
-		
-		// First of all, request the accuracy of non-distorted input images
-		var originalUrl = tf_backend.addParams(tf_backend.getRouter()
-			.pluginRoute('advis', '/predictions/accuracy'), {
-			model: this.model.name,
-			inputImageAmount: this._inputImageAmount
-		});
-		
-		this.requestManager.request(originalUrl).then(data => {
-			originalAccuracy = data.accuracy.top1;
-			evaluateAccuracies(accuracies);
-		});
-		
-		// Asynchronously retrieve accuracies of the model on input data that has 
-		// been manipulated with all selected distortions
-		for (var distortion of this.distortions) {
-			var url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/predictions/accuracy'), {
-				model: this.model.name,
-				inputImageAmount: this._inputImageAmount,
-				distortion: distortion.name
-			});
-			
-			this.requestManager.request(url).then(data => {
-				accuracies[data.input.distortion] = data.accuracy.top1;
-				evaluateAccuracies(accuracies);
-			});
+		} else {
+			this._modelAccuracyDifference = undefined;
 		}
 	}
 });

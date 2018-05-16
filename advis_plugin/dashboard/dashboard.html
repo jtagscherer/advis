@@ -44,12 +44,14 @@
 						<section-header text="Models"></section-header>
 						<div id="model-list-container">
 							<iron-selector id="model-selector">
-								<template is="dom-repeat" items="[[_availableModels]]">
+								<template id="model-list-template"
+									is="dom-repeat"
+									items="[[_availableModels]]">
 									<div class="list-item models" data-args$=[[item.index]]>
 										<model-list-item
 											model=[[item]]
 											distortions=[[_selectedDistortions]]
-											request-manager=[[_requestManager]]
+											accuracy-calculation-flag=[[_accuracyCalculationFlag]]
 											last-item="[[_isLastModelItem(index)]]">
 										</model-list-item>
 									</div>

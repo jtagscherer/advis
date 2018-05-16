@@ -22,6 +22,12 @@ Polymer({
 		_graphStructure: String,
     _dataNotFound: Boolean,
 		_graphNotFound: Boolean,
+		_inputImageAmount: {
+			type: Number,
+			value: 10,
+			observer: '_calculateModelAccuracy'
+		},
+		_accuracyCalculationFlag: Boolean,
     _requestManager: {
       type: Object,
       value: () => new tf_backend.RequestManager()
@@ -135,6 +141,7 @@ Polymer({
 			}
 			
 			this._selectedDistortions = newSelectedDistortions;
+			this._calculateModelAccuracy();
 		}
 	},
 	
@@ -163,36 +170,117 @@ Polymer({
 				for (let index in models) {
 					let model = models[index];
 					
+					var newModel = {
+						name: model['name'],
+						displayName: model['displayName'],
+						index: index,
+						version: model['version'],
+						color: colorPalette[Number(index) % maximumAmountOfColors],
+						selectedForStatistics: false,
+						accuracy: {}
+					}
+					
 					// If the model existed beforehand, remember its statistics selection
 					var selectedForStatistics = false;
 					
 					if (this._availableModels != null) {
 						for (var oldModel of this._availableModels) {
 							if (oldModel.name == model['name']) {
-								selectedForStatistics = oldModel.selectedForStatistics;
+								newModel.selectedForStatistics = oldModel.selectedForStatistics;
+								
+								// If the old model's accuracy had already been calculated, 
+								// remember it
+								if ('accuracy' in oldModel) {
+									newModel.accuracy = oldModel.accuracy;
+								}
+								
 								break;
 							}
 						}
 					}
 					
 					// Add the current model to the list of available models
-					availableModels.push({
-						name: model['name'],
-						displayName: model['displayName'],
-						index: index,
-						version: model['version'],
-						color: colorPalette[Number(index) % maximumAmountOfColors],
-						selectedForStatistics: selectedForStatistics
-					});
+					availableModels.push(newModel);
 				}
 				
 				this._availableModels = availableModels;
+				this._calculateModelAccuracy();
+				
 				this._dataNotFound = false;
 			} else {
 				this._dataNotFound = true;
 			}
     });
-  }
+  },
+	
+	_calculateModelAccuracy() {
+		if (this._selectedDistortions == null || this._requestManager == null
+			|| this._availableModels == null) {
+			return;
+		}
+		
+		let self = this;
+		
+		// Store the accuracy of the model on the original or a distorted dataset
+		let storeAccuracy = async function(modelName, distortionName, top1, top5) {
+			var newModels = [];
+			
+			for (var model of self._availableModels) {
+				if (model.name == modelName) {
+					model.accuracy[distortionName] = {
+						'top1': top1,
+						'top5': top5
+					}
+				}
+				
+				newModels.push(model);
+			}
+			
+			// Force Polymer to update data bindings
+			self.set('_availableModels', []);
+			self.set('_availableModels', newModels);
+			self.set('_accuracyCalculationFlag', !self._accuracyCalculationFlag);
+		}
+		
+		// Loop through all models and request their accuracies
+		for (var model of this._availableModels) {
+			// First of all, request the accuracy of non-distorted input images
+			var originalUrl = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/predictions/accuracy'), {
+				model: model.name,
+				inputImageAmount: this._inputImageAmount
+			});
+			
+			this._requestManager.request(originalUrl).then(data => {
+				storeAccuracy(
+					data.model.name,
+					'original',
+					data.accuracy.top1,
+					data.accuracy.top5
+				);
+			});
+			
+			// Asynchronously retrieve accuracies of the model on input data that has 
+			// been manipulated with all selected distortions
+			for (var distortion of this._selectedDistortions) {
+				var url = tf_backend.addParams(tf_backend.getRouter()
+					.pluginRoute('advis', '/predictions/accuracy'), {
+					model: model.name,
+					inputImageAmount: this._inputImageAmount,
+					distortion: distortion.name
+				});
+				
+				this._requestManager.request(url).then(data => {
+					storeAccuracy(
+						data.model.name,
+						data.input.distortion,
+						data.accuracy.top1,
+						data.accuracy.top5
+					);
+				});
+			}
+		}
+	}
 });
 
 tf_tensorboard.registerDashboard({
