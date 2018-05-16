@@ -5,46 +5,58 @@ $sidebar-width: 450px;
 
 .sidebar {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	
 	min-width: $sidebar-width;
 	width: $sidebar-width;
 	margin-right: 0;
 	
+	border-right: 1px solid $light-foreground-color;
 	z-index: 1;
 	
-	.sidebar-item {
-		border-right: 1px solid $light-foreground-color;
-	}
-	
-	#distortion-list {
-		flex: 0.5;
+	#lists {
+		flex: 1;
 		
 		display: flex;
-		flex-direction: column;
+		flex-direction: row;
 		
-		#distortion-list-container {
-			overflow: scroll;
+		border-bottom: 1px solid $light-foreground-color;
+		
+		#distortion-list {
+			flex: 0.5;
 			
-			.list-item {
-				fill: $medium-foreground-color;
+			display: flex;
+			flex-direction: column;
+			
+			border-right: 1px solid $light-foreground-color;
+			
+			#distortion-list-container {
+				overflow: scroll;
 				
-				&.iron-selected {
-					fill: $accent-color;
+				.list-item {
+					fill: $medium-foreground-color;
+					
+					&.iron-selected {
+						fill: $accent-color;
+					}
 				}
+			}
+		}
+		
+		#model-list {
+			flex: 0.5;
+			
+			display: flex;
+			flex-direction: column;
+			
+			#model-list-container {
+				overflow: scroll;
 			}
 		}
 	}
 	
-	#model-list {
-		flex: 0.5;
-		
-		display: flex;
-		flex-direction: column;
-		
-		#model-list-container {
-			overflow: scroll;
-		}
+	#chart {
+		height: $sidebar-width;
 	}
 }
 

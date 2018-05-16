@@ -17,6 +17,7 @@ tf_web_library(
 		"//advis_plugin/dashboard/section_header",
 		"//advis_plugin/dashboard/model_list_item",
 		"//advis_plugin/dashboard/distortion_list_item",
+		"//advis_plugin/dashboard/accuracy_radar_chart",
 		"//advis_plugin/dashboard/layer_visualization",
 		"//advis_plugin/dashboard/graph_view",
 		"@org_polymer_iron_icon",
