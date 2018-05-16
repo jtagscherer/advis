@@ -1,5 +1,7 @@
 'use strict';
 
+declare var palette: any;
+
 Polymer({
   is: 'advis-dashboard',
 	listeners: {
@@ -140,6 +142,7 @@ Polymer({
     return this._requestManager.request(url).then(models => {
 			if (models.length > 0) {
 				var availableModels = [];
+				let colorPalette = palette('mpn65', Math.min(models.length, 65));
 				
 				for (let index in models) {
 					let model = models[index];
@@ -148,7 +151,8 @@ Polymer({
 						name: model['name'],
 						displayName: model['displayName'],
 						index: index,
-						version: model['version']
+						version: model['version'],
+						color: colorPalette[Number(index) % 65]
 					});
 				}
 				
