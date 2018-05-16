@@ -1,5 +1,6 @@
 <link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../paper-ripple/paper-ripple.html">
 
 <link rel="import" href="../../model-metric/model-metric.html">
@@ -11,9 +12,19 @@
 	<template>
 		<div id="container">
 			<div id="main">
+				<paper-checkbox id="checkbox"
+					noink
+					on-tap="_onCheckboxTapped"
+					on-change="_updateSelectionStatus">
+				</paper-checkbox>
+				
 				<div id="content">
-					<p class="title">[[model.displayName]]</p>
-					<p class="caption">Version [[model.version]]</p>
+					<p class="title" style$="[[_computeTitleStyle(model, _selected)]]">
+						[[model.displayName]]
+					</p>
+					<p class="caption">
+						Version [[model.version]]
+					</p>
 				</div>
 				
 				<div id="metrics">

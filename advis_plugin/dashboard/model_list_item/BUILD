@@ -16,6 +16,7 @@ tf_web_library(
 		"//advis_plugin/dashboard/model_list_item/model_metric",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+		"@org_polymer_paper_checkbox",
 		"@org_polymer_paper_ripple"
 	]
 )
@@ -26,7 +27,8 @@ sass_binary(
   src = "model-list-item.scss",
 	deps = [
 		"//advis_plugin/shared/style:text",
-		"//advis_plugin/shared/style:style"
+		"//advis_plugin/shared/style:style",
+		"//advis_plugin/shared/style:color"
 	]
 )
 

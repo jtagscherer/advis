@@ -7,7 +7,8 @@ Polymer({
 	listeners: {
     'nodeSelectedEvent': '_nodeSelected',
 		'iron-select': '_itemSelected',
-		'iron-deselect': '_itemDeselected'
+		'iron-deselect': '_itemDeselected',
+		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged'
   },
   properties: {
     selectedModel: {
@@ -83,6 +84,15 @@ Polymer({
 		});
 	},
 	
+	_modelStatisticsSelectionChanged(e) {
+		for (var model of this._availableModels) {
+			if (model.name == e.detail.model.name) {
+				model.selectedForStatistics = e.detail.selected;
+				break;
+			}
+		}
+	},
+	
 	_nodeSelected(e) {
 		if (this.selectedModel != null) {
 			this.selectedLayer = e.detail.selectedNode;
@@ -142,17 +152,37 @@ Polymer({
     return this._requestManager.request(url).then(models => {
 			if (models.length > 0) {
 				var availableModels = [];
-				let colorPalette = palette('mpn65', Math.min(models.length, 65));
+				
+				// Generate a color palette used to assign a color to each model
+				let maximumAmountOfColors = 64;
+				let colorPalette = palette(
+					'mpn65',
+					Math.min(models.length, maximumAmountOfColors)
+				);
 				
 				for (let index in models) {
 					let model = models[index];
 					
+					// If the model existed beforehand, remember its statistics selection
+					var selectedForStatistics = false;
+					
+					if (this._availableModels != null) {
+						for (var oldModel of this._availableModels) {
+							if (oldModel.name == model['name']) {
+								selectedForStatistics = oldModel.selectedForStatistics;
+								break;
+							}
+						}
+					}
+					
+					// Add the current model to the list of available models
 					availableModels.push({
 						name: model['name'],
 						displayName: model['displayName'],
 						index: index,
 						version: model['version'],
-						color: colorPalette[Number(index) % 65]
+						color: colorPalette[Number(index) % maximumAmountOfColors],
+						selectedForStatistics: selectedForStatistics
 					});
 				}
 				

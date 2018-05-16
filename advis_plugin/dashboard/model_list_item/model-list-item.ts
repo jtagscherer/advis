@@ -2,10 +2,13 @@
 
 Polymer({
   is: 'model-list-item',
+	listeners: {
+		'checkbox.down': '_onCheckboxDown'
+	},
 	properties: {
 		model: {
 			type: Object,
-			observer: '_calculateAccuracy'
+			observer: '_modelChanged'
 		},
 		distortions: {
 			type: Array,
@@ -13,12 +16,50 @@ Polymer({
 		},
 		lastItem: Boolean,
 		requestManager: Object,
+		_selected: Boolean,
 		_modelAccuracy: Number,
 		_inputImageAmount: {
 			type: Number,
 			value: 20,
 			observer: '_calculateAccuracy'
 		}
+	},
+	
+	_modelChanged() {
+		this._selected = this.model.selectedForStatistics;
+		this.$$('#checkbox').checked = this._selected;
+		
+		this._calculateAccuracy();
+	},
+	
+	_computeTitleStyle(model, _selected) {
+		if (_selected) {
+			return `color: #${model.color};`;
+		} else {
+			return '';
+		}
+	},
+	
+	_onCheckboxTapped(e) {
+		// If only the checkbox has been toggled we do not want the model list item 
+		// to be selected
+		e.stopPropagation();
+	},
+	
+	_onCheckboxDown(e) {
+		// Stop the ripple animation for the whole container when only the checkbox 
+		// has been toggled
+		e.stopPropagation();
+	},
+	
+	_updateSelectionStatus() {
+		this._selected = this.$$('#checkbox').checked;
+		
+		// Fire an event to let the dashboard know that the selection has changed
+		this.fire('model-statistics-selection-changed', {
+			model: this.model,
+			selected: this._selected
+		});
 	},
 	
 	_calculateAccuracy() {

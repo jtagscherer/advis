@@ -1,5 +1,6 @@
 @import 'advis_plugin/shared/style/text';
 @import 'advis_plugin/shared/style/style';
+@import 'advis_plugin/shared/style/color';
 
 $line-spacing: 2px;
 
@@ -11,6 +12,13 @@ $line-spacing: 2px;
 	#main {
 		display: flex;
 		flex-direction: row;
+		align-items: center;
+		
+		#checkbox {
+			padding-right: 3px;
+			--paper-checkbox-checked-color: $accent-color;
+			--paper-checkbox-unchecked-color: $medium-foreground-color;
+		}
 		
 		#content {
 			flex: 1;
@@ -21,6 +29,8 @@ $line-spacing: 2px;
 			p {
 				margin-top: $line-spacing;
 				margin-bottom: $line-spacing;
+				
+				transition: color 0.5s ease;
 			}
 		}
 		
