@@ -27,30 +27,34 @@
 			<paper-material class="sidebar" elevation="1">
 				<div class="sidebar-item" id="distortion-list">
 					<section-header text="Distortions"></section-header>
-					<iron-selector id="distortion-selector" multi>
-						<template is="dom-repeat" items="[[_availableDistortions]]">
-							<div class="list-item distortions" data-args$=[[item.index]]>
-								<distortion-list-item
-									distortion=[[item]]>
-								</distortion-list-item>
-							</div>
-						</template>
-					</iron-selector>
+					<div id="distortion-list-container">
+						<iron-selector id="distortion-selector" multi>
+							<template is="dom-repeat" items="[[_availableDistortions]]">
+								<div class="list-item distortions" data-args$=[[item.index]]>
+									<distortion-list-item
+										distortion=[[item]]>
+									</distortion-list-item>
+								</div>
+							</template>
+						</iron-selector>
+					</div>
 				</div>
 				<div class="sidebar-item" id="model-list">
 					<section-header text="Models"></section-header>
-					<iron-selector id="model-selector">
-						<template is="dom-repeat" items="[[_availableModels]]">
-							<div class="list-item models" data-args$=[[item.index]]>
-								<model-list-item
-									model=[[item]]
-									distortions=[[_selectedDistortions]]
-									request-manager=[[_requestManager]]
-									last-item="[[_isLastModelItem(index)]]">
-								</model-list-item>
-							</div>
-						</template>
-					</iron-selector>
+					<div id="model-list-container">
+						<iron-selector id="model-selector">
+							<template is="dom-repeat" items="[[_availableModels]]">
+								<div class="list-item models" data-args$=[[item.index]]>
+									<model-list-item
+										model=[[item]]
+										distortions=[[_selectedDistortions]]
+										request-manager=[[_requestManager]]
+										last-item="[[_isLastModelItem(index)]]">
+									</model-list-item>
+								</div>
+							</template>
+						</iron-selector>
+					</div>
 				</div>
 			</paper-material>
 			<div class="center">
