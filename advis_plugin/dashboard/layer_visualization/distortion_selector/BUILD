@@ -28,9 +28,9 @@ sass_binary(
   name = "distortion_selector_scss",
   src = "distortion-selector.scss",
 	deps = [
-		"//advis_plugin/shared:text",
-		"//advis_plugin/shared:color",
-		"//advis_plugin/shared:style"
+		"//advis_plugin/shared/style:text",
+		"//advis_plugin/shared/style:color",
+		"//advis_plugin/shared/style:style"
 	]
 )
 

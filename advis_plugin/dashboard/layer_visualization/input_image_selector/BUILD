@@ -27,9 +27,9 @@ sass_binary(
   name = "input_image_selector_scss",
   src = "input-image-selector.scss",
 	deps = [
-		"//advis_plugin/shared:text",
-		"//advis_plugin/shared:color",
-		"//advis_plugin/shared:style"
+		"//advis_plugin/shared/style:text",
+		"//advis_plugin/shared/style:color",
+		"//advis_plugin/shared/style:style"
 	]
 )
 

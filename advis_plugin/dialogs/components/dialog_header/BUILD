@@ -24,8 +24,8 @@ sass_binary(
   name = "dialog_header_scss",
   src = "dialog-header.scss",
 	deps = [
-		"//advis_plugin/shared:color",
-		"//advis_plugin/shared:style"
+		"//advis_plugin/shared/style:color",
+		"//advis_plugin/shared/style:style"
 	]
 )
 

@@ -26,7 +26,7 @@ sass_binary(
   name = "unit_details_dialog_scss",
   src = "unit-details-dialog.scss",
 	deps = [
-		"//advis_plugin/shared:style"
+		"//advis_plugin/shared/style:style"
 	]
 )
 
