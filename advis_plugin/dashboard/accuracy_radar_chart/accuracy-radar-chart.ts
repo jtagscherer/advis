@@ -67,8 +67,9 @@ Polymer({
 	_updateDatasets: function(models) {
 		// Remove any models within the dataset that are no longer selected for 
 		// statistics or no longer existent
-		for (var datasetIndex in this.data.datasets) {
-			let currentDataset = this.data.datasets[datasetIndex];
+		var prunedDatasets = [];
+		
+		for (var currentDataset of this.data.datasets) {
 			var associatedModel;
 			
 			for (var currentModel of this.models) {
@@ -78,12 +79,14 @@ Polymer({
 				}
 			}
 			
-			if (associatedModel == null || !associatedModel.selectedForStatistics) {
-				this.splice('data.datasets', datasetIndex, 1);
+			if (associatedModel != null && associatedModel.selectedForStatistics) {
+				prunedDatasets.push(currentDataset);
 			}
 		}
 		
 		// Loop through all selected models and adjust data accordingly
+		var updatedDatasets = [];
+		
 		modelLoop:
 		for (var model of models) {
 			// Construct a list of data points
@@ -94,17 +97,11 @@ Polymer({
 			}
 			
 			// Check if there is already a dataset for this model
-			for (var index in this.data.datasets) {
-				let dataset = this.data.datasets[index];
-				
-				if (dataset.id == model.name) {
-					if (dataset.data == data) {
-						// Skip if the data is the same
-						continue modelLoop;
-					} else {
-						// Remove the old dataset if it is not the same
-						this.splice('data.datasets', index, 1);
-					}
+			for (var dataset of prunedDatasets) {
+				if (dataset.id == model.name && dataset.data == data) {
+					// Use the old dataset if the data is the same
+					updatedDatasets.push(dataset);
+					continue modelLoop;
 				}
 			}
 			
@@ -113,7 +110,7 @@ Polymer({
 			let solidColor = this._getColorFromHex(model.color);
 			
 			// If we have not skipped this model, we have to add its data
-			this.push('data.datasets', {
+			updatedDatasets.push({
 				label: model.displayName,
 				id: model.name,
 				backgroundColor: translucentColor,
@@ -125,6 +122,8 @@ Polymer({
 				data: data
 			});
 		}
+		
+		this.data.datasets = updatedDatasets;
 	},
 	
 	_getColorFromHex: function(hex, alpha) {
