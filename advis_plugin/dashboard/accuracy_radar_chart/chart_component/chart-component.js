@@ -34,8 +34,12 @@ Polymer({
 				        },
 								scale: {
 									ticks: {
-										suggestedMin: 0,
-										suggestedMax: 100
+										min: 0,
+										max: 100,
+										stepSize: 20,
+										callback: function(tick) {
+											return tick.toString() + '%';
+										}
 									}
 								}
 							}
