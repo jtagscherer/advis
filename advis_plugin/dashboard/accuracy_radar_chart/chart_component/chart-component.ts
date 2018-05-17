@@ -44,6 +44,17 @@ Polymer({
 											return tick.toString() + '%';
 										}
 									}
+								},
+								tooltips: {
+									callbacks: {
+										label: function(tooltipItem, data) {
+											let modelName = data.datasets[tooltipItem.datasetIndex]
+												.label;
+											let percentage = tooltipItem.yLabel.toString();
+											
+											return modelName + ': ' + percentage + '%';
+										}
+									}
 								}
 							}
             });
