@@ -1,4 +1,11 @@
 #container {
-	width: 100%;
-	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	
+	chart-component {
+		width: 90%;
+		height: 90%;
+		display: block;
+	}
 }

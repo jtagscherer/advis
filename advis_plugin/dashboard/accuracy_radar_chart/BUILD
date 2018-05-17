@@ -13,7 +13,8 @@ tf_web_library(
 	],
 	path = "/accuracy-radar-chart",
 	deps = [
-		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer"
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+		"//advis_plugin/dashboard/accuracy_radar_chart/chart_component"
 	]
 )
 

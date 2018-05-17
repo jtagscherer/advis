@@ -1,13 +1,15 @@
 <link rel="import" href="../../polymer/polymer.html">
 
+<link rel="import" href="../../chart-component/chart-component.html">
+
 <!--
-	This component displays a very simple but uniform section header of varying 
-	width.
+	This component displays a radar chart depicting the accuracy of a list of 
+	models.
 -->
 <dom-module id="accuracy-radar-chart">
 	<template>
 		<div id="container">
-			<!-- TODO: Display a radar chart here -->
+			<chart-component data="[[data]]"></chart-component>
 		</div>
 		
 		<link rel="stylesheet" type="text/css" href="accuracy-radar-chart.css">

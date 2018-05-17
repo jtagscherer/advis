@@ -11,21 +11,7 @@ Polymer({
       type: Object,
       value: {}
     },
-    options: {
-      type: Object,
-      value: {}
-    },
 		_context: Object
-  },
-	
-	behaviors: [
-		Polymer.IronResizableBehavior
-	],
-  observers: [
-    '_configurationChanged(data.*, options.*)'
-  ],
-	listeners: {
-    'iron-resize': '_onIronResize'
   },
 	
 	updateChart: function () {
@@ -38,14 +24,20 @@ Polymer({
       } else {
 				// If the chart has not been initialized yet, create a new one
         this.async(function () {
-          if (this.hasData) {
+          if (this._hasData()) {
             this.chart = new Chart(this._context, {
               type: 'radar',
               data: this.data,
               options: {
 								legend: {
 				        	display: false
-				        }
+				        },
+								scale: {
+									ticks: {
+										suggestedMin: 0,
+										suggestedMax: 100
+									}
+								}
 							}
             });
           }
@@ -63,36 +55,14 @@ Polymer({
 	
 	attached: function() {
     this._context = this.$.canvas.getContext('2d');
-    this._queue();
+		this.updateChart();
   },
 	
-  _configurationChanged: function(dataRecord, optionsRecord) {
-		this.hasData = (dataRecord.base.labels && dataRecord.base.datasets);
-		
-    if (this.hasData && this.isAttached) {
-      this._queue();
-    }
-  },
-	
-	_measure: function(callback) {
-    function measure() {
-			callback(this.offsetHeight != undefined);
-    }
-		
-    requestAnimationFrame(measure.bind(this));
-  },
-	
-  _queue: function() {
-    if (this.hasData) {
-      this._measure(function(hasHeight) {
-        if (hasHeight) {
-          this.updateChart();
-        }
-      }.bind(this));
-    }
-  },
+	_hasData: function() {
+		return this.data != null && this.data.labels != null;
+	},
 	
   _onIronResize: function() {
-    this._queue();
+		this.resize();
   }
 });
