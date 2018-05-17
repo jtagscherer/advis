@@ -57,6 +57,11 @@ $sidebar-width: 450px;
 	
 	#chart {
 		height: $sidebar-width;
+		
+		accuracy-radar-chart {
+			width: 400px;
+			height: 400px;
+		}
 	}
 }
 

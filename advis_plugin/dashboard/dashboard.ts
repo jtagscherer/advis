@@ -94,6 +94,7 @@ Polymer({
 		for (var model of this._availableModels) {
 			if (model.name == e.detail.model.name) {
 				model.selectedForStatistics = e.detail.selected;
+				this.set('_accuracyCalculationFlag', !this._accuracyCalculationFlag);
 				break;
 			}
 		}
@@ -223,8 +224,6 @@ Polymer({
 		
 		// Store the accuracy of the model on the original or a distorted dataset
 		let storeAccuracy = async function(modelName, distortionName, top1, top5) {
-			var newModels = [];
-			
 			for (var model of self._availableModels) {
 				if (model.name == modelName) {
 					model.accuracy[distortionName] = {
@@ -232,13 +231,9 @@ Polymer({
 						'top5': top5
 					}
 				}
-				
-				newModels.push(model);
 			}
 			
 			// Force Polymer to update data bindings
-			self.set('_availableModels', []);
-			self.set('_availableModels', newModels);
 			self.set('_accuracyCalculationFlag', !self._accuracyCalculationFlag);
 		}
 		

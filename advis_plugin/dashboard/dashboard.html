@@ -15,6 +15,7 @@
 <link rel="import" href="../../section-header/section-header.html">
 <link rel="import" href="../../model-list-item/model-list-item.html">
 <link rel="import" href="../../distortion-list-item/distortion-list-item.html">
+<link rel="import" href="../../accuracy-radar-chart/accuracy-radar-chart.html">
 <link rel="import" href="../../layer-visualization/layer-visualization.html">
 <link rel="import" href="../../graph-view/graph-view.html">
 
@@ -62,7 +63,11 @@
 				</div>
 				<div id="chart">
 					<section-header text="Model Accuracy"></section-header>
-					<accuracy-radar-chart></accuracy-radar-chart>
+					<accuracy-radar-chart
+						models=[[_availableModels]]
+						distortions=[[_selectedDistortions]]
+						accuracy-calculation-flag=[[_accuracyCalculationFlag]]>
+					</accuracy-radar-chart>
 				</div>
 			</paper-material>
 			<div class="center">
