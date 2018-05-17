@@ -108,10 +108,11 @@ Polymer({
 				}
 			}
 			
-			// If we have not skipped this model, we have to add its data
+			// Derive some graph colors from the model's associated color
 			let translucentColor = this._getColorFromHex(model.color, 0.2);
 			let solidColor = this._getColorFromHex(model.color);
 			
+			// If we have not skipped this model, we have to add its data
 			this.push('data.datasets', {
 				label: model.displayName,
 				id: model.name,
