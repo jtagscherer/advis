@@ -109,17 +109,32 @@ Polymer({
 			}
 			
 			// If we have not skipped this model, we have to add its data
+			let translucentColor = this._getColorFromHex(model.color, 0.2);
+			let solidColor = this._getColorFromHex(model.color);
+			
 			this.push('data.datasets', {
 				label: model.displayName,
 				id: model.name,
-				backgroundColor: "rgba(179,181,198,0.2)",
-				borderColor: "rgba(179,181,198,1)",
-				pointBackgroundColor: "rgba(179,181,198,1)",
-				pointBorderColor: "#fff",
-				pointHoverBackgroundColor: "#fff",
-				pointHoverBorderColor: "rgba(179,181,198,1)",
+				backgroundColor: translucentColor,
+				borderColor: solidColor,
+				pointBackgroundColor: solidColor,
+				pointBorderColor: solidColor,
+				pointHoverBackgroundColor: solidColor,
+				pointHoverBorderColor: solidColor,
 				data: data
 			});
 		}
+	},
+	
+	_getColorFromHex(hex, alpha) {
+    var r = parseInt(hex.slice(0, 2), 16),
+      	g = parseInt(hex.slice(2, 4), 16),
+      	b = parseInt(hex.slice(4, 6), 16);
+		
+    if (alpha) {
+      return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+    } else {
+      return 'rgb(' + r + ', ' + g + ', ' + b + ')';
+    }
 	}
 });
