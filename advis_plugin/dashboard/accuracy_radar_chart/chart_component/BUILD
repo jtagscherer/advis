@@ -7,7 +7,7 @@ tf_web_library(
 	name = "chart_component",
 	srcs = [
 		"chart-component.html",
-		"chart-component.js"
+		"chart-component.ts"
 	],
 	path = "/chart-component",
 	deps = [

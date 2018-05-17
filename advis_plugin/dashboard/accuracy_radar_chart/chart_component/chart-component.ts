@@ -1,10 +1,13 @@
 'use strict';
 
+declare var Chart: any;
+
 Polymer({
 	is: 'chart-component',
 	
 	properties: {
     chart: {
+			type: Object,
       notify: true
     },
     data: {
