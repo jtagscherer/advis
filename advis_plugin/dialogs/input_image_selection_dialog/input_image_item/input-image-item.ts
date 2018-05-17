@@ -10,7 +10,7 @@ Polymer({
 		}
 	},
 	
-	_selectionChanged() {
+	_selectionChanged: function() {
 		if (this.selected) {
 			this.$$('paper-card').elevation = 3;
 		} else {
@@ -18,7 +18,7 @@ Polymer({
 		}
 	},
 	
-	_getClass(selected, type) {
+	_getClass: function(selected, type) {
 		var computedClass = '';
 		
 		if (type == 'card') {

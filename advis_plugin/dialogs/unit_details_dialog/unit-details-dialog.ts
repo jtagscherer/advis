@@ -17,7 +17,7 @@ Polymer({
 		}
   },
 	
-	setContent(content) {
+	setContent: function(content) {
 		this.model = content.model;
 		this.unit = content.unit;
 		this.imageUrl = content.url;

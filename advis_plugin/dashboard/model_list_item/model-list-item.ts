@@ -24,14 +24,14 @@ Polymer({
 		_modelAccuracyDifference: Number
 	},
 	
-	_modelChanged() {
+	_modelChanged: function() {
 		this._selected = this.model.selectedForStatistics;
 		this.$$('#checkbox').checked = this._selected;
 		
 		this._calculateAccuracyDifference();
 	},
 	
-	_computeTitleStyle(model, _selected) {
+	_computeTitleStyle: function(model, _selected) {
 		if (_selected) {
 			return `color: #${model.color};`;
 		} else {
@@ -39,19 +39,19 @@ Polymer({
 		}
 	},
 	
-	_onCheckboxTapped(e) {
+	_onCheckboxTapped: function(e) {
 		// If only the checkbox has been toggled we do not want the model list item 
 		// to be selected
 		e.stopPropagation();
 	},
 	
-	_onCheckboxDown(e) {
+	_onCheckboxDown: function(e) {
 		// Stop the ripple animation for the whole container when only the checkbox 
 		// has been toggled
 		e.stopPropagation();
 	},
 	
-	_updateSelectionStatus() {
+	_updateSelectionStatus: function() {
 		this._selected = this.$$('#checkbox').checked;
 		
 		// Fire an event to let the dashboard know that the selection has changed
@@ -61,7 +61,7 @@ Polymer({
 		});
 	},
 	
-	_calculateAccuracyDifference() {
+	_calculateAccuracyDifference: function() {
 		if (this.model == null || this.distortions == null) {
 			return;
 		}

@@ -16,7 +16,7 @@ Polymer({
 		}
   },
 	
-	setContent(content) {		
+	setContent: function(content) {		
 		this.dataset = content.dataset;
 		this.availableImages = content.availableImages;
 		this.selectedImage = content.selectedImage;
@@ -24,11 +24,11 @@ Polymer({
 		this.$$('iron-list').selectItem(this.selectedImage);
 	},
 	
-	getContentOnDismiss() {
+	getContentOnDismiss: function() {
 		return this.selectedImage;
 	},
 	
-	_inputImageClicked(e) {
+	_inputImageClicked: function(e) {
 		let findParentNode = function(parentName, node) {
 			if (node.nodeName == parentName) {
 				return node;

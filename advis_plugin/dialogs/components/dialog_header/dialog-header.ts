@@ -6,7 +6,7 @@ Polymer({
 		eventId: String
 	},
 	
-	closeButtonClicked() {
+	closeButtonClicked: function() {
 		this.fire('closeButtonClickedEvent', {
       eventId: this.eventId
     });

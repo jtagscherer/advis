@@ -6,19 +6,19 @@ const DialogBehavior = {
 		'iron-overlay-canceled': '_handleCancelEvent'
   },
 	
-	setContent(content) {
+	setContent: function(content) {
 		// Empty by default, should be implemented in specific dialogs
 	},
 	
-	getContentOnDismiss() {
+	getContentOnDismiss: function() {
 		// Empty by default, should be implemented in specific dialogs
 	},
 	
-	getContentOnApply() {
+	getContentOnApply: function() {
 		// Empty by default, should be implemented in specific dialogs
 	},
 	
-	open(content) {
+	open: function(content) {
 		const paperDialog = this.$$('paper-dialog');
 		
 		if (content != null) {
@@ -29,11 +29,12 @@ const DialogBehavior = {
 		paperDialog.eventId = this.eventId;
 		paperDialog.open();
 	},
-	close() {
+	
+	close: function() {
 		this.$$('paper-dialog').close();
 	},
 	
-	_setupAnimations(target) {
+	_setupAnimations: function(target) {
 		// Set up nice opening and closing animations
 		const paperDialog = this.$$('paper-dialog');
 		
@@ -84,19 +85,19 @@ const DialogBehavior = {
 		};
 	},
 	
-	_handleCancelEvent(e) {
+	_handleCancelEvent: function(e) {
 		if (e.target.eventId === this.eventId) {
 			this._dismissDialog();
 		}
 	},
 	
-	_handleCloseEvent(e) {
+	_handleCloseEvent: function(e) {
 		if (e.detail.eventId === this.eventId) {
 			this._dismissDialog();
 		}
 	},
 	
-	_dismissDialog() {
+	_dismissDialog: function() {
 		// Close the dialog
 		this.close();
 		

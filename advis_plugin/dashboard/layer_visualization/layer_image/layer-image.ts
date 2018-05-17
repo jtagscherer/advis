@@ -21,17 +21,17 @@ Polymer({
 		'_fetchNewData(model.name, layer)'
 	],
 	
-  attached() {
+  attached: function() {
     this._attached = true;
     this.reload();
   },
-  reload() {
+  reload: function() {
 		if (this._hasValidData()) {
 			this._fetchNewData(this.model.name, this.layer);
 		}
   },
 	
-	tileTapped(e) {
+	tileTapped: function(e) {
 		var unitTitle = `Tensor ${Number(e.target.dataset.args) + 1}`;
 		
 		if (this.distortion != null) {
@@ -53,15 +53,15 @@ Polymer({
 		});
 	},
 	
-  _fetchNewData(model, layer) {
+  _fetchNewData: function(model, layer) {
     if (this._attached) {
 			this._constructTileUrlList();
     }
   },
-	_hasValidData() {
+	_hasValidData: function() {
 		return this.model != null && this.layer != null && this.imageIndex != null;
 	},
-	_constructTileUrlList() {
+	_constructTileUrlList: function() {
 		// First of all, request some meta data about the model layer shown
 		const metaUrl = this._getMetaUrl();
 		
@@ -77,7 +77,7 @@ Polymer({
 		});
 	},
 	
-	_getMetaUrl() {
+	_getMetaUrl: function() {
 		if (this.distortion != null) {
 			return tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('advis', '/layer/meta'), {
@@ -96,7 +96,7 @@ Polymer({
 			});
 		}
 	},
-	_getImageUrl(unitIndex) {
+	_getImageUrl: function(unitIndex) {
 		if (this.distortion != null) {
 			return tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('advis', '/layer/image'), {

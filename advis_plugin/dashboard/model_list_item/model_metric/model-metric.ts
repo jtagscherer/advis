@@ -11,7 +11,7 @@ Polymer({
 		}
 	},
 	
-	_getFormattedValue(value, percent) {
+	_getFormattedValue: function(value, percent) {
 		let roundedValue = (Math.round(value * 100) / 100.0).toFixed(2);
 		
 		if (percent) {
@@ -21,7 +21,7 @@ Polymer({
 		}
 	},
 	
-	_getTextClass(value) {
+	_getTextClass: function(value) {
 		if (value < 0) {
 			return 'single-line number negative';
 		} else {

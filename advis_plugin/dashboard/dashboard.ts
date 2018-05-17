@@ -34,12 +34,12 @@ Polymer({
     }
   },
 	
-  ready() {
+  ready: function() {
 		this._reloadDistortions();
     this._reloadModels();
   },
 	
-  _reloadModels() {
+  _reloadModels: function() {
 		var self = this;
 		
 		if (this.selectedModel != null) {
@@ -61,7 +61,7 @@ Polymer({
 		});
   },
 	
-	_reloadDistortions() {
+	_reloadDistortions: function() {
 		var self = this;
 		
 		// Update the list of available distortions
@@ -90,7 +90,7 @@ Polymer({
 		});
 	},
 	
-	_modelStatisticsSelectionChanged(e) {
+	_modelStatisticsSelectionChanged: function(e) {
 		for (var model of this._availableModels) {
 			if (model.name == e.detail.model.name) {
 				model.selectedForStatistics = e.detail.selected;
@@ -100,14 +100,14 @@ Polymer({
 		}
 	},
 	
-	_nodeSelected(e) {
+	_nodeSelected: function(e) {
 		if (this.selectedModel != null) {
 			this.selectedLayer = e.detail.selectedNode;
 			this.$$('layer-visualization').reload();
 		}
 	},
 	
-	_itemSelected(e) {
+	_itemSelected: function(e) {
 		let item = e.detail.item;
 		
 		// Find out which kind of list item this event originated from
@@ -124,7 +124,7 @@ Polymer({
 		}
 	},
 	
-	_itemDeselected(e) {
+	_itemDeselected: function(e) {
 		let item = e.detail.item;
 		
 		if (item.classList.contains('list-item') 
@@ -133,7 +133,7 @@ Polymer({
 		}
 	},
 	
-	_updateDistortionSelection() {
+	_updateDistortionSelection: function() {
 		if (this._availableDistortions != null) {
 			var newSelectedDistortions = [];
 			
@@ -148,16 +148,17 @@ Polymer({
 		}
 	},
 	
-	_compareByName(a, b) {
-		if (a.name < b.name)
+	_compareByName: function(a, b) {
+		if (a.name < b.name) {
 			return -1;
-		if (a.name > b.name)
+		} else if (a.name > b.name) {
 			return 1;
-		
-		return 0;
+		} else {
+			return 0;
+		}
 	},
 	
-	_isLastModelItem(index) {
+	_isLastModelItem: function(index) {
 		if (this._availableModels == null) {
 			return false;
 		} else {
@@ -165,7 +166,7 @@ Polymer({
 		}
 	},
 	
-  _fetchModels() {
+  _fetchModels: function() {
     const url = tf_backend.getRouter().pluginRoute('advis', '/models');
 		
     return this._requestManager.request(url).then(models => {
@@ -225,7 +226,7 @@ Polymer({
     });
   },
 	
-	_calculateModelAccuracy() {
+	_calculateModelAccuracy: function() {
 		if (this._selectedDistortions == null || this._requestManager == null
 			|| this._availableModels == null) {
 			return;

@@ -17,8 +17,8 @@ Polymer({
 		_context: Object
   },
 	
-	updateChart: function () {
-    this.async(function () {
+	updateChart: function() {
+    this.async(function() {
       if (this.chart) {
 				// If the chart has already been initialized, update its data
         this.chart.stop();
@@ -26,7 +26,7 @@ Polymer({
         this.chart.update();
       } else {
 				// If the chart has not been initialized yet, create a new one
-        this.async(function () {
+        this.async(function() {
           if (this._hasData()) {
             this.chart = new Chart(this._context, {
               type: 'radar',

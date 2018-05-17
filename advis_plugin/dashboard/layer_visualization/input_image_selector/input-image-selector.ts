@@ -33,7 +33,7 @@ Polymer({
 			&& this.availableImages.length > 0;
 	},
 	
-	_handleDialogReturnedEvent(e) {
+	_handleDialogReturnedEvent: function(e) {
 		if (e.detail.eventId === 'input-image-selection-dialog') {
 			this.selectedImage = e.detail.content;
 		}

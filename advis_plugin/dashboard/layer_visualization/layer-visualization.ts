@@ -26,24 +26,24 @@ Polymer({
 		requestManager: Object
 	},
 	
-	reload() {
+	reload: function() {
 		this.$$('#normal-layer-image').reload();
 		this.$$('#distorted-layer-image').reload();
 	},
 	
-	_selectedImageChanged() {
+	_selectedImageChanged: function() {
 		// If the selected image has changed we have to reload both the normal and 
 		// the distorted layer image visualization.
 		this.reload();
 	},
 	
-	_selectedDistortionChanged() {
+	_selectedDistortionChanged: function() {
 		// If only the distortion has changed, reloading the distorted layer image 
 		// visualization suffices.
 		this.$$('#distorted-layer-image').reload();
 	},
 	
-	_distortionsChanged() {
+	_distortionsChanged: function() {
 		// Bail out if the distortion list is invalid
 		if (this.distortions == null || this.distortions.length == 0) {
 			return;
@@ -71,7 +71,7 @@ Polymer({
 		}
 	},
 	
-	_fetchAvailableImages() {
+	_fetchAvailableImages: function() {
 		if (this.selectedModel == null) {
 			return;
 		}

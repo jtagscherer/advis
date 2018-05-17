@@ -18,7 +18,7 @@ Polymer({
 		data: Object
 	},
 	
-	_updateGraph() {
+	_updateGraph: function() {
 		// Make sure our data is in a valid state
 		if (this.data == null || this.data == {}) {
 			this.data = {
@@ -64,7 +64,7 @@ Polymer({
 		this.$$('chart-component').updateChart();
 	},
 	
-	_updateDatasets(models) {
+	_updateDatasets: function(models) {
 		// Remove any models within the dataset that are no longer selected for 
 		// statistics or no longer existent
 		for (var datasetIndex in this.data.datasets) {
@@ -127,7 +127,7 @@ Polymer({
 		}
 	},
 	
-	_getColorFromHex(hex, alpha) {
+	_getColorFromHex: function(hex, alpha) {
     var r = parseInt(hex.slice(0, 2), 16),
       	g = parseInt(hex.slice(2, 4), 16),
       	b = parseInt(hex.slice(4, 6), 16);
