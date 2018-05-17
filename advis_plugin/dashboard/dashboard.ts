@@ -141,9 +141,20 @@ Polymer({
 				newSelectedDistortions.push(this._availableDistortions[index]);
 			}
 			
+			newSelectedDistortions.sort(this._compareByName)
+			
 			this._selectedDistortions = newSelectedDistortions;
 			this._calculateModelAccuracy();
 		}
+	},
+	
+	_compareByName(a, b) {
+		if (a.name < b.name)
+			return -1;
+		if (a.name > b.name)
+			return 1;
+		
+		return 0;
 	},
 	
 	_isLastModelItem(index) {

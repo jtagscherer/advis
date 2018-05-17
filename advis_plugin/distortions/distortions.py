@@ -1,6 +1,7 @@
 import traceback
 import logging
 import importlib.util
+import collections
 
 from os import makedirs, path, listdir, walk
 from os.path import isfile, join, splitext
@@ -76,6 +77,10 @@ class DistortionManager:
 		
 		self._copy_preset_distortions()
 		self._update_distortion_modules()
+		
+		self.distortion_modules = collections.OrderedDict(
+			sorted(self.distortion_modules.items())
+		)
 	
 	def is_setup(self):
 		return self.directory != None
