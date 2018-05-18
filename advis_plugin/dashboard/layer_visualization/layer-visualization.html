@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../tf-backend/tf-backend.html">
 
-<link rel="import" href="../iron-pages/iron-pages.html">
+<link rel="import" href="../neon-animation/neon-animated-pages.html">
 <link rel="import" href="../paper-tabs/paper-tabs.html">
 
 <link rel="import" href="../input-image-selector/input-image-selector.html">
@@ -29,7 +29,7 @@
 			</div>
 			
 			<div id="body">
-				<iron-pages selected=[[selectedPage]]>
+				<neon-animated-pages selected=[[selectedPage]]>
 					<side-by-side
 						model=[[selectedModel]]
 						layer=[[selectedLayer]]
@@ -48,7 +48,7 @@
 						<!-- TODO: Insert difference comparison -->
 						Difference
 					</div>
-				</iron-pages>
+				</neon-animated-pages>
 			</div>
 			
 			<div id="footer">

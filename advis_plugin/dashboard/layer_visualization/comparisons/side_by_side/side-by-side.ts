@@ -14,8 +14,26 @@ Polymer({
 		_requestManager: {
       type: Object,
       value: () => new tf_backend.RequestManager()
-    }
+    },
+		animationConfig: {
+			value: function() {
+				return {
+					'entry': {
+						name: 'fade-in-animation',
+						node: this
+					},
+					'exit': {
+						name: 'fade-out-animation',
+						node: this
+					}
+				}
+			}
+		}
   },
+	
+	behaviors: [
+		(Polymer as any).NeonAnimatableBehavior
+	],
 
   observers: [
 		'_fetchNewData(model.name, layer)'
@@ -117,4 +135,4 @@ Polymer({
 			});
 		}
 	}
-});
+} as any);

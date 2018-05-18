@@ -16,7 +16,7 @@ tf_web_library(
 	deps = [
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
-		"@org_polymer_iron_pages",
+		"@org_polymer_neon_animation",
 		"@org_polymer_paper_tabs",
 		"//advis_plugin/dashboard/layer_visualization/selectors/input_image_selector",
 		"//advis_plugin/dashboard/layer_visualization/selectors/distortion_selector",

@@ -88,31 +88,6 @@ web_test_repositories(
 )
 
 ################################################################################
-# POLYMER IRON PAGES - Load the iron pages component
-#
-
-load("@io_bazel_rules_closure//closure:defs.bzl", "web_library_external")
-
-web_library_external(
-	name = "org_polymer_iron_pages",
-	licenses = ["notice"],
-	sha256 = "2db73155902d0f24e3ba19ef680ca620c22ebef204e9dacab470aa25677cbc7d",
-	urls = [
-		"https://github.com/PolymerElements/iron-pages/archive/v2.1.0.tar.gz"
-	],
-	strip_prefix = "iron-pages-2.1.0",
-	path = "/iron-pages",
-	srcs = [
-		"iron-pages.html"
-	],
-	deps = [
-		"@org_polymer",
-		"@org_polymer_iron_resizable_behavior",
-		"@org_polymer_iron_selector"
-	]
-)
-
-################################################################################
 # SASS RULES - Build rules and libraries for Sass support
 #
 

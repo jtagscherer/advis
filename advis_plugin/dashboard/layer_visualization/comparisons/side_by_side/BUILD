@@ -15,7 +15,8 @@ tf_web_library(
 	deps = [
 		"//advis_plugin/dialogs/unit_details_dialog",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
-		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend"
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
+		"@org_polymer_neon_animation"
 	]
 )
 
