@@ -22,6 +22,10 @@ Polymer({
 			type: Object,
 			observer: '_selectedDistortionChanged'
 		},
+		selectedPage: {
+			type: Number,
+			value: 0
+		},
 		_availableImages: Array,
 		requestManager: Object
 	},

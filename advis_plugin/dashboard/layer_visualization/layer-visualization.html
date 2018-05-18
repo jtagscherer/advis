@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../tf-backend/tf-backend.html">
 
+<link rel="import" href="../iron-pages/iron-pages.html">
 <link rel="import" href="../paper-tabs/paper-tabs.html">
 
 <link rel="import" href="../input-image-selector/input-image-selector.html">
@@ -28,16 +29,30 @@
 			</div>
 			
 			<div id="body">
-				<side-by-side
-					model=[[selectedModel]]
-					layer=[[selectedLayer]]
-					image-index=[[selectedImage.index]]
-					request-manager=[[requestManager]]>
-				</side-by-side>
+				<iron-pages selected=[[selectedPage]]>
+					<side-by-side
+						model=[[selectedModel]]
+						layer=[[selectedLayer]]
+						image-index=[[selectedImage.index]]
+						request-manager=[[requestManager]]>
+					</side-by-side>
+					<div>
+						<!-- TODO: Insert swipe comparison -->
+						Swipe
+					</div>
+					<div>
+						<!-- TODO: Insert crossfade comparison -->
+						Crossfade
+					</div>
+					<div>
+						<!-- TODO: Insert difference comparison -->
+						Difference
+					</div>
+				</iron-pages>
 			</div>
 			
 			<div id="footer">
-				<paper-tabs selected="0" scrollable fit-container>
+				<paper-tabs selected={{selectedPage}} scrollable fit-container>
 					<paper-tab>Side by Side</paper-tab>
 					<paper-tab>Swipe</paper-tab>
 					<paper-tab>Crossfade</paper-tab>
