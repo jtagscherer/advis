@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'layer-image',
+  is: 'side-by-side',
   properties: {
     model: Object,
     layer: String,

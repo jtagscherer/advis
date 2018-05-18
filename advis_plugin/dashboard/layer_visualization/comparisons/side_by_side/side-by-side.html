@@ -4,11 +4,10 @@
 <link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
 
 <!--
-	Advis exports activations and feature visualizations of a deep learning layer 
-	as a collection image tiles.
-	This module displays this kind of visualization.
+	This component displays the activation of an input image and the average 
+	distorted activation side by side.
 -->
-<dom-module id="layer-image">
+<dom-module id="side-by-side">
 	<template>
 		<div id="container">
 			<div id="image-container">
@@ -25,8 +24,8 @@
 		
 		<unit-details-dialog></unit-details-dialog>
 		
-		<link rel="stylesheet" type="text/css" href="layer-image.css">
+		<link rel="stylesheet" type="text/css" href="side-by-side.css">
 	</template>
 
-	<script src="layer-image.js"></script>
+	<script src="side-by-side.js"></script>
 </dom-module>

@@ -5,7 +5,8 @@
 
 <link rel="import" href="../input-image-selector/input-image-selector.html">
 <link rel="import" href="../distortion-selector/distortion-selector.html">
-<link rel="import" href="../layer-image/layer-image.html">
+
+<link rel="import" href="../side-by-side/side-by-side.html">
 
 <!--
 	This module contains all UI components visualizing one of the model's layers.
@@ -27,20 +28,12 @@
 			</div>
 			
 			<div id="body">
-				<layer-image id="normal-layer-image"
+				<side-by-side
 					model=[[selectedModel]]
 					layer=[[selectedLayer]]
 					image-index=[[selectedImage.index]]
 					request-manager=[[requestManager]]>
-				</layer-image>
-				
-				<layer-image id="distorted-layer-image"
-					model=[[selectedModel]]
-					layer=[[selectedLayer]]
-					image-index=[[selectedImage.index]]
-					distortion=[[selectedDistortion]]
-					request-manager=[[requestManager]]>
-				</layer-image>
+				</side-by-side>
 			</div>
 			
 			<div id="footer">

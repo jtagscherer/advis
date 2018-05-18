@@ -27,20 +27,16 @@ Polymer({
 	},
 	
 	reload: function() {
-		this.$$('#normal-layer-image').reload();
-		this.$$('#distorted-layer-image').reload();
+		// Reload all available layer visualization comparison components
+		this.$$('side-by-side').reload();
 	},
 	
 	_selectedImageChanged: function() {
-		// If the selected image has changed we have to reload both the normal and 
-		// the distorted layer image visualization.
 		this.reload();
 	},
 	
 	_selectedDistortionChanged: function() {
-		// If only the distortion has changed, reloading the distorted layer image 
-		// visualization suffices.
-		this.$$('#distorted-layer-image').reload();
+		this.reload();
 	},
 	
 	_distortionsChanged: function() {

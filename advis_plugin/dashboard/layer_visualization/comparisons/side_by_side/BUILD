@@ -5,13 +5,13 @@ load("@io_bazel_rules_sass//sass:sass.bzl", "sass_binary")
 
 # Build the web library that contains the layer image component
 tf_web_library(
-	name = "layer_image",
+	name = "side_by_side",
 	srcs = [
-		"layer-image.html",
-		"layer-image.css",
-		"layer-image.ts"
+		"side-by-side.html",
+		"side-by-side.css",
+		"side-by-side.ts"
 	],
-	path = "/layer-image",
+	path = "/side-by-side",
 	deps = [
 		"//advis_plugin/dialogs/unit_details_dialog",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
@@ -21,14 +21,14 @@ tf_web_library(
 
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
-  name = "layer_image_scss",
-  src = "layer-image.scss"
+  name = "side_by_side_scss",
+  src = "side-by-side.scss"
 )
 
 # Move the compiled CSS file to our desired path
 genrule(
-  name = "layer_image_css",
-  srcs = [":layer_image_scss"],
-  outs = ["layer-image.css"],
-  cmd = "cat $(locations :layer_image_scss) > $@"
+  name = "side_by_side_css",
+  srcs = [":side_by_side_scss"],
+  outs = ["side-by-side.css"],
+  cmd = "cat $(locations :side_by_side_scss) > $@"
 )

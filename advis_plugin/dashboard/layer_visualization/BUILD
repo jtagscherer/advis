@@ -17,9 +17,9 @@ tf_web_library(
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_polymer_paper_tabs",
-		"//advis_plugin/dashboard/layer_visualization/input_image_selector",
-		"//advis_plugin/dashboard/layer_visualization/distortion_selector",
-		"//advis_plugin/dashboard/layer_visualization/layer_image"
+		"//advis_plugin/dashboard/layer_visualization/selectors/input_image_selector",
+		"//advis_plugin/dashboard/layer_visualization/selectors/distortion_selector",
+		"//advis_plugin/dashboard/layer_visualization/comparisons/side_by_side"
 	]
 )
 
