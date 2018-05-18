@@ -41,7 +41,7 @@ Polymer({
 		// Show the enlarged image tile in a dialog
 		this.$$('unit-details-dialog').open({
 			model: {
-				title: this.model.name,
+				title: this.model.displayName,
 				caption: `Version ${this.model.version}`
 			},
 			unit: {
