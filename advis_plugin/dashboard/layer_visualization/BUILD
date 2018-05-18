@@ -16,6 +16,7 @@ tf_web_library(
 	deps = [
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
+		"@org_polymer_paper_tabs",
 		"//advis_plugin/dashboard/layer_visualization/input_image_selector",
 		"//advis_plugin/dashboard/layer_visualization/distortion_selector",
 		"//advis_plugin/dashboard/layer_visualization/layer_image"
@@ -25,7 +26,10 @@ tf_web_library(
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
   name = "layer_visualization_scss",
-  src = "layer-visualization.scss"
+  src = "layer-visualization.scss",
+	deps = [
+		"//advis_plugin/shared/style:color"
+	]
 )
 
 # Move the compiled CSS file to our desired path

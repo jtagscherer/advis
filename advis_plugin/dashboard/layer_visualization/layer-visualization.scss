@@ -1,8 +1,41 @@
+@import 'advis_plugin/shared/style/color';
+
+:host {
+	--paper-tab-ink: $accent-color;
+}
+
 #content {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	
-	div {
-		flex: 0.5;
+	height: 100%;
+	
+	#header {
+		display: flex;
+		flex-direction: row;
+		
+		* {
+			flex: 0.5;
+		}
+	}
+	
+	#body {
+		flex: 1;
+		
+		display: flex;
+		flex-direction: row;
+		overflow: scroll;
+		
+		* {
+			flex: 0.5;
+		}
+	}
+	
+	#footer {
+		paper-tabs {
+			--paper-tabs-selection-bar-color: $accent-color;
+			
+			width: 100%;
+		}
 	}
 }
