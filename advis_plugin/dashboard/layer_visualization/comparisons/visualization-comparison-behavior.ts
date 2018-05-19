@@ -30,6 +30,14 @@ const VisualizationComparisonBehavior = {
 			}
 		}
 	},
+	
+	listeners: {
+		'iron-resize': 'sizeChanged'
+	},
+	
+	behaviors: [
+		(Polymer as any).IronResizableBehavior
+	],
 
   observers: [
 		'_fetchNewData(model.name, layer)'
@@ -45,6 +53,14 @@ const VisualizationComparisonBehavior = {
 			this._fetchNewData(this.model.name, this.layer);
 		}
   },
+	
+	urlsChanged: function(urlType) {
+		// Can be implemented by components using this behavior
+	},
+	
+	sizeChanged: function() {
+		// Can be implemented by components using this behavior
+	},
 	
 	_fetchNewData: function(model, layer) {
     if (this._attached) {
@@ -86,6 +102,7 @@ const VisualizationComparisonBehavior = {
 			}
 			
 			this.normalUrls = tileUrls;
+			this.urlsChanged('normal');
 		});
 	},
 	
@@ -117,48 +134,7 @@ const VisualizationComparisonBehavior = {
 			}
 			
 			this.distortedUrls = tileUrls;
+			this.urlsChanged('distorted');
 		});
-	}/*,
-	
-	_getMetaUrl: function() {
-		if (this.distortion != null) {
-			return tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layer/meta'), {
-				model: this.model.name,
-				layer: this.layer,
-				imageIndex: this.imageIndex,
-				distortion: this.distortion.name,
-				imageAmount: this.distortion.imageAmount
-			});
-		} else {
-			return tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layer/meta'), {
-				model: this.model.name,
-				layer: this.layer,
-				imageIndex: this.imageIndex
-			});
-		}
-	},
-	
-	_getImageUrl: function(unitIndex) {
-		if (this.distortion != null) {
-			return tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layer/image'), {
-				model: this.model.name,
-				layer: this.layer,
-				imageIndex: this.imageIndex,
-				unitIndex: unitIndex,
-				distortion: this.distortion.name,
-				imageAmount: this.distortion.imageAmount
-			});
-		} else {
-			return tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/layer/image'), {
-				model: this.model.name,
-				layer: this.layer,
-				imageIndex: this.imageIndex,
-				unitIndex: unitIndex
-			});
-		}
-	}*/
+	}
 };
