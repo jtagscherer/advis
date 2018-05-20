@@ -13,23 +13,31 @@
 <dom-module id="side-by-side">
 	<template>
 		<div id="container">
-			<div id="image-container">
-				<template is="dom-repeat" items="[[normalUrls]]">
-					<img
-						class="image-tile"
-						src$={{item}}
-						data-args$={{index}}
-						on-tap="tileTapped">
-					</img>
-				</template>
-				<template is="dom-repeat" items="[[distortedUrls]]">
-					<img
-						class="image-tile"
-						src$={{item}}
-						data-args$={{index}}
-						on-tap="tileTapped">
-					</img>
-				</template>
+			<div class="image-wrapper">
+				<div id="normal-images" class="image-container">
+					<template is="dom-repeat" items="[[normalUrls]]">
+						<img
+							class="image-tile"
+							src$={{item}}
+							width$=[[tileSize]]
+							data-args$={{index}}
+							on-tap="tileTapped">
+						</img>
+					</template>
+				</div>
+			</div>
+			<div class="image-wrapper">
+				<div id="distorted-images" class="image-container">
+					<template is="dom-repeat" items="[[distortedUrls]]">
+						<img
+							class="image-tile"
+							src$={{item}}
+							width$=[[tileSize]]
+							data-args$={{index}}
+							on-tap="tileTapped">
+						</img>
+					</template>
+				</div>
 			</div>
 		</div>
 		
