@@ -55,10 +55,17 @@ Polymer({
 	},
 	
 	tileTapped: function(e) {
-		var unitTitle = `Tensor ${Number(e.target.dataset.args) + 1}`;
+		let inputType = e.target.dataset.inputType;
+		let unitIndex = e.target.dataset.unitIndex;
 		
-		if (this.distortion != null) {
-			unitTitle += ' (Distorted)'
+		var unitTitle = `Tensor ${Number(unitIndex) + 1}`;
+		var unitImageUrl;
+		
+		if (inputType == 'distorted') {
+			unitTitle += ' (Distorted)';
+			unitImageUrl = this.distortedUrls[unitIndex];
+		} else {
+			unitImageUrl = this.normalUrls[unitIndex];
 		}
 		
 		// Show the enlarged image tile in a dialog
@@ -71,8 +78,7 @@ Polymer({
 				title: unitTitle,
 				caption: this.layer
 			},
-			// TODO: Choose the right URL array and index
-			url: this.normalUrls[e.target.dataset.args % 5],
+			url: unitImageUrl,
 			animationTarget: e.target.getBoundingClientRect()
 		});
 	}
