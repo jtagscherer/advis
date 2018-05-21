@@ -6,7 +6,7 @@ Polymer({
 	properties: {
 		sliderValue: {
 			type: Number,
-			value: 50,
+			value: 500,
 			observer: '_updateClipRectangle'
 		},
 		_maximumSliderValue: {
