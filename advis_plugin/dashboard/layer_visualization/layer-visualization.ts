@@ -24,7 +24,8 @@ Polymer({
 		},
 		selectedPage: {
 			type: Number,
-			value: 0
+			value: 0,
+			observer: 'reload'
 		},
 		_availableImages: Array,
 		requestManager: Object
@@ -32,7 +33,8 @@ Polymer({
 	
 	reload: function() {
 		// Reload all available layer visualization comparison components
-		this.$$('side-by-side').reload();
+		this.$$('side-by-side-comparison').reload();
+		this.$$('swipe-comparison').reload();
 	},
 	
 	_selectedImageChanged: function() {

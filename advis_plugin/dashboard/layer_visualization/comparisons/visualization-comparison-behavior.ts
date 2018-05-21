@@ -56,6 +56,8 @@ const VisualizationComparisonBehavior = {
   reload: function() {
 		if (this._hasValidData()) {
 			this._fetchNewData(this.model.name, this.layer);
+		} else {
+			this._updateTileSize();
 		}
   },
 	
