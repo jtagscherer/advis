@@ -1,5 +1,8 @@
 :host {
 	--image-container-width: 100%;
+	--clip-left: 0px;
+	--clip-right: 0px;
+	--clip-bottom: 0px;
 }
 
 #container {
@@ -9,12 +12,25 @@
 	width: 100%;
 	height: 100%;
 	
+	#normal-images-wrapper {
+		z-index: 1;
+		
+		clip-path: polygon(
+			var(--clip-left) 0px,
+			var(--clip-right) 0px,
+			var(--clip-right) var(--clip-bottom),
+			var(--clip-left) var(--clip-bottom)
+		)
+	}
+	
 	.image-wrapper {
 		display: flex;
 		justify-content: center;
 		
 		width: 100%;
 		height: 100%;
+		
+		position: absolute;
 		
 		.image-container {
 			flex: 1;
