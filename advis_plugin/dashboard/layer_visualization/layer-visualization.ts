@@ -35,6 +35,7 @@ Polymer({
 		// Reload all available layer visualization comparison components
 		this.$$('side-by-side-comparison').reload();
 		this.$$('swipe-comparison').reload();
+		this.$$('crossfade-comparison').reload();
 	},
 	
 	_selectedImageChanged: function() {
