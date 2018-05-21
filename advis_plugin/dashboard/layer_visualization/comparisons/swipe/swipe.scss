@@ -1,0 +1,30 @@
+:host {
+	--image-container-width: 100%;
+}
+
+#container {
+	display: flex;
+	flex-direction: row;
+	
+	width: 100%;
+	height: 100%;
+	
+	.image-wrapper {
+		display: flex;
+		justify-content: center;
+		
+		width: 100%;
+		height: 100%;
+		
+		.image-container {
+			flex: 1;
+			max-width: var(--image-container-width);
+			font-size: 0;
+			
+			.image-tile {
+				image-rendering: pixelated;
+				padding: 1px;
+			}
+		}
+	}
+}

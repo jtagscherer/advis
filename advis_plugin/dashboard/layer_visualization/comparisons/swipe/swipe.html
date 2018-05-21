@@ -1,0 +1,53 @@
+<link rel="import" href="../neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
+
+<link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
+
+<!--
+	This component displays the activation of an input image and the average 
+	distorted activation on top of each other. The user can use a slider to 
+	choose which parts of each visualization should be displayed.
+-->
+<dom-module id="swipe-comparison">
+	<template>
+		<div id="container">
+			<div class="image-wrapper">
+				<div id="normal-images" class="image-container">
+					<template is="dom-repeat" items="[[normalUrls]]">
+						<img
+							class="image-tile"
+							src$={{item}}
+							width$=[[tileSize]]
+							data-unit-index$={{index}}
+							data-input-type="normal"
+							on-tap="tileTapped">
+						</img>
+					</template>
+				</div>
+			</div>
+			<div class="image-wrapper">
+				<div id="distorted-images" class="image-container">
+					<template is="dom-repeat" items="[[distortedUrls]]">
+						<img
+							class="image-tile"
+							src$={{item}}
+							width$=[[tileSize]]
+							data-unit-index$={{index}}
+							data-input-type="distorted"
+							on-tap="tileTapped">
+						</img>
+					</template>
+				</div>
+			</div>
+		</div>
+		
+		<unit-details-dialog></unit-details-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="swipe.css">
+	</template>
+
+	<script src="swipe.js"></script>
+</dom-module>
