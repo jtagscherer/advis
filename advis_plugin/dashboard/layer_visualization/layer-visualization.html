@@ -8,6 +8,7 @@
 <link rel="import" href="../distortion-selector/distortion-selector.html">
 
 <link rel="import" href="../side-by-side/side-by-side.html">
+<link rel="import" href="../swipe/swipe.html">
 
 <!--
 	This module contains all UI components visualizing one of the model's layers.
@@ -30,17 +31,20 @@
 			
 			<div id="body">
 				<neon-animated-pages selected=[[selectedPage]]>
-					<side-by-side
+					<side-by-side-comparison
 						model=[[selectedModel]]
 						layer=[[selectedLayer]]
 						image-index=[[selectedImage.index]]
 						distortion=[[selectedDistortion]]
 						request-manager=[[requestManager]]>
-					</side-by-side>
-					<div>
-						<!-- TODO: Insert swipe comparison -->
-						Swipe
-					</div>
+					</side-by-side-comparison>
+					<swipe-comparison
+						model=[[selectedModel]]
+						layer=[[selectedLayer]]
+						image-index=[[selectedImage.index]]
+						distortion=[[selectedDistortion]]
+						request-manager=[[requestManager]]>
+					</swipe-comparison>
 					<div>
 						<!-- TODO: Insert crossfade comparison -->
 						Crossfade
