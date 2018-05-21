@@ -3,7 +3,8 @@ package(default_visibility = ["//visibility:public"])
 load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 load("@io_bazel_rules_sass//sass:sass.bzl", "sass_binary")
 
-# Build the web library that contains the layer image component
+# Build the web library that contains the component for the side by side image 
+# comparison
 tf_web_library(
 	name = "side_by_side",
 	srcs = [
