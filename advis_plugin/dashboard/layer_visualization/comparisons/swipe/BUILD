@@ -24,7 +24,10 @@ tf_web_library(
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
   name = "swipe_scss",
-  src = "swipe.scss"
+  src = "swipe.scss",
+	deps = [
+		"//advis_plugin/shared/style:color"
+	]
 )
 
 # Move the compiled CSS file to our desired path
