@@ -1,7 +1,7 @@
 'use strict';
 
 Polymer({
-  is: 'side-by-side',
+  is: 'side-by-side-comparison',
 	
 	behaviors: [
 		VisualizationComparisonBehavior,
