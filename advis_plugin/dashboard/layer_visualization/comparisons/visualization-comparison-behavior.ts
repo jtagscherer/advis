@@ -74,8 +74,13 @@ const VisualizationComparisonBehavior = {
 		// Can be implemented by components using this behavior
 	},
 	
+	getInputType: function(e) {
+		// Can be implemented by components using this behavior
+		return e.target.dataset.inputType;
+	},
+	
 	openUnitDialog: function(e) {
-		let inputType = e.target.dataset.inputType;
+		let inputType = this.getInputType(e);
 		let unitIndex = e.target.dataset.unitIndex;
 		
 		var unitTitle = `Tensor ${Number(unitIndex) + 1}`;

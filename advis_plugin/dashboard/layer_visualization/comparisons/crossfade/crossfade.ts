@@ -43,6 +43,10 @@ Polymer({
 		this._updateOpacity();
 	},
 	
+	getInputType: function(e) {
+		return this._foregroundVisualization;
+	},
+	
 	_sliderDragged: function() {
 		this._adjustImageOpacity(
 			this.$$('paper-slider').immediateValue / (this._maximumSliderValue * 1.0)
@@ -60,11 +64,11 @@ Polymer({
 			return;
 		}
 		
-		// console.log(percentage);
-		this.customStyle['--image-opacity'] = String(percentage);
+		this.customStyle['--image-opacity'] = String(1 - percentage);
 		
-		// Always keep the visualization with higher opacity on the foreground so 
-		// that it's the one responding to clicks
+		// When clicking an image tile, the zoomed in details dialog should be  
+		// using the normal or distorted visualization depending on which one has 
+		// the higher opacity
 		if (percentage <= 0.5) {
 			this._foregroundVisualization = 'normal';
 		} else {
