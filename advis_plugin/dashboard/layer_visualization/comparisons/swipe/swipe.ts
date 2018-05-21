@@ -3,10 +3,26 @@
 Polymer({
   is: 'swipe-comparison',
 	
+	properties: {
+		sliderValue: {
+			type: Number,
+			value: 50,
+			observer: '_updateClipRectangle'
+		},
+		_maximumSliderValue: {
+			type: Number,
+			value: 1000
+		}
+	},
+	
 	behaviors: [
 		VisualizationComparisonBehavior,
 		(Polymer as any).NeonAnimatableBehavior
 	],
+	
+	listeners: {
+		'immediate-value-change': '_sliderDragged'
+	},
 	
 	getImageContainerSize: function() {
 		return Math.min(
@@ -16,11 +32,23 @@ Polymer({
 	},
 	
 	urlsChanged: function(urlType) {
-		this._adjustClipRectangle(0.5);
+		this._updateClipRectangle();
 	},
 	
 	sizeChanged: function() {
-		this._adjustClipRectangle(0.5);
+		this._updateClipRectangle();
+	},
+	
+	_sliderDragged: function() {
+		this._adjustClipRectangle(
+			this.$$('paper-slider').immediateValue / (this._maximumSliderValue * 1.0)
+		);
+	},
+	
+	_updateClipRectangle: function() {
+		this._adjustClipRectangle(
+			this.sliderValue / (this._maximumSliderValue * 1.0)
+		);
 	},
 	
 	_adjustClipRectangle: function(percentage) {
@@ -28,7 +56,6 @@ Polymer({
 		let images = this.$$('#distorted-images').getBoundingClientRect();
 		
 		let leftEdge = images.left - container.left;
-		let rightEdge = images.right - container.left;
 		
 		this.customStyle['--clip-left'] = leftEdge + 'px';
 		this.customStyle['--clip-right'] = (leftEdge + (percentage * images.width))

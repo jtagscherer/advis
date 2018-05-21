@@ -1,6 +1,7 @@
 <link rel="import" href="../neon-animation/neon-animatable-behavior.html">
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../paper-slider/paper-slider.html">
 
 <link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
 
@@ -13,35 +14,43 @@
 -->
 <dom-module id="swipe-comparison">
 	<template>
-		<div id="container">
-			<div class="image-wrapper" id="normal-images-wrapper">
-				<div id="normal-images" class="image-container">
-					<template is="dom-repeat" items="[[normalUrls]]">
-						<img
-							class="image-tile"
-							src$={{item}}
-							width$=[[tileSize]]
-							data-unit-index$={{index}}
-							data-input-type="normal"
-							on-tap="openUnitDialog">
-						</img>
-					</template>
+		<div id="content">
+			<div id="container">
+				<div class="image-wrapper" id="normal-images-wrapper">
+					<div id="normal-images" class="image-container">
+						<template is="dom-repeat" items="[[normalUrls]]">
+							<img
+								class="image-tile"
+								src$={{item}}
+								width$=[[tileSize]]
+								data-unit-index$={{index}}
+								data-input-type="normal"
+								on-tap="openUnitDialog">
+							</img>
+						</template>
+					</div>
+				</div>
+				<div class="image-wrapper">
+					<div id="distorted-images" class="image-container">
+						<template is="dom-repeat" items="[[distortedUrls]]">
+							<img
+								class="image-tile"
+								src$={{item}}
+								width$=[[tileSize]]
+								data-unit-index$={{index}}
+								data-input-type="distorted"
+								on-tap="openUnitDialog">
+							</img>
+						</template>
+					</div>
 				</div>
 			</div>
-			<div class="image-wrapper">
-				<div id="distorted-images" class="image-container">
-					<template is="dom-repeat" items="[[distortedUrls]]">
-						<img
-							class="image-tile"
-							src$={{item}}
-							width$=[[tileSize]]
-							data-unit-index$={{index}}
-							data-input-type="distorted"
-							on-tap="openUnitDialog">
-						</img>
-					</template>
-				</div>
-			</div>
+			
+			<paper-slider
+				min="0"
+				max=[[_maximumSliderValue]]
+				value={{sliderValue}}>
+			</paper-slider>
 		</div>
 		
 		<unit-details-dialog></unit-details-dialog>
