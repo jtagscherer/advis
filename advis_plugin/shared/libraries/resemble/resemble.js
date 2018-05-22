@@ -760,7 +760,7 @@ URL: https://github.com/Huddle/Resemble.js
             }
         }
 
-        function compare(one, two) {
+        function compare(one, two, requestIndex=undefined) {
             if (globalOutputSettings !== oldGlobalSettings) {
                 outputSettings(globalOutputSettings);
             }
@@ -769,6 +769,10 @@ URL: https://github.com/Huddle/Resemble.js
                 var width;
                 var height;
                 if (images.length === 2) {
+										if (requestIndex !== undefined) {
+											data.requestIndex = requestIndex;
+										}
+										
                     if (images[0].error || images[1].error) {
                         data = {};
                         data.error = images[0].error
@@ -816,7 +820,7 @@ URL: https://github.com/Huddle/Resemble.js
             loadImageData(two, onceWeHaveBoth);
         }
 
-        function getCompareApi(param) {
+        function getCompareApi(param, requestIndex=undefined) {
             var secondFileData;
             var hasMethod = typeof param === "function";
 
@@ -933,7 +937,7 @@ URL: https://github.com/Huddle/Resemble.js
                     updateCallbackArray.push(callback);
 
                     var wrapper = function() {
-                        compare(fileData, secondFileData);
+                        compare(fileData, secondFileData, requestIndex);
                     };
 
                     wrapper();
@@ -952,8 +956,8 @@ URL: https://github.com/Huddle/Resemble.js
                     parseImage(imageData.data, width, height);
                 });
             },
-            compareTo: function(secondFileData) {
-                return getCompareApi(secondFileData);
+            compareTo: function(secondFileData, requestIndex=undefined) {
+                return getCompareApi(secondFileData, requestIndex);
             },
             outputSettings: function(options) {
                 outputSettings(options);
