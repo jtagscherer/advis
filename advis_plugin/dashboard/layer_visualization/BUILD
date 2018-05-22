@@ -22,7 +22,8 @@ tf_web_library(
 		"//advis_plugin/dashboard/layer_visualization/selectors/distortion_selector",
 		"//advis_plugin/dashboard/layer_visualization/comparisons/side_by_side",
 		"//advis_plugin/dashboard/layer_visualization/comparisons/swipe",
-		"//advis_plugin/dashboard/layer_visualization/comparisons/crossfade"
+		"//advis_plugin/dashboard/layer_visualization/comparisons/crossfade",
+		"//advis_plugin/dashboard/layer_visualization/comparisons/difference"
 	]
 )
 

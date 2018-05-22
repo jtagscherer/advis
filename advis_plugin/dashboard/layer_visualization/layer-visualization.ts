@@ -36,6 +36,7 @@ Polymer({
 		this.$$('side-by-side-comparison').reload();
 		this.$$('swipe-comparison').reload();
 		this.$$('crossfade-comparison').reload();
+		this.$$('difference-comparison').reload();
 	},
 	
 	_selectedImageChanged: function() {

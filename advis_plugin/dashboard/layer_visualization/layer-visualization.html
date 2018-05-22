@@ -10,6 +10,7 @@
 <link rel="import" href="../side-by-side/side-by-side.html">
 <link rel="import" href="../swipe/swipe.html">
 <link rel="import" href="../crossfade/crossfade.html">
+<link rel="import" href="../difference/difference.html">
 
 <!--
 	This module contains all UI components visualizing one of the model's layers.
@@ -53,10 +54,13 @@
 						distortion=[[selectedDistortion]]
 						request-manager=[[requestManager]]>
 					</crossfade-comparison>
-					<div>
-						<!-- TODO: Insert difference comparison -->
-						Difference
-					</div>
+					<difference-comparison
+						model=[[selectedModel]]
+						layer=[[selectedLayer]]
+						image-index=[[selectedImage.index]]
+						distortion=[[selectedDistortion]]
+						request-manager=[[requestManager]]>
+					</difference-comparison>
 				</neon-animated-pages>
 			</div>
 			

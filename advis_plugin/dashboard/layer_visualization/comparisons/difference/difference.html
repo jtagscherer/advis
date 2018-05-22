@@ -1,0 +1,42 @@
+<link rel="import" href="../neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../neon-animation/animations/fade-out-animation.html">
+
+<link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
+
+<link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
+
+<!--
+	This component calculates the per-pixel difference between the activations of 
+	each same unit on normal and distorted input images and highlights them.
+-->
+<dom-module id="difference-comparison">
+	<template>
+		<div id="content">
+			<div id="container">
+				<div class="image-wrapper" id="normal-images-wrapper">
+					<div id="difference-images" class="image-container">
+						<template is="dom-repeat" items="[[normalUrls]]">
+							<img
+								class="image-tile"
+								src$={{item}}
+								width$=[[tileSize]]
+								data-unit-index$={{index}}
+								data-input-type="normal"
+								on-tap="openUnitDialog">
+							</img>
+						</template>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Space for potential difference calculation controls -->
+		</div>
+		
+		<unit-details-dialog></unit-details-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="difference.css">
+	</template>
+
+	<script src="difference.js"></script>
+</dom-module>
