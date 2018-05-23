@@ -2,6 +2,7 @@
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 
+<link rel="import" href="../libraries/resemble/resemble.html">
 <link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
 
 <link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
@@ -16,13 +17,12 @@
 			<div id="container">
 				<div class="image-wrapper" id="normal-images-wrapper">
 					<div id="difference-images" class="image-container">
-						<template is="dom-repeat" items="[[normalUrls]]">
+						<template is="dom-repeat" items="[[differenceImages]]">
 							<img
 								class="image-tile"
-								src$={{item}}
+								src$="[[item]]"
 								width$=[[tileSize]]
 								data-unit-index$={{index}}
-								data-input-type="normal"
 								on-tap="openUnitDialog">
 							</img>
 						</template>

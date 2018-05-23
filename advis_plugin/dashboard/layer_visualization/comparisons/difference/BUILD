@@ -14,6 +14,7 @@ tf_web_library(
 	],
 	path = "/difference",
 	deps = [
+		"//advis_plugin/shared/libraries/resemble",
 		"//advis_plugin/dashboard/layer_visualization/comparisons:visualization_comparison_behavior",
 		"//advis_plugin/dialogs/unit_details_dialog",
 		"@org_polymer_neon_animation"
