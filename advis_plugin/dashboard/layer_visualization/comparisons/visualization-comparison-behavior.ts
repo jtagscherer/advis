@@ -74,24 +74,31 @@ const VisualizationComparisonBehavior = {
 		// Can be implemented by components using this behavior
 	},
 	
-	getInputType: function(e) {
+	getDialogInputUrl: function(inputType, unitIndex) {
 		// Can be implemented by components using this behavior
-		return e.target.dataset.inputType;
+		if (inputType == 'normal') {
+			return this.normalUrls[unitIndex];
+		} else if (inputType == 'distorted') {
+			return this.distortedUrls[unitIndex];
+		}
+	},
+	
+	getDialogTitle: function(inputType, unitTitle) {
+		// Can be implemented by components using this behavior
+		if (inputType == 'normal') {
+			return unitTitle;
+		} else if (inputType == 'distorted') {
+			return unitTitle + ' (Distorted)';
+		}
 	},
 	
 	openUnitDialog: function(e) {
-		let inputType = this.getInputType(e);
+		let inputType = e.target.dataset.inputType;
 		let unitIndex = e.target.dataset.unitIndex;
 		
-		var unitTitle = `Tensor ${Number(unitIndex) + 1}`;
-		var unitImageUrl;
-		
-		if (inputType == 'distorted') {
-			unitTitle += ' (Distorted)';
-			unitImageUrl = this.distortedUrls[unitIndex];
-		} else {
-			unitImageUrl = this.normalUrls[unitIndex];
-		}
+		let unitTitle = this.getDialogTitle(inputType, 
+			`Tensor ${Number(unitIndex) + 1}`);
+		let unitImageUrl = this.getDialogInputUrl(inputType, unitIndex);
 		
 		// Show the enlarged image tile in a dialog
 		this.$$('unit-details-dialog').open({

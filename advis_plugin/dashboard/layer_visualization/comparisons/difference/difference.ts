@@ -32,6 +32,16 @@ Polymer({
 		this._calculateImageDifferences();
 	},
 	
+	getDialogInputUrl: function(inputType, unitIndex) {
+		return this.differenceImages[unitIndex];
+	},
+	
+	getDialogTitle: function(inputType, unitTitle) {
+		if (inputType == 'difference') {
+			return unitTitle + ' (Difference)';
+		}
+	},
+	
 	_calculateImageDifferences: function() {
 		if (this.normalUrls == null || this.normalUrls.length == 0
 			|| this.distortedUrls == null || this.distortedUrls.length == 0

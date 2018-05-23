@@ -43,8 +43,20 @@ Polymer({
 		this._updateOpacity();
 	},
 	
-	getInputType: function(e) {
-		return this._foregroundVisualization;
+	getDialogInputUrl: function(inputType, unitIndex) {
+		if (this._foregroundVisualization == 'normal') {
+			return this.normalUrls[unitIndex];
+		} else if (this._foregroundVisualization == 'distorted') {
+			return this.distortedUrls[unitIndex];
+		}
+	},
+	
+	getDialogTitle: function(inputType, unitTitle) {
+		if (this._foregroundVisualization == 'normal') {
+			return unitTitle;
+		} else if (this._foregroundVisualization == 'distorted') {
+			return unitTitle + ' (Distorted)';
+		}
 	},
 	
 	_sliderDragged: function() {
