@@ -32,11 +32,21 @@ Polymer({
 	},
 	
 	reload: function() {
-		// Reload all available layer visualization comparison components
-		this.$$('side-by-side-comparison').reload();
-		this.$$('swipe-comparison').reload();
-		this.$$('crossfade-comparison').reload();
-		this.$$('difference-comparison').reload();
+		// Reload the currently active layer visualization comparison component
+		switch(this.selectedPage) {
+			case 0:
+				this.$$('side-by-side-comparison').reload();
+				break;
+			case 1:
+				this.$$('swipe-comparison').reload();
+				break;
+			case 2:
+				this.$$('crossfade-comparison').reload();
+				break;
+			case 3:
+				this.$$('difference-comparison').reload();
+				break;
+		}
 	},
 	
 	_selectedImageChanged: function() {
