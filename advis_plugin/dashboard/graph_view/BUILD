@@ -12,9 +12,9 @@ tf_web_library(
   visibility = ["//visibility:public"],
   deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
-    "@org_tensorflow_tensorboard//tensorboard/plugins/graph/tf_graph_board",
-    "@org_tensorflow_tensorboard//tensorboard/plugins/graph/tf_graph_controls",
-    "@org_tensorflow_tensorboard//tensorboard/plugins/graph/tf_graph_loader"
+    "//advis_plugin/dashboard/graph_view/components/tf_graph_board",
+    "//advis_plugin/dashboard/graph_view/components/tf_graph_controls",
+    "//advis_plugin/dashboard/graph_view/components/tf_graph_loader"
   ]
 )
 
