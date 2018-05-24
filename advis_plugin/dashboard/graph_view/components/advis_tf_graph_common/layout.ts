@@ -318,7 +318,8 @@ function dagreLayout(
   _.extend(graph.graph(), {
     nodesep: params.nodeSep,
     ranksep: params.rankSep,
-    edgesep: params.edgeSep
+    edgesep: params.edgeSep,
+		rankdir: 'LR'
   });
   let bridgeNodeNames = [];
   let nonBridgeNodeNames = [];
