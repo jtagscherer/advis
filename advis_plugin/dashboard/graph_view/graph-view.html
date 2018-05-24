@@ -1,28 +1,28 @@
 <link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../tf-graph-board/tf-graph-board.html">
-<link rel="import" href="../../tf-graph-controls/tf-graph-controls.html">
-<link rel="import" href="../../tf-graph-loader/tf-graph-loader.html">
+<link rel="import" href="../../advis-tf-graph-board/advis-tf-graph-board.html">
+<link rel="import" href="../../advis-tf-graph-controls/advis-tf-graph-controls.html">
+<link rel="import" href="../../advis-tf-graph-loader/advis-tf-graph-loader.html">
 
 <dom-module id="graph-view">
 	<template>
 		<div class="container">
 		  <div class="all">
 		    <div class="side">
-		      <tf-graph-controls
+		      <advis-tf-graph-controls
 	          color-by-params="[[colorByParams]]"
 	          stats="[[stats]]"
 	          color-by="{{colorBy}}"
 	          render-hierarchy="[[_renderHierarchy]]">
-					</tf-graph-controls>
-		      <tf-graph-loader id="loader"
+					</advis-tf-graph-controls>
+		      <advis-tf-graph-loader id="loader"
 	          out-graph-hierarchy="{{graphHierarchy}}"
 	          out-graph="{{graph}}"
 	          out-stats="{{stats}}"
 	          progress="{{_progress}}">
-					</tf-graph-loader>
+					</advis-tf-graph-loader>
 		    </div>
 		    <div class="main">
-		      <tf-graph-board id="graphboard"
+		      <advis-tf-graph-board id="graphboard"
 	          graph-hierarchy="[[graphHierarchy]]"
 	          graph="[[graph]]"
 	          stats="[[stats]]"
@@ -31,7 +31,7 @@
 	          color-by-params="{{colorByParams}}"
 	          render-hierarchy="{{_renderHierarchy}}"
 						selected-node="{{selectedNode}}">
-					</tf-graph-board>
+					</advis-tf-graph-board>
 		    </div>
 		  </div>
 		</div>
