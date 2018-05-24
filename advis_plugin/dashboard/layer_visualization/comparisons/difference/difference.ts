@@ -43,7 +43,14 @@ Polymer({
 	
 	getDialogTitle: function(inputType, unitTitle) {
 		if (inputType == 'difference') {
-			return unitTitle + ' (Difference)';
+			switch (this.differenceMode) {
+				case 'difference-highlight':
+					return unitTitle + ' (Difference Highlight)';
+				case 'difference-intensity-highlight':
+					return unitTitle + ' (Difference Intensity Highlight)';
+				case 'only-difference':
+					return unitTitle + ' (Difference)';
+			}
 		}
 	},
 	
@@ -79,7 +86,7 @@ Polymer({
 		for (var index in this.normalUrls) {
 			// Set up the Resemble comparator
 			var resembleControl = resemble(this.normalUrls[index])
-				.compareTo(this.distortedUrls[index], index);
+				.compareTo(this.distortedUrls[index], index)
 				.ignoreColors();
 			
 			// Configure the comparator
