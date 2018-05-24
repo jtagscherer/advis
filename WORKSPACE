@@ -88,6 +88,32 @@ web_test_repositories(
 )
 
 ################################################################################
+# PAPER RADIO GROUP - Load the component that contains a group of radio buttons
+#
+
+load("@io_bazel_rules_closure//closure:defs.bzl", "web_library_external")
+
+web_library_external(
+	name = "org_polymer_paper_radio_group",
+	licenses = ["notice"],
+	sha256 = "d7f83c4ae7b529760c766bfff3a67a198e67e96201029fd68b574a70cbb49360",
+	urls = [
+		"https://github.com/PolymerElements/iron-pages/archive/v2.1.0.tar.gz"
+	],
+	strip_prefix = "paper-radio-group-2.2.0",
+	path = "/paper-radio-group",
+	srcs = [
+		"paper-radio-group.html"
+	],
+	deps = [
+		"@org_polymer",
+		"@org_polymer_iron_a11y_keys_behavior",
+		"@org_polymer_iron_menu_behavior",
+		"@org_polymer_paper_radio_button"
+	]
+)
+
+################################################################################
 # SASS RULES - Build rules and libraries for Sass support
 #
 
