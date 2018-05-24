@@ -9,6 +9,11 @@ Polymer({
 		differenceImages: {
 			type: Array,
 			value: []
+		},
+		differenceMode: {
+			type: String,
+			value: 'difference-highlight',
+			observer: '_calculateImageDifferences'
 		}
 	},
 	
@@ -72,8 +77,36 @@ Polymer({
 		
     // Calculate the image differences between each unit
 		for (var index in this.normalUrls) {
-			resemble(this.normalUrls[index]).compareTo(this.distortedUrls[index], 
-				index).onComplete(function(data) {
+			// Set up the Resemble comparator
+			var resembleControl = resemble(this.normalUrls[index])
+				.compareTo(this.distortedUrls[index], index);
+				.ignoreColors();
+			
+			// Configure the comparator
+			var outputSettings = {
+				errorColor: {
+					red: 244,
+					green: 112,
+					blue: 0
+				}
+			};
+			
+			switch (this.differenceMode) {
+				case 'difference-highlight':
+					outputSettings['errorType'] = 'flat';
+					break;
+				case 'difference-intensity-highlight':
+					outputSettings['errorType'] = 'flatDifferenceIntensity';
+					break;
+				case 'only-difference':
+					outputSettings['errorType'] = 'diffOnly';
+					break;
+			}
+			
+			resembleControl.outputSettings(outputSettings);
+			
+			// Start the comparison
+			resembleControl.onComplete(function(data) {
 				computedImages[Number(data.requestIndex)] = data.getImageDataUrl();
 				checkCompletion(computedImages);
 			});

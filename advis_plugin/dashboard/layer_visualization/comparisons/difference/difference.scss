@@ -11,6 +11,13 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	
+	paper-radio-group {
+		paper-radio-button {
+			--paper-radio-button-checked-color: $accent-color;
+			--paper-radio-button-checked-ink-color: $accent-color;
+		}
+	}
 }
 
 #container {
