@@ -395,16 +395,16 @@ export function enforceLabelWidth(
     case NodeType.META:
       if (renderNodeInfo && !renderNodeInfo.expanded) {  // Only trim text if
         // node expanded.
-        maxLength = layout.PARAMS.nodeSize.meta.maxLabelWidth;
+        maxLength = advislayout.PARAMS.nodeSize.meta.maxLabelWidth;
       }
       break;
 
     case NodeType.OP:
-      maxLength = layout.PARAMS.nodeSize.op.maxLabelWidth;
+      maxLength = advislayout.PARAMS.nodeSize.op.maxLabelWidth;
       break;
 
     case -1:
-      maxLength = layout.PARAMS.annotations.maxLabelWidth;
+      maxLength = advislayout.PARAMS.annotations.maxLabelWidth;
       break;
 
     default:
@@ -545,7 +545,7 @@ export function nodeClass(d: render.RenderNodeInfo) {
 /** Modify node and its subscene and its label's positional attributes */
 function position(nodeGroup, d: render.RenderNodeInfo) {
   let shapeGroup = scene.selectChild(nodeGroup, 'g', Class.Node.SHAPE);
-  let cx = layout.computeCXPositionOfNodeShape(d);
+  let cx = advislayout.computeCXPositionOfNodeShape(d);
   switch (d.node.type) {
     case NodeType.OP: {
       // position shape

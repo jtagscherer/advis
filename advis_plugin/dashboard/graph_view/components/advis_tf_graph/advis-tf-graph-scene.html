@@ -833,7 +833,7 @@ Polymer({
     this.templateIndex = renderHierarchy.hierarchy.getTemplateIndex();
     tf.graph.util.time('tf-graph-scene (layout):', function() {
       // layout the scene for this meta / series node
-      tf.graph.layout.layoutScene(renderHierarchy.root, this);
+      tf.graph.advislayout.layoutScene(renderHierarchy.root, this);
     }.bind(this));
 
     tf.graph.util.time('tf-graph-scene (build scene):', function() {
@@ -845,7 +845,7 @@ Polymer({
     setTimeout(function() {
       this._updateHealthPills(this.nodeNamesToHealthPills, this.healthPillStepIndex);
       this.minimap.update();
-    }.bind(this), tf.graph.layout.PARAMS.animation.duration);
+    }.bind(this), tf.graph.advislayout.PARAMS.animation.duration);
   },
   ready: function() {
     this._zoom = d3.zoom()
@@ -897,8 +897,8 @@ Polymer({
     }.bind(this));
     // Initialize the minimap.
     this.minimap = this.$.minimap.init(this.$.svg, this.$.root, this._zoom,
-        tf.graph.layout.PARAMS.minimap.size,
-        tf.graph.layout.PARAMS.subscene.meta.labelHeight);
+        tf.graph.advislayout.PARAMS.minimap.size,
+        tf.graph.advislayout.PARAMS.subscene.meta.labelHeight);
   },
   attached: function() {
     this.set('_isAttached', true);
@@ -919,7 +919,7 @@ Polymer({
     }
 
     // Fit to screen after the graph is done animating.
-    setTimeout(this.fit.bind(this), tf.graph.layout.PARAMS.animation.duration);
+    setTimeout(this.fit.bind(this), tf.graph.advislayout.PARAMS.animation.duration);
   },
   _updateLabels: function(showLabels) {
     var mainGraphTitleElement = this.getElementsByClassName('title')[0];
@@ -1128,7 +1128,7 @@ Polymer({
     // Otherwise, the pan will be computed from incorrect measurements.
     setTimeout(() => {
       this.panToNode(selectedNode);
-    }, tf.graph.layout.PARAMS.animation.duration);
+    }, tf.graph.advislayout.PARAMS.animation.duration);
   },
   _highlightedNodeChanged: function(highlightedNode, oldHighlightedNode) {
     if (highlightedNode === oldHighlightedNode) {

@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-module tf.graph.layout {
+module tf.graph.advislayout {
 
 /** Set of parameters that define the look and feel of the graph. */
 export const PARAMS = {
@@ -341,7 +341,7 @@ function dagreLayout(
       height: 0,
     };
   }
-  // dagre.layout(graph);
+  dagre.layout(graph);
 
   // Calculate the true bounding box of the graph by iterating over nodes and
   // edges rather than accepting dagre's word for it. In particular, we should

@@ -185,7 +185,7 @@ function addInteraction(selection, d: render.RenderNodeInfo,
  */
 function update(aGroup, d: render.RenderNodeInfo, a: render.Annotation,
     sceneElement) {
-  let cx = layout.computeCXPositionOfNodeShape(d);
+  let cx = advislayout.computeCXPositionOfNodeShape(d);
   // Annotations that point to embedded nodes (constants,summary)
   // don't have a render information attached so we don't stylize these.
   // Also we don't stylize ellipsis annotations (the string '... and X more').

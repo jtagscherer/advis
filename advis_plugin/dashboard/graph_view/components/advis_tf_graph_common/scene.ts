@@ -169,7 +169,7 @@ module tf.graph.scene {
         Math.min(
             svgRect.width / sceneSize.width, svgRect.height / sceneSize.height,
             2);
-    let params = layout.PARAMS.graph;
+    let params = advislayout.PARAMS.graph;
     const transform = d3.zoomIdentity
         .scale(scale)
         .translate(params.padding.paddingLeft, params.padding.paddingTop);
@@ -438,7 +438,7 @@ function position(sceneGroup, renderNode: render.RenderGroupNodeInfo) {
   // down for series nodes as series nodes don't have labels inside of their
   // bounding boxes.
   let yTranslate = renderNode.node.type === NodeType.SERIES ?
-    0 : layout.PARAMS.subscene.meta.labelHeight;
+    0 : advislayout.PARAMS.subscene.meta.labelHeight;
 
   // core
   translate(selectChild(sceneGroup, 'g', Class.Scene.CORE), 0, yTranslate);
@@ -448,7 +448,7 @@ function position(sceneGroup, renderNode: render.RenderGroupNodeInfo) {
   let hasOutExtract = renderNode.isolatedOutExtract.length > 0;
   let hasLibraryFunctions = renderNode.libraryFunctionsExtract.length > 0;
 
-  let offset = layout.PARAMS.subscene.meta.extractXOffset;
+  let offset = advislayout.PARAMS.subscene.meta.extractXOffset;
 
   let auxWidth = 0;
   if (hasInExtract) {
@@ -460,8 +460,8 @@ function position(sceneGroup, renderNode: render.RenderGroupNodeInfo) {
 
   if (hasInExtract) {
     let inExtractX = renderNode.coreBox.width;
-    if (auxWidth < layout.MIN_AUX_WIDTH) {
-      inExtractX = inExtractX - layout.MIN_AUX_WIDTH +
+    if (auxWidth < advislayout.MIN_AUX_WIDTH) {
+      inExtractX = inExtractX - advislayout.MIN_AUX_WIDTH +
           renderNode.inExtractBox.width / 2;
     } else {
       inExtractX = inExtractX -
@@ -479,8 +479,8 @@ function position(sceneGroup, renderNode: render.RenderGroupNodeInfo) {
   // out-extract
   if (hasOutExtract) {
     let outExtractX = renderNode.coreBox.width;
-    if (auxWidth < layout.MIN_AUX_WIDTH) {
-      outExtractX = outExtractX - layout.MIN_AUX_WIDTH +
+    if (auxWidth < advislayout.MIN_AUX_WIDTH) {
+      outExtractX = outExtractX - advislayout.MIN_AUX_WIDTH +
           renderNode.outExtractBox.width / 2;
     } else {
       outExtractX -= renderNode.outExtractBox.width / 2;
@@ -563,7 +563,7 @@ export function positionTriangle(polygon, cx, cy, width, height) {
  *        the button on.
  */
 export function positionButton(button, renderNode: render.RenderNodeInfo) {
-  let cx = layout.computeCXPositionOfNodeShape(renderNode);
+  let cx = advislayout.computeCXPositionOfNodeShape(renderNode);
   // Position the button in the top-right corner of the group node,
   // with space given the draw the button inside of the corner.
   let width = renderNode.expanded ?
@@ -581,7 +581,7 @@ export function positionButton(button, renderNode: render.RenderNodeInfo) {
   let translateStr = 'translate(' + x + ',' + y + ')';
   button.selectAll('path').transition().attr('transform', translateStr);
   button.select('circle').transition().attr(
-      {cx: x, cy: y, r: layout.PARAMS.nodeSize.meta.expandButtonRadius});
+      {cx: x, cy: y, r: advislayout.PARAMS.nodeSize.meta.expandButtonRadius});
 };
 
 /**
