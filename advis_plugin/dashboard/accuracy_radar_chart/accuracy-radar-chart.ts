@@ -11,6 +11,10 @@ Polymer({
 			type: Array,
 			observer: '_updateGraph'
 		},
+		selectedDistortion: {
+			type: Object,
+			notify: true
+		},
 		accuracyCalculationFlag: {
 			type: Boolean,
 			observer: '_updateGraph'

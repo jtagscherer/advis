@@ -14,6 +14,12 @@ Polymer({
       type: Object,
       value: {}
     },
+		availableDistortions: Array,
+		selectedDistortion: {
+			type: Object,
+			observer: '_selectedDistortionChanged',
+			notify: true
+		},
 		_selectedDataPoint: {
 			type: Object,
 			observer: '_selectedDataPointChanged'
@@ -22,6 +28,8 @@ Polymer({
   },
 	
 	updateChart: function() {
+		this._selectedDistortionChanged();
+		
     this.async(function() {
       if (this.chart) {
 				// If the chart has already been initialized, update its data
@@ -92,11 +100,36 @@ Polymer({
 					pointIndex: data[0]._index,
 					datasetIndex: data[0]._datasetIndex
 				});
+				
+				if (self.availableDistortions != null) {
+					self.set(
+						'selectedDistortion',
+						self.availableDistortions[self._selectedDataPoint.pointIndex]
+					);
+				}
 			}
 		});
 		
 		this.updateChart();
   },
+	
+	_selectedDistortionChanged: function(newValue) {
+		if (this.data == null || !('datasets' in this.data)
+			|| this.data.datasets.length == 0 || this.selectedDistortion == null) {
+			return;
+		}
+		
+		var datasetIndex = 0;
+		
+		if (this._selectedDataPoint != null) {
+			datasetIndex = this._selectedDataPoint.datasetIndex;
+		}
+		
+		this.set('_selectedDataPoint', {
+			pointIndex: this.selectedDistortion.index,
+			datasetIndex: datasetIndex
+		});
+	},
 	
 	_selectedDataPointChanged: function(newValue, oldValue) {
 		if (this.chart == null) {

@@ -19,6 +19,7 @@ Polymer({
 		_availableModels: Array,
 		_availableDistortions: Array,
 		_selectedDistortions: Array,
+		_selectedVisualizationDistortion: Object,
 		_graphStructure: String,
     _dataNotFound: Boolean,
 		_graphNotFound: Boolean,
