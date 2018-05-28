@@ -14,7 +14,7 @@ const VisualizationComparisonBehavior = {
 		tileSize: Number,
 		_imagePadding: {
 			type: Number,
-			value: 2
+			value: 1
 		},
 		_requestManager: {
 			type: Object,
@@ -128,20 +128,29 @@ const VisualizationComparisonBehavior = {
 			return;
 		}
 		
-		// Get the container size that we have to fill with tiles
+		// Retrieve the container size
 		let containerSize = this.getImageContainerSize();
 		
-		// Calculate the amount of images per row such that we get as close as 
-		// possible to a square arrangement
-		let imagesPerRow = Math.ceil(Math.sqrt(this.normalUrls.length));
+		// Calculate the area that we have to fill with tiles
+		var containerArea = containerSize.width * containerSize.height * 1.0;
 		
-		// Set the size of all individual image tiles
-		this.set('tileSize', (containerSize / imagesPerRow) + this._imagePadding);
+		// Calculate the initial tile size
+		this.set('tileSize', Math.sqrt(containerArea / this.normalUrls.length)
+		 	- (2 * this._imagePadding));
+		
+		// Decrease the tile size until it is now longer being wrapped
+		while (this.$$('#container').scrollHeight >
+			this.$$('#container').offsetHeight && this.tileSize > 0) {
+			this.set('tileSize', this.tileSize - 1);
+		}
 		
 		// Finally, update the width of the image tile container to be able to 
 		// center it horizontally
+		let fullTileSize = this.tileSize + (2 * this._imagePadding);
+		let imagesPerRow = Math.floor(containerSize.width / fullTileSize);
+		
 		this.customStyle['--image-container-width'] = 
-			((imagesPerRow + 1) * (this.tileSize + this._imagePadding)) + 'px';
+			(imagesPerRow * fullTileSize) + 'px';
 		this.updateStyles();
 	},
 	

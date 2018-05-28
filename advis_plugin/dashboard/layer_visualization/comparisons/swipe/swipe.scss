@@ -19,7 +19,7 @@
 	
 	paper-slider {
 		z-index: 2;
-		width: var(--image-container-width);
+		width: calc(var(--image-container-width) + 30px);
 		
 		--paper-slider-knob-color: $accent-color;
 		--paper-slider-active-color: $accent-color;
@@ -29,6 +29,9 @@
 #container {
 	display: flex;
 	flex-direction: row;
+	
+	position: relative;
+	overflow: scroll;
 	
 	flex: 1;
 	width: 100%;

@@ -25,10 +25,10 @@ Polymer({
 	},
 	
 	getImageContainerSize: function() {
-		return Math.min(
-			this.$$('#container').offsetWidth,
-			this.$$('#container').offsetHeight
-		)
+		return {
+			width: this.$$('#container').offsetWidth,
+			height: this.$$('#container').offsetHeight
+		};
 	},
 	
 	urlsChanged: function(urlType) {

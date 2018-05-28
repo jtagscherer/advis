@@ -9,9 +9,9 @@ Polymer({
 	],
 	
 	getImageContainerSize: function() {
-		return Math.min(
-			this.$$('#container').offsetWidth / 2,
-			this.$$('#container').offsetHeight
-		)
+		return {
+			width: this.$$('#container').offsetWidth / 2,
+			height: this.$$('#container').offsetHeight
+		};
 	}
 } as any);
