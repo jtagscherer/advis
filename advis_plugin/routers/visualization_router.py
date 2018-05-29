@@ -1,44 +1,8 @@
 from tensorboard.backend import http_util
 from advis_plugin.util import argutil, imgutil
+from advis_plugin.util.visualizations import Visualizations
 
 import numpy as np
-
-# Data caches for faster access
-_layer_visualization_cache = {}
-
-def _get_layer_visualization(model_manager, 
-	model, layer, image_index, distortion=None):
-	
-	key_tuple = (model, layer, image_index, distortion)
-	
-	if key_tuple in _layer_visualization_cache:
-		return _layer_visualization_cache[key_tuple]
-	
-	_model = model_manager.get_model_modules()[model]
-	result = None
-	
-	if distortion == None:
-		meta_data = {
-			'run_type': 'single_activation_visualization',
-			'layer': layer,
-			'image': image_index
-		}
-		
-		result = _model.run(meta_data)
-	else:
-		meta_data = {
-			'run_type': 'distorted_activation_visualization',
-			'layer': layer,
-			'image': image_index,
-			'distortion': distortion
-		}
-		
-		result = _model.run(meta_data)
-	
-	# Cache the result for later use
-	_layer_visualization_cache[key_tuple] = result
-	
-	return result
 
 def layer_meta_route(request, model_manager):
 	# Check for missing arguments and possibly return an error
@@ -74,7 +38,7 @@ def layer_meta_route(request, model_manager):
 	else:
 		distortion = None
 	
-	result = _get_layer_visualization(
+	result = Visualizations().get_layer_visualization(
 		model_manager, model_name, layer_name, image_index, distortion=distortion
 	)
 	
@@ -121,7 +85,7 @@ def layer_image_route(request, model_manager):
 	else:
 		distortion = None
 	
-	result = _get_layer_visualization(
+	result = Visualizations().get_layer_visualization(
 		model_manager, model_name, layer_name, image_index, distortion=distortion
 	)
 	
