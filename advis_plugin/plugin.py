@@ -11,7 +11,8 @@ from advis_plugin.datasets import datasets
 from advis_plugin.distortions import distortions
 
 from advis_plugin.routers import model_router, prediction_router, \
-	distortion_router, dataset_router, visualization_router
+	distortion_router, dataset_router, visualization_meta_router, \
+	visualization_image_router
 
 class AdvisPlugin(base_plugin.TBPlugin):
 	"""A plugin for visualizing random perturbations of input data and their 
@@ -68,7 +69,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/datasets/images/list': self.datasets_images_list_route,
 			'/datasets/images/image': self.datasets_images_image_route,
 			'/layer/meta': self.layer_meta_route,
-			'/layer/image': self.layer_image_route
+			'/layer/image/single': self.layer_single_image_route
 		}
 
 	def is_active(self):
@@ -210,12 +211,12 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			A JSON document containing meta information about the layer.
 		"""
 		
-		return visualization_router.layer_meta_route(request, self.model_manager)
+		return visualization_meta_router.layer_meta_route(request,
+			self.model_manager)
 	
 	@wrappers.Request.application
-	def layer_image_route(self, request):
-		"""A route that returns a tiled image of the activation and feature 
-		visualizations of a deep learning layer.
+	def layer_single_image_route(self, request):
+		"""A route that returns a single unit's activation visualization.
 
 		Arguments:
 			request: A request containing the model name, the layer name, the unit 
@@ -226,4 +227,5 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			A URL for the image data containing the requested visualization.
 		"""
 		
-		return visualization_router.layer_image_route(request, self.model_manager)
+		return visualization_image_router.single_layer_image_route(request,
+			self.model_manager)
