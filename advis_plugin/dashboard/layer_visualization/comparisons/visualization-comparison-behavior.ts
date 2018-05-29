@@ -119,6 +119,7 @@ const VisualizationComparisonBehavior = {
 		// Construct the URL for the composite image of activations from the
 		// original input
 		this.set('_originalImageLoaded', false);
+		this.set('_originalImageUrl', null);
 		this._originalImageUrl = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/layer/composite/image'), {
 			model: this.model.name,
@@ -131,6 +132,7 @@ const VisualizationComparisonBehavior = {
 		// Construct the URL for the composite image of activations from the
 		// distorted input
 		this.set('_distortedImageLoaded', false);
+		this.set('_distortedImageUrl', null);
 		this._distortedImageUrl = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/layer/composite/image'), {
 			model: this.model.name,
