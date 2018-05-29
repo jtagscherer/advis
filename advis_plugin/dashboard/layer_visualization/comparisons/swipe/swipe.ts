@@ -60,14 +60,9 @@ Polymer({
 	},
 	
 	_adjustClipRectangle: function(percentage) {
-		let container = this.$$('#container').getBoundingClientRect();
 		let images = this.$$('#distorted-image').getBoundingClientRect();
 		
-		let leftEdge = images.left - container.left;
-		
-		this.customStyle['--clip-left'] = leftEdge + 'px';
-		this.customStyle['--clip-right'] = (leftEdge + (percentage * images.width))
-			+ 'px';
+		this.customStyle['--clip-right'] = (percentage * images.width) + 'px';
 		this.customStyle['--clip-bottom'] = images.height + 'px';
 		
 		this.customStyle['--image-container-width'] = images.width + 'px';
