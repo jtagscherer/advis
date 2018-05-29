@@ -12,7 +12,7 @@ from shutil import copyfile, rmtree
 import json
 
 from advis_plugin.models import util
-from advis_plugin import imgutil
+from advis_plugin.util import imgutil
 from checkpoints import checkpoints
 
 # True if models annotated with visualization nodes should be cached

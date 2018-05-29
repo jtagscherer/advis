@@ -1,5 +1,5 @@
 from tensorboard.backend import http_util
-from advis_plugin import argutil, imgutil
+from advis_plugin.util import argutil, imgutil
 
 import numpy as np
 
