@@ -212,6 +212,10 @@ def _get_composition_meta_data(model_manager, model_name, layer_name, \
 def _optimize_tile_size(tile_amount, width, height, padding=0):
 	tile_size = 1 + (padding * 2)
 	
+	last_amount_of_rows = ceil((tile_size * tile_amount) / width)
+	last_amount_of_columns = ceil(tile_amount / last_amount_of_rows)
+	last_tile_size = tile_size
+	
 	# Slowly increase the tile size and wrap tiles into as many rows as needed 
 	# until the container overflows
 	while True:
@@ -221,15 +225,18 @@ def _optimize_tile_size(tile_amount, width, height, padding=0):
 		if amount_of_rows * tile_size > height:
 			break
 		
-		tile_size += 1
+		if amount_of_columns * tile_size <= width:
+			last_amount_of_rows = amount_of_rows
+			last_amount_of_columns = amount_of_columns
+			last_tile_size = tile_size
 		
-	tile_size = tile_size - 1
+		tile_size += 1
 	
 	return {
-		'tileSize': tile_size - (padding * 2),
+		'tileSize': last_tile_size - (padding * 2),
 		'padding': padding,
-		'rows': amount_of_rows - 1,
-		'columns': amount_of_columns + 1,
-		'width': tile_size * (amount_of_columns + 1),
-		'height': tile_size * (amount_of_rows - 1),
+		'rows': last_amount_of_rows,
+		'columns': last_amount_of_columns,
+		'width': last_tile_size * last_amount_of_columns,
+		'height': last_tile_size * last_amount_of_rows,
 	}
