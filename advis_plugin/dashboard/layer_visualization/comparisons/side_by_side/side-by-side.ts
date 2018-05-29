@@ -10,8 +10,16 @@ Polymer({
 	
 	getImageContainerSize: function() {
 		return {
-			width: this.$$('#container').offsetWidth / 2,
-			height: this.$$('#container').offsetHeight
+			width: this.$$('.image-wrapper').offsetWidth,
+			height: this.$$('.image-wrapper').offsetHeight
 		};
+	},
+	
+	getImageClass: function(condition) {
+		if (condition && this.state != 'empty') {
+			return 'activation-visualization visible';
+		} else {
+			return 'activation-visualization invisible';
+		}
 	}
 } as any);

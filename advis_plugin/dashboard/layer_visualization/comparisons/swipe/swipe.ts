@@ -31,11 +31,19 @@ Polymer({
 		};
 	},
 	
-	urlsChanged: function(urlType) {
-		this._updateClipRectangle();
+	getImageClass: function(condition) {
+		if (this.state == 'loaded') {
+			return 'visible';
+		} else {
+			return 'invisible';
+		}
 	},
 	
 	sizeChanged: function() {
+		this._updateClipRectangle();
+	},
+	
+	stateChanged: function() {
 		this._updateClipRectangle();
 	},
 	
@@ -53,7 +61,7 @@ Polymer({
 	
 	_adjustClipRectangle: function(percentage) {
 		let container = this.$$('#container').getBoundingClientRect();
-		let images = this.$$('#distorted-images').getBoundingClientRect();
+		let images = this.$$('#distorted-image').getBoundingClientRect();
 		
 		let leftEdge = images.left - container.left;
 		
@@ -61,6 +69,8 @@ Polymer({
 		this.customStyle['--clip-right'] = (leftEdge + (percentage * images.width))
 			+ 'px';
 		this.customStyle['--clip-bottom'] = images.height + 'px';
+		
+		this.customStyle['--image-container-width'] = images.width + 'px';
 		
 		this.updateStyles();
 	}

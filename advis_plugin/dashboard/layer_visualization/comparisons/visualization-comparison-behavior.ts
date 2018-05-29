@@ -2,19 +2,32 @@
 
 const VisualizationComparisonBehavior = {
 	properties: {
-		model: Object,
-		layer: String,
-		imageIndex: Number,
+		model: {
+			type: Object,
+			observer: 'reload'
+		},
+		layer: {
+			type: String,
+			observer: 'reload'
+		},
+		imageIndex: {
+			type: Number,
+			observer: 'reload'
+		},
 		distortion: {
 			type: Object,
 			observer: 'reload'
 		},
-		normalUrls: Array,
-		distortedUrls: Array,
-		tileSize: Number,
-		_imagePadding: {
-			type: Number,
-			value: 1
+		_originalImageUrl: String,
+		_distortedImageUrl: String,
+		_originalMetaData: Object,
+		_distortedMetaData: Object,
+		_originalImageLoaded: Boolean,
+		_distortedImageLoaded: Boolean,
+		state: {
+			type: String,
+			value: 'empty',
+			observer: 'stateChanged'
 		},
 		_requestManager: {
 			type: Object,
@@ -43,37 +56,145 @@ const VisualizationComparisonBehavior = {
 	behaviors: [
 		(Polymer as any).IronResizableBehavior
 	],
-
-  observers: [
-		'_fetchNewData(model.name, layer)'
-	],
 	
   attached: function() {
-    this._attached = true;
     this.reload();
   },
 	
-  reload: function() {
-		if (this._hasValidData()) {
-			this._fetchNewData(this.model.name, this.layer);
-		} else {
-			this._updateTileSize();
+	reload: function() {
+		if (this._requestManager == null || !this._hasValidData()) {
+			return;
 		}
-  },
-	
-	_sizeChanged: function() {
-		this._updateTileSize();
-		this.sizeChanged();
+		
+		this.set('state', 'loading');
+		
+		this._loadMetaData();
+		this._updateImageUrls();
 	},
 	
-	urlsChanged: function(urlType) {
-		// Can be implemented by components using this behavior
+	getImageContainerSize: function() {
+		// Has to be implemented by components using this behavior
 	},
 	
 	sizeChanged: function() {
 		// Can be implemented by components using this behavior
 	},
 	
+	stateChanged: function() {
+		// Can be implemented by components using this behavior
+	},
+	
+	_updateState: function() {
+		if (this._originalMetaData == null || this._distortedMetaData == null) {
+			this.set('state', 'loading');
+		} else if (Object.keys(this._originalMetaData).length == 0
+			|| Object.keys(this._distortedMetaData).length == 0) {
+			this.set('state', 'empty');
+		} else if (!this._originalImageLoaded || !this._distortedImageLoaded) {
+			this.set('state', 'loading');
+		} else {
+			this.set('state', 'loaded');
+		}
+	},
+	
+	_originalImageCallback: function() {
+		this.set('_originalImageLoaded', true);
+		this._updateState();
+	},
+	
+	_distortedImageCallback: function() {
+		this.set('_distortedImageLoaded', true);
+		this._updateState();
+	},
+	
+	_imageClicked: function(e) {
+		// TODO: Calculate the tile size the user has clicked on and open the unit 
+		// dialog
+		console.log(e);
+	},
+	
+	_updateImageUrls: function() {
+		let containerSize = this.getImageContainerSize();
+		
+		// Construct the URL for the composite image of activations from the
+		// original input
+		this.set('_originalImageLoaded', false);
+		this._originalImageUrl = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/layer/composite/image'), {
+			model: this.model.name,
+			layer: this.layer,
+			imageIndex: this.imageIndex,
+			width: String(Math.round(containerSize.width)),
+			height: String(Math.round(containerSize.height))
+		});
+		
+		// Construct the URL for the composite image of activations from the
+		// distorted input
+		this.set('_distortedImageLoaded', false);
+		this._distortedImageUrl = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/layer/composite/image'), {
+			model: this.model.name,
+			layer: this.layer,
+			imageIndex: this.imageIndex,
+			width: String(Math.round(containerSize.width)),
+			height: String(Math.round(containerSize.height)),
+			distortion: this.distortion.name,
+			imageAmount: this.distortion.imageAmount
+		});
+	},
+	
+	_loadMetaData: function() {
+		let self = this;
+		let containerSize = this.getImageContainerSize();
+		
+		// Load meta data for activations from the original input
+		const originalMetaUrl = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/layer/composite/meta'), {
+			model: this.model.name,
+			layer: this.layer,
+			imageIndex: this.imageIndex,
+			width: String(Math.round(containerSize.width)),
+			height: String(Math.round(containerSize.height))
+		});
+		
+		this._originalMetaData = null;
+		this._requestManager.request(originalMetaUrl).then(originalMetaData => {
+			self._originalMetaData = originalMetaData;
+			self._updateState();
+		});
+		
+		// Load meta data for activations from the distorted input
+		const distortedMetaUrl = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/layer/composite/meta'), {
+			model: this.model.name,
+			layer: this.layer,
+			imageIndex: this.imageIndex,
+			width: String(Math.round(containerSize.width)),
+			height: String(Math.round(containerSize.height)),
+			distortion: this.distortion.name,
+			imageAmount: this.distortion.imageAmount
+		});
+		
+		this._distortedMetaData = null;
+		this._requestManager.request(distortedMetaUrl).then(distortedMetaData => {
+			self._distortedMetaData = distortedMetaData;
+			self._updateState();
+		});
+		
+		this._updateState();
+	},
+	
+	_hasValidData: function() {
+		return this.model != null && this.layer != null && this.imageIndex != null
+			&& this.distortion != null;
+	},
+	
+	_sizeChanged: function() {
+		this._updateTileSize();
+		this.sizeChanged();
+	},
+	
+  /*
 	getDialogInputUrl: function(inputType, unitIndex) {
 		// Can be implemented by components using this behavior
 		if (inputType == 'normal') {
@@ -114,123 +235,5 @@ const VisualizationComparisonBehavior = {
 			animationTarget: e.target.getBoundingClientRect()
 		});
 	},
-	
-	getImageContainerSize: function() {
-		// Has to be implemented by components using this behavior
-	},
-	
-	_updateTileSize: function() {
-		// In the following, tiles of normal and distorted images will be handled 
-		// in the same way since their amounts and container sizes will always be 
-		// equal.
-		if (this.normalUrls == null || this.normalUrls.length == 0
-			|| this.$$('#container') == null) {
-			return;
-		}
-		
-		// Retrieve the container size
-		let containerSize = this.getImageContainerSize();
-		
-		// Calculate the area that we have to fill with tiles
-		var containerArea = containerSize.width * containerSize.height * 1.0;
-		
-		// Calculate the initial tile size
-		this.set('tileSize', Math.sqrt(containerArea / this.normalUrls.length)
-		 	- (2 * this._imagePadding));
-		
-		// Decrease the tile size until it is now longer being wrapped
-		while (this.$$('#container').scrollHeight >
-			this.$$('#container').offsetHeight && this.tileSize > 0) {
-			this.set('tileSize', this.tileSize - 1);
-		}
-		
-		// Finally, update the width of the image tile container to be able to 
-		// center it horizontally
-		let fullTileSize = this.tileSize + (2 * this._imagePadding);
-		let imagesPerRow = Math.floor(containerSize.width / fullTileSize);
-		
-		this.customStyle['--image-container-width'] = 
-			(imagesPerRow * fullTileSize) + 'px';
-		this.updateStyles();
-	},
-	
-	_fetchNewData: function(model, layer) {
-    if (this._attached) {
-			this._constructNormalTileUrlList();
-			
-			if (this.distortion != null) {
-				this._constructDistortedTileUrlList();
-			} else {
-				this.distortedUrls = [];
-			}
-    }
-  },
-	
-	_hasValidData: function() {
-		return this.model != null && this.layer != null && this.imageIndex != null;
-	},
-	
-	_constructNormalTileUrlList: function() {
-		// First of all, request some meta data about the model layer shown
-		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
-			.pluginRoute('advis', '/layer/meta'), {
-			model: this.model.name,
-			layer: this.layer,
-			imageIndex: this.imageIndex
-		});
-		
-		this._requestManager.request(metaUrl).then(metaData => {
-			var tileUrls = []
-			
-			// List all available image tiles and put them into our array
-			for (let i in Array.from(Array(metaData.unitCount).keys())) {
-				tileUrls.push(tf_backend.addParams(tf_backend.getRouter()
-					.pluginRoute('advis', '/layer/image'), {
-					model: this.model.name,
-					layer: this.layer,
-					imageIndex: this.imageIndex,
-					unitIndex: i
-				}));
-			}
-			
-			this.normalUrls = tileUrls;
-			
-			this._updateTileSize();
-			this.urlsChanged('normal');
-		});
-	},
-	
-	_constructDistortedTileUrlList: function() {
-		// First of all, request some meta data about the model layer shown
-		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
-			.pluginRoute('advis', '/layer/meta'), {
-			model: this.model.name,
-			layer: this.layer,
-			imageIndex: this.imageIndex,
-			distortion: this.distortion.name,
-			imageAmount: this.distortion.imageAmount
-		});
-		
-		this._requestManager.request(metaUrl).then(metaData => {
-			var tileUrls = []
-			
-			// List all available image tiles and put them into our array
-			for (let i in Array.from(Array(metaData.unitCount).keys())) {
-				tileUrls.push(tf_backend.addParams(tf_backend.getRouter()
-					.pluginRoute('advis', '/layer/image'), {
-					model: this.model.name,
-					layer: this.layer,
-					imageIndex: this.imageIndex,
-					unitIndex: i,
-					distortion: this.distortion.name,
-					imageAmount: this.distortion.imageAmount
-				}));
-			}
-			
-			this.distortedUrls = tileUrls;
-			
-			this._updateTileSize();
-			this.urlsChanged('distorted');
-		});
-	}
+	*/
 };

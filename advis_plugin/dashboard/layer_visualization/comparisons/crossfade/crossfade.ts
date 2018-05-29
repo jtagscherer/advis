@@ -35,28 +35,20 @@ Polymer({
 		};
 	},
 	
-	urlsChanged: function(urlType) {
-		this._updateOpacity();
+	getImageClass: function(condition) {
+		if (this.state == 'loaded') {
+			return 'visible';
+		} else {
+			return 'invisible';
+		}
 	},
 	
 	sizeChanged: function() {
 		this._updateOpacity();
 	},
 	
-	getDialogInputUrl: function(inputType, unitIndex) {
-		if (this._foregroundVisualization == 'normal') {
-			return this.normalUrls[unitIndex];
-		} else if (this._foregroundVisualization == 'distorted') {
-			return this.distortedUrls[unitIndex];
-		}
-	},
-	
-	getDialogTitle: function(inputType, unitTitle) {
-		if (this._foregroundVisualization == 'normal') {
-			return unitTitle;
-		} else if (this._foregroundVisualization == 'distorted') {
-			return unitTitle + ' (Distorted)';
-		}
+	stateChanged: function() {
+		this._updateOpacity();
 	},
 	
 	_sliderDragged: function() {

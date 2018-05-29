@@ -14,34 +14,24 @@
 	<template>
 		<div id="container">
 			<div class="image-wrapper">
-				<div id="normal-images" class="image-container">
-					<template is="dom-repeat" items="[[normalUrls]]">
-						<img
-							class="image-tile"
-							src$={{item}}
-							width$=[[tileSize]]
-							height$=[[tileSize]]
-							data-unit-index$={{index}}
-							data-input-type="normal"
-							on-tap="openUnitDialog">
-						</img>
-					</template>
-				</div>
+				<img id="original-image"
+					class$=[[getImageClass(_originalImageLoaded)]]
+					src$=[[_originalImageUrl]]
+					width$=[[_originalMetaData.configuration.width]]
+					height$=[[_originalMetaData.configuration.height]]
+					on-tap="_imageClicked"
+					on-load="_originalImageCallback">
+				</img>
 			</div>
 			<div class="image-wrapper">
-				<div id="distorted-images" class="image-container">
-					<template is="dom-repeat" items="[[distortedUrls]]">
-						<img
-							class="image-tile"
-							src$={{item}}
-							width$=[[tileSize]]
-							height$=[[tileSize]]
-							data-unit-index$={{index}}
-							data-input-type="distorted"
-							on-tap="openUnitDialog">
-						</img>
-					</template>
-				</div>
+				<img id="distorted-image"
+					class$=[[getImageClass(_distortedImageLoaded)]]
+					src$=[[_distortedImageUrl]]
+					width$=[[_distortedMetaData.configuration.width]]
+					height$=[[_distortedMetaData.configuration.height]]
+					on-tap="_imageClicked"
+					on-load="_distortedImageCallback">
+				</img>
 			</div>
 		</div>
 		
