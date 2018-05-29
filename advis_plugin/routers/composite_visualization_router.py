@@ -29,8 +29,8 @@ def layer_image_route(request, model_manager):
 	model_name = request.args.get('model')
 	layer_name = request.args.get('layer')
 	image_index = int(request.args.get('imageIndex'))
-	width = int(request.args.get('width'))
-	height = int(request.args.get('height'))
+	width = max(int(request.args.get('width')), 1)
+	height = max(int(request.args.get('height')), 1)
 	
 	# If a distortion should be applied, extract its name
 	if 'distortion' in request.args:
@@ -65,6 +65,13 @@ def layer_image_route(request, model_manager):
 	tile_images = Visualizations().get_layer_visualization(
 		model_manager, model_name, layer_name, image_index, distortion=distortion
 	)
+	
+	if not isinstance(tile_images, np.ndarray):
+		return http_util.Respond(
+			request,
+			imgutil.get_placeholder_image(),
+			'image/png'
+		)
 	
 	# Fetch meta information on how the images should be stitched together
 	meta = _get_composition_meta_data(
@@ -110,8 +117,8 @@ def layer_meta_route(request, model_manager):
 	model_name = request.args.get('model')
 	layer_name = request.args.get('layer')
 	image_index = int(request.args.get('imageIndex'))
-	width = int(request.args.get('width'))
-	height = int(request.args.get('height'))
+	width = max(int(request.args.get('width')), 1)
+	height = max(int(request.args.get('height')), 1)
 	
 	# If a distortion should be applied, extract its name
 	if 'distortion' in request.args:
@@ -137,6 +144,9 @@ def layer_meta_route(request, model_manager):
 		width, height, COMPOSITION_PADDING
 	)
 	
+	if response == None:
+		response = {}
+	
 	return http_util.Respond(request, response, 'application/json')
 
 def _get_composition_meta_data(model_manager, model_name, layer_name, \
@@ -152,6 +162,9 @@ def _get_composition_meta_data(model_manager, model_name, layer_name, \
 	result = Visualizations().get_layer_visualization(
 		model_manager, model_name, layer_name, image_index, distortion=distortion
 	)
+	
+	if not isinstance(result, np.ndarray):
+		return;
 	
 	# Calculate the optimal tile size
 	tile_amount = len(result)
@@ -215,8 +228,8 @@ def _optimize_tile_size(tile_amount, width, height, padding=0):
 	return {
 		'tileSize': tile_size - (padding * 2),
 		'padding': padding,
-		'rows': amount_of_rows,
-		'columns': amount_of_columns,
-		'width': tile_size * amount_of_columns,
-		'height': tile_size * amount_of_rows,
+		'rows': amount_of_rows - 1,
+		'columns': amount_of_columns + 1,
+		'width': tile_size * (amount_of_columns + 1),
+		'height': tile_size * (amount_of_rows - 1),
 	}
