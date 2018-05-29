@@ -70,7 +70,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/datasets/images/image': self.datasets_images_image_route,
 			'/layer/single/meta': self.layer_single_meta_route,
 			'/layer/single/image': self.layer_single_image_route,
-			'/layer/composite/meta': self.layer_composite_meta_route
+			'/layer/composite/meta': self.layer_composite_meta_route,
+			'/layer/composite/image': self.layer_composite_image_route
 		}
 
 	def is_active(self):
@@ -248,4 +249,22 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""
 		
 		return composite_visualization_router.layer_meta_route(request,
+			self.model_manager)
+	
+	@wrappers.Request.application
+	def layer_composite_image_route(self, request):
+		"""A route that returns a stitched composition of the activation 
+		visualizations of all units of a single layer.
+
+		Arguments:
+			request: A request containing the model name, the layer name as well as 
+				the index of the input image as retrieved from the dataset. It should 
+				also contain the desired width and height of the composite image. Unit 
+				visualization tiles will be scaled and positioned to fit as best as 
+				possible.
+		Returns:
+			A composite image of all unit's activation visualizations.
+		"""
+		
+		return composite_visualization_router.layer_image_route(request,
 			self.model_manager)

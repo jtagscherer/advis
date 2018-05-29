@@ -17,6 +17,7 @@ py_library(
 	deps = [
 		"//advis_plugin:util",
 		"@org_tensorflow_tensorboard//tensorboard/backend:http_util",
-		requirement('numpy')
+		requirement('numpy'),
+		requirement('Pillow')
 	]
 )

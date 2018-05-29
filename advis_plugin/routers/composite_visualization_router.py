@@ -5,11 +5,96 @@ from advis_plugin.util.visualizations import Visualizations
 import numpy as np
 from math import floor, ceil
 
+from PIL import Image
+from io import BytesIO
+
 # Static configuration data
 COMPOSITION_PADDING = 1
 
 # Data caches for faster access
 _composite_meta_cache = {}
+_composition_cache = {}
+
+def layer_image_route(request, model_manager):
+	# Check for missing arguments and possibly return an error
+	missing_arguments = argutil.check_missing_arguments(
+		request, ['model', 'layer', 'imageIndex', 'width', 'height']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	# Now that we are sure all necessary arguments are available, extract them 
+	# from the request
+	model_name = request.args.get('model')
+	layer_name = request.args.get('layer')
+	image_index = int(request.args.get('imageIndex'))
+	width = int(request.args.get('width'))
+	height = int(request.args.get('height'))
+	
+	# If a distortion should be applied, extract its name
+	if 'distortion' in request.args:
+		distortion_name = request.args.get('distortion')
+		
+		if 'imageAmount' not in request.args:
+			return http_util.Respond(
+				request,
+				'In order to retrieve an activation visualization of distorted '
+				+ 'images you have to specify the amount of distorted images to '
+				+ 'create using the \"imageAmount\" parameter.',
+				'text/plain',
+				code=400
+			)
+		else:
+			distorted_image_amount = int(request.args.get('imageAmount'))
+			distortion = (distortion_name, distorted_image_amount)
+	else:
+		distortion = None
+	
+	key_tuple = (model_name, layer_name, image_index, distortion, width, height, \
+		COMPOSITION_PADDING)
+	
+	if key_tuple in _composition_cache:
+		return http_util.Respond(
+			request,
+			_composition_cache[key_tuple],
+			'image/png'
+		)
+	
+	# Fetch the unit images
+	tile_images = Visualizations().get_layer_visualization(
+		model_manager, model_name, layer_name, image_index, distortion=distortion
+	)
+	
+	# Fetch meta information on how the images should be stitched together
+	meta = _get_composition_meta_data(
+		model_manager, model_name, layer_name, image_index, distortion,
+		width, height, COMPOSITION_PADDING
+	)
+	
+	configuration = meta['configuration']
+	
+	# Create an empty canvas for the composition
+	composition = Image.new('RGB',
+		(configuration['width'], configuration['height']), 'white')
+	
+	# Copy each individual tile into the right position on the composition
+	for tile in meta['tileMap']:
+		bounds = tile['bounds']
+		image_tile = Image.open(BytesIO(tile_images[tile['index']]))
+		
+		composition.paste(
+			image_tile.resize((configuration['tileSize'], configuration['tileSize'])),
+			(bounds['left'], bounds['top'], bounds['right'], bounds['bottom'])
+		)
+	
+	with BytesIO() as byte_array:
+		composition.save(byte_array, 'PNG')
+		response = byte_array.getvalue()
+	
+	_composition_cache[key_tuple] = response
+	
+	return http_util.Respond(request, response, 'image/png')
 
 def layer_meta_route(request, model_manager):
 	# Check for missing arguments and possibly return an error
