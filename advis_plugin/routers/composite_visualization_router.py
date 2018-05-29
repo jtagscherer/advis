@@ -5,6 +5,9 @@ from advis_plugin.util.visualizations import Visualizations
 import numpy as np
 from math import floor, ceil
 
+# Static configuration data
+COMPOSITION_PADDING = 1
+
 # Data caches for faster access
 _composite_meta_cache = {}
 
@@ -24,7 +27,6 @@ def layer_meta_route(request, model_manager):
 	image_index = int(request.args.get('imageIndex'))
 	width = int(request.args.get('width'))
 	height = int(request.args.get('height'))
-	padding = 1
 	
 	# If a distortion should be applied, extract its name
 	if 'distortion' in request.args:
@@ -45,15 +47,21 @@ def layer_meta_route(request, model_manager):
 	else:
 		distortion = None
 	
-	key_tuple = (model_name, layer_name, image_index, distortion, width, height)
+	response = _get_composition_meta_data(
+		model_manager, model_name, layer_name, image_index, distortion,
+		width, height, COMPOSITION_PADDING
+	)
+	
+	return http_util.Respond(request, response, 'application/json')
+
+def _get_composition_meta_data(model_manager, model_name, layer_name, \
+	image_index, distortion, width, height, padding):
+	key_tuple = (model_name, layer_name, image_index, distortion, width, height, \
+		padding)
 	
 	# Return cached meta information if we have already generated it before
 	if key_tuple in _composite_meta_cache:
-		return http_util.Respond(
-			request,
-			_composite_meta_cache[key_tuple],
-			'application/json'
-		)
+		return _composite_meta_cache[key_tuple]
 	
 	# Retrieve the resulting array of unit visualizations
 	result = Visualizations().get_layer_visualization(
@@ -101,7 +109,7 @@ def layer_meta_route(request, model_manager):
 	# Cache the result for later use
 	_composite_meta_cache[key_tuple] = response
 	
-	return http_util.Respond(request, response, 'application/json')
+	return response
 
 def _optimize_tile_size(tile_amount, width, height, padding=0):
 	tile_size = 1 + (padding * 2)
