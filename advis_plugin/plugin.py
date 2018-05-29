@@ -11,7 +11,8 @@ from advis_plugin.datasets import datasets
 from advis_plugin.distortions import distortions
 
 from advis_plugin.routers import model_router, prediction_router, \
-	distortion_router, dataset_router, single_visualization_router
+	distortion_router, dataset_router, single_visualization_router, \
+	composite_visualization_router
 
 class AdvisPlugin(base_plugin.TBPlugin):
 	"""A plugin for visualizing random perturbations of input data and their 
@@ -68,7 +69,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/datasets/images/list': self.datasets_images_list_route,
 			'/datasets/images/image': self.datasets_images_image_route,
 			'/layer/single/meta': self.layer_single_meta_route,
-			'/layer/single/image': self.layer_single_image_route
+			'/layer/single/image': self.layer_single_image_route,
+			'/layer/composite/meta': self.layer_composite_meta_route
 		}
 
 	def is_active(self):
@@ -227,4 +229,23 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""
 		
 		return single_visualization_router.layer_image_route(request,
+			self.model_manager)
+	
+	@wrappers.Request.application
+	def layer_composite_meta_route(self, request):
+		"""A route that returns meta information about the composited activation 
+		visualizations of all units of a single layer.
+
+		Arguments:
+			request: A request containing the model name, the layer name as well as 
+				the index of the input image as retrieved from the dataset. It should 
+				also contain the desired width and height of the composite image. Unit 
+				visualization tiles will be scaled and positioned to fit as best as 
+				possible.
+		Returns:
+			A JSON document containing meta information about the composite image.
+				This may be used as a click map for the associated composite image.
+		"""
+		
+		return composite_visualization_router.layer_meta_route(request,
 			self.model_manager)

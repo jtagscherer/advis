@@ -10,7 +10,8 @@ py_library(
 		"prediction_router.py",
 		"distortion_router.py",
 		"dataset_router.py",
-		"single_visualization_router.py"
+		"single_visualization_router.py",
+		"composite_visualization_router.py"
 	],
 	srcs_version = "PY2AND3",
 	deps = [
