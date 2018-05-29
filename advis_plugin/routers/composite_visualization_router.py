@@ -187,8 +187,8 @@ def _get_composition_meta_data(model_manager, model_name, layer_name, \
 	
 	if distortion != None:
 		response['distortion'] = {
-			'name': distortion_name,
-			'imageAmount': distorted_image_amount
+			'name': distortion[0],
+			'imageAmount': distortion[1]
 		}
 	
 	# Cache the result for later use
@@ -205,8 +205,7 @@ def _optimize_tile_size(tile_amount, width, height, padding=0):
 		amount_of_rows = ceil((tile_size * tile_amount) / width)
 		amount_of_columns = ceil(tile_amount / amount_of_rows)
 		
-		if amount_of_rows * tile_size > height \
-			or amount_of_columns * tile_size > width:
+		if amount_of_rows * tile_size > height:
 			break
 		
 		tile_size += 1
