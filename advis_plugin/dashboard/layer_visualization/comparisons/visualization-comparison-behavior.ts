@@ -264,7 +264,7 @@ const VisualizationComparisonBehavior = {
 		this.sizeChanged();
 	},
 	
-	getDialogInputUrl: function(data) {
+	getDialogImageSource: function(data, callback) {
 		// Has to be implemented by components using this behavior
 	},
 	
@@ -273,21 +273,24 @@ const VisualizationComparisonBehavior = {
 	},
 	
 	_openUnitDialog: function(data) {
-		let unitTitle = this.getDialogTitle(data);
-		let unitImageUrl = this.getDialogInputUrl(data);
+		let unitDialog = this.$$('unit-details-dialog');
 		
-		// Show the enlarged image tile in a dialog
-		this.$$('unit-details-dialog').open({
+		// Open the bare unit dialog
+		unitDialog.open({
 			model: {
 				title: this.model.displayName,
 				caption: `Version ${this.model.version}`
 			},
 			unit: {
-				title: unitTitle,
+				title: this.getDialogTitle(data),
 				caption: this.layer
 			},
-			url: unitImageUrl,
 			animationTarget: data.selectedTile.bounds
+		});
+		
+		// Asynchronously construct and set the source of the image to be shown
+		this.getDialogImageSource(data, function(source) {
+			unitDialog.updateImageSource(source);
 		});
 	}
 };

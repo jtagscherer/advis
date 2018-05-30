@@ -23,11 +23,13 @@ Polymer({
 		}
 	},
 	
-	getDialogInputUrl: function(data) {
-		return this.getSingleTileImageUrl(
+	getDialogImageSource: function(data, callback) {
+		let source = this.getSingleTileImageUrl(
 			data.visualizationType,
 			data.selectedTile.index
 		);
+		
+		callback(source);
 	},
 	
 	getDialogTitle: function(data) {
