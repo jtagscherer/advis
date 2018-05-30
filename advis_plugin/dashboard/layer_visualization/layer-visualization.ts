@@ -20,7 +20,8 @@ Polymer({
 		},
 		selectedDistortion: {
 			type: Object,
-			observer: '_selectedDistortionChanged'
+			observer: '_selectedDistortionChanged',
+			notify: true
 		},
 		selectedPage: {
 			type: Number,

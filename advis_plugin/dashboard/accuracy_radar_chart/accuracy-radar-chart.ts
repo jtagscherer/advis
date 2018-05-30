@@ -11,6 +11,10 @@ Polymer({
 			type: Array,
 			observer: '_updateGraph'
 		},
+		selectedDistortion: {
+			type: Object,
+			notify: true
+		},
 		accuracyCalculationFlag: {
 			type: Boolean,
 			observer: '_updateGraph'
@@ -109,15 +113,24 @@ Polymer({
 			let translucentColor = this._getColorFromHex(model.color, 0.2);
 			let solidColor = this._getColorFromHex(model.color);
 			
+			// Create arrays with default point styles
+			let pointBackgroundColors = Array(data.length).fill(solidColor);
+			let radii = Array(data.length).fill(3);
+			let hoverRadii = Array(data.length).fill(4);
+			
 			// If we have not skipped this model, we have to add its data
 			updatedDatasets.push({
 				label: model.displayName,
 				id: model.name,
 				backgroundColor: translucentColor,
 				borderColor: solidColor,
-				pointBackgroundColor: solidColor,
+				pointBackgroundColor: pointBackgroundColors,
+				pointHoverBackgroundColor: pointBackgroundColors,
+				pointRadius: radii,
+				pointHoverRadius: hoverRadii,
+				pointBorderWidth: 3,
+				pointHoverBorderWidth: 3,
 				pointBorderColor: solidColor,
-				pointHoverBackgroundColor: solidColor,
 				pointHoverBorderColor: solidColor,
 				data: data
 			});

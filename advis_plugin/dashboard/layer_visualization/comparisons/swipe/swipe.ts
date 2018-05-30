@@ -25,18 +25,58 @@ Polymer({
 	},
 	
 	getImageContainerSize: function() {
-		return Math.min(
-			this.$$('#container').offsetWidth,
-			this.$$('#container').offsetHeight
-		)
+		return {
+			width: this.$$('#container').offsetWidth,
+			height: this.$$('#container').offsetHeight
+		};
 	},
 	
-	urlsChanged: function(urlType) {
-		this._updateClipRectangle();
+	getImageClass: function(condition) {
+		if (this.state == 'loaded') {
+			return 'visible';
+		} else {
+			return 'invisible';
+		}
+	},
+	
+	getDialogImageSource: function(data, callback) {
+		let source = this.getSingleTileImageUrl(
+			this._getClickedVisualizationType(data.clickCoordinates),
+			data.selectedTile.index
+		);
+		
+		callback(source);
+	},
+	
+	getDialogTitle: function(data) {
+		let title = `Tensor ${Number(data.selectedTile.index) + 1}`;
+		let visualizationType = this._getClickedVisualizationType(
+			data.clickCoordinates);
+		
+		if (visualizationType == 'distorted') {
+			return title + ' (Distorted)';
+		} else {
+			return title;
+		}
 	},
 	
 	sizeChanged: function() {
 		this._updateClipRectangle();
+	},
+	
+	stateChanged: function() {
+		this._updateClipRectangle();
+	},
+	
+	_getClickedVisualizationType: function(clickCoordinates) {
+		let images = this.$$('#distorted-image').getBoundingClientRect();
+		let percentage = this.sliderValue / (this._maximumSliderValue * 1.0);
+		
+		if (clickCoordinates.x < percentage * images.width) {
+			return 'original';
+		} else {
+			return 'distorted';
+		}
 	},
 	
 	_sliderDragged: function() {
@@ -52,15 +92,12 @@ Polymer({
 	},
 	
 	_adjustClipRectangle: function(percentage) {
-		let container = this.$$('#container').getBoundingClientRect();
-		let images = this.$$('#distorted-images').getBoundingClientRect();
+		let images = this.$$('#distorted-image').getBoundingClientRect();
 		
-		let leftEdge = images.left - container.left;
-		
-		this.customStyle['--clip-left'] = leftEdge + 'px';
-		this.customStyle['--clip-right'] = (leftEdge + (percentage * images.width))
-			+ 'px';
+		this.customStyle['--clip-right'] = (percentage * images.width) + 'px';
 		this.customStyle['--clip-bottom'] = images.height + 'px';
+		
+		this.customStyle['--image-container-width'] = images.width + 'px';
 		
 		this.updateStyles();
 	}

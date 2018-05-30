@@ -9,7 +9,11 @@
 <dom-module id="accuracy-radar-chart">
 	<template>
 		<div id="container">
-			<chart-component data="[[data]]"></chart-component>
+			<chart-component
+				data="[[data]]"
+				available-distortions=[[distortions]]
+				selected-distortion={{selectedDistortion}}>
+			</chart-component>
 		</div>
 		
 		<link rel="stylesheet" type="text/css" href="accuracy-radar-chart.css">

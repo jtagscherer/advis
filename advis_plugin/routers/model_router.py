@@ -1,5 +1,5 @@
 from tensorboard.backend import http_util
-from advis_plugin import argutil
+from advis_plugin.util import argutil
 
 # Data caches for faster access
 _graph_structure_cache = {}

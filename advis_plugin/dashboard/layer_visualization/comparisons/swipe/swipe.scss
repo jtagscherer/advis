@@ -1,12 +1,10 @@
 @import 'advis_plugin/shared/style/color';
 
 :host {
-	--image-container-width: 100%;
+	--image-container-width: 200px;
 	
-	--clip-left: 0px;
 	--clip-right: 0px;
 	--clip-bottom: 0px;
-	--clip-end: 0px;
 }
 
 #content {
@@ -17,9 +15,21 @@
 	flex-direction: column;
 	align-items: center;
 	
+	overflow: hidden;
+	
+	transition: opacity 0.5s ease;
+	
+	&.visible {
+		opacity: 1;
+	}
+	
+	&.invisible {
+		opacity: 0;
+	}
+	
 	paper-slider {
 		z-index: 2;
-		width: var(--image-container-width);
+		width: calc(var(--image-container-width) + 30px);
 		
 		--paper-slider-knob-color: $accent-color;
 		--paper-slider-active-color: $accent-color;
@@ -29,40 +39,30 @@
 #container {
 	display: flex;
 	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	
+	position: relative;
 	
 	flex: 1;
-	width: 100%;
+	width: 95%;
 	height: 100%;
 	
-	#normal-images-wrapper {
+	#original-image-wrapper {
 		z-index: 1;
-		
 		clip-path: polygon(
-			var(--clip-left) 0px,
+			0px 0px,
 			var(--clip-right) 0px,
 			var(--clip-right) var(--clip-bottom),
-			var(--clip-left) var(--clip-bottom)
+			0px var(--clip-bottom)
 		);
 	}
 	
 	.image-wrapper {
-		display: flex;
-		justify-content: center;
-		
-		width: 100%;
-		height: 100%;
-		
 		position: absolute;
 		
-		.image-container {
-			flex: 1;
-			max-width: var(--image-container-width);
-			font-size: 0;
-			
-			.image-tile {
-				image-rendering: pixelated;
-				padding: 1px;
-			}
+		.activation-visualization {
+			image-rendering: pixelated;
 		}
 	}
 }

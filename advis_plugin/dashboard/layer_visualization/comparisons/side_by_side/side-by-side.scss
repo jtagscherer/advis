@@ -1,7 +1,3 @@
-:host {
-	--image-container-width: 100%;
-}
-
 #container {
 	display: flex;
 	flex-direction: row;
@@ -10,20 +6,23 @@
 	height: 100%;
 	
 	.image-wrapper {
+		flex: 0.5;
+		
 		display: flex;
 		justify-content: center;
+		align-items: center;
+		margin: 5px;
 		
-		width: 100%;
-		height: 100%;
-		
-		.image-container {
-			flex: 1;
-			max-width: var(--image-container-width);
-			font-size: 0;
+		.activation-visualization {
+			image-rendering: pixelated;
+			transition: opacity 0.5s ease;
 			
-			.image-tile {
-				image-rendering: pixelated;
-				padding: 1px;
+			&.visible {
+				opacity: 1;
+			}
+			
+			&.invisible {
+				opacity: 0;
 			}
 		}
 	}

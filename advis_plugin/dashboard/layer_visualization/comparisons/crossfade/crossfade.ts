@@ -15,7 +15,7 @@ Polymer({
 		},
 		_foregroundVisualization: {
 			type: String,
-			value: 'normal'
+			value: 'original'
 		}
 	},
 	
@@ -29,34 +29,45 @@ Polymer({
 	},
 	
 	getImageContainerSize: function() {
-		return Math.min(
-			this.$$('#container').offsetWidth,
-			this.$$('#container').offsetHeight
-		)
+		return {
+			width: this.$$('#container').offsetWidth,
+			height: this.$$('#container').offsetHeight
+		};
 	},
 	
-	urlsChanged: function(urlType) {
-		this._updateOpacity();
+	getDialogImageSource: function(data, callback) {
+		let source = this.getSingleTileImageUrl(
+			this._foregroundVisualization,
+			data.selectedTile.index
+		);
+		
+		callback(source);
+	},
+	
+	getDialogTitle: function(data) {
+		let title = `Tensor ${Number(data.selectedTile.index) + 1}`;
+		
+		if (this._foregroundVisualization == 'distorted') {
+			return title + ' (Distorted)';
+		} else {
+			return title;
+		}
+	},
+	
+	getImageClass: function(condition) {
+		if (this.state == 'loaded') {
+			return 'visible';
+		} else {
+			return 'invisible';
+		}
 	},
 	
 	sizeChanged: function() {
 		this._updateOpacity();
 	},
 	
-	getDialogInputUrl: function(inputType, unitIndex) {
-		if (this._foregroundVisualization == 'normal') {
-			return this.normalUrls[unitIndex];
-		} else if (this._foregroundVisualization == 'distorted') {
-			return this.distortedUrls[unitIndex];
-		}
-	},
-	
-	getDialogTitle: function(inputType, unitTitle) {
-		if (this._foregroundVisualization == 'normal') {
-			return unitTitle;
-		} else if (this._foregroundVisualization == 'distorted') {
-			return unitTitle + ' (Distorted)';
-		}
+	stateChanged: function() {
+		this._updateOpacity();
 	},
 	
 	_sliderDragged: function() {
@@ -82,7 +93,7 @@ Polymer({
 		// using the normal or distorted visualization depending on which one has 
 		// the higher opacity
 		if (percentage <= 0.5) {
-			this._foregroundVisualization = 'normal';
+			this._foregroundVisualization = 'original';
 		} else {
 			this._foregroundVisualization = 'distorted';
 		}

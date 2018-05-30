@@ -14,35 +14,28 @@
 -->
 <dom-module id="swipe-comparison">
 	<template>
-		<div id="content">
+		<div id="content"
+			class$=[[getImageClass(state)]]>
 			<div id="container">
-				<div class="image-wrapper" id="normal-images-wrapper">
-					<div id="normal-images" class="image-container">
-						<template is="dom-repeat" items="[[normalUrls]]">
-							<img
-								class="image-tile"
-								src$={{item}}
-								width$=[[tileSize]]
-								data-unit-index$={{index}}
-								data-input-type="normal"
-								on-tap="openUnitDialog">
-							</img>
-						</template>
-					</div>
+				<div id="original-image-wrapper" class="image-wrapper">
+					<img id="original-image"
+						src$=[[_originalImageUrl]]
+						width$=[[_originalMetaData.configuration.width]]
+						height$=[[_originalMetaData.configuration.height]]
+						data-visualization-type="original"
+						on-tap="_imageClicked"
+						on-load="_originalImageCallback">
+					</img>
 				</div>
 				<div class="image-wrapper">
-					<div id="distorted-images" class="image-container">
-						<template is="dom-repeat" items="[[distortedUrls]]">
-							<img
-								class="image-tile"
-								src$={{item}}
-								width$=[[tileSize]]
-								data-unit-index$={{index}}
-								data-input-type="distorted"
-								on-tap="openUnitDialog">
-							</img>
-						</template>
-					</div>
+					<img id="distorted-image"
+						src$=[[_distortedImageUrl]]
+						width$=[[_distortedMetaData.configuration.width]]
+						height$=[[_distortedMetaData.configuration.height]]
+						data-visualization-type="distorted"
+						on-tap="_imageClicked"
+						on-load="_distortedImageCallback">
+					</img>
 				</div>
 			</div>
 			

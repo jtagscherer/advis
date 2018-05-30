@@ -9,9 +9,36 @@ Polymer({
 	],
 	
 	getImageContainerSize: function() {
-		return Math.min(
-			this.$$('#container').offsetWidth / 2,
-			this.$$('#container').offsetHeight
-		)
+		return {
+			width: this.$$('.image-wrapper').offsetWidth,
+			height: this.$$('.image-wrapper').offsetHeight
+		};
+	},
+	
+	getImageClass: function(condition) {
+		if (condition && this.state != 'empty') {
+			return 'activation-visualization visible';
+		} else {
+			return 'activation-visualization invisible';
+		}
+	},
+	
+	getDialogImageSource: function(data, callback) {
+		let source = this.getSingleTileImageUrl(
+			data.visualizationType,
+			data.selectedTile.index
+		);
+		
+		callback(source);
+	},
+	
+	getDialogTitle: function(data) {
+		let title = `Tensor ${Number(data.selectedTile.index) + 1}`;
+		
+		if (data.visualizationType == 'distorted') {
+			return title + ' (Distorted)';
+		} else {
+			return title;
+		}
 	}
 } as any);

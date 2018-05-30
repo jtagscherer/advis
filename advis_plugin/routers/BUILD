@@ -10,12 +10,14 @@ py_library(
 		"prediction_router.py",
 		"distortion_router.py",
 		"dataset_router.py",
-		"visualization_router.py"
+		"single_visualization_router.py",
+		"composite_visualization_router.py"
 	],
 	srcs_version = "PY2AND3",
 	deps = [
 		"//advis_plugin:util",
 		"@org_tensorflow_tensorboard//tensorboard/backend:http_util",
-		requirement('numpy')
+		requirement('numpy'),
+		requirement('Pillow')
 	]
 )
