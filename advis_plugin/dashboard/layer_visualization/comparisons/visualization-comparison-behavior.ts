@@ -108,9 +108,42 @@ const VisualizationComparisonBehavior = {
 	},
 	
 	_imageClicked: function(e) {
-		// TODO: Calculate the tile size the user has clicked on and open the unit 
-		// dialog
-		console.log(e);
+		if (this.state != 'loaded') {
+			return;
+		}
+		
+		// Retrieve necessary information from the event
+		let visualizationType = e.target.dataset['visualizationType'];
+		let imageContainer = e.target.getBoundingClientRect();
+		
+		let click = {
+			x: e.detail.x - imageContainer.left,
+			y: e.detail.y - imageContainer.top
+		};
+		
+		var selectedTileIndex = null;
+		
+		// Simply use the non-distorted tile map since they will always have the 
+		// same size
+		let tileMap = this._originalMetaData.tileMap;
+		
+		// Find the image tile the user has clicked on
+		for (var tile of tileMap) {
+			let bounds = tile.bounds;
+			
+			if (click.x >= bounds.left && click.x <= bounds.right
+				&& click.y >= bounds.top && click.y <= bounds.bottom) {
+				selectedTileIndex = tile.index;
+				break;
+			}
+		}
+		
+		// If a tile has been clicked on, open it in a new dialog
+		if (selectedTileIndex != null) {
+			// TODO: Open dialog
+			console.log(visualizationType);
+			console.log(selectedTileIndex);
+		}
 	},
 	
 	_updateImageUrls: function() {
