@@ -6,10 +6,8 @@ Polymer({
   is: 'difference-comparison',
 	
 	properties: {
-		differenceImages: {
-			type: Array,
-			value: []
-		},
+		_differenceImageUrl: String,
+		_differenceImageLoaded: Boolean,
 		differenceMode: {
 			type: String,
 			value: 'difference-highlight',
@@ -29,94 +27,83 @@ Polymer({
 		};
 	},
 	
-	urlsChanged: function(urlType) {
-		this._calculateImageDifferences();
+	getImageClass: function(condition) {
+		if (this.state == 'loaded') {
+			return 'visible';
+		} else {
+			return 'invisible';
+		}
 	},
 	
 	sizeChanged: function() {
 		this._calculateImageDifferences();
 	},
 	
-	getDialogInputUrl: function(inputType, unitIndex) {
-		return this.differenceImages[unitIndex];
+	stateChanged: function(state) {
+		this._calculateImageDifferences();
 	},
 	
-	getDialogTitle: function(inputType, unitTitle) {
-		if (inputType == 'difference') {
-			switch (this.differenceMode) {
-				case 'difference-highlight':
-					return unitTitle + ' (Difference Highlight)';
-				case 'difference-intensity-highlight':
-					return unitTitle + ' (Difference Intensity Highlight)';
-				case 'only-difference':
-					return unitTitle + ' (Difference)';
-			}
+	_updateState: function() {
+		if (this._originalMetaData == null || this._distortedMetaData == null) {
+			this.set('state', 'loading');
+		} else if (Object.keys(this._originalMetaData).length == 0
+			|| Object.keys(this._distortedMetaData).length == 0) {
+			this.set('state', 'empty');
+		} else if (!this._differenceImageLoaded) {
+			this.set('state', 'loading');
+		} else {
+			this.set('state', 'loaded');
 		}
+	},
+	
+	_differenceImageCallback: function() {
+		this.set('_differenceImageLoaded', true);
+		this._updateState();
 	},
 	
 	_calculateImageDifferences: function() {
-		if (this.normalUrls == null || this.normalUrls.length == 0
-			|| this.distortedUrls == null || this.distortedUrls.length == 0
-			|| this.normalUrls.length != this.distortedUrls.length) {
+		if (this.state == 'empty' || this._originalImageUrl == null
+			|| this._distortedImageUrl == null) {
 			return;
 		}
 		
-    var computedImages = new Array(this.normalUrls.length);
-		let self = this;
-    
-    // This function will be called after every completed tile calculation
-    let checkCompletion = function(computedImages) {
-      // Only continue if all tile calculations have been completed
-      for (var result of computedImages) {
-        if (result == null) {
-          return;
-        }
-      }
-      
-      // Now that all calculations have been completed, update the image URL 
-      // array that is being displayed in the UI
-      self.set('differenceImages', []);
-      
-      for (var image of computedImages) {
-        self.push('differenceImages', image);
-      }
-    };
+		this.set('_differenceImageUrl', null);
+		this.set('_differenceImageLoaded', false);
 		
-    // Calculate the image differences between each unit
-		for (var index in this.normalUrls) {
-			// Set up the Resemble comparator
-			var resembleControl = resemble(this.normalUrls[index])
-				.compareTo(this.distortedUrls[index], index)
-				.ignoreColors();
-			
-			// Configure the comparator
-			var outputSettings = {
-				errorColor: {
-					red: 244,
-					green: 112,
-					blue: 0
-				}
-			};
-			
-			switch (this.differenceMode) {
-				case 'difference-highlight':
-					outputSettings['errorType'] = 'flat';
-					break;
-				case 'difference-intensity-highlight':
-					outputSettings['errorType'] = 'flatDifferenceIntensity';
-					break;
-				case 'only-difference':
-					outputSettings['errorType'] = 'diffOnly';
-					break;
+		let self = this;
+		
+		// Set up the Resemble comparator
+		var resembleControl = resemble(this._originalImageUrl)
+			.compareTo(this._distortedImageUrl)
+			.ignoreColors();
+		
+		// Configure the comparator
+		var outputSettings = {
+			errorColor: {
+				red: 244,
+				green: 112,
+				blue: 0
 			}
-			
-			resembleControl.outputSettings(outputSettings);
-			
-			// Start the comparison
-			resembleControl.onComplete(function(data) {
-				computedImages[Number(data.requestIndex)] = data.getImageDataUrl();
-				checkCompletion(computedImages);
-			});
+		};
+		
+		switch (this.differenceMode) {
+			case 'difference-highlight':
+				outputSettings['errorType'] = 'flat';
+				break;
+			case 'difference-intensity-highlight':
+				outputSettings['errorType'] = 'flatDifferenceIntensity';
+				break;
+			case 'only-difference':
+				outputSettings['errorType'] = 'diffOnly';
+				break;
 		}
+		
+		resembleControl.outputSettings(outputSettings);
+		
+		// Perform the comparison asynchronously and update the displayed image as 
+		// soon as it is loaded
+		resembleControl.onComplete(function(data) {
+			self.set('_differenceImageUrl', data.getImageDataUrl());
+		});
 	}
 } as any);

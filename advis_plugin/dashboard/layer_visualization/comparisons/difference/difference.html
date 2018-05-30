@@ -14,21 +14,19 @@
 -->
 <dom-module id="difference-comparison">
 	<template>
-		<div id="content">
+		<div id="content"
+			class$=[[getImageClass(state)]]>
 			<div id="container">
 				<div class="image-wrapper" id="normal-images-wrapper">
-					<div id="difference-images" class="image-container">
-						<template is="dom-repeat" items="[[differenceImages]]">
-							<img
-								class="image-tile"
-								src$="[[item]]"
-								width$=[[tileSize]]
-								data-unit-index$={{index}}
-								data-input-type="difference"
-								on-tap="openUnitDialog">
-							</img>
-						</template>
-					</div>
+					<img id="difference-image"
+						class="activation-visualization"
+						src$=[[_differenceImageUrl]]
+						data-input-type="difference"
+						width$=[[_originalMetaData.configuration.width]]
+						height$=[[_originalMetaData.configuration.height]]
+						on-tap="_imageClicked"
+						on-load="_differenceImageCallback">
+					</img>
 				</div>
 			</div>
 			
