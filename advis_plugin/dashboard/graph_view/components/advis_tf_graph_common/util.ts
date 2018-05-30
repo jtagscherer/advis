@@ -23,12 +23,20 @@ module advis.graph.util {
    * that gives enough time for the progress bar to update its UI.
    */
   const ASYNC_TASK_DELAY = 20;
+	
+	/**
+	 * If true, debug output and the time taken for various operations will be 
+	 * printed to the console.
+	 */
+	const VERBOSE = false;
 
   export function time<T>(msg: string, task: () => T) {
     let start = Date.now();
     let result = task();
     /* tslint:disable */
-    console.log(msg, ':', Date.now() - start, 'ms');
+		if (VERBOSE) {
+			console.log(msg, ':', Date.now() - start, 'ms');
+		}
     /* tslint:enable */
     return result;
   }
@@ -170,7 +178,9 @@ module advis.graph.util {
           task()
               .then(function(value) {
                 /* tslint:disable */
-                console.log(msg, ':', Date.now() - start, 'ms');
+								if (VERBOSE) {
+                	console.log(msg, ':', Date.now() - start, 'ms');
+								}
                 // Update the progress value.
                 tracker.updateProgress(incProgressValue);
                 // Return the result to be used by other tasks.
