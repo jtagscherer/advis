@@ -27,6 +27,37 @@ Polymer({
 		};
 	},
 	
+	getDialogImageSource: function(data, callback) {
+		// Retrieve the two tiles that will be compared
+		let unitIndex = data.selectedTile.index;
+		let originalUnit = this.getSingleTileImageUrl('original', unitIndex);
+		let distortedUnit = this.getSingleTileImageUrl('distorted', unitIndex);
+		
+		// Set up the Resemble comparator
+		var resembleControl = resemble(originalUnit)
+			.compareTo(distortedUnit)
+			.ignoreColors();
+		resembleControl = this._configureResembleControl(resembleControl);
+		
+		// Perform the comparison and asynchronously return its result
+		resembleControl.onComplete(function(data) {
+			callback(data.getImageDataUrl());
+		});
+	},
+	
+	getDialogTitle: function(data) {
+		let title = `Tensor ${Number(data.selectedTile.index) + 1}`;
+		
+		switch (this.differenceMode) {
+			case 'difference-highlight':
+				return title + ' (Difference Highlight)';
+			case 'difference-intensity-highlight':
+				return title + ' (Difference Intensity Highlight)';
+			case 'only-difference':
+				return title + ' (Only Difference)';
+		}
+	},
+	
 	getImageClass: function(condition) {
 		if (this.state == 'loaded') {
 			return 'visible';
@@ -76,8 +107,17 @@ Polymer({
 		var resembleControl = resemble(this._originalImageUrl)
 			.compareTo(this._distortedImageUrl)
 			.ignoreColors();
+		resembleControl = this._configureResembleControl(resembleControl);
 		
-		// Configure the comparator
+		// Perform the comparison asynchronously and update the displayed image as 
+		// soon as it is loaded
+		resembleControl.onComplete(function(data) {
+			self.set('_differenceImageUrl', data.getImageDataUrl());
+		});
+	},
+	
+	_configureResembleControl: function(resembleControl) {
+		// Choose a color used to highlight differences
 		var outputSettings = {
 			errorColor: {
 				red: 244,
@@ -86,6 +126,7 @@ Polymer({
 			}
 		};
 		
+		// Choose a difference mode based on the user's mode selection
 		switch (this.differenceMode) {
 			case 'difference-highlight':
 				outputSettings['errorType'] = 'flat';
@@ -100,10 +141,6 @@ Polymer({
 		
 		resembleControl.outputSettings(outputSettings);
 		
-		// Perform the comparison asynchronously and update the displayed image as 
-		// soon as it is loaded
-		resembleControl.onComplete(function(data) {
-			self.set('_differenceImageUrl', data.getImageDataUrl());
-		});
+		return resembleControl;
 	}
 } as any);
