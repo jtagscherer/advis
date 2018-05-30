@@ -191,11 +191,11 @@ div.op-compat-value {
       },
       _opCompatColor: {
         type: String,
-        value: tf.graph.render.OpNodeColors.COMPATIBLE
+        value: advis.graph.render.OpNodeColors.COMPATIBLE
       },
       _opIncompatColor: {
         type: String,
-        value: tf.graph.render.OpNodeColors.INCOMPATIBLE
+        value: advis.graph.render.OpNodeColors.INCOMPATIBLE
       },
       _totalIncompatOps: {
         type: Number,
@@ -231,7 +231,7 @@ div.op-compat-value {
     _getIncompatibleOpNodes: function(graphHierarchy, hierarchyParams) {
       if (graphHierarchy && graphHierarchy.root) {
         this.async(this._resizeList.bind(this, "#incompatibleOpsList"));
-        return tf.graph.hierarchy.getIncompatibleOps(graphHierarchy, hierarchyParams);
+        return advis.graph.hierarchy.getIncompatibleOps(graphHierarchy, hierarchyParams);
       }
     },
     _computeOpCompatScore: function(graphHierarchy) {

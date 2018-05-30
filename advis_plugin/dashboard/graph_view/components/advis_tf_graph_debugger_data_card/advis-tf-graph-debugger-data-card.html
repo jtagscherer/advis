@@ -309,7 +309,7 @@ h2 {
       areHealthPillsLoading: Boolean,
       healthPillEntries: {
         type: Array,
-        value: tf.graph.scene.healthPillEntries,
+        value: advis.graph.scene.healthPillEntries,
         readOnly: true,
       },
       healthPillValuesForSelectedNode: {
@@ -460,7 +460,7 @@ h2 {
         var tableRow = document.createElement('tr');
 
         var timestampTd = document.createElement('td');
-        timestampTd.innerHTML = tf.graph.util.computeHumanFriendlyTime(alert.first_timestamp);
+        timestampTd.innerHTML = advis.graph.util.computeHumanFriendlyTime(alert.first_timestamp);
         timestampTd.classList.add('first-offense-td');
         tableRow.appendChild(timestampTd);
 
@@ -523,7 +523,7 @@ h2 {
       clickableElement.addEventListener('click', () => {
         // When the user clicks on a tensor name, expand all nodes until the user can see the
         // associated node.
-        var nameOfNodeToSelect = tf.graph.render.expandUntilNodeIsShown(
+        var nameOfNodeToSelect = advis.graph.render.expandUntilNodeIsShown(
             document.getElementById('scene'), this.renderHierarchy, tensorName);
 
         // Store the current scroll of the graph info card. Node selection alters that scroll, and

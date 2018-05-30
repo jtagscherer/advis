@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-module tf.graph.scene.annotation {
+module advis.graph.scene.annotation {
   /**
    * Populate a given annotation container group
    *
@@ -141,7 +141,7 @@ function addAnnotationLabel(
                        .attr('text-anchor', a.isIn ? 'end' : 'start')
                        .text(label);
 
-  return tf.graph.scene.node.enforceLabelWidth(txtElement, -1);
+  return advis.graph.scene.node.enforceLabelWidth(txtElement, -1);
 }
 
 function addInteraction(selection, d: render.RenderNodeInfo,
@@ -185,7 +185,7 @@ function addInteraction(selection, d: render.RenderNodeInfo,
  */
 function update(aGroup, d: render.RenderNodeInfo, a: render.Annotation,
     sceneElement) {
-  let cx = advislayout.computeCXPositionOfNodeShape(d);
+  let cx = layout.computeCXPositionOfNodeShape(d);
   // Annotations that point to embedded nodes (constants,summary)
   // don't have a render information attached so we don't stylize these.
   // Also we don't stylize ellipsis annotations (the string '... and X more').

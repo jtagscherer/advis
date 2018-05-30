@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-module tf.graph.scene {
+module advis.graph.scene {
   export const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
   /** Enums element class of objects in the scene */
@@ -169,7 +169,7 @@ module tf.graph.scene {
         Math.min(
             svgRect.width / sceneSize.width, svgRect.height / sceneSize.height,
             2);
-    let params = advislayout.PARAMS.graph;
+    let params = layout.PARAMS.graph;
     const transform = d3.zoomIdentity
         .scale(scale)
         .translate(params.padding.paddingLeft, params.padding.paddingTop);
@@ -331,20 +331,20 @@ export function selectChild(
  * <g class='scene'>
  *   <g class='core'>
  *     <g class='edges'>
- *       ... stuff from tf.graph.scene.edges.build ...
+ *       ... stuff from advis.graph.scene.edges.build ...
  *     </g>
  *     <g class='nodes'>
- *       ... stuff from tf.graph.scene.nodes.build ...
+ *       ... stuff from advis.graph.scene.nodes.build ...
  *     </g>
  *   </g>
  *   <g class='in-extract'>
  *     <g class='nodes'>
- *       ... stuff from tf.graph.scene.nodes.build ...
+ *       ... stuff from advis.graph.scene.nodes.build ...
  *     </g>
  *   </g>
  *   <g class='out-extract'>
  *     <g class='nodes'>
- *       ... stuff from tf.graph.scene.nodes.build ...
+ *       ... stuff from advis.graph.scene.nodes.build ...
  *     </g>
  *   </g>
  * </g>
@@ -438,7 +438,7 @@ function position(sceneGroup, renderNode: render.RenderGroupNodeInfo) {
   // down for series nodes as series nodes don't have labels inside of their
   // bounding boxes.
   let yTranslate = renderNode.node.type === NodeType.SERIES ?
-    0 : advislayout.PARAMS.subscene.meta.labelHeight;
+    0 : layout.PARAMS.subscene.meta.labelHeight;
 
   // core
   translate(selectChild(sceneGroup, 'g', Class.Scene.CORE), 0, yTranslate);
@@ -448,7 +448,7 @@ function position(sceneGroup, renderNode: render.RenderGroupNodeInfo) {
   let hasOutExtract = renderNode.isolatedOutExtract.length > 0;
   let hasLibraryFunctions = renderNode.libraryFunctionsExtract.length > 0;
 
-  let offset = advislayout.PARAMS.subscene.meta.extractXOffset;
+  let offset = layout.PARAMS.subscene.meta.extractXOffset;
 
   let auxWidth = 0;
   if (hasInExtract) {
@@ -460,8 +460,8 @@ function position(sceneGroup, renderNode: render.RenderGroupNodeInfo) {
 
   if (hasInExtract) {
     let inExtractX = renderNode.coreBox.width;
-    if (auxWidth < advislayout.MIN_AUX_WIDTH) {
-      inExtractX = inExtractX - advislayout.MIN_AUX_WIDTH +
+    if (auxWidth < layout.MIN_AUX_WIDTH) {
+      inExtractX = inExtractX - layout.MIN_AUX_WIDTH +
           renderNode.inExtractBox.width / 2;
     } else {
       inExtractX = inExtractX -
@@ -479,8 +479,8 @@ function position(sceneGroup, renderNode: render.RenderGroupNodeInfo) {
   // out-extract
   if (hasOutExtract) {
     let outExtractX = renderNode.coreBox.width;
-    if (auxWidth < advislayout.MIN_AUX_WIDTH) {
-      outExtractX = outExtractX - advislayout.MIN_AUX_WIDTH +
+    if (auxWidth < layout.MIN_AUX_WIDTH) {
+      outExtractX = outExtractX - layout.MIN_AUX_WIDTH +
           renderNode.outExtractBox.width / 2;
     } else {
       outExtractX -= renderNode.outExtractBox.width / 2;
@@ -563,7 +563,7 @@ export function positionTriangle(polygon, cx, cy, width, height) {
  *        the button on.
  */
 export function positionButton(button, renderNode: render.RenderNodeInfo) {
-  let cx = advislayout.computeCXPositionOfNodeShape(renderNode);
+  let cx = layout.computeCXPositionOfNodeShape(renderNode);
   // Position the button in the top-right corner of the group node,
   // with space given the draw the button inside of the corner.
   let width = renderNode.expanded ?
@@ -581,7 +581,7 @@ export function positionButton(button, renderNode: render.RenderNodeInfo) {
   let translateStr = 'translate(' + x + ',' + y + ')';
   button.selectAll('path').transition().attr('transform', translateStr);
   button.select('circle').transition().attr(
-      {cx: x, cy: y, r: advislayout.PARAMS.nodeSize.meta.expandButtonRadius});
+      {cx: x, cy: y, r: layout.PARAMS.nodeSize.meta.expandButtonRadius});
 };
 
 /**
@@ -704,7 +704,7 @@ export function addHealthPill(
   if (healthPillYOffset == null) {
     healthPillYOffset = 0;
   }
-  if (nodeInfo != null && nodeInfo.node.type === tf.graph.NodeType.OP) {
+  if (nodeInfo != null && nodeInfo.node.type === advis.graph.NodeType.OP) {
     // Use a smaller health pill for op nodes (rendered as smaller ellipses).
     healthPillWidth /= 2;
     healthPillHeight /= 2;

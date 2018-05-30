@@ -12,8 +12,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-module tf.graph.scene.node {
-  import RenderNodeInfo = tf.graph.render.RenderNodeInfo;
+module advis.graph.scene.node {
+  import RenderNodeInfo = advis.graph.render.RenderNodeInfo;
   /**
    * Select or Create a 'g.nodes' group to a given sceneGroup
    * and builds a number of 'g.node' groups inside the group.
@@ -330,9 +330,9 @@ function getContainingSeries(node: Node) {
  * node.
  */
 export function getGroupSettingLabel(node: Node) {
-  return tf.graph.getGroupSeriesNodeButtonString(
-    getContainingSeries(node) !== null ? tf.graph.SeriesGroupingType.GROUP :
-     tf.graph.SeriesGroupingType.UNGROUP);
+  return advis.graph.getGroupSeriesNodeButtonString(
+    getContainingSeries(node) !== null ? advis.graph.SeriesGroupingType.GROUP :
+     advis.graph.SeriesGroupingType.UNGROUP);
 }
 
 /**
@@ -395,16 +395,16 @@ export function enforceLabelWidth(
     case NodeType.META:
       if (renderNodeInfo && !renderNodeInfo.expanded) {  // Only trim text if
         // node expanded.
-        maxLength = advislayout.PARAMS.nodeSize.meta.maxLabelWidth;
+        maxLength = layout.PARAMS.nodeSize.meta.maxLabelWidth;
       }
       break;
 
     case NodeType.OP:
-      maxLength = advislayout.PARAMS.nodeSize.op.maxLabelWidth;
+      maxLength = layout.PARAMS.nodeSize.op.maxLabelWidth;
       break;
 
     case -1:
-      maxLength = advislayout.PARAMS.annotations.maxLabelWidth;
+      maxLength = layout.PARAMS.annotations.maxLabelWidth;
       break;
 
     default:
@@ -545,7 +545,7 @@ export function nodeClass(d: render.RenderNodeInfo) {
 /** Modify node and its subscene and its label's positional attributes */
 function position(nodeGroup, d: render.RenderNodeInfo) {
   let shapeGroup = scene.selectChild(nodeGroup, 'g', Class.Node.SHAPE);
-  let cx = advislayout.computeCXPositionOfNodeShape(d);
+  let cx = layout.computeCXPositionOfNodeShape(d);
   switch (d.node.type) {
     case NodeType.OP: {
       // position shape
@@ -651,7 +651,7 @@ export function getFillForNode(templateIndex, colorBy,
         return colorParams.UNKNOWN;
       }
       let id = renderInfo.node.name;
-      let escapedId = tf.graph.util.escapeQuerySelector(id);
+      let escapedId = advis.graph.util.escapeQuerySelector(id);
       let gradientDefs = d3.select('svg#svg defs #linearGradients');
       let linearGradient = gradientDefs.select('linearGradient#' + escapedId);
       // If the linear gradient is not there yet, create it.
@@ -687,8 +687,8 @@ export function getFillForNode(templateIndex, colorBy,
     case ColorBy.OP_COMPATIBILITY:
       if (renderInfo.node.type === NodeType.OP) {
         return ((<OpNode>renderInfo.node).compatible) ?
-            tf.graph.render.OpNodeColors.COMPATIBLE :
-            tf.graph.render.OpNodeColors.INCOMPATIBLE;
+            advis.graph.render.OpNodeColors.COMPATIBLE :
+            advis.graph.render.OpNodeColors.INCOMPATIBLE;
       } else if (renderInfo.node.isGroupNode) {
         let node = <GroupNode>renderInfo.node;
 
@@ -701,7 +701,7 @@ export function getFillForNode(templateIndex, colorBy,
         }
 
         let id = "op-compat-" + node.name;
-        let escapedId = tf.graph.util.escapeQuerySelector(id);
+        let escapedId = advis.graph.util.escapeQuerySelector(id);
         let gradientDefs = d3.select('svg#svg defs #linearGradients');
         let linearGradient = gradientDefs.select('linearGradient#' + escapedId);
         // If the linear gradient is not there yet, create it.
@@ -714,16 +714,16 @@ export function getFillForNode(templateIndex, colorBy,
 
           linearGradient.append('stop')
               .attr('offset', 0)
-              .attr('stop-color', tf.graph.render.OpNodeColors.COMPATIBLE);
+              .attr('stop-color', advis.graph.render.OpNodeColors.COMPATIBLE);
           linearGradient.append('stop')
               .attr('offset', percentValid)
-              .attr('stop-color', tf.graph.render.OpNodeColors.COMPATIBLE);
+              .attr('stop-color', advis.graph.render.OpNodeColors.COMPATIBLE);
           linearGradient.append('stop')
               .attr('offset', percentValid)
-              .attr('stop-color', tf.graph.render.OpNodeColors.INCOMPATIBLE);
+              .attr('stop-color', advis.graph.render.OpNodeColors.INCOMPATIBLE);
           linearGradient.append('stop')
               .attr('offset', 1)
-              .attr('stop-color', tf.graph.render.OpNodeColors.INCOMPATIBLE);
+              .attr('stop-color', advis.graph.render.OpNodeColors.INCOMPATIBLE);
         }
 
         return isExpanded ? colorParams.EXPANDED_COLOR : `url(#${escapedId})`;
@@ -786,7 +786,7 @@ export function getStrokeForFill(fill: string) {
  *
  * @param renderGraphInfo Information on the rendered state of the graph.
  */
-export function traceInputs(renderGraphInfo: tf.graph.render.RenderGraphInfo) {
+export function traceInputs(renderGraphInfo: advis.graph.render.RenderGraphInfo) {
   // Reset all styling.
   d3.selectAll('.input-highlight').classed('input-highlight', false);
   d3.selectAll('.non-input').classed('non-input', false);
@@ -856,20 +856,20 @@ export function traceInputs(renderGraphInfo: tf.graph.render.RenderGraphInfo) {
  * @returns {Array} An array of OpNodeImpl instances.
  */
 export function _getAllContainedOpNodes(
-    nodeName: string, renderGraphInfo: tf.graph.render.RenderGraphInfo) {
+    nodeName: string, renderGraphInfo: advis.graph.render.RenderGraphInfo) {
   let opNodes = [];
 
   // Get current node.
-  let node = renderGraphInfo.getNodeByName(nodeName) as tf.graph.GroupNode |
-      tf.graph.OpNode;
+  let node = renderGraphInfo.getNodeByName(nodeName) as advis.graph.GroupNode |
+      advis.graph.OpNode;
 
   // If node is already OpNode then return the node plus its input embeddings.
-  if (node instanceof tf.graph.OpNodeImpl) {
+  if (node instanceof advis.graph.OpNodeImpl) {
     return [node].concat(node.inEmbeddings);
   }
 
   // Otherwise, make recursive call for each node contained by the GroupNode.
-  let childNodeNames = (node as tf.graph.GroupNode).metagraph.nodes();
+  let childNodeNames = (node as advis.graph.GroupNode).metagraph.nodes();
   _.each(childNodeNames, function(childNodeName) {
     opNodes =
         opNodes.concat(_getAllContainedOpNodes(childNodeName, renderGraphInfo));
@@ -891,7 +891,7 @@ interface VisibleParent {
 }
 
 export function traceAllInputsOfOpNode(
-    renderGraphInfo: tf.graph.render.RenderGraphInfo, startNode: OpNode,
+    renderGraphInfo: advis.graph.render.RenderGraphInfo, startNode: OpNode,
     allTracedNodes: Object) {
   // To prevent infinite loops due to cyclical relationships and improving
   // performance by tracing OpNode which is input to 2+ nodes only once.
@@ -919,7 +919,7 @@ export function traceAllInputsOfOpNode(
     }
     // Ensure node is resolved to OpNode if name collision with Metanode exists.
     if (resolvedNode instanceof MetanodeImpl) {
-      let resolvedNodeName = tf.graph.getStrictName(resolvedNode.name);
+      let resolvedNodeName = advis.graph.getStrictName(resolvedNode.name);
       resolvedNode = renderGraphInfo.getNodeByName(resolvedNodeName) as OpNode;
     }
 
@@ -947,7 +947,7 @@ export function traceAllInputsOfOpNode(
   };
 
   let currentNode = currentVisibleParent as Node;
-  for (let index = 1; currentNode.name !== tf.graph.ROOT_NAME; index++) {
+  for (let index = 1; currentNode.name !== advis.graph.ROOT_NAME; index++) {
     currentNode = currentNode.parentNode;
     startNodeParents[currentNode.name] = {
       traced: false,
@@ -1095,7 +1095,7 @@ function _markParentsOfNodes(visibleNodes: {[nodeName: string]: Node}) {
     // Mark all parents of the node as input-parents.
     let currentNode = nodeInstance;
 
-    while (currentNode.name !== tf.graph.ROOT_NAME) {
+    while (currentNode.name !== advis.graph.ROOT_NAME) {
       const renderedElementSelection =
           d3.select(`.node[data-name="${currentNode.name}"]`);
       // Only mark the element as a parent node to an input if it is not
@@ -1123,8 +1123,8 @@ function _markParentsOfNodes(visibleNodes: {[nodeName: string]: Node}) {
  * @returns Node
  */
 export function getVisibleParent(
-    renderGraphInfo: tf.graph.render.RenderGraphInfo,
-    currentNode: tf.graph.Node) {
+    renderGraphInfo: advis.graph.render.RenderGraphInfo,
+    currentNode: advis.graph.Node) {
   let found = false;
   let currentParent = currentNode;
 

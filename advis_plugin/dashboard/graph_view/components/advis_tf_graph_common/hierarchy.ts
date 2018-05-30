@@ -15,7 +15,7 @@ limitations under the License.
 /**
  * Package for the Graph Hierarchy for TensorFlow graph.
  */
-module tf.graph.hierarchy {
+module advis.graph.hierarchy {
 
 /**
  * Class used as output for getPredecessors and getSuccessors methods
@@ -398,18 +398,18 @@ function findEdgeTargetsInGraph(
 export interface HierarchyParams {
   verifyTemplate: boolean;
   seriesNodeMinSize: number;
-  seriesMap: { [name: string]: tf.graph.SeriesGroupingType };
+  seriesMap: { [name: string]: advis.graph.SeriesGroupingType };
 }
 
 /**
  * @param graph The raw graph.
  * @param params Parameters used when building a hierarchy.
  */
-export function build(graph: tf.graph.SlimGraph, params: HierarchyParams,
+export function build(graph: advis.graph.SlimGraph, params: HierarchyParams,
     tracker: ProgressTracker): Promise<Hierarchy|void> {
   let h = new HierarchyImpl();
   let seriesNames: { [name: string]: string } = {};
-  return tf.graph.util
+  return advis.graph.util
       .runAsyncTask(
           'Adding nodes', 20,
           () => {
@@ -433,7 +433,7 @@ export function build(graph: tf.graph.SlimGraph, params: HierarchyParams,
           },
           tracker)
       .then(() => {
-        return tf.graph.util.runAsyncTask('Detect series', 20, () => {
+        return advis.graph.util.runAsyncTask('Detect series', 20, () => {
           if (params.seriesNodeMinSize > 0) {
             groupSeries(
                 h.root, h, seriesNames, params.seriesNodeMinSize,
@@ -442,12 +442,12 @@ export function build(graph: tf.graph.SlimGraph, params: HierarchyParams,
         }, tracker);
       })
       .then(() => {
-        return tf.graph.util.runAsyncTask('Adding edges', 30, () => {
+        return advis.graph.util.runAsyncTask('Adding edges', 30, () => {
           addEdges(h, graph, seriesNames);
         }, tracker);
       })
       .then(() => {
-        return tf.graph.util.runAsyncTask(
+        return advis.graph.util.runAsyncTask(
             'Finding similar subgraphs', 30, () => {
               h.templates = template.detect(h, params.verifyTemplate);
             }, tracker);
@@ -458,7 +458,7 @@ export function build(graph: tf.graph.SlimGraph, params: HierarchyParams,
 };
 
 export function joinAndAggregateStats(
-    h: Hierarchy, stats: tf.graph.proto.StepStats) {
+    h: Hierarchy, stats: advis.graph.proto.StepStats) {
   // Get all the possible device names.
   let deviceNames = {};
   _.each(h.root.leaves(), nodeName => {
@@ -507,7 +507,7 @@ export function getIncompatibleOps(hierarchy: Hierarchy,
         if (opNode.owningSeries) {
           if (hierarchyParams &&
               hierarchyParams.seriesMap[opNode.owningSeries]
-              === tf.graph.SeriesGroupingType.UNGROUP) {
+              === advis.graph.SeriesGroupingType.UNGROUP) {
             // For un-grouped series node, add each node individually
             nodes.push(opNode)
           } else {
@@ -616,13 +616,13 @@ function addNodes(h: Hierarchy, graph: SlimGraph) {
         h.setNode(name, child);
         parent.metagraph.setNode(name, child);
 
-        if (name.indexOf(tf.graph.FUNCTION_LIBRARY_NODE_PREFIX) === 0 &&
-            parent.name === tf.graph.ROOT_NAME) {
+        if (name.indexOf(advis.graph.FUNCTION_LIBRARY_NODE_PREFIX) === 0 &&
+            parent.name === advis.graph.ROOT_NAME) {
           // This metanode represents a function in the Library. We later copy
           // its contents to dynamically inject function data into the graph
           // when the subhierarchy of a metanode is built (upon its expansion).
           const functionName = name.substring(
-              tf.graph.FUNCTION_LIBRARY_NODE_PREFIX.length);
+              advis.graph.FUNCTION_LIBRARY_NODE_PREFIX.length);
 
           // For now, remember the metanode that represents the function with
           // this name.
@@ -752,11 +752,11 @@ function addEdges(h: Hierarchy, graph: SlimGraph,
  */
 function groupSeries(metanode: Metanode, hierarchy: Hierarchy,
     seriesNames: { [name: string]: string }, threshold: number,
-    map: { [name: string]: tf.graph.SeriesGroupingType }) {
+    map: { [name: string]: advis.graph.SeriesGroupingType }) {
   let metagraph = metanode.metagraph;
   _.each(metagraph.nodes(), n => {
     let child = metagraph.node(n);
-    if (child.type === tf.graph.NodeType.META) {
+    if (child.type === advis.graph.NodeType.META) {
       groupSeries(<Metanode>child, hierarchy, seriesNames, threshold, map);
     }
   });
@@ -778,11 +778,11 @@ function groupSeries(metanode: Metanode, hierarchy: Hierarchy,
     // this series has not been adding to the series map, then set this
     // series to be shown ungrouped in the map.
     if (nodeMemberNames.length < threshold && !(seriesNode.name in map)) {
-      map[seriesNode.name] = tf.graph.SeriesGroupingType.UNGROUP;
+      map[seriesNode.name] = advis.graph.SeriesGroupingType.UNGROUP;
     }
     // If the series is in the map as ungrouped then do not group the series.
     if (seriesNode.name in map
-      && map[seriesNode.name] === tf.graph.SeriesGroupingType.UNGROUP) {
+      && map[seriesNode.name] === advis.graph.SeriesGroupingType.UNGROUP) {
       return;
     }
     hierarchy.setNode(seriesName, seriesNode); // add to the index
@@ -962,4 +962,4 @@ function addSeriesToDict(seriesNodes: SeriesNode[],
   }
 }
 
-} // close module tf.graph.hierarchy
+} // close module advis.graph.hierarchy

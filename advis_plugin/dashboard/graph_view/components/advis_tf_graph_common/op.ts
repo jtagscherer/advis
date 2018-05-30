@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-module tf.graph.op {
+module advis.graph.op {
   /**
    * Whitelist of current Tensorflow ops valid on the TPU
    */
@@ -381,4 +381,4 @@ module tf.graph.op {
     });
   }
 
-}  // close module tf.graph.op
+}  // close module advis.graph.op

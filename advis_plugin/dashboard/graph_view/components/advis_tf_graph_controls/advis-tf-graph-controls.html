@@ -845,7 +845,7 @@ Polymer({
   _traceInputToggleChanged: function(event) {
     // Flip the state of the trace inputs flag.
     this.renderHierarchy.traceInputs = event.target.active;
-    tf.graph.scene.node.traceInputs(this.renderHierarchy);
+    advis.graph.scene.node.traceInputs(this.renderHierarchy);
   },
   _xlaClustersProvided: function(renderHierarchy) {
     return renderHierarchy &&
@@ -883,7 +883,7 @@ Polymer({
     });
     // Devices names can be long so we remove the longest common prefix
     // before showing the devices in a list.
-    var suffixes = tf.graph.util.removeCommonPrefix(devices);
+    var suffixes = advis.graph.util.removeCommonPrefix(devices);
     if (suffixes.length == 1) {
       var found = suffixes[0].match(/device:([^:]+:[0-9]+)$/);
       if (found) {
@@ -940,7 +940,7 @@ Polymer({
     });
     // Remove common prefix and merge back corresponding color. If
     // there is only one device then remove everything up to "/device:".
-    var suffixes = tf.graph.util.removeCommonPrefix(
+    var suffixes = advis.graph.util.removeCommonPrefix(
             _.map(deviceParams, function(d) { return d.device; }));
     if (suffixes.length == 1) {
       var found = suffixes[0].match(/device:([^:]+:[0-9]+)$/);
@@ -963,15 +963,15 @@ Polymer({
     var minValue = params.minValue;
     var maxValue = params.maxValue;
     if (colorBy === 'memory') {
-      minValue = tf.graph.util.convertUnitsToHumanReadable(
-          minValue, tf.graph.util.MEMORY_UNITS);
-      maxValue = tf.graph.util.convertUnitsToHumanReadable(
-          maxValue, tf.graph.util.MEMORY_UNITS);
+      minValue = advis.graph.util.convertUnitsToHumanReadable(
+          minValue, advis.graph.util.MEMORY_UNITS);
+      maxValue = advis.graph.util.convertUnitsToHumanReadable(
+          maxValue, advis.graph.util.MEMORY_UNITS);
     } else if (colorBy === 'compute_time') {
-      minValue = tf.graph.util.convertUnitsToHumanReadable(
-          minValue, tf.graph.util.TIME_UNITS);
-      maxValue = tf.graph.util.convertUnitsToHumanReadable(
-          maxValue, tf.graph.util.TIME_UNITS);
+      minValue = advis.graph.util.convertUnitsToHumanReadable(
+          minValue, advis.graph.util.TIME_UNITS);
+      maxValue = advis.graph.util.convertUnitsToHumanReadable(
+          maxValue, advis.graph.util.TIME_UNITS);
     }
     return {
       minValue: minValue,

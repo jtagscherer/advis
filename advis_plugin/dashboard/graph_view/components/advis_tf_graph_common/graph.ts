@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-module tf.graph {
+module advis.graph {
 
 /** Delimiter used in node names to denote namespaces. */
 export const NAMESPACE_DELIM = '/';
@@ -400,7 +400,7 @@ export class OpNodeImpl implements OpNode {
    *
    * @param rawNode The raw node.
    */
-  constructor(rawNode: tf.graph.proto.NodeDef) {
+  constructor(rawNode: advis.graph.proto.NodeDef) {
     this.op = rawNode.op;
     this.name = rawNode.name;
     this.device = rawNode.device;
@@ -434,7 +434,7 @@ export function createMetanode(name: string, opt = {}): Metanode {
  * graph information.
  */
 export function joinStatsInfoWithGraph(
-    graph: SlimGraph, stats: tf.graph.proto.StepStats,
+    graph: SlimGraph, stats: advis.graph.proto.StepStats,
     devicesForStats?: {[device: string]: boolean}): void {
   // Reset stats for each node.
   _.each(graph.nodes, node => { node.stats = null; });
@@ -995,7 +995,7 @@ function addEdgeToGraph(
 }
 
 export function build(
-    graphDef: tf.graph.proto.GraphDef, params: BuildParams,
+    graphDef: advis.graph.proto.GraphDef, params: BuildParams,
     tracker: ProgressTracker): Promise<SlimGraph|void> {
   /**
    * A dictionary that maps each in-embedding node name to the node
@@ -1027,7 +1027,7 @@ export function build(
    */
   let nodeNames = new Array<string>(rawNodes.length);
 
-  return tf.graph.util
+  return advis.graph.util
       .runAsyncTask(
           'Normalizing names', 30,
           () => {
@@ -1062,7 +1062,7 @@ export function build(
 
             _.each(rawNodes, processRawNode);
 
-            const processFunction = (func: tf.graph.proto.FunctionDef) => {
+            const processFunction = (func: advis.graph.proto.FunctionDef) => {
               // Give the function itself a node.
               const functionNodeName =
                   FUNCTION_LIBRARY_NODE_PREFIX + func.signature.name;
@@ -1167,7 +1167,7 @@ export function build(
           tracker)
       .then((opNodes) => {
         // Create the graph data structure from the graphlib library.
-        return tf.graph.util.runAsyncTask(
+        return advis.graph.util.runAsyncTask(
             'Building the data structure', 70, () => {
               let normalizedNameDict =
                   mapStrictHierarchy(nodeNames, embeddingNodeNames);
@@ -1390,7 +1390,7 @@ export function getHierarchicalPath(name: string,
  * on the provided current InclusionType.
  */
 export function getIncludeNodeButtonString(include: InclusionType) {
-  if (include === tf.graph.InclusionType.EXCLUDE) {
+  if (include === advis.graph.InclusionType.EXCLUDE) {
     return 'Add to main graph';
   } else {
     return 'Remove from main graph';
@@ -1402,7 +1402,7 @@ export function getIncludeNodeButtonString(include: InclusionType) {
  * on the provided current SeriesGroupingType.
  */
 export function getGroupSeriesNodeButtonString(group: SeriesGroupingType) {
-  if (group === tf.graph.SeriesGroupingType.GROUP) {
+  if (group === advis.graph.SeriesGroupingType.GROUP) {
     return 'Ungroup this series of nodes';
   } else {
     return 'Group this series of nodes';
@@ -1414,12 +1414,12 @@ export function getGroupSeriesNodeButtonString(group: SeriesGroupingType) {
  * to ungroup if the series is not already in the map.
  */
 export function toggleNodeSeriesGroup(
-  map: { [name: string]: tf.graph.SeriesGroupingType }, name: string) {
-  if (!(name in map) || map[name] === tf.graph.SeriesGroupingType.GROUP) {
-    map[name] = tf.graph.SeriesGroupingType.UNGROUP;
+  map: { [name: string]: advis.graph.SeriesGroupingType }, name: string) {
+  if (!(name in map) || map[name] === advis.graph.SeriesGroupingType.GROUP) {
+    map[name] = advis.graph.SeriesGroupingType.UNGROUP;
   } else {
-    map[name] = tf.graph.SeriesGroupingType.GROUP;
+    map[name] = advis.graph.SeriesGroupingType.GROUP;
   }
 };
 
-} // close module tf.graph
+} // close module advis.graph
