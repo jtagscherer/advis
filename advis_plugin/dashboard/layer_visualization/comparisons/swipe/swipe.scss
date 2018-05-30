@@ -48,17 +48,14 @@
 	width: 95%;
 	height: 100%;
 	
-	#normal-images-wrapper {
+	#original-image-wrapper {
 		z-index: 1;
-		
-		#original-image {
-			clip-path: polygon(
-				0px 0px,
-				var(--clip-right) 0px,
-				var(--clip-right) var(--clip-bottom),
-				0px var(--clip-bottom)
-			);
-		}
+		clip-path: polygon(
+			0px 0px,
+			var(--clip-right) 0px,
+			var(--clip-right) var(--clip-bottom),
+			0px var(--clip-bottom)
+		);
 	}
 	
 	.image-wrapper {

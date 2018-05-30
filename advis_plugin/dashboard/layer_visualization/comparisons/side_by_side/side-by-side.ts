@@ -21,5 +21,22 @@ Polymer({
 		} else {
 			return 'activation-visualization invisible';
 		}
+	},
+	
+	getDialogInputUrl: function(data) {
+		return this.getSingleTileImageUrl(
+			data.visualizationType,
+			data.selectedTile.index
+		);
+	},
+	
+	getDialogTitle: function(data) {
+		let title = `Tensor ${Number(data.selectedTile.index) + 1}`;
+		
+		if (data.visualizationType == 'distorted') {
+			return title + ' (Distorted)';
+		} else {
+			return title;
+		}
 	}
 } as any);

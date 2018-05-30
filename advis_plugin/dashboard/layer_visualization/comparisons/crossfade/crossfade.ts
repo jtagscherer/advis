@@ -15,7 +15,7 @@ Polymer({
 		},
 		_foregroundVisualization: {
 			type: String,
-			value: 'normal'
+			value: 'original'
 		}
 	},
 	
@@ -33,6 +33,23 @@ Polymer({
 			width: this.$$('#container').offsetWidth,
 			height: this.$$('#container').offsetHeight
 		};
+	},
+	
+	getDialogInputUrl: function(data) {
+		return this.getSingleTileImageUrl(
+			this._foregroundVisualization,
+			data.selectedTile.index
+		);
+	},
+	
+	getDialogTitle: function(data) {
+		let title = `Tensor ${Number(data.selectedTile.index) + 1}`;
+		
+		if (this._foregroundVisualization == 'distorted') {
+			return title + ' (Distorted)';
+		} else {
+			return title;
+		}
 	},
 	
 	getImageClass: function(condition) {
@@ -74,7 +91,7 @@ Polymer({
 		// using the normal or distorted visualization depending on which one has 
 		// the higher opacity
 		if (percentage <= 0.5) {
-			this._foregroundVisualization = 'normal';
+			this._foregroundVisualization = 'original';
 		} else {
 			this._foregroundVisualization = 'distorted';
 		}

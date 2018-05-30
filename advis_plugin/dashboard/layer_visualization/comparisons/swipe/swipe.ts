@@ -39,12 +39,42 @@ Polymer({
 		}
 	},
 	
+	getDialogInputUrl: function(data) {
+		return this.getSingleTileImageUrl(
+			this._getClickedVisualizationType(data.clickCoordinates),
+			data.selectedTile.index
+		);
+	},
+	
+	getDialogTitle: function(data) {
+		let title = `Tensor ${Number(data.selectedTile.index) + 1}`;
+		let visualizationType = this._getClickedVisualizationType(
+			data.clickCoordinates);
+		
+		if (visualizationType == 'distorted') {
+			return title + ' (Distorted)';
+		} else {
+			return title;
+		}
+	},
+	
 	sizeChanged: function() {
 		this._updateClipRectangle();
 	},
 	
 	stateChanged: function() {
 		this._updateClipRectangle();
+	},
+	
+	_getClickedVisualizationType: function(clickCoordinates) {
+		let images = this.$$('#distorted-image').getBoundingClientRect();
+		let percentage = this.sliderValue / (this._maximumSliderValue * 1.0);
+		
+		if (clickCoordinates.x < percentage * images.width) {
+			return 'original';
+		} else {
+			return 'distorted';
+		}
 	},
 	
 	_sliderDragged: function() {

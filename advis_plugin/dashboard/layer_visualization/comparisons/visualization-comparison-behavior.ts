@@ -121,11 +121,12 @@ const VisualizationComparisonBehavior = {
 			y: e.detail.y - imageContainer.top
 		};
 		
-		var selectedTileIndex = null;
+		var selectedTile = null;
 		
 		// Simply use the non-distorted tile map since they will always have the 
 		// same size
 		let tileMap = this._originalMetaData.tileMap;
+		let tileSize = this._originalMetaData.configuration.tileSize;
 		
 		// Find the image tile the user has clicked on
 		for (var tile of tileMap) {
@@ -133,16 +134,28 @@ const VisualizationComparisonBehavior = {
 			
 			if (click.x >= bounds.left && click.x <= bounds.right
 				&& click.y >= bounds.top && click.y <= bounds.bottom) {
-				selectedTileIndex = tile.index;
+				selectedTile = {
+					index: tile.index,
+					bounds: {
+						left: bounds.left + imageContainer.left,
+						right: bounds.right + imageContainer.left,
+						top: bounds.top + imageContainer.top,
+						bottom: bounds.bottom + imageContainer.top,
+						width: tileSize,
+						height: tileSize
+					}
+				};
 				break;
 			}
 		}
 		
 		// If a tile has been clicked on, open it in a new dialog
-		if (selectedTileIndex != null) {
-			// TODO: Open dialog
-			console.log(visualizationType);
-			console.log(selectedTileIndex);
+		if (selectedTile != null) {
+			this._openUnitDialog({
+				visualizationType: visualizationType,
+				selectedTile: selectedTile,
+				clickCoordinates: click
+			});
 		}
 	},
 	
@@ -176,6 +189,28 @@ const VisualizationComparisonBehavior = {
 			distortion: this.distortion.name,
 			imageAmount: this.distortion.imageAmount
 		});
+	},
+	
+	getSingleTileImageUrl: function(visualizationType, tileIndex) {
+		if (visualizationType == 'original') {
+			return tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/single/image'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex,
+				unitIndex: tileIndex
+			});
+		} else if (visualizationType == 'distorted') {
+			return tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/single/image'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex,
+				distortion: this.distortion.name,
+				imageAmount: this.distortion.imageAmount,
+				unitIndex: tileIndex
+			});
+		}
 	},
 	
 	_loadMetaData: function() {
@@ -229,32 +264,17 @@ const VisualizationComparisonBehavior = {
 		this.sizeChanged();
 	},
 	
-  /*
-	getDialogInputUrl: function(inputType, unitIndex) {
-		// Can be implemented by components using this behavior
-		if (inputType == 'normal') {
-			return this.normalUrls[unitIndex];
-		} else if (inputType == 'distorted') {
-			return this.distortedUrls[unitIndex];
-		}
+	getDialogInputUrl: function(data) {
+		// Has to be implemented by components using this behavior
 	},
 	
-	getDialogTitle: function(inputType, unitTitle) {
-		// Can be implemented by components using this behavior
-		if (inputType == 'normal') {
-			return unitTitle;
-		} else if (inputType == 'distorted') {
-			return unitTitle + ' (Distorted)';
-		}
+	getDialogTitle: function(data) {
+		// Has to be implemented by components using this behavior
 	},
 	
-	openUnitDialog: function(e) {
-		let inputType = e.target.dataset.inputType;
-		let unitIndex = e.target.dataset.unitIndex;
-		
-		let unitTitle = this.getDialogTitle(inputType, 
-			`Tensor ${Number(unitIndex) + 1}`);
-		let unitImageUrl = this.getDialogInputUrl(inputType, unitIndex);
+	_openUnitDialog: function(data) {
+		let unitTitle = this.getDialogTitle(data);
+		let unitImageUrl = this.getDialogInputUrl(data);
 		
 		// Show the enlarged image tile in a dialog
 		this.$$('unit-details-dialog').open({
@@ -267,8 +287,7 @@ const VisualizationComparisonBehavior = {
 				caption: this.layer
 			},
 			url: unitImageUrl,
-			animationTarget: e.target.getBoundingClientRect()
+			animationTarget: data.selectedTile.bounds
 		});
-	},
-	*/
+	}
 };
