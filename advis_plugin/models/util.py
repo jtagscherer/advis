@@ -46,3 +46,19 @@ def generate_image_from_tensor(name, tensor, name_scope=None):
 		image_tensor = tf.concat([dimensions, encoded_images], axis=0, name=name)
 	
 	return image_tensor
+
+def simplify_graph(graph, importance_function):
+	"""Simplify a graph definition by removing nodes that are not deemed
+	important. Edges to and from removed nodes will be re-routed accordingly.
+
+	Arguments:
+		graph: The original graph definition as a protocoll buffer object.
+		importance_function: A function that will be used to evaluate whether a 
+			node is important and should be kept in the graph or not. Given a single 
+			node, this function should return `True` if the node is important and 
+			`False` otherwise.
+	"""
+	
+	# TODO: Simplify the graph
+	
+	return graph

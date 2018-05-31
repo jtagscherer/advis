@@ -23,7 +23,10 @@ class Model:
 	name = None
 	display_name = None
 	version = None
-	graph_structure = None
+	
+	# Proto buffers describing the model's graph structure
+	full_graph_structure = None
+	simplified_graph_structure = None
 	
 	# Internal references
 	_dataset = None
@@ -107,7 +110,9 @@ class Model:
 								self.name))
 							
 							# Extract all meta information
-							self.graph_structure = meta_data['graph_structure']
+							self.full_graph_structure = meta_data['full_graph_structure']
+							self.simplified_graph_structure = \
+								meta_data['simplified_graph_structure']
 							
 							for node, image_tensor in meta_data['image_tensors'].items():
 								self._image_tensors[node] = self._graph.get_tensor_by_name(
@@ -130,7 +135,11 @@ class Model:
 			self._saver.restore(self._session, checkpoint_directory)
 			
 			# Store the graph structure before adding visualization nodes
-			self.graph_structure = str(self._graph.as_graph_def())
+			graph_def = self._graph.as_graph_def()
+			self.full_graph_structure = str(graph_def)
+			self.simplified_graph_structure = str(
+				util.simplify_graph(graph_def, self._module.annotate_node)
+			)
 			
 			tf.logging.warn('Adding visualization nodes...')
 			
@@ -156,7 +165,8 @@ class Model:
 					'version': self.version,
 					'image_tensors': {name: tensor.name for name, tensor \
 						in self._image_tensors.items()},
-					'graph_structure': self.graph_structure
+					'full_graph_structure': self.full_graph_structure,
+					'simplified_graph_structure': self.simplified_graph_structure
 				}
 				
 				with open(join(cached_model_directory, 'meta.json'), 'w') as meta_file:
