@@ -136,7 +136,10 @@ class Model:
 			
 			# Store the graph structure before adding visualization nodes
 			graph_def = self._graph.as_graph_def()
+			
 			self.full_graph_structure = str(graph_def)
+			
+			tf.logging.warn('Simplifying graph structure...')
 			self.simplified_graph_structure = str(
 				util.simplify_graph(graph_def, self._module.annotate_node)
 			)
