@@ -16,7 +16,7 @@ from advis_plugin.util import imgutil
 from checkpoints import checkpoints
 
 # True if models annotated with visualization nodes should be cached
-USE_MODEL_CACHING = False
+USE_MODEL_CACHING = True
 
 class Model:
 	# Common variables describing the model and its module
@@ -117,6 +117,10 @@ class Model:
 							for node, image_tensor in meta_data['image_tensors'].items():
 								self._image_tensors[node] = self._graph.get_tensor_by_name(
 									image_tensor)
+							
+							# Store the tensor containing the model's prediction
+							self._output_node = self._graph.get_tensor_by_name('{}:0'
+								.format(self._module.get_output_node()))
 							
 							# Everything has been restored, we can skip the graph creation
 							return
