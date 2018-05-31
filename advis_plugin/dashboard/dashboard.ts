@@ -47,7 +47,8 @@ Polymer({
 			// Update the graph
 			const url = tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('advis', '/graphs'), {
-				model: this.selectedModel.name
+				model: this.selectedModel.name,
+        mode: 'simplified'
 			});
 			
 			this._requestManager.request(url).then(data => {
