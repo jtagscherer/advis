@@ -1,0 +1,10 @@
+@import 'advis_plugin/shared/style/style';
+
+$dialog-width: 50vh;
+
+#content {
+	width: $dialog-width;
+	
+	margin: 5px;
+	padding: 5px;
+}

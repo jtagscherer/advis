@@ -1,0 +1,29 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+
+<!--
+	When opened, this module displays options for configuring the graph view in a 
+	dialog.
+-->
+<dom-module id="graph-settings-dialog">
+	<template>
+		<paper-dialog with-backdrop>
+			<dialog-header event-id="graph-settings-dialog">
+				<div class="header-items">
+					<h2>Graph View Settings</h2>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<p>Content!</p>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="graph-settings-dialog.css">
+	</template>
+
+	<script src="graph-settings-dialog.js"></script>
+</dom-module>
