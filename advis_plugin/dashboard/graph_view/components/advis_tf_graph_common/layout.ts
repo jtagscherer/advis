@@ -200,6 +200,8 @@ export const PARAMS = {
   }
 };
 
+export var direction = 'vertical';
+
 /**
  * The minimum width we confer upon the auxiliary nodes section if functions
  * also appear. Without enforcing this minimum, metanodes in the function 
@@ -315,12 +317,20 @@ function layoutChildren(renderNodeInfo: render.RenderGroupNodeInfo): void {
 function dagreLayout(
     graph: graphlib.Graph<render.RenderNodeInfo, render.RenderMetaedgeInfo>,
     params): {height: number, width: number} {
-  _.extend(graph.graph(), {
+	var layoutConfiguration = {
     nodesep: params.nodeSep,
     ranksep: params.rankSep,
-    edgesep: params.edgeSep,
-		rankdir: 'LR'
-  });
+    edgesep: params.edgeSep
+	};
+	
+	if (advis.graph.layout.direction == 'vertical') {
+		layoutConfiguration['rankdir'] = 'TB';
+	} else if (advis.graph.layout.direction == 'horizontal') {
+		layoutConfiguration['rankdir'] = 'LR';
+	}
+	
+  _.extend(graph.graph(), layoutConfiguration);
+	
   let bridgeNodeNames = [];
   let nonBridgeNodeNames = [];
 

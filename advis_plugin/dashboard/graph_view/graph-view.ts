@@ -101,6 +101,14 @@ Polymer({
     this.$$('.container').style.height = this.height + 'px';
   },
   _updateGraph: function() {
+		// Use a more compact horizontal layouting when displaying a simplified 
+		// graph and the traditional vertical layouting otherwise
+		if (this.displayMode == 'simplified') {
+			advis.graph.layout.direction = 'horizontal';
+		} else {
+			advis.graph.layout.direction = 'vertical';
+		}
+		
 		if (this.requestManager == null || this.selectedModel == null) {
 			this.set('_graphAvailable', false);
 			return;
