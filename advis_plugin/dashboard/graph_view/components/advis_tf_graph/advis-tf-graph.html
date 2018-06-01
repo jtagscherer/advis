@@ -69,6 +69,7 @@ paper-button {
           node-names-to-health-pills="[[nodeNamesToHealthPills]]"
           health-pill-step-index="{{healthPillStepIndex}}"
           handle-edge-selected="[[handleEdgeSelected]]"
+          display-minimap="[[displayMinimap]]"
     ></advis-tf-graph-scene>
   </div>
 </div>
@@ -133,6 +134,9 @@ Polymer({
       type: Boolean,
       value: true
     },
+    
+    displayMinimap: Boolean,
+    
     // A mapping between node name to the advis.graph.scene.HealthPill to render.
     nodeNamesToHealthPills: Object,
     // The step of health pills to show throughout the graph.

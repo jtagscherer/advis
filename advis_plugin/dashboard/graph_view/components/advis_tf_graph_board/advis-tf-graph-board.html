@@ -67,6 +67,16 @@ Example
   min-width: 320px;
   background-color: rgba(255,255,255,0.9);
   @apply --shadow-elevation-2dp;
+	
+	transition: opacity 0.5s ease;
+}
+
+#info.visible {
+	opacity: 1;
+}
+
+#info.invisible {
+	opacity: 0;
 }
 
 #main {
@@ -149,9 +159,11 @@ paper-progress {
               health-pill-step-index="[[healthPillStepIndex]]"
               handle-node-selected="[[handleNodeSelected]]"
               handle-edge-selected="[[handleEdgeSelected]]"
+							display-minimap="[[displayMinimap]]"
     ></advis-tf-graph>
   </div>
-  <div id="info">
+  <div id="info"
+		class$=[[_getNodeInformationClass(displayNodeInformation)]]>
     <advis-tf-graph-info id="graph-info"
               title="selected"
               graph-hierarchy="[[graphHierarchy]]"
@@ -200,6 +212,10 @@ Polymer({
       type: Object,
       notify: true
     },
+		
+		displayNodeInformation: Boolean,
+		displayMinimap: Boolean,
+		
     // Whether debugger data is enabled for this instance of Tensorboard.
     debuggerDataEnabled: Boolean,
     // Whether health pills are currently being loaded.
@@ -270,6 +286,13 @@ Polymer({
     }
     return result;
   },
+	_getNodeInformationClass: function(displayNodeInformation) {
+		if (displayNodeInformation) {
+			return 'visible';
+		} else {
+			return 'invisible';
+		}
+	},
   _updateNodeInclude: function(nodeName) {
     var node = this.graphHierarchy.node(nodeName);
     this.set("_selectedNodeInclude",

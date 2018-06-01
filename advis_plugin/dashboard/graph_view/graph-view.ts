@@ -14,6 +14,19 @@ Polymer({
 			type: String,
 			observer: '_updateNodeSelection'
 		},
+		
+		displayMode: {
+			type: String,
+			value: 'simplified'
+		},
+		displayNodeInformation: {
+			type: Boolean,
+			value: false
+		},
+		displayMinimap: {
+			type: Boolean,
+			value: false
+		},
       
     width: {
       type: Number,

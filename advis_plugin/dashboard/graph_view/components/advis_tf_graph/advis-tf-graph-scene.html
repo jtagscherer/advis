@@ -523,6 +523,16 @@ limitations under the License.
   position: absolute;
   right: 20px;
   bottom: 20px;
+	
+	transition: opacity 0.5s ease;
+}
+
+#minimap.visible {
+	opacity: 1;
+}
+
+#minimap.invisible {
+	opacity: 0;
 }
 </style>
 <div class="titleContainer">
@@ -646,7 +656,9 @@ limitations under the License.
   <rect fill="white" width="10000" height="10000"></rect>
   <g id="root"></g>
 </svg>
-<advis-tf-graph-minimap id="minimap"></advis-tf-graph-minimap>
+<advis-tf-graph-minimap id="minimap"
+	class$=[[_getMinimapClass(displayMinimap)]]>
+</advis-tf-graph-minimap>
 </template>
 <script>
 Polymer({
@@ -655,6 +667,8 @@ Polymer({
     renderHierarchy: Object,
     name: String,
     colorBy: String,
+    
+    displayMinimap: Boolean,
 
     // For each render hierarchy, we only fit it to the viewport once (when the scene is attached to
     // the DOM). We do not fit the hierarchy again (unless the user clicks the reset button). For
@@ -828,6 +842,15 @@ Polymer({
     d3.select(this.$.svg).select('defs #linearGradients')
         .selectAll('*').remove();
   },
+	
+	_getMinimapClass: function(displayMinimap) {
+		if (displayMinimap) {
+			return 'visible';
+		} else {
+			return 'invisible';
+		}
+	},
+	
   /** Main method for building the scene */
   _build: function(renderHierarchy) {
     this.templateIndex = renderHierarchy.hierarchy.getTemplateIndex();
