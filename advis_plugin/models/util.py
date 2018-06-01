@@ -2,10 +2,11 @@ import tensorflow as tf
 
 from copy import deepcopy
 
-def generate_image_from_tensor(name, tensor, name_scope=None):
+def annotate_tensor(name, tensor, name_scope=None):
 	"""Transform an input tensor as obtained from the graph into a tensor that 
 	describes all appropriate image visualizations of each unit's activation in 
-	the layer.
+	the layer. On top of that, another operation will be returned that contains 
+	the layer's activations and can be used for comparisons.
 
 	Arguments:
 		name: The name of the final image tensor node. Should be unique in the 
@@ -17,6 +18,10 @@ def generate_image_from_tensor(name, tensor, name_scope=None):
 	with tf.name_scope(name_scope):
 		# Unstack the data to get rid of the first dimension
 		tensor = tf.unstack(tensor)[0]
+		
+		# Transpose axes so that images indices are first to create the activation 
+		# tensor
+		activation_tensor = tf.transpose(tensor, [2, 0, 1])
 		
 		# Fill in RGB channels for each image tensor
 		tensor = tf.map_fn(lambda x: tf.stack([x, x, x]), tensor)
@@ -47,7 +52,7 @@ def generate_image_from_tensor(name, tensor, name_scope=None):
 		# Concatenate dimensions and encoded images for the final image tensor
 		image_tensor = tf.concat([dimensions, encoded_images], axis=0, name=name)
 	
-	return image_tensor
+	return image_tensor, activation_tensor
 
 def simplify_graph(graph, is_important):
 	"""Simplify a graph definition by removing nodes that are not deemed

@@ -11,7 +11,8 @@ py_library(
 		"distortion_router.py",
 		"dataset_router.py",
 		"single_visualization_router.py",
-		"composite_visualization_router.py"
+		"composite_visualization_router.py",
+		"node_difference_router.py"
 	],
 	srcs_version = "PY2AND3",
 	deps = [
