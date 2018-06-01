@@ -98,7 +98,7 @@ web_library_external(
 	licenses = ["notice"],
 	sha256 = "d7f83c4ae7b529760c766bfff3a67a198e67e96201029fd68b574a70cbb49360",
 	urls = [
-		"https://github.com/PolymerElements/iron-pages/archive/v2.1.0.tar.gz"
+		"https://github.com/PolymerElements/paper-radio-group/archive/v2.2.0.tar.gz"
 	],
 	strip_prefix = "paper-radio-group-2.2.0",
 	path = "/paper-radio-group",
