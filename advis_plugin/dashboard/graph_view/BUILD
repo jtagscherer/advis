@@ -12,6 +12,7 @@ tf_web_library(
   visibility = ["//visibility:public"],
   deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+		"@org_polymer_paper_icon_button",
     "//advis_plugin/dashboard/graph_view/components/advis_tf_graph_board",
     "//advis_plugin/dashboard/graph_view/components/advis_tf_graph_controls",
     "//advis_plugin/dashboard/graph_view/components/advis_tf_graph_loader"
@@ -21,7 +22,10 @@ tf_web_library(
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
   name = "graph_view_scss",
-  src = "graph-view.scss"
+  src = "graph-view.scss",
+	deps = [
+		"//advis_plugin/shared/style:color"
+	]
 )
 
 # Move the compiled CSS file to our desired path
