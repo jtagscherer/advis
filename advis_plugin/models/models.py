@@ -16,7 +16,7 @@ from advis_plugin.util import imgutil
 from checkpoints import checkpoints
 
 # True if models annotated with visualization nodes should be cached
-USE_MODEL_CACHING = False
+USE_MODEL_CACHING = True
 
 class Model:
 	# Common variables describing the model and its module
@@ -119,6 +119,11 @@ class Model:
 								self._image_tensors[node] = self._graph.get_tensor_by_name(
 									image_tensor)
 							
+							for node, activation_tensor in meta_data['activation_tensors'] \
+								.items():
+								self._activation_tensors[node] = self._graph.get_tensor_by_name(
+									activation_tensor)
+							
 							# Store the tensor containing the model's prediction
 							self._output_node = self._graph.get_tensor_by_name('{}:0'
 								.format(self._module.get_output_node()))
@@ -144,10 +149,10 @@ class Model:
 			
 			self.full_graph_structure = str(graph_def)
 			
-			'''tf.logging.warn('Simplifying graph structure...')
+			tf.logging.warn('Simplifying graph structure...')
 			self.simplified_graph_structure = str(
 				util.simplify_graph(graph_def, self._module.annotate_node)
-			)'''
+			)
 			
 			tf.logging.warn('Adding visualization nodes...')
 			
@@ -175,6 +180,8 @@ class Model:
 					'version': self.version,
 					'image_tensors': {name: tensor.name for name, tensor \
 						in self._image_tensors.items()},
+					'activation_tensors': {name: tensor.name for name, tensor \
+						in self._activation_tensors.items()},
 					'full_graph_structure': self.full_graph_structure,
 					'simplified_graph_structure': self.simplified_graph_structure
 				}
