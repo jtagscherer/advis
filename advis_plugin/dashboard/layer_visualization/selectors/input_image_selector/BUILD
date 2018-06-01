@@ -13,7 +13,7 @@ tf_web_library(
 	],
 	path = "/input-image-selector",
 	deps = [
-		"//advis_plugin/dialogs/input_image_selection_dialog",
+		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_polymer_paper_card",
