@@ -1,5 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
 
 <link rel="import" href="../../dialog-header/dialog-header.html">
 <link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
@@ -18,7 +20,25 @@
 				</div>
 			</dialog-header>
 			<div id="content">
-				<p>Content!</p>
+				<h3>Graph Display Mode</h3>
+				<paper-radio-group selected={{displayMode}}>
+					<paper-radio-button name="simplified">
+						Simplified
+					</paper-radio-button>
+					<paper-radio-button name="full">
+						Full
+					</paper-radio-button>
+				</paper-radio-group>
+				
+				<h3>General Display Settings</h3>
+				<paper-toggle-button
+					checked={{displayNodeInformation}}>
+					Display detailed node information
+				</paper-toggle-button>
+				<paper-toggle-button
+					checked={{displayMinimap}}>
+					Display a minimap of the graph
+				</paper-toggle-button>
 			</div>
 		</paper-dialog>
 		

@@ -17,7 +17,8 @@ Polymer({
 		
 		displayMode: {
 			type: String,
-			value: 'simplified'
+			value: 'simplified',
+			observer: '_updateGraph'
 		},
 		displayNodeInformation: {
 			type: Boolean,
@@ -50,14 +51,31 @@ Polymer({
 		}
   },
 	
+	listeners: {
+    'dialogReturnedEvent': '_handleDialogReturnedEvent'
+  },
+	
 	update: function() {
 		this._updateGraph();
 	},
 	
 	openSettingsDialog: function() {
 		this.$$('graph-settings-dialog').open({
+			displayMode: this.displayMode,
+			displayNodeInformation: this.displayNodeInformation,
+			displayMinimap: this.displayMinimap,
 			animationTarget: this.$$('#settings-button').getBoundingClientRect()
 		});
+	},
+	
+	_handleDialogReturnedEvent: function(e) {
+		if (e.detail.eventId === 'graph-settings-dialog') {
+			let content = e.detail.content;
+			
+			this.set('displayMode', content.displayMode);
+			this.set('displayNodeInformation', content.displayNodeInformation);
+			this.set('displayMinimap', content.displayMinimap);
+		}
 	},
 	
 	_getContainerClass: function(graphAvailable) {
@@ -92,7 +110,7 @@ Polymer({
 		const url = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/graphs'), {
 			model: this.selectedModel.name,
-			mode: 'simplified'
+			mode: this.displayMode
 		});
 		
 		// Fetch the graph structure and update the displayed graph

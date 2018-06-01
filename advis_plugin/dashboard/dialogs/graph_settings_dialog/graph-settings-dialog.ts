@@ -7,7 +7,9 @@ Polymer({
 	],
 	
   properties: {
-		// TODO
+		displayMode: String,
+		displayNodeInformation: Boolean,
+		displayMinimap: Boolean,
 		
 		eventId: {
 			type: String,
@@ -16,6 +18,16 @@ Polymer({
   },
 	
 	setContent: function(content) {
-		// TODO
+		this.displayMode = content.displayMode,
+		this.displayNodeInformation = content.displayNodeInformation,
+		this.displayMinimap = content.displayMinimap
+	},
+	
+	getContentOnDismiss: function() {
+		return {
+			displayMode: this.displayMode,
+			displayNodeInformation: this.displayNodeInformation,
+			displayMinimap: this.displayMinimap
+		};
 	}
 });
