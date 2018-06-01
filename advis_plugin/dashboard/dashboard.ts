@@ -12,7 +12,7 @@ Polymer({
   },
   properties: {
     selectedModel: {
-			type: String,
+			type: Object,
 			observer: '_reloadModels'
 		},
 		selectedLayer: String,
@@ -20,9 +20,7 @@ Polymer({
 		_availableDistortions: Array,
 		_selectedDistortions: Array,
 		_selectedVisualizationDistortion: Object,
-		_graphStructure: String,
     _dataNotFound: Boolean,
-		_graphNotFound: Boolean,
 		_inputImageAmount: {
 			type: Number,
 			value: 10,
@@ -41,20 +39,8 @@ Polymer({
   },
 	
   _reloadModels: function() {
-		var self = this;
-		
 		if (this.selectedModel != null) {
-			// Update the graph
-			const url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/graphs'), {
-				model: this.selectedModel.name,
-        mode: 'simplified'
-			});
-			
-			this._requestManager.request(url).then(data => {
-				self._graphStructure = data.graph;
-				self._graphNotFound = false;
-			});
+			this.$$('graph-view').update();
 		}
 		
 		// Update the layer visualization
