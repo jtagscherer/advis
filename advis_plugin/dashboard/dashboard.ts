@@ -34,9 +34,13 @@ Polymer({
   },
 	
   ready: function() {
+		this.reload();
+  },
+	
+	reload: function() {
 		this._reloadDistortions();
     this._reloadModels();
-  },
+	},
 	
   _reloadModels: function() {
 		if (this.selectedModel != null) {
