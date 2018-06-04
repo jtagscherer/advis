@@ -610,7 +610,7 @@ function position(nodeGroup, d: render.RenderNodeInfo) {
 
 /** Enum specifying the options to color nodes by */
 export enum ColorBy {STRUCTURE, DEVICE, XLA_CLUSTER, COMPUTE_TIME, MEMORY,
-                     OP_COMPATIBILITY};
+                     OP_COMPATIBILITY, ACTIVATION};
 
 /**
  * Returns the fill color for the node given its state and the 'color by'
@@ -620,9 +620,12 @@ export function getFillForNode(templateIndex, colorBy,
     renderInfo: render.RenderNodeInfo, isExpanded: boolean): string {
   let colorParams = render.MetanodeColors;
   switch (colorBy) {
+		case ColorBy.ACTIVATION:
+      // TODO: Fetch the associated color here
+			return '#ffffff';
     case ColorBy.STRUCTURE:
-      if (renderInfo.node.type === NodeType.META) {
-        let tid = (<Metanode>renderInfo.node).templateId;
+			if (renderInfo.node.type === NodeType.META) {
+				let tid = (<Metanode>renderInfo.node).templateId;
         return tid === null ?
           colorParams.UNKNOWN :
           colorParams.STRUCTURE_PALETTE(templateIndex(tid), isExpanded);

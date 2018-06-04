@@ -766,7 +766,7 @@ Polymer({
     },
     colorBy: {
       type: String,
-      value: 'structure',
+      value: 'activation',
       notify: true,
       readonly: true
     },
@@ -1004,7 +1004,7 @@ Polymer({
   _selectedDatasetChanged: function(newDataset, oldDataset) {
     if (this.datasets) {
       this.set('selectedMetadataTag', -1);
-      this.set('colorBy', 'structure');
+      this.set('colorBy', 'activation');
       this.$['trace-inputs'].active = false; // Set trace input to off-state.
       this._setDownloadFilename(this.datasets[newDataset].path);
     }
