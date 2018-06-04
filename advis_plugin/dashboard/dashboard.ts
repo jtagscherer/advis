@@ -23,7 +23,7 @@ Polymer({
     _dataNotFound: Boolean,
 		_inputImageAmount: {
 			type: Number,
-			value: 10,
+			value: 1,
 			observer: '_calculateModelAccuracy'
 		},
 		_accuracyCalculationFlag: Boolean,
@@ -38,7 +38,11 @@ Polymer({
   },
 	
 	reload: function() {
-		this._reloadDistortions();
+		if (this._selectedDistortions == null
+			|| this._selectedDistortions.length == 0) {
+			this._reloadDistortions();
+		}
+		
     this._reloadModels();
 	},
 	
