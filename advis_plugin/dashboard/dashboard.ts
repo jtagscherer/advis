@@ -290,5 +290,5 @@ tf_tensorboard.registerDashboard({
   plugin: 'advis',
   elementName: 'advis-dashboard',
   tabName: 'Advis',
-  isReloadDisabled: false
+  isReloadDisabled: true
 });
