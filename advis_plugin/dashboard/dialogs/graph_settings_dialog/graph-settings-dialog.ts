@@ -10,6 +10,7 @@ Polymer({
 		displayMode: String,
 		displayNodeInformation: Boolean,
 		displayMinimap: Boolean,
+		accumulationMethod: String,
 		
 		eventId: {
 			type: String,
@@ -18,16 +19,19 @@ Polymer({
   },
 	
 	setContent: function(content) {
-		this.displayMode = content.displayMode,
-		this.displayNodeInformation = content.displayNodeInformation,
-		this.displayMinimap = content.displayMinimap
+		this.displayMode = content.displayMode;
+		this.displayNodeInformation = content.displayNodeInformation;
+		this.displayMinimap = content.displayMinimap;
+		this.accumulationMethod = content.accumulationMethod;
 	},
 	
 	getContentOnDismiss: function() {
 		return {
 			displayMode: this.displayMode,
 			displayNodeInformation: this.displayNodeInformation,
-			displayMinimap: this.displayMinimap
+			displayMinimap: this.displayMinimap,
+			accumulationMethod: this.accumulationMethod,
+			percentageMode: this.percentageMode
 		};
 	}
 });

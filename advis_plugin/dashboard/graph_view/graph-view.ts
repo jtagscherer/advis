@@ -40,6 +40,16 @@ Polymer({
 			type: Boolean,
 			value: false
 		},
+		accumulationMethod: {
+			type: String,
+			value: 'maximum',
+			observer: '_updateNodeColors'
+		},
+		percentageMode: {
+			type: String,
+			value: 'relative',
+			observer: '_updateNodeColors'
+		},
       
     width: {
       type: Number,
@@ -79,6 +89,7 @@ Polymer({
 			displayMode: this.displayMode,
 			displayNodeInformation: this.displayNodeInformation,
 			displayMinimap: this.displayMinimap,
+			accumulationMethod: this.accumulationMethod,
 			animationTarget: this.$$('#settings-button').getBoundingClientRect()
 		});
 	},
@@ -90,6 +101,7 @@ Polymer({
 			this.set('displayMode', content.displayMode);
 			this.set('displayNodeInformation', content.displayNodeInformation);
 			this.set('displayMinimap', content.displayMinimap);
+			this.set('accumulationMethod', content.accumulationMethod);
 		}
 	},
 	
@@ -162,8 +174,8 @@ Polymer({
 			model: this.selectedModel.name,
 			distortion: this.distortions.map(d => d.name).join(','),
 			inputImageAmount: '10',
-			accumulationMethod: 'average',
-			percentageMode: 'relative',
+			accumulationMethod: this.accumulationMethod,
+			percentageMode: this.percentageMode,
 			outputMode: 'mapping'
 		});
 		

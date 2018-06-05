@@ -30,6 +30,21 @@
 					</paper-radio-button>
 				</paper-radio-group>
 				
+				<h3>Node Activation Difference Visualization</h3>
+				
+				<h4>Method to calculate parent node values from child nodes</h4>
+				<paper-radio-group selected={{accumulationMethod}}>
+					<paper-radio-button name="minimum">
+						Minimum
+					</paper-radio-button>
+					<paper-radio-button name="maximum">
+						Maximum
+					</paper-radio-button>
+					<paper-radio-button name="average">
+						Average
+					</paper-radio-button>
+				</paper-radio-group>
+				
 				<h3>General Display Settings</h3>
 				<paper-toggle-button
 					checked={{displayNodeInformation}}>
