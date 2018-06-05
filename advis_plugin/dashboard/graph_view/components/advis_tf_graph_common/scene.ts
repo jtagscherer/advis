@@ -169,10 +169,14 @@ module advis.graph.scene {
         Math.min(
             svgRect.width / sceneSize.width, svgRect.height / sceneSize.height,
             2);
+		
+		let verticalCenterTransform = Math.max((svgRect.width / 2) - (sceneSize.width), 0);
+		let horizontalCenterTransform = Math.max((svgRect.height / 2) - (sceneSize.height), 0);
+		
     let params = layout.PARAMS.graph;
     const transform = d3.zoomIdentity
-        .scale(scale)
-        .translate(params.padding.paddingLeft, params.padding.paddingTop);
+        .translate(verticalCenterTransform, horizontalCenterTransform)
+				.scale(scale);
 
     d3.select(svg)
         .transition()
