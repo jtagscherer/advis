@@ -156,6 +156,8 @@ class Model:
 			
 			tf.logging.warn('Adding visualization nodes...')
 			
+			node_index = 0
+			
 			# Annotate all viable nodes with image tensor and operations and 
 			# operations that can be used for comparing multiple node's outputs
 			for n in self._graph.as_graph_def().node:
@@ -168,8 +170,12 @@ class Model:
 					self._image_tensors[n.name] = image_tensor
 					self._activation_tensors[n.name] = activation_tensor
 					
-					# DEBUG: Only annotate the first node for now, allowing faster testing
-					break
+					# DEBUG: Only annotate the first three nodes for now,
+					# allowing faster testing
+					if node_index > 1:
+						break
+					
+					node_index += 1
 			
 			if USE_MODEL_CACHING:
 				# Cache the annotated graph for later use
