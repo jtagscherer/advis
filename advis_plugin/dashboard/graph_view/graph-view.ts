@@ -157,6 +157,7 @@ Polymer({
   },
   _updateGraph: function() {
 		this.set('nodeColors', null);
+		this.$$('color-legend').state = 'empty';
 		
 		// Use a more compact horizontal layouting when displaying a simplified 
 		// graph and the traditional vertical layouting otherwise
@@ -187,14 +188,18 @@ Polymer({
   },
 	_updateNodeColors: function() {
 		if (this.requestManager == null || this.selectedModel == null) {
+			this.$$('color-legend').state = 'empty';
 			return;
 		}
 		
 		// Do not visualize anything if no distortions have been selected
 		if (this.distortions.length == 0) {
 			this.set('nodeColors', null);
+			this.$$('color-legend').state = 'empty';
 			return;
 		}
+		
+		this.$$('color-legend').state = 'loading';
 		
 		// Construct a URL for the node activation list
 		const url = tf_backend.addParams(tf_backend.getRouter()
@@ -217,6 +222,7 @@ Polymer({
 			}
 			
 			this.set('nodeColors', nodeColors);
+			this.$$('color-legend').state = 'loaded';
 		});
 	}
 });

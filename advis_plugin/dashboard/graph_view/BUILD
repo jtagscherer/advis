@@ -15,6 +15,7 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_polymer_paper_icon_button",
 		"//advis_plugin/dashboard/dialogs/graph_settings_dialog",
+		"//advis_plugin/dashboard/graph_view/color_legend",
     "//advis_plugin/dashboard/graph_view/components/advis_tf_graph_board",
     "//advis_plugin/dashboard/graph_view/components/advis_tf_graph_controls",
     "//advis_plugin/dashboard/graph_view/components/advis_tf_graph_loader",
