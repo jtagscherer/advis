@@ -11,6 +11,7 @@ Polymer({
 		displayNodeInformation: Boolean,
 		displayMinimap: Boolean,
 		accumulationMethod: String,
+		colorScaleName: String,
 		
 		eventId: {
 			type: String,
@@ -23,6 +24,7 @@ Polymer({
 		this.displayNodeInformation = content.displayNodeInformation;
 		this.displayMinimap = content.displayMinimap;
 		this.accumulationMethod = content.accumulationMethod;
+		this.colorScaleName = content.colorScaleName;
 	},
 	
 	getContentOnDismiss: function() {
@@ -31,7 +33,8 @@ Polymer({
 			displayNodeInformation: this.displayNodeInformation,
 			displayMinimap: this.displayMinimap,
 			accumulationMethod: this.accumulationMethod,
-			percentageMode: this.percentageMode
+			percentageMode: this.percentageMode,
+			colorScaleName: this.colorScaleName
 		};
 	}
 });

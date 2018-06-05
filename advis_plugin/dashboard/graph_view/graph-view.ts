@@ -50,6 +50,11 @@ Polymer({
 			value: 'relative',
 			observer: '_updateNodeColors'
 		},
+		colorScaleName: {
+			type: String,
+			value: 'ylorrd',
+			observer: '_updateColorScale'
+		},
       
     width: {
       type: Number,
@@ -79,7 +84,6 @@ Polymer({
   },
 	
 	update: function() {
-		this._colorScale = chroma.scale('YlOrRd');
 		this._updateGraph();
 		this._updateNodeColors();
 	},
@@ -90,6 +94,7 @@ Polymer({
 			displayNodeInformation: this.displayNodeInformation,
 			displayMinimap: this.displayMinimap,
 			accumulationMethod: this.accumulationMethod,
+			colorScaleName: this.colorScaleName,
 			animationTarget: this.$$('#settings-button').getBoundingClientRect()
 		});
 	},
@@ -102,6 +107,7 @@ Polymer({
 			this.set('displayNodeInformation', content.displayNodeInformation);
 			this.set('displayMinimap', content.displayMinimap);
 			this.set('accumulationMethod', content.accumulationMethod);
+			this.set('colorScaleName', content.colorScaleName);
 		}
 	},
 	
@@ -117,6 +123,28 @@ Polymer({
 		this.fire('nodeSelectedEvent', {
       selectedNode: this.selectedNode
     });
+	},
+	_updateColorScale: function(value) {
+		// Initialize a new color scale depending on the chosen name
+		switch (value) {
+			case 'monochrome':
+				this._colorScale = chroma.scale();
+				break;
+			case 'ylgn':
+				this._colorScale = chroma.scale('YlGn');
+				break;
+			case 'ylorrd':
+				this._colorScale = chroma.scale('YlOrRd');
+				break;
+			case 'hot':
+				this._colorScale = chroma.scale(['black', 'red', 'yellow']);
+				break;
+			case 'spectral':
+				this._colorScale = chroma.scale('Spectral').domain([1, 0]);
+				break;
+		}
+		
+		this._updateNodeColors();
 	},
   _updateToolbar: function() {
     this.$$('.container').classList.toggle('no-toolbar', !this.toolbar);
