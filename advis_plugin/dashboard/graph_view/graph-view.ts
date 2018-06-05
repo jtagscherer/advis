@@ -1,5 +1,7 @@
 'use strict';
 
+declare var chroma: any;
+
 Polymer({
   is: 'graph-view',
   properties: {
@@ -10,9 +12,19 @@ Polymer({
 			observer: '_updateGraph'
 		},
 		
+		distortions: {
+			type: Array,
+			observer: '_updateNodeColors'
+		},
+		
 		selectedNode: {
 			type: String,
 			observer: '_updateNodeSelection'
+		},
+		
+		nodeColors: {
+			type: Object,
+			notify: true
 		},
 		
 		displayMode: {
@@ -43,6 +55,7 @@ Polymer({
     },
 		
 		requestManager: Object,
+		_colorScale: Object,
     _renderHierarchy: Object,
     _progress: Object,
 		_graphAvailable: {
@@ -56,7 +69,9 @@ Polymer({
   },
 	
 	update: function() {
+		this._colorScale = chroma.scale('YlOrRd');
 		this._updateGraph();
+		this._updateNodeColors();
 	},
 	
 	openSettingsDialog: function() {
@@ -101,6 +116,8 @@ Polymer({
     this.$$('.container').style.height = this.height + 'px';
   },
   _updateGraph: function() {
+		this.set('nodeColors', null);
+		
 		// Use a more compact horizontal layouting when displaying a simplified 
 		// graph and the traditional vertical layouting otherwise
 		if (this.displayMode == 'simplified') {
@@ -127,5 +144,39 @@ Polymer({
 			this.set('_graphAvailable', true);
       this.$.loader._parseAndConstructHierarchicalGraph(null, blob);
 		});
-  }
+  },
+	_updateNodeColors: function() {
+		if (this.requestManager == null || this.selectedModel == null) {
+			return;
+		}
+		
+		// Do not visualize anything if no distortions have been selected
+		if (this.distortions.length == 0) {
+			this.set('nodeColors', null);
+			return;
+		}
+		
+		// Construct a URL for the node activation list
+		const url = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/node/list'), {
+			model: this.selectedModel.name,
+			distortion: this.distortions.map(d => d.name).join(','),
+			inputImageAmount: '10',
+			accumulationMethod: 'average',
+			percentageMode: 'relative',
+			outputMode: 'mapping'
+		});
+		
+		// Fetch the node activations and calculate node colors
+		this.requestManager.request(url).then(data => {
+			var nodeColors = {};
+			let nodes = data.data;
+			
+			for (let node in nodes) {
+				nodeColors[node] = this._colorScale(nodes[node].percentual).hex();
+			}
+			
+			this.set('nodeColors', nodeColors);
+		});
+	}
 });
