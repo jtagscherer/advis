@@ -60,9 +60,8 @@ module advis.graph.scene.node {
    * @return selection of the created nodeGroups
    */
   export function buildGroup(
-      sceneGroup, nodeData: render.RenderNodeInfo[], sceneElement) {
-    let container =
-        scene.selectOrCreateChild(sceneGroup, 'g', Class.Node.CONTAINER);
+      sceneGroup, nodeData: render.RenderNodeInfo[], sceneElement, nodeColors?) {
+    let container = scene.selectOrCreateChild(sceneGroup, 'g', Class.Node.CONTAINER);
     // Select all children and join with data.
     // (Note that all children of g.nodes are g.node)
     let nodeGroups =
@@ -108,15 +107,15 @@ module advis.graph.scene.node {
           addInteraction(shape, d, sceneElement);
 
           // Build subscene on the top.
-          subsceneBuild(nodeGroup, <render.RenderGroupNodeInfo>d, sceneElement);
+          subsceneBuild(nodeColors, nodeGroup, <render.RenderGroupNodeInfo>d, sceneElement);
 
           // Build label last. Should be on top of everything else.
           let label = labelBuild(nodeGroup, d, sceneElement);
           // Do not add interaction to metanode labels as they live inside the
           // metanode shape which already has the same interactions.
           addInteraction(label, d, sceneElement, d.node.type === NodeType.META);
-
-          stylize(nodeGroup, d, sceneElement);
+					
+          stylize(nodeGroup, d, sceneElement, undefined, nodeColors);
           position(nodeGroup, d);
         });
 
@@ -153,12 +152,12 @@ module advis.graph.scene.node {
  *        a subscene. Op nodes, bridge nodes and unexpanded group nodes will
  *        not have a subscene.
  */
-function subsceneBuild(nodeGroup,
+function subsceneBuild(nodeColors, nodeGroup,
     renderNodeInfo: render.RenderGroupNodeInfo, sceneElement) {
   if (renderNodeInfo.node.isGroupNode) {
     if (renderNodeInfo.expanded) {
       // Recursively build the subscene.
-      return scene.buildGroup(nodeGroup, renderNodeInfo, sceneElement,
+      return scene.buildGroup(nodeColors, nodeGroup, renderNodeInfo, sceneElement,
         Class.Subscene.GROUP);
     }
     // Clean out existing subscene if the node is not expanded.
@@ -621,8 +620,7 @@ export function getFillForNode(templateIndex, colorBy,
   let colorParams = render.MetanodeColors;
   switch (colorBy) {
 		case ColorBy.ACTIVATION:
-      // TODO: Fetch the associated color here
-			return '#ffffff';
+			return '#9E9E9E';
     case ColorBy.STRUCTURE:
 			if (renderInfo.node.type === NodeType.META) {
 				let tid = (<Metanode>renderInfo.node).templateId;
@@ -744,7 +742,7 @@ export function getFillForNode(templateIndex, colorBy,
  * that can't be done in css).
  */
 export function stylize(nodeGroup, renderInfo: render.RenderNodeInfo,
-    sceneElement, nodeClass?) {
+    sceneElement, nodeClass?, nodeColors?) {
   nodeClass = nodeClass || Class.Node.SHAPE;
   let isHighlighted = sceneElement.isNodeHighlighted(renderInfo.node.name);
   let isSelected = sceneElement.isNodeSelected(renderInfo.node.name);
@@ -762,9 +760,27 @@ export function stylize(nodeGroup, renderInfo: render.RenderNodeInfo,
   // Main node always exists here and it will be reached before subscene,
   // so d3 selection is fine here.
   let node = nodeGroup.select('.' + nodeClass + ' .' + Class.Node.COLOR_TARGET);
-  let fillColor = getFillForNode(sceneElement.templateIndex,
-    ColorBy[sceneElement.colorBy.toUpperCase()],
-    renderInfo, isExpanded);
+	let colorBy : ColorBy = ColorBy[sceneElement.colorBy.toUpperCase() as keyof 
+		typeof ColorBy];
+	var fillColor = '#FFFFFF';
+	
+	if (colorBy === ColorBy.ACTIVATION) {
+		if (nodeColors == undefined) {
+			fillColor = '#E0E0E0';
+		} else {
+			let nodeName = renderInfo.node.name;
+			
+			if (nodeName in nodeColors) {
+				fillColor = nodeColors[nodeName];
+			} else {
+				fillColor = '#E0E0E0';
+			}
+		}
+	} else {
+		fillColor = getFillForNode(sceneElement.templateIndex, colorBy, renderInfo,
+			isExpanded);
+	}
+  
   node.style('fill', fillColor);
 
   // Choose outline to be darker version of node color if the node is a single

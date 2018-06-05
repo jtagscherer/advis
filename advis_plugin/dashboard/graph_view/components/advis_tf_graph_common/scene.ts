@@ -354,7 +354,8 @@ export function selectChild(
  * @param sceneElement <tf-graph-scene> polymer element.
  * @param sceneClass class attribute of the scene (default='scene').
  */
-export function buildGroup(container,
+export function buildGroup(nodeColors,
+		container,
     renderNode: render.RenderGroupNodeInfo,
     sceneElement,
     sceneClass: string): d3.Selection<any, any, any, any> {
@@ -381,16 +382,16 @@ export function buildGroup(container,
 
   // Create the layer of edges for this scene (paths).
   edge.buildGroup(coreGroup, renderNode.coreGraph, sceneElement);
-
+  
   // Create the layer of nodes for this scene (ellipses, rects etc).
-  node.buildGroup(coreGroup, coreNodes, sceneElement);
+  node.buildGroup(coreGroup, coreNodes, sceneElement, nodeColors);
 
   // In-extract
   if (renderNode.isolatedInExtract.length > 0) {
     let inExtractGroup =
         selectOrCreateChild(sceneGroup, 'g', Class.Scene.INEXTRACT);
     node.buildGroup(inExtractGroup, renderNode.isolatedInExtract,
-        sceneElement);
+        sceneElement, nodeColors);
   } else {
     selectChild(sceneGroup, 'g', Class.Scene.INEXTRACT).remove();
   }
@@ -410,7 +411,7 @@ export function buildGroup(container,
     let outExtractGroup =
         selectOrCreateChild(sceneGroup, 'g', Class.Scene.FUNCTION_LIBRARY);
     node.buildGroup(outExtractGroup, renderNode.libraryFunctionsExtract,
-        sceneElement);
+        sceneElement, nodeColors);
   } else {
     selectChild(sceneGroup, 'g', Class.Scene.FUNCTION_LIBRARY).remove();
   }

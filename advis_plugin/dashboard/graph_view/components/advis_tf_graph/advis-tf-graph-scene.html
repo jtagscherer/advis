@@ -48,6 +48,10 @@ limitations under the License.
 
 /* --- Node and annotation-node for Metanode --- */
 
+::content .nodecolortarget {
+  transition: fill 0.5s ease;
+}
+
 ::content .meta > .nodeshape > rect,
 ::content .meta > .annotation-node > rect {
   cursor: pointer;
@@ -667,6 +671,12 @@ Polymer({
     renderHierarchy: Object,
     name: String,
     colorBy: String,
+		
+		nodeColors: {
+			type: Object,
+			notify: true,
+			observer: '_colorByChanged'
+		},
     
     displayMinimap: Boolean,
 
@@ -860,7 +870,7 @@ Polymer({
     }.bind(this));
 
     advis.graph.util.time('tf-graph-scene (build scene):', function() {
-      advis.graph.scene.buildGroup(d3.select(this.$.root), renderHierarchy.root, this);
+      advis.graph.scene.buildGroup(this.nodeColors, d3.select(this.$.root), renderHierarchy.root, this);
       advis.graph.scene.addGraphClickListener(this.$.svg, this);
       advis.graph.scene.node.traceInputs(renderHierarchy);
     }.bind(this));
@@ -1066,7 +1076,8 @@ Polymer({
     var nodeGroup = this.getNodeGroup(n);
 
     if (nodeGroup) {
-      advis.graph.scene.node.stylize(nodeGroup, node, this);
+      advis.graph.scene.node.stylize(nodeGroup, node, this, undefined,
+				this.nodeColors);
     }
     
     if (node.node.type === advis.graph.NodeType.META &&
@@ -1081,13 +1092,14 @@ Polymer({
           '.' + advis.graph.scene.Class.Scene.GROUP + '>.' +
           advis.graph.scene.Class.Scene.FUNCTION_LIBRARY + ' g[data-name="' +
           libraryFunctionNodeName + '"]');
-      advis.graph.scene.node.stylize(functionGroup, node, this);
+      advis.graph.scene.node.stylize(functionGroup, node, this, undefined,
+				this.nodeColors);
     }
 
     var annotationGroupIndex = this.getAnnotationGroupsIndex(n);
     _.each(annotationGroupIndex, function(aGroup, hostName) {
       advis.graph.scene.node.stylize(aGroup, node, this,
-          advis.graph.scene.Class.Annotation.NODE);
+          advis.graph.scene.Class.Annotation.NODE, this.nodeColors);
     }, this);
   },
 

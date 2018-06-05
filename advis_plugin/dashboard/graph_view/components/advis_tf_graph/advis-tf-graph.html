@@ -64,6 +64,7 @@ paper-button {
           selected-node="{{selectedNode}}"
           selected-edge="{{selectedEdge}}"
           color-by="[[colorBy]]"
+					node-colors="[[nodeColors]]"
           progress="[[progress]]"
           node-context-menu-items="[[nodeContextMenuItems]]"
           node-names-to-health-pills="[[nodeNamesToHealthPills]]"
@@ -118,6 +119,10 @@ Polymer({
       notify: true,
       readOnly: true, // Produces and doesn't consume.
     },
+		nodeColors: {
+			type: Object,
+			notify: true
+		},
     renderHierarchy: {
       type: Object,
       readOnly: true,

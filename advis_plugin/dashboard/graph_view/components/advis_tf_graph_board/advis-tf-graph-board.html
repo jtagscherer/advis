@@ -152,6 +152,7 @@ paper-progress {
               highlighted-node="{{_highlightedNode}}"
               color-by="[[colorBy]]"
               color-by-params="{{colorByParams}}"
+							node-colors="[[nodeColors]]"
               progress="{{progress}}"
               edge-label-function="[[edgeLabelFunction]]"
               edge-width-function="[[edgeWidthFunction]]"
@@ -208,6 +209,10 @@ Polymer({
       type: Object,
       notify: true
     },
+		nodeColors: {
+			type: Object,
+			notify: true
+		},
     renderHierarchy: {
       type: Object,
       notify: true
