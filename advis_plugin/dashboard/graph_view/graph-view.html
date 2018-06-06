@@ -48,7 +48,11 @@
 		    </div>
 		  </div>
 			
-			<color-legend></color-legend>
+			<color-legend
+				color-scale="[[_colorScale]]"
+				value-range="[[_valueRange]]"
+				selected-value="[[_getSelectedNodeValue(selectedNode, _nodeValues)]]">
+			</color-legend>
 			
 			<paper-icon-button id="settings-button"
 				icon="settings"

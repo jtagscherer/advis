@@ -52,7 +52,7 @@ Polymer({
 		},
 		colorScaleName: {
 			type: String,
-			value: 'ylorrd',
+			value: 'spectral',
 			observer: '_updateColorScale'
 		},
       
@@ -71,6 +71,8 @@ Polymer({
 		
 		requestManager: Object,
 		_colorScale: Object,
+		_valueRange: Object,
+    _nodeValues: Object,
     _renderHierarchy: Object,
     _progress: Object,
 		_graphAvailable: {
@@ -118,6 +120,18 @@ Polymer({
 			return 'invisible';
 		}
 	},
+  
+  _getSelectedNodeValue: function(selectedNode, nodeValues) {
+    if (selectedNode == null || nodeValues == null) {
+      return NaN;
+    }
+    
+    if (selectedNode in nodeValues) {
+      return nodeValues[selectedNode];
+    } else {
+      return NaN;
+    }
+  },
 	
 	_updateNodeSelection: function() {
 		this.fire('nodeSelectedEvent', {
@@ -128,19 +142,19 @@ Polymer({
 		// Initialize a new color scale depending on the chosen name
 		switch (value) {
 			case 'monochrome':
-				this._colorScale = chroma.scale();
+				this.set('_colorScale', chroma.scale());
 				break;
 			case 'ylgn':
-				this._colorScale = chroma.scale('YlGn');
+				this.set('_colorScale', chroma.scale('YlGn'));
 				break;
 			case 'ylorrd':
-				this._colorScale = chroma.scale('YlOrRd');
+				this.set('_colorScale', chroma.scale('YlOrRd'));
 				break;
 			case 'hot':
-				this._colorScale = chroma.scale(['black', 'red', 'yellow']);
+				this.set('_colorScale', chroma.scale(['black', 'red', 'yellow']));
 				break;
 			case 'spectral':
-				this._colorScale = chroma.scale('Spectral').domain([1, 0]);
+				this.set('_colorScale', chroma.scale('Spectral').domain([1, 0]));
 				break;
 		}
 		
@@ -216,12 +230,16 @@ Polymer({
 		this.requestManager.request(url).then(data => {
 			var nodeColors = {};
 			let nodes = data.data;
+      
+      this.set('_nodeValues', nodes);
 			
 			for (let node in nodes) {
 				nodeColors[node] = this._colorScale(nodes[node].percentual).hex();
 			}
 			
 			this.set('nodeColors', nodeColors);
+			this.set('_valueRange', data.meta.range);
+			
 			this.$$('color-legend').state = 'loaded';
 		});
 	}
