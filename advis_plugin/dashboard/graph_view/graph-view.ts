@@ -30,7 +30,7 @@ Polymer({
 		displayMode: {
 			type: String,
 			value: 'simplified',
-			observer: '_updateGraph'
+			observer: 'update'
 		},
 		displayNodeInformation: {
 			type: Boolean,
