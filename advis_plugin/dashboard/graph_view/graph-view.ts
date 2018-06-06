@@ -40,6 +40,10 @@ Polymer({
 			type: Boolean,
 			value: false
 		},
+		displayLegend: {
+			type: Boolean,
+			value: true
+		},
 		accumulationMethod: {
 			type: String,
 			value: 'maximum',
@@ -95,6 +99,7 @@ Polymer({
 			displayMode: this.displayMode,
 			displayNodeInformation: this.displayNodeInformation,
 			displayMinimap: this.displayMinimap,
+			displayLegend: this.displayLegend,
 			accumulationMethod: this.accumulationMethod,
 			colorScaleName: this.colorScaleName,
 			animationTarget: this.$$('#settings-button').getBoundingClientRect()
@@ -108,6 +113,7 @@ Polymer({
 			this.set('displayMode', content.displayMode);
 			this.set('displayNodeInformation', content.displayNodeInformation);
 			this.set('displayMinimap', content.displayMinimap);
+			this.set('displayLegend', content.displayLegend);
 			this.set('accumulationMethod', content.accumulationMethod);
 			this.set('colorScaleName', content.colorScaleName);
 		}

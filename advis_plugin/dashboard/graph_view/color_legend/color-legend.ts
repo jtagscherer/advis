@@ -16,6 +16,10 @@ Polymer({
 			type: Object,
 			notify: true
 		},
+		displayLegend: {
+			type: Boolean,
+			notify: true
+		},
 		
 		_gradientColors: Array
 	},
@@ -70,7 +74,11 @@ Polymer({
 		}
 	},
 	
-	_getLegendClass: function(state) {
+	_getLegendClass: function(state, displayLegend) {
+		if (!displayLegend) {
+			return 'invisible';
+		}
+		
 		if (state == 'loaded') {
 			return 'visible';
 		} else {
