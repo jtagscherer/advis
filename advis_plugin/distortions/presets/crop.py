@@ -58,7 +58,8 @@ def distort(image, configuration):
 	cropped_image = image[top : top + cropped_height, left : left + cropped_width]
 	
 	# Resize the cropped image to its original size
-	return resize(cropped_image, (original_height, original_width))
+	return resize(cropped_image, (original_height, original_width),
+		mode='constant')
 
 def get_icon():
 	return 'M7,17 L7,1 L5,1 L5,5 L1,5 L1,7 L5,7 L5,17 C5,18.1045695 ' \

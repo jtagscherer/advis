@@ -1,15 +1,17 @@
+@import 'advis_plugin/shared/style/color';
+
 :host /deep/ {
   font-family: 'Roboto', sans-serif;
 }
 
-.main {
+#main {
   position: absolute;
   right: 0;
   left: 0;
   height: 100%;
 }
 
-.side {
+#side {
 	visibility: hidden;
   position: absolute;
   left: 0;
@@ -19,22 +21,53 @@
   box-sizing: border-box;
 }
 
-.all {
+#all {
   position: relative;
   width: 100%;
   height: 100%;
+	
+	transition: opacity 0.5s ease;
+	
+	&.visible {
+		opacity: 1;
+	}
+	
+	&.invisible {
+		opacity: 0;
+	}
 }
 
 .container {
   height: 100%;
+	position: relative;
 	
 	&.no-toolbar {
-		.main {
+		#main {
 			left: 0;
 		}
 		
-		.side {
+		#side {
 			display: none;
+		}
+	}
+	
+	color-legend {
+		position: absolute;
+		left: 5px;
+		top: 5px;
+	}
+	
+	#settings-button {
+		position: absolute;
+		left: 5px;
+		bottom: 5px;
+		
+		color: $light-foreground-color;
+		opacity: 0.5;
+		transition: opacity 0.5s ease;
+		
+		&:hover {
+			opacity: 1;
 		}
 	}
 }

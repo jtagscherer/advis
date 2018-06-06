@@ -1,0 +1,106 @@
+@import 'advis_plugin/shared/style/text';
+@import 'advis_plugin/shared/style/color';
+
+#legend-container {
+	position: absolute;
+	padding: 10px;
+	
+	transition: opacity 0.5s ease-in-out;
+	
+	.content {
+		position: relative;
+		white-space: nowrap;
+		
+		display: flex;
+		flex-direction: row;
+		
+		#gradient {
+			width: 20px;
+			border: 1px solid $medium-foreground-color;
+			
+			.gradient-piece {
+				height: 2px;
+			}
+		}
+		
+		.marker-container {
+			height: 102px;
+			width: 40px;
+			
+			* {
+				position: absolute;
+				width: 40px;
+			}
+		}
+		
+		#selected-marker {
+			padding-right: 5px;
+			text-align: right;
+			
+			#selected {
+				transition: all 0.5s ease-in-out;
+				
+				&.visible {
+					opacity: 1;
+				}
+				
+				&.invisible {
+					opacity: 0;
+				}
+			}
+		}
+		
+		#range-markers {
+			padding-left: 5px;
+			
+			#upper {
+				top: 0px;
+			}
+			
+			#lower {
+				bottom: 0px;
+			}
+		}
+	}
+	
+	&.visible {
+		opacity: 1;
+	}
+	
+	&.invisible {
+		opacity: 0;
+	}
+}
+
+#spinner-container {
+	position: absolute;
+	
+	.content {
+		position: relative;
+		white-space: nowrap;
+		
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		
+		paper-spinner-lite {
+			width: 20px;
+			height: 20px;
+			
+			padding-left: 10px;
+			padding-right: 10px;
+			
+			--paper-spinner-color: $accent-color;
+		}
+	}
+	
+	transition: opacity 0.5s ease-in-out;
+	
+	&.visible {
+		opacity: 1;
+	}
+	
+	&.invisible {
+		opacity: 0;
+	}
+}

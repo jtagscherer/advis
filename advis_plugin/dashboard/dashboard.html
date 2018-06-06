@@ -103,9 +103,11 @@
 						</div>
 					</template>
 					<div id="graph-container">
-						<template is="dom-if" if="[[!_graphNotFound]]">
-							<graph-view id="graph" pbtxt="[[_graphStructure]]"></graph-view>
-						</template>
+						<graph-view id="graph"
+							selected-model=[[selectedModel]]
+							distortions=[[_selectedDistortions]]
+							request-manager=[[_requestManager]]>
+						</graph-view>
 					</div>
 					<div id="bottom-container">
 						<layer-visualization

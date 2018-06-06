@@ -12,7 +12,7 @@ from advis_plugin.distortions import distortions
 
 from advis_plugin.routers import model_router, prediction_router, \
 	distortion_router, dataset_router, single_visualization_router, \
-	composite_visualization_router
+	composite_visualization_router, node_difference_router
 
 class AdvisPlugin(base_plugin.TBPlugin):
 	"""A plugin for visualizing random perturbations of input data and their 
@@ -71,7 +71,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/layer/single/meta': self.layer_single_meta_route,
 			'/layer/single/image': self.layer_single_image_route,
 			'/layer/composite/meta': self.layer_composite_meta_route,
-			'/layer/composite/image': self.layer_composite_image_route
+			'/layer/composite/image': self.layer_composite_image_route,
+			'/node': self.node_difference_route,
+			'/node/list': self.node_difference_list_route
 		}
 
 	def is_active(self):
@@ -268,3 +270,48 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		return composite_visualization_router.layer_image_route(request,
 			self.model_manager)
+	
+	@wrappers.Request.application
+	def node_difference_route(self, request):
+		"""A route that returns the average difference in activation of a layer 
+		between a set of original input images and distorted input images.
+
+		Arguments:
+			request: The request which has to contain the model's name and an amount
+				of input images to be fetched from the input data set. Moreover, a
+				distortion method has to be supplied, which will be used to manipulate 
+				each input image before its evaluation.
+		Returns:
+			A response that contains the average activation difference between each 
+				original input image and its distorted version, calculated using the 
+				Frobenius tensor norm.
+		"""
+		
+		return node_difference_router.node_difference_route(request,
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def node_difference_list_route(self, request):
+		"""A route that returns the percentual average difference in activation of 
+		all layers in a graph between a set of original input images and distorted 
+		input images. A list of distortions to be applied has to be supplied as 
+		well as a method of accumulating activation differences in higher-level 
+		nodes.
+
+		Arguments:
+			request: The request which has to contain the model's name and an amount
+				of input images to be fetched from the input data set. Moreover, a list 
+				of distortion method has to be supplied, which will be used to 
+				manipulate each input image before its evaluation. On top of that, the 
+				request must specify a method of accumulating activation differences in 
+				higher-level nodes.
+				Optionally, the output can be retrieved as a simple node name to value 
+				mapping (default) or as a graph. Percentual values can be computed 
+				relatively (default) or absolutely to the full range.
+		Returns:
+			A response that contains the percentual average activation difference 
+			between original and distorted images for all nodes in the model.
+		"""
+		
+		return node_difference_router.node_difference_list_route(request,
+			self.model_manager, self.distortion_manager)

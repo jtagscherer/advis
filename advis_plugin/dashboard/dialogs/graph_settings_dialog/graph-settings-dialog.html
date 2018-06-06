@@ -1,0 +1,88 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+
+<!--
+	When opened, this module displays options for configuring the graph view in a 
+	dialog.
+-->
+<dom-module id="graph-settings-dialog">
+	<template>
+		<paper-dialog with-backdrop>
+			<dialog-header event-id="graph-settings-dialog">
+				<div class="header-items">
+					<h2>Graph View Settings</h2>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<h3>Graph Display Mode</h3>
+				<paper-radio-group selected={{displayMode}}>
+					<paper-radio-button name="simplified">
+						Simplified
+					</paper-radio-button>
+					<paper-radio-button name="full">
+						Full
+					</paper-radio-button>
+				</paper-radio-group>
+				
+				<h3>Node Activation Difference Visualization</h3>
+				
+				<h4>Method to calculate parent node values from child nodes</h4>
+				<paper-radio-group selected={{accumulationMethod}}>
+					<paper-radio-button name="minimum">
+						Minimum
+					</paper-radio-button>
+					<paper-radio-button name="maximum">
+						Maximum
+					</paper-radio-button>
+					<paper-radio-button name="average">
+						Average
+					</paper-radio-button>
+				</paper-radio-group>
+				
+				<h4>Color Scale</h4>
+				<paper-radio-group selected={{colorScaleName}}>
+					<paper-radio-button name="monochrome">
+						Monochrome
+					</paper-radio-button>
+					<paper-radio-button name="ylgn">
+						YlGn
+					</paper-radio-button>
+					<paper-radio-button name="ylorrd">
+						YlOrRd
+					</paper-radio-button>
+					<paper-radio-button name="hot">
+						Hot
+					</paper-radio-button>
+					<paper-radio-button name="spectral">
+						Spectral
+					</paper-radio-button>
+				</paper-radio-group>
+				
+				<paper-toggle-button
+					checked={{displayLegend}}>
+					Display a legend for the color scale
+				</paper-toggle-button>
+				
+				<h3>General Display Settings</h3>
+				<paper-toggle-button
+					checked={{displayNodeInformation}}>
+					Display detailed node information
+				</paper-toggle-button>
+				<paper-toggle-button
+					checked={{displayMinimap}}>
+					Display a minimap of the graph
+				</paper-toggle-button>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="graph-settings-dialog.css">
+	</template>
+
+	<script src="graph-settings-dialog.js"></script>
+</dom-module>

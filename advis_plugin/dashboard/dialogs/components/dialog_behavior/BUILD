@@ -12,6 +12,6 @@ tf_web_library(
 	path = "/dialog-behavior",
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
-		"//advis_plugin/dialogs/components/reveal_animation"
+		"//advis_plugin/dashboard/dialogs/components/reveal_animation"
 	]
 )
