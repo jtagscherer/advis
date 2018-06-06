@@ -170,9 +170,9 @@ class Model:
 					self._image_tensors[n.name] = image_tensor
 					self._activation_tensors[n.name] = activation_tensor
 					
-					# DEBUG: Only annotate the first three nodes for now,
+					# DEBUG: Only annotate the first few nodes for now,
 					# allowing faster testing
-					if node_index > 1:
+					if node_index > 5:
 						break
 					
 					node_index += 1
