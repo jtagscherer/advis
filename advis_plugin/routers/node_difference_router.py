@@ -85,7 +85,7 @@ def node_difference_list_route(request, model_manager, distortion_manager):
 		if len(sliced_path) > 0:
 			if percentage_mode == 'relative':
 				percentual_value = (node_value - minimum_activation_difference) / \
-					maximum_activation_difference
+					(maximum_activation_difference -  minimum_activation_difference)
 			elif percentage_mode == 'absolute':
 				percentual_value = node_value / maximum_activation_difference
 			
