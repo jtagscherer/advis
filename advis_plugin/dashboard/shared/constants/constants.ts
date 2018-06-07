@@ -1,9 +1,9 @@
 module advis.config {
 	export const requests = {
 		imageAmounts: {
-			modelAccuracy: 1,
+			modelAccuracy: 100,
 			activationVisualization: 10,
-			nodeActivation: 10
+			nodeActivation: 100
 		}
 	};
 	
