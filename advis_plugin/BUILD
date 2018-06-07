@@ -12,6 +12,7 @@ py_library(
 		"//advis_plugin/datasets:datasets",
 		"//advis_plugin/distortions:distortions",
 		"//advis_plugin/routers",
+		"util",
 		"@org_pocoo_werkzeug",
 		"@org_tensorflow_tensorboard//tensorboard/plugins:base_plugin"
 	]

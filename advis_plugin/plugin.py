@@ -2,6 +2,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from os.path import join
+
 import tensorflow as tf
 from tensorboard.plugins import base_plugin
 from werkzeug import wrappers
@@ -13,6 +15,8 @@ from advis_plugin.distortions import distortions
 from advis_plugin.routers import model_router, prediction_router, \
 	distortion_router, dataset_router, single_visualization_router, \
 	composite_visualization_router, node_difference_router
+
+from advis_plugin.util.cache import DataCache
 
 class AdvisPlugin(base_plugin.TBPlugin):
 	"""A plugin for visualizing random perturbations of input data and their 
@@ -39,6 +43,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		# Retrieve and store necessary contextual references
 		self._multiplexer = context.multiplexer
 		self.storage_path = context.logdir
+		
+		DataCache().set_storage_file(join(self.storage_path, 'cache.pickle'))
 		
 		self.dataset_manager = datasets.DatasetManager(self.storage_path)
 		self.distortion_manager = distortions.DistortionManager(self.storage_path)
