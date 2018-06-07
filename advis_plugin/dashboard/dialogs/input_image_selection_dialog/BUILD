@@ -29,7 +29,7 @@ sass_binary(
   name = "input_image_selection_dialog_scss",
   src = "input-image-selection-dialog.scss",
 	deps = [
-		"//advis_plugin/shared/style:style"
+		"//advis_plugin/dashboard/shared/style:style"
 	]
 )
 

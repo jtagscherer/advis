@@ -26,9 +26,9 @@ sass_binary(
   name = "model_list_item_scss",
   src = "model-list-item.scss",
 	deps = [
-		"//advis_plugin/shared/style:text",
-		"//advis_plugin/shared/style:style",
-		"//advis_plugin/shared/style:color"
+		"//advis_plugin/dashboard/shared/style:text",
+		"//advis_plugin/dashboard/shared/style:style",
+		"//advis_plugin/dashboard/shared/style:color"
 	]
 )
 

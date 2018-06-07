@@ -20,8 +20,8 @@ tf_web_library(
     "//advis_plugin/dashboard/graph_view/components/advis_tf_graph_controls",
     "//advis_plugin/dashboard/graph_view/components/advis_tf_graph_loader",
 		"//advis_plugin/dashboard/graph_view/components/advis_tf_graph_common",
-		"//advis_plugin/shared/constants",
-		"//advis_plugin/shared/libraries/chroma"
+		"//advis_plugin/dashboard/shared/constants",
+		"//advis_plugin/dashboard/shared/libraries/chroma"
   ]
 )
 
@@ -30,7 +30,7 @@ sass_binary(
   name = "graph_view_scss",
   src = "graph-view.scss",
 	deps = [
-		"//advis_plugin/shared/style:color"
+		"//advis_plugin/dashboard/shared/style:color"
 	]
 )
 

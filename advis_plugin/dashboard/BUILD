@@ -13,8 +13,8 @@ tf_web_library(
 	],
 	path = "/advis/dashboard",
 	deps = [
-		"//advis_plugin/shared/libraries/palette",
-		"//advis_plugin/shared/constants",
+		"//advis_plugin/dashboard/shared/libraries/palette",
+		"//advis_plugin/dashboard/shared/constants",
 		"//advis_plugin/dashboard/section_header",
 		"//advis_plugin/dashboard/model_list_item",
 		"//advis_plugin/dashboard/distortion_list_item",
@@ -38,8 +38,8 @@ sass_binary(
   name = "dashboard_scss",
   src = "dashboard.scss",
 	deps = [
-		"//advis_plugin/shared/style:color",
-		"//advis_plugin/shared/style:style"
+		"//advis_plugin/dashboard/shared/style:color",
+		"//advis_plugin/dashboard/shared/style:style"
 	]
 )
 

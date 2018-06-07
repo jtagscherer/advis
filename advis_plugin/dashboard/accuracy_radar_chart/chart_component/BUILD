@@ -13,6 +13,6 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_iron_resizable_behavior",
-		"//advis_plugin/shared/libraries/chart"
+		"//advis_plugin/dashboard/shared/libraries/chart"
 	]
 )
