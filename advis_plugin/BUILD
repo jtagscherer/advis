@@ -12,6 +12,7 @@ py_library(
 		"//advis_plugin/datasets:datasets",
 		"//advis_plugin/distortions:distortions",
 		"//advis_plugin/routers",
+		"util",
 		"@org_pocoo_werkzeug",
 		"@org_tensorflow_tensorboard//tensorboard/plugins:base_plugin"
 	]
@@ -19,7 +20,12 @@ py_library(
 
 py_library(
 	name = "util",
-	srcs = ["util/imgutil.py", "util/argutil.py", "util/visualizations.py"],
+	srcs = [
+		"util/imgutil.py",
+		"util/argutil.py",
+		"util/visualizations.py",
+		"util/cache.py"
+	],
 	srcs_version = "PY2AND3",
 	deps = [
 		requirement('scikit-image'),

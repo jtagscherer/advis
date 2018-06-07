@@ -26,7 +26,7 @@ sass_binary(
   name = "swipe_scss",
   src = "swipe.scss",
 	deps = [
-		"//advis_plugin/shared/style:color"
+		"//advis_plugin/dashboard/shared/style:color"
 	]
 )
 

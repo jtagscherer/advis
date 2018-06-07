@@ -22,7 +22,7 @@ sass_binary(
   name = "model_metric_scss",
   src = "model-metric.scss",
 	deps = [
-		"//advis_plugin/shared/style:text"
+		"//advis_plugin/dashboard/shared/style:text"
 	]
 )
 

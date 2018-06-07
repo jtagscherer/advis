@@ -28,7 +28,7 @@ sass_binary(
   name = "graph_settings_dialog_scss",
   src = "graph-settings-dialog.scss",
 	deps = [
-		"//advis_plugin/shared/style:color"
+		"//advis_plugin/dashboard/shared/style:color"
 	]
 )
 

@@ -1,16 +1,14 @@
 from tensorboard.backend import http_util
 from advis_plugin.util import argutil
+from advis_plugin.util.cache import DataCache
 
-import tensorflow as tf
-
-# Data caches for faster access
-_graph_structure_cache = {}
+data_type = 'graph_structure'
 
 def _get_graph_structure(model_manager, model, mode):
 	key_tuple = (model, mode)
 	
-	if key_tuple in _graph_structure_cache:
-		return _graph_structure_cache[key_tuple]
+	if DataCache().has_data(data_type, key_tuple):
+		return DataCache().get_data(data_type, key_tuple)
 	
 	_model = model_manager.get_model_modules()[model]
 	
@@ -19,7 +17,7 @@ def _get_graph_structure(model_manager, model, mode):
 	elif mode == 'simplified':
 		result = _model.simplified_graph_structure
 	
-	_graph_structure_cache[key_tuple] = result
+	DataCache().set_data(data_type, key_tuple, result)
 	
 	return result
 

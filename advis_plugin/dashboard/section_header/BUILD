@@ -22,8 +22,8 @@ sass_binary(
   name = "section_header_scss",
   src = "section-header.scss",
 	deps = [
-		"//advis_plugin/shared/style:text",
-		"//advis_plugin/shared/style:style"
+		"//advis_plugin/dashboard/shared/style:text",
+		"//advis_plugin/dashboard/shared/style:style"
 	]
 )
 

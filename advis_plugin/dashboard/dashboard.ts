@@ -23,7 +23,7 @@ Polymer({
     _dataNotFound: Boolean,
 		_inputImageAmount: {
 			type: Number,
-			value: 1,
+			value: advis.config.requests.imageAmounts.modelAccuracy,
 			observer: '_calculateModelAccuracy'
 		},
 		_accuracyCalculationFlag: Boolean,
@@ -68,9 +68,8 @@ Polymer({
 			var newDistortions = []
 			
 			distortions.forEach((distortion, index) => {
-				// The image amount is hardcoded for now, this can be changed when 
-				// configuring distortions is possible
-				distortion.imageAmount = 10;
+				distortion.imageAmount = advis.config.requests.imageAmounts
+					.activationVisualization;
 				distortion.index = index;
 				newDistortions.push(distortion);
 			});
@@ -172,7 +171,7 @@ Polymer({
 				// Generate a color palette used to assign a color to each model
 				let maximumAmountOfColors = 64;
 				let colorPalette = palette(
-					'mpn65',
+					advis.config.models.colorPalette,
 					Math.min(models.length, maximumAmountOfColors)
 				);
 				

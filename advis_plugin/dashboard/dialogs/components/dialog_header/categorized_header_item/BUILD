@@ -23,8 +23,8 @@ sass_binary(
   name = "categorized_header_item_scss",
   src = "categorized-header-item.scss",
 	deps = [
-		"//advis_plugin/shared/style:style",
-		"//advis_plugin/shared/style:text"
+		"//advis_plugin/dashboard/shared/style:style",
+		"//advis_plugin/dashboard/shared/style:text"
 	]
 )
 

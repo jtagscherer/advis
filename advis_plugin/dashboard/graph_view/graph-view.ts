@@ -29,34 +29,34 @@ Polymer({
 		
 		displayMode: {
 			type: String,
-			value: 'simplified',
+			value: advis.config.graphView.defaults.displayMode,
 			observer: 'update'
 		},
 		displayNodeInformation: {
 			type: Boolean,
-			value: false
+			value: advis.config.graphView.defaults.displayNodeInformation
 		},
 		displayMinimap: {
 			type: Boolean,
-			value: false
+			value: advis.config.graphView.defaults.displayMinimap
 		},
 		displayLegend: {
 			type: Boolean,
-			value: true
+			value: advis.config.graphView.defaults.displayLegend
 		},
 		accumulationMethod: {
 			type: String,
-			value: 'maximum',
+			value: advis.config.graphView.defaults.accumulationMethod,
 			observer: '_updateNodeColors'
 		},
 		percentageMode: {
 			type: String,
-			value: 'relative',
+			value: advis.config.graphView.defaults.percentageMode,
 			observer: '_updateNodeColors'
 		},
 		colorScaleName: {
 			type: String,
-			value: 'spectral',
+			value: advis.config.graphView.defaults.colorScaleName,
 			observer: '_updateColorScale'
 		},
       
@@ -226,7 +226,8 @@ Polymer({
 			.pluginRoute('advis', '/node/list'), {
 			model: this.selectedModel.name,
 			distortion: this.distortions.map(d => d.name).join(','),
-			inputImageAmount: '10',
+			inputImageAmount: String(advis.config.requests.imageAmounts
+				.nodeActivation),
 			accumulationMethod: this.accumulationMethod,
 			percentageMode: this.percentageMode,
 			outputMode: 'mapping'

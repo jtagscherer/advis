@@ -24,8 +24,8 @@ sass_binary(
   name = "color_legend_scss",
   src = "color-legend.scss",
 	deps = [
-		"//advis_plugin/shared/style:text",
-		"//advis_plugin/shared/style:color"
+		"//advis_plugin/dashboard/shared/style:text",
+		"//advis_plugin/dashboard/shared/style:color"
 	]
 )
 

@@ -32,7 +32,7 @@ sass_binary(
   name = "layer_visualization_scss",
   src = "layer-visualization.scss",
 	deps = [
-		"//advis_plugin/shared/style:color"
+		"//advis_plugin/dashboard/shared/style:color"
 	]
 )
 
