@@ -24,22 +24,25 @@ def cache_route(request, routers, managers):
 	# Cache all graph structures
 	tf.logging.warn('Caching graph structures...')
 	_cache_graph_structures(routers, managers)
+	DataCache().persist_cache()
 	
 	# Cache all single predictions
 	tf.logging.warn('Caching single predictions...')
 	_cache_single_predictions(routers, managers)
+	DataCache().persist_cache()
 	
 	# Cache all prediction accuracies
 	tf.logging.warn('Caching prediction accuracies...')
 	_cache_prediction_accuracy(routers, managers, model_accuracy)
+	DataCache().persist_cache()
 	
 	# Cache all node differences
 	tf.logging.warn('Caching node differences...')
 	_cache_node_differences(routers, managers, node_activation)
-	
-	# Persist the cache that has been created
-	DataCache().enable_caching()
 	DataCache().persist_cache()
+	
+	# Re-enable caching
+	DataCache().enable_caching()
 	
 	tf.logging.warn('Caching completed!')
 	end_time = time.time()
