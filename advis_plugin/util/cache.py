@@ -5,6 +5,7 @@ class DataCache:
 	class __DataCache:
 		__cache = None
 		storage_file = None
+		caching_enabled = True
 		
 		def __init__(self):
 			self.__cache = {}
@@ -26,10 +27,16 @@ class DataCache:
 		def set_data(self, type, key, data):
 			self.__cache[(type, key)] = data
 			
-			if self.storage_file != None:
-				self.__persist_cache()
+			if self.caching_enabled and self.storage_file != None:
+				self.persist_cache()
 		
-		def __persist_cache(self):
+		def enable_caching(self):
+			self.caching_enabled = True
+			
+		def disable_caching(self):
+			self.caching_enabled = False
+		
+		def persist_cache(self):
 			with open(self.storage_file, 'wb') as handle:
 				pickle.dump(self.__cache, handle, protocol=pickle.HIGHEST_PROTOCOL)
 	

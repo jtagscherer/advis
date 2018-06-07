@@ -14,7 +14,7 @@ from advis_plugin.distortions import distortions
 
 from advis_plugin.routers import model_router, prediction_router, \
 	distortion_router, dataset_router, single_visualization_router, \
-	composite_visualization_router, node_difference_router
+	composite_visualization_router, node_difference_router, cache_router
 
 from advis_plugin.util.cache import DataCache
 
@@ -79,7 +79,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/layer/composite/meta': self.layer_composite_meta_route,
 			'/layer/composite/image': self.layer_composite_image_route,
 			'/node': self.node_difference_route,
-			'/node/list': self.node_difference_list_route
+			'/node/list': self.node_difference_list_route,
+			'/cache': self.cache_route
 		}
 
 	def is_active(self):
@@ -321,3 +322,34 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		return node_difference_router.node_difference_list_route(request,
 			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def cache_route(self, request):
+		"""A route that caches all relevant data to ensure a fast and seamless 
+		interaction.
+
+		Arguments:
+			request: The request which has to contain the image amounts used for 
+				calculating model accuracies, activation visualizations and node 
+				activations.
+		Returns:
+			A response with the time taken after the caching has been completed.
+		"""
+		
+		routers = {
+			'model': model_router,
+			'prediction': prediction_router,
+			'distortion': distortion_router,
+			'dataset': dataset_router,
+			'singleVisualization': single_visualization_router,
+			'compositeVisualization': composite_visualization_router,
+			'nodeDifference': node_difference_router
+		}
+		
+		managers = {
+			'model': self.model_manager,
+			'dataset': self.dataset_manager,
+			'distortion': self.distortion_manager
+		}
+		
+		return cache_router.cache_route(request, routers, managers)
