@@ -19,7 +19,12 @@ py_library(
 
 py_library(
 	name = "util",
-	srcs = ["util/imgutil.py", "util/argutil.py", "util/visualizations.py"],
+	srcs = [
+		"util/imgutil.py",
+		"util/argutil.py",
+		"util/visualizations.py",
+		"util/cache.py"
+	],
 	srcs_version = "PY2AND3",
 	deps = [
 		requirement('scikit-image'),

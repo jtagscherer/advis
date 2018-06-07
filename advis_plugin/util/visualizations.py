@@ -1,7 +1,8 @@
+from advis_plugin.util.cache import DataCache
+
 class Visualizations:
 	class __Visualizations:
-		# Data caches for faster access
-		_layer_visualization_cache = None
+		data_type = 'layer_visualization'
 		
 		def __init__(self):
 			self._layer_visualization_cache = {}
@@ -10,8 +11,8 @@ class Visualizations:
 			distortion=None):
 			key_tuple = (model, layer, image_index, distortion)
 			
-			if key_tuple in self._layer_visualization_cache:
-				return self._layer_visualization_cache[key_tuple]
+			if DataCache().has_data(self.data_type, key_tuple):
+				return DataCache().get_data(self.data_type, key_tuple)
 			
 			_model = model_manager.get_model_modules()[model]
 			result = None
@@ -35,7 +36,7 @@ class Visualizations:
 				result = _model.run(meta_data)
 			
 			# Cache the result for later use
-			self._layer_visualization_cache[key_tuple] = result
+			DataCache().set_data(self.data_type, key_tuple, result)
 			
 			return result
 	

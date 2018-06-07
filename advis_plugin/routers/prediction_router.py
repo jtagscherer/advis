@@ -1,11 +1,11 @@
 from tensorboard.backend import http_util
 from advis_plugin.util import argutil
+from advis_plugin.util.cache import DataCache
 
 from random import randrange
 
-# Caches for prediction results
-_single_prediction_cache = {}
-_prediction_accuracy_cache = {}
+data_type_single_prediction = 'single_prediction'
+data_type_prediction_accuracy = 'prediction_accuracy'
 
 def single_prediction_route(request, model_manager):
 	# Check for missing arguments and possibly return an error
@@ -18,8 +18,8 @@ def single_prediction_route(request, model_manager):
 	
 	key_tuple = (request.args.get('model'), request.args.get('imageIndex'))
 	
-	if key_tuple in _single_prediction_cache:
-		response = _single_prediction_cache[key_tuple]
+	if DataCache().has_data(data_type_single_prediction, key_tuple):
+		response = DataCache().get_data(data_type_single_prediction, key_tuple)
 	else:
 		model_name = request.args.get('model')
 		_model = model_manager.get_model_modules()[model_name]
@@ -30,7 +30,7 @@ def single_prediction_route(request, model_manager):
 		}
 		
 		response = _model.run(meta_data)
-		_single_prediction_cache[key_tuple] = response
+		DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
 	return http_util.Respond(request, response, 'application/json')
 
@@ -53,8 +53,8 @@ def accuracy_prediction_route(request, model_manager, distortion_manager):
 	
 	key_tuple = (model_name, input_image_amount, distortion_name)
 	
-	if key_tuple in _prediction_accuracy_cache:
-		response = _prediction_accuracy_cache[key_tuple]
+	if DataCache().has_data(data_type_prediction_accuracy, key_tuple):
+		response = DataCache().get_data(data_type_prediction_accuracy, key_tuple)
 	else:
 		_model = model_manager.get_model_modules()[model_name]
 		
@@ -101,7 +101,8 @@ def accuracy_prediction_route(request, model_manager, distortion_manager):
 			'input': input_meta_data,
 			'accuracy': _calculate_accuracy(predictions)
 		}
-		_prediction_accuracy_cache[key_tuple] = response
+		
+		DataCache().set_data(data_type_prediction_accuracy, key_tuple, response)
 	
 	return http_util.Respond(request, response, 'application/json')
 

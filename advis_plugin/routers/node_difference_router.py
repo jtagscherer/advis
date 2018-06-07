@@ -1,5 +1,6 @@
 from tensorboard.backend import http_util
 from advis_plugin.util import argutil
+from advis_plugin.util.cache import DataCache
 
 from random import randrange
 import numpy as np
@@ -176,15 +177,14 @@ def _accumulate_activation_difference(differences, accumulation_method):
 	elif accumulation_method == 'average':
 		return sum(differences) / len(differences)
 
-# Caches for computation results
-_node_difference_cache = {}
+data_type = 'node_difference'
 
 def _get_node_difference(model_name, layer, distortion_name, input_image_amount,
 	model_manager, distortion_manager):
 	key_tuple = (model_name, layer, distortion_name, input_image_amount)
 	
-	if key_tuple in _node_difference_cache:
-		return _node_difference_cache[key_tuple]
+	if DataCache().has_data(data_type, key_tuple):
+		return DataCache().get_data(data_type, key_tuple)
 	else:
 		_model = model_manager.get_model_modules()[model_name]
 		
@@ -229,5 +229,6 @@ def _get_node_difference(model_name, layer, distortion_name, input_image_amount,
 		# Calculate the average of the activation differences
 		result = sum(activation_differences) / (len(activation_differences) * 1.0)
 		
-		_node_difference_cache[key_tuple] = result
+		DataCache().set_data(data_type, key_tuple, result)
+		
 		return result

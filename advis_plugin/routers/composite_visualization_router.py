@@ -1,6 +1,7 @@
 from tensorboard.backend import http_util
 from advis_plugin.util import argutil, imgutil
 from advis_plugin.util.visualizations import Visualizations
+from advis_plugin.util.cache import DataCache
 
 import numpy as np
 from math import floor, ceil
@@ -11,9 +12,8 @@ from io import BytesIO
 # Static configuration data
 COMPOSITION_PADDING = 1
 
-# Data caches for faster access
-_composite_meta_cache = {}
-_composition_cache = {}
+data_type_meta = 'composite_visualization_meta'
+data_type_composition = 'composite_visualization_composition'
 
 def layer_image_route(request, model_manager):
 	# Check for missing arguments and possibly return an error
@@ -54,10 +54,10 @@ def layer_image_route(request, model_manager):
 	key_tuple = (model_name, layer_name, image_index, distortion, width, height, \
 		COMPOSITION_PADDING)
 	
-	if key_tuple in _composition_cache:
+	if DataCache().has_data(data_type_composition, key_tuple):
 		return http_util.Respond(
 			request,
-			_composition_cache[key_tuple],
+			DataCache().get_data(data_type_composition, key_tuple),
 			'image/png'
 		)
 	
@@ -99,7 +99,7 @@ def layer_image_route(request, model_manager):
 		composition.save(byte_array, 'PNG')
 		response = byte_array.getvalue()
 	
-	_composition_cache[key_tuple] = response
+	DataCache().set_data(data_type_composition, key_tuple, response)
 	
 	return http_util.Respond(request, response, 'image/png')
 
@@ -155,8 +155,8 @@ def _get_composition_meta_data(model_manager, model_name, layer_name, \
 		padding)
 	
 	# Return cached meta information if we have already generated it before
-	if key_tuple in _composite_meta_cache:
-		return _composite_meta_cache[key_tuple]
+	if DataCache().has_data(data_type_meta, key_tuple):
+		return DataCache().get_data(data_type_meta, key_tuple)
 	
 	# Retrieve the resulting array of unit visualizations
 	result = Visualizations().get_layer_visualization(
@@ -205,7 +205,7 @@ def _get_composition_meta_data(model_manager, model_name, layer_name, \
 		}
 	
 	# Cache the result for later use
-	_composite_meta_cache[key_tuple] = response
+	DataCache().set_data(data_type_meta, key_tuple, response)
 	
 	return response
 
