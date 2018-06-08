@@ -132,7 +132,8 @@ def _cache_node_differences(routers, managers, input_image_amount):
 					model, layer, distortion, input_image_amount, model_manager,
 					distortion_manager
 				)
-		
+			
+			DataCache().persist_cache()
 			current_step_index += 1
 			_print_progress('(4/4)', current_step_index, step_amount)
 
