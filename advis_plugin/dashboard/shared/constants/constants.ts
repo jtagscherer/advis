@@ -22,4 +22,12 @@ module advis.config {
 			colorScaleName: 'spectral'
 		}
 	};
+	
+	export const activationVisualization = {
+		defaults: {
+			difference: {
+				colorScaleName: 'spectral'
+			}
+		}
+	};
 };

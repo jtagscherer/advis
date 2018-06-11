@@ -20,8 +20,25 @@ Polymer({
 			type: Boolean,
 			notify: true
 		},
-		
-		_gradientColors: Array
+		onlyGradient: {
+			type: Boolean,
+			value: false
+		},
+		width: {
+			type: Number,
+			value: 20,
+			observer: 'reload'
+		},
+		height: {
+			type: Number,
+			value: 100,
+			observer: 'reload'
+		},
+		resolution: {
+			type: Number,
+			value: 1,
+			observer: 'reload'
+		}
 	},
 	
 	reload: function() {
@@ -29,15 +46,22 @@ Polymer({
 			return;
 		}
 		
-		// Update the color scale gradients
-		this.set('_gradientColors', []);
+		this.customStyle['--legend-width'] = `${this.width}px`;
+		this.customStyle['--legend-height'] = `${this.height}px`;
 		
-		var gradientColors = [];
-		for (var index = 0; index < 50; index += 1) {
-			gradientColors.push(this.colorScale((49 - index) / 50.0).hex());
+		this.updateStyles();
+		
+		this._updateGradient();
+	},
+	
+	_updateGradient: function() {
+		let canvas = this.$$('#gradient');
+		let context = canvas.getContext('2d');
+		
+		for (var y = 0; y < canvas.height; y += this.resolution) {
+			context.fillStyle = this.colorScale(1 - (y / canvas.height)).hex();
+			context.fillRect(0, y, canvas.width, this.resolution);
 		}
-		
-		this.set('_gradientColors', gradientColors);
 	},
 	
 	_getFormattedNumber: function(value) {
@@ -46,7 +70,7 @@ Polymer({
 	
 	_getSelectionHeight: function(selectedValue) {
 		let textHeight = 12;
-		let containerHeight = 100 - textHeight;
+		let containerHeight = this.height - textHeight;
 		
 		var percentage;
 		
@@ -60,10 +84,6 @@ Polymer({
 		height = Math.min(Math.max(height, 0), containerHeight);
 		
 		return `bottom: ${height}px;`;
-	},
-	
-	_getGradientColor: function(item) {
-		return `background-color: ${item};`;
 	},
 	
 	_getSelectionClass: function(selectedValue) {

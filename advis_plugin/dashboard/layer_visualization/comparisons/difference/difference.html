@@ -1,12 +1,13 @@
 <link rel="import" href="../neon-animation/neon-animatable-behavior.html">
 <link rel="import" href="../neon-animation/animations/fade-in-animation.html">
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
-<link rel="import" href="../paper-radio-group/paper-radio-group.html">
 
-<link rel="import" href="../libraries/resemble/resemble.html">
+<link rel="import" href="../libraries/chroma/chroma.html">
+<link rel="import" href="../color-legend/color-legend.html">
 <link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
 
 <link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
+<link rel="import" href="../dialogs/activation-visualization-settings-dialog/activation-visualization-settings-dialog.html">
 
 <!--
 	This component calculates the per-pixel difference between the activations of 
@@ -16,6 +17,17 @@
 	<template>
 		<div id="content"
 			class$=[[getImageClass(state)]]>
+			<div id="legend-container">
+				<color-legend
+					on-tap="_legendClicked"
+					only-gradient
+					width="10"
+					height="[[_originalMetaData.configuration.height]]"
+					style$="[[_getLegendStyle(_originalMetaData.configuration.height)]]"
+					color-scale="[[_colorScale]]">
+				</color-legend>
+			</div>
+			
 			<div id="container">
 				<div class="image-wrapper" id="normal-images-wrapper">
 					<img id="difference-image"
@@ -29,20 +41,9 @@
 					</img>
 				</div>
 			</div>
-			
-			<paper-radio-group selected={{differenceMode}}>
-				<paper-radio-button name="difference-highlight">
-					Difference Highlight
-				</paper-radio-button>
-				<paper-radio-button name="difference-intensity-highlight">
-					Difference Intensity Highlight
-				</paper-radio-button>
-				<paper-radio-button name="only-difference">
-					Only Difference
-				</paper-radio-button>
-			</paper-radio-group>
 		</div>
 		
+		<activation-visualization-settings-dialog></activation-visualization-settings-dialog>
 		<unit-details-dialog></unit-details-dialog>
 		
 		<link rel="stylesheet" type="text/css" href="difference.css">

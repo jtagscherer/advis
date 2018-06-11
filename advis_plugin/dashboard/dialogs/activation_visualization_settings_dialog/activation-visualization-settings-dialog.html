@@ -1,0 +1,48 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+
+<!--
+	When opened, this module displays options for configuring the graph view in a 
+	dialog.
+-->
+<dom-module id="activation-visualization-settings-dialog">
+	<template>
+		<paper-dialog with-backdrop>
+			<dialog-header event-id="activation-visualization-settings-dialog">
+				<div class="header-items">
+					<h2>Activation Difference Visualization Settings</h2>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<h4>Color Scale</h4>
+				<paper-radio-group selected={{colorScaleName}}>
+					<paper-radio-button name="monochrome">
+						Monochrome
+					</paper-radio-button>
+					<paper-radio-button name="ylgn">
+						YlGn
+					</paper-radio-button>
+					<paper-radio-button name="ylorrd">
+						YlOrRd
+					</paper-radio-button>
+					<paper-radio-button name="hot">
+						Hot
+					</paper-radio-button>
+					<paper-radio-button name="spectral">
+						Spectral
+					</paper-radio-button>
+				</paper-radio-group>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="activation-visualization-settings-dialog.css">
+	</template>
+
+	<script src="activation-visualization-settings-dialog.js"></script>
+</dom-module>

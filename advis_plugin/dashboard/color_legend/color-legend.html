@@ -1,0 +1,51 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
+
+<!--
+	This component displays a legend with the colors used in the node activation 
+	difference visualization. It also shows the minimum and maximum values as 
+	well as the value of the currently selected node.
+	While node colors are being loaded, a spinner is shown.
+-->
+<dom-module id="color-legend">
+	<template>
+		<template is="dom-if" if="{{!onlyGradient}}">
+			<div id="spinner-container"
+				class$="[[_getSpinnerClass(state)]]">
+				<div class="content">
+					<paper-spinner-lite active></paper-spinner-lite>
+					<p class="caption">Loading Node Activations...</p>
+				</div>
+			</div>
+		</template>
+		
+		<div id="legend-container"
+			class$="[[_getLegendClass(state, displayLegend)]]">
+			<div class="content">
+				<template is="dom-if" if="{{!onlyGradient}}">
+					<div id="selected-marker" class="marker-container">
+						<div id="selected" class$="[[_getSelectionClass(selectedValue)]]"
+							style$="[[_getSelectionHeight(selectedValue)]]">
+							[[_getFormattedNumber(selectedValue.absolute)]]
+						</div>
+					</div>
+				</template>
+				<canvas id="gradient"></canvas>
+				<template is="dom-if" if="{{!onlyGradient}}">
+					<div id="range-markers" class="marker-container">
+						<div id="upper" class="caption">
+							[[_getFormattedNumber(valueRange.maximum)]]
+						</div>
+						<div id="lower" class="caption">
+							[[_getFormattedNumber(valueRange.minimum)]]
+						</div>
+					</div>
+				</template>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="color-legend.css">
+	</template>
+
+	<script src="color-legend.js"></script>
+</dom-module>
