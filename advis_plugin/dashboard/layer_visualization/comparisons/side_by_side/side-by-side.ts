@@ -15,8 +15,8 @@ Polymer({
 		};
 	},
 	
-	getImageClass: function(condition) {
-		if (condition && this.state != 'empty') {
+	getImageClass: function(condition, state) {
+		if (condition && state != 'empty') {
 			return 'activation-visualization visible';
 		} else {
 			return 'activation-visualization invisible';

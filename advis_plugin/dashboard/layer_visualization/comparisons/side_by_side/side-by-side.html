@@ -15,7 +15,7 @@
 		<div id="container">
 			<div class="image-wrapper">
 				<img id="original-image"
-					class$=[[getImageClass(_originalImageLoaded)]]
+					class$="[[getImageClass(_originalImageLoaded, state)]]"
 					src$=[[_originalImageUrl]]
 					width$=[[_originalMetaData.configuration.width]]
 					height$=[[_originalMetaData.configuration.height]]
@@ -26,7 +26,7 @@
 			</div>
 			<div class="image-wrapper">
 				<img id="distorted-image"
-					class$=[[getImageClass(_distortedImageLoaded)]]
+					class$="[[getImageClass(_distortedImageLoaded, state)]]"
 					src$=[[_distortedImageUrl]]
 					width$=[[_distortedMetaData.configuration.width]]
 					height$=[[_distortedMetaData.configuration.height]]
