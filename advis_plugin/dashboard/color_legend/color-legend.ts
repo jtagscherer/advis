@@ -20,6 +20,25 @@ Polymer({
 			type: Boolean,
 			notify: true
 		},
+		onlyGradient: {
+			type: Boolean,
+			value: false
+		},
+		width: {
+			type: Number,
+			value: 20,
+			observer: 'reload'
+		},
+		height: {
+			type: Number,
+			value: 100,
+			observer: 'reload'
+		},
+		resolution: {
+			type: Number,
+			value: 1,
+			observer: 'reload'
+		},
 		
 		_gradientColors: Array
 	},
@@ -33,11 +52,20 @@ Polymer({
 		this.set('_gradientColors', []);
 		
 		var gradientColors = [];
-		for (var index = 0; index < 50; index += 1) {
-			gradientColors.push(this.colorScale((49 - index) / 50.0).hex());
+		let colorAmount = this.height / this.resolution;
+		for (var index = 0; index < colorAmount; index += 1) {
+			gradientColors.push(
+				this.colorScale((colorAmount - index) / colorAmount).hex()
+			);
 		}
 		
 		this.set('_gradientColors', gradientColors);
+		
+		this.customStyle['--legend-width'] = `${this.width}px`;
+		this.customStyle['--legend-height'] = `${this.height}px`;
+		this.customStyle['--legend-resolution'] = `${this.resolution}px`;
+		
+		this.updateStyles();
 	},
 	
 	_getFormattedNumber: function(value) {
@@ -46,7 +74,7 @@ Polymer({
 	
 	_getSelectionHeight: function(selectedValue) {
 		let textHeight = 12;
-		let containerHeight = 100 - textHeight;
+		let containerHeight = this.height - textHeight;
 		
 		var percentage;
 		

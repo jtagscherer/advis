@@ -1,9 +1,17 @@
 @import 'advis_plugin/dashboard/shared/style/text';
 @import 'advis_plugin/dashboard/shared/style/color';
 
+$border-size: 1px;
+$marker-width: 40px;
+
+:host {
+	--legend-width: 0px;
+	--legend-height: 0px;
+	--legend-resolution: 0px;
+}
+
 #legend-container {
 	position: absolute;
-	padding: 10px;
 	
 	transition: opacity 0.5s ease-in-out;
 	
@@ -15,21 +23,21 @@
 		flex-direction: row;
 		
 		#gradient {
-			width: 20px;
-			border: 1px solid $medium-foreground-color;
+			width: var(--legend-width);
+			border: $border-size solid $medium-foreground-color;
 			
 			.gradient-piece {
-				height: 2px;
+				height: var(--legend-resolution);
 			}
 		}
 		
 		.marker-container {
-			height: 102px;
-			width: 40px;
+			height: calc(var(--legend-height) + #{$border-size});
+			width: $marker-width;
 			
 			* {
 				position: absolute;
-				width: 40px;
+				width: $marker-width;
 			}
 		}
 		
