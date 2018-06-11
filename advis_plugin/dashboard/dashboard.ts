@@ -143,6 +143,11 @@ Polymer({
 		}
 	},
 	
+	_getNodeVisualizationDistortions: function(distortion) {
+		// Display the node visualization only for the currently selected distortion
+		return [distortion];
+	},
+	
 	_compareByName: function(a, b) {
 		if (a.name < b.name) {
 			return -1;
