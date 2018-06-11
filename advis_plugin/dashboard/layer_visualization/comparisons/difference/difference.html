@@ -7,6 +7,7 @@
 <link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
 
 <link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
+<link rel="import" href="../dialogs/activation-visualization-settings-dialog/activation-visualization-settings-dialog.html">
 
 <!--
 	This component calculates the per-pixel difference between the activations of 
@@ -18,6 +19,7 @@
 			class$=[[getImageClass(state)]]>
 			<div id="legend-container">
 				<color-legend
+					on-tap="_legendClicked"
 					only-gradient
 					width="10"
 					height="[[_originalMetaData.configuration.height]]"
@@ -41,6 +43,7 @@
 			</div>
 		</div>
 		
+		<activation-visualization-settings-dialog></activation-visualization-settings-dialog>
 		<unit-details-dialog></unit-details-dialog>
 		
 		<link rel="stylesheet" type="text/css" href="difference.css">

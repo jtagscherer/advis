@@ -13,11 +13,21 @@ Polymer({
 			value: 'difference-highlight',
 			observer: '_updateImages'
 		},
+		colorScaleName: {
+			type: String,
+			value: advis.config.activationVisualization.defaults.difference
+				.colorScaleName,
+			observer: '_updateColorScale'
+		},
 		_colorScale: {
 			type: Object,
-			// observer: '_updateImages'
+			observer: '_updateImages'
 		}
 	},
+	
+	listeners: {
+    'dialogReturnedEvent': '_handleDialogReturnedEvent'
+  },
 	
 	behaviors: [
 		VisualizationComparisonBehavior,
@@ -33,6 +43,21 @@ Polymer({
 	
 	_getLegendStyle: function(height) {
 		return `height: ${height}px;`;
+	},
+	
+	_legendClicked: function() {
+		this.$$('activation-visualization-settings-dialog').open({
+			colorScaleName: this.colorScaleName,
+			animationTarget: this.$$('color-legend').getBoundingClientRect()
+		});
+	},
+	
+	_handleDialogReturnedEvent: function(e) {
+		if (e.detail.eventId === 'activation-visualization-settings-dialog') {
+			let content = e.detail.content;
+			
+			this.set('colorScaleName', content.colorScaleName);
+		}
 	},
 	
 	/*getDialogImageSource: function(data, callback) {
@@ -80,6 +105,26 @@ Polymer({
 	
 	stateChanged: function(state) {
 		this._updateImages();
+	},
+	
+	_updateColorScale: function(value) {
+		switch (value) {
+			case 'monochrome':
+				this.set('_colorScale', chroma.scale());
+				break;
+			case 'ylgn':
+				this.set('_colorScale', chroma.scale('YlGn'));
+				break;
+			case 'ylorrd':
+				this.set('_colorScale', chroma.scale('YlOrRd'));
+				break;
+			case 'hot':
+				this.set('_colorScale', chroma.scale(['black', 'red', 'yellow']));
+				break;
+			case 'spectral':
+				this.set('_colorScale', chroma.scale('Spectral').domain([1, 0]));
+				break;
+		}
 	},
 	
 	_updateState: function() {
@@ -181,7 +226,6 @@ Polymer({
 	},
 	
 	_calculateImageDifference: function(first, second, callback) {
-		this._colorScale = chroma.scale('Spectral').domain([1, 0]);
 		let colorScale = this._colorScale;
 		
 		let canvas = document.createElement('canvas');
