@@ -15,7 +15,7 @@ Polymer({
 		},
 		_colorScale: {
 			type: Object,
-			observer: '_updateImages'
+			// observer: '_updateImages'
 		}
 	},
 	
@@ -114,7 +114,8 @@ Polymer({
 	},
 	
 	_calculateImageDifference: function(first, second, callback) {
-		let colorScale = chroma.scale('Spectral').domain([1, 0]);
+		this._colorScale = chroma.scale('Spectral').domain([1, 0]);
+		let colorScale = this._colorScale;
 		
 		let canvas = document.createElement('canvas');
 		let context = canvas.getContext('2d');

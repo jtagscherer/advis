@@ -17,6 +17,7 @@ tf_web_library(
 		"//advis_plugin/dashboard/shared/libraries/chroma",
 		"//advis_plugin/dashboard/layer_visualization/comparisons:visualization_comparison_behavior",
 		"//advis_plugin/dashboard/dialogs/unit_details_dialog",
+		"//advis_plugin/dashboard/color_legend",
 		"@org_polymer_neon_animation"
 	]
 )

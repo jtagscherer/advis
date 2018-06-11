@@ -3,6 +3,7 @@
 <link rel="import" href="../neon-animation/animations/fade-out-animation.html">
 
 <link rel="import" href="../libraries/chroma/chroma.html">
+<link rel="import" href="../color-legend/color-legend.html">
 <link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
 
 <link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
@@ -15,6 +16,15 @@
 	<template>
 		<div id="content"
 			class$=[[getImageClass(state)]]>
+			<div id="legend-container">
+				<color-legend
+					only-gradient
+					width="10"
+					height="[[_originalMetaData.configuration.height]]"
+					color-scale="[[_colorScale]]">
+				</color-legend>
+			</div>
+			
 			<div id="container">
 				<div class="image-wrapper" id="normal-images-wrapper">
 					<img id="difference-image"
@@ -27,10 +37,6 @@
 						on-load="_differenceImageCallback">
 					</img>
 				</div>
-			</div>
-			
-			<div id="legend">
-				<!-- To be inserted -->
 			</div>
 		</div>
 		
