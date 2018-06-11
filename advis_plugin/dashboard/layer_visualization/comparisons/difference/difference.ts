@@ -60,23 +60,19 @@ Polymer({
 		}
 	},
 	
-	/*getDialogImageSource: function(data, callback) {
+	getDialogImageSource: function(data, callback) {
 		// Retrieve the two tiles that will be compared
 		let unitIndex = data.selectedTile.index;
 		let originalUnit = this.getSingleTileImageUrl('original', unitIndex);
 		let distortedUnit = this.getSingleTileImageUrl('distorted', unitIndex);
 		
-		// Set up the Resemble comparator
-		var resembleControl = resemble(originalUnit)
-			.compareTo(distortedUnit)
-			.ignoreColors();
-		resembleControl = this._configureResembleControl(resembleControl);
-		
 		// Perform the comparison and asynchronously return its result
-		resembleControl.onComplete(function(data) {
-			callback(data.getImageDataUrl());
-		});
-	},*/
+		this._calculateImageDifference(originalUnit, distortedUnit,
+			function(result) {
+				callback(result);
+			}
+		);
+	},
 	
 	getDialogTitle: function(data) {
 		let title = `Tensor ${Number(data.selectedTile.index) + 1}`;
