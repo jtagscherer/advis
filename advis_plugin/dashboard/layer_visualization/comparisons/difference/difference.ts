@@ -31,6 +31,10 @@ Polymer({
 		};
 	},
 	
+	_getLegendStyle: function(height) {
+		return `height: ${height}px;`;
+	},
+	
 	/*getDialogImageSource: function(data, callback) {
 		// Retrieve the two tiles that will be compared
 		let unitIndex = data.selectedTile.index;
@@ -103,7 +107,18 @@ Polymer({
 			this._originalImageUrl,
 			this._distortedImageUrl,
 			function(result) {
-				self.set('_differenceImageUrl', result);
+				if (self._originalMetaData != null
+					&& self._originalMetaData.tileMap != null) {
+					self._clearImageGutter(
+						result,
+						self._originalMetaData,
+						function(result) {
+							self.set('_differenceImageUrl', result);
+						}
+					);
+				} else {
+					self.set('_differenceImageUrl', result);
+				}
 			}
 		);
 	},
@@ -111,6 +126,58 @@ Polymer({
 	_differenceImageCallback: function() {
 		this.set('_differenceImageLoaded', true);
 		this._updateState();
+	},
+	
+	_clearImageGutter: function(imageUrl, meta, callback) {
+		let canvas = document.createElement('canvas');
+		let context = canvas.getContext('2d');
+		
+		var image = new Image();
+		image.setAttribute('crossOrigin', 'anonymous');
+		
+		image.onload = function() {
+			let width = image.naturalWidth;
+			let height = image.naturalHeight;
+			
+			canvas.width = width;
+			canvas.height = height;
+      
+      context.drawImage(image, 0, 0);
+			
+			var imageData = context.getImageData(0, 0, width, height);
+			
+			for (var x = 0; x < width; x++) {
+				for (var y = 0; y < height; y++) {
+					// Check whether the current pixel falls into a tile
+					var pixelInTile = false;
+					
+					for (var tile of meta.tileMap) {
+						if (x >= tile.bounds.left && x < tile.bounds.right
+							&& y >= tile.bounds.top && y < tile.bounds.bottom) {
+							pixelInTile = true;
+							break;
+						}
+					}
+					
+					// If the pixel falls onto the gutter, clear it
+					if (!pixelInTile) {
+						let dataIndex = (x + (y * width)) * 4;
+						
+						imageData.data[dataIndex] = 255;
+	          imageData.data[dataIndex + 1] = 255;
+	          imageData.data[dataIndex + 2] = 255;
+	          imageData.data[dataIndex + 3] = 255;
+					}
+				}
+			}
+      
+      // Draw the image data onto the canvas
+      context.putImageData(imageData, 0, 0);
+			
+			callback(canvas.toDataURL('image/png'));
+		};
+		
+		image.src = imageUrl;
 	},
 	
 	_calculateImageDifference: function(first, second, callback) {
