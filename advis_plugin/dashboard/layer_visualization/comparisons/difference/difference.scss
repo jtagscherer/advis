@@ -5,7 +5,7 @@
 	height: 100%;
 	
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	align-items: center;
 	
 	overflow: hidden;
@@ -18,13 +18,6 @@
 	
 	&.invisible {
 		opacity: 0;
-	}
-	
-	paper-radio-group {
-		paper-radio-button {
-			--paper-radio-button-checked-color: $accent-color;
-			--paper-radio-button-checked-ink-color: $accent-color;
-		}
 	}
 }
 
