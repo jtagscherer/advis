@@ -38,9 +38,7 @@ Polymer({
 			type: Number,
 			value: 1,
 			observer: 'reload'
-		},
-		
-		_gradientColors: Array
+		}
 	},
 	
 	reload: function() {
@@ -48,24 +46,22 @@ Polymer({
 			return;
 		}
 		
-		// Update the color scale gradients
-		this.set('_gradientColors', []);
-		
-		var gradientColors = [];
-		let colorAmount = this.height / this.resolution;
-		for (var index = 0; index < colorAmount; index += 1) {
-			gradientColors.push(
-				this.colorScale((colorAmount - index) / colorAmount).hex()
-			);
-		}
-		
-		this.set('_gradientColors', gradientColors);
-		
 		this.customStyle['--legend-width'] = `${this.width}px`;
 		this.customStyle['--legend-height'] = `${this.height}px`;
-		this.customStyle['--legend-resolution'] = `${this.resolution}px`;
 		
 		this.updateStyles();
+		
+		this._updateGradient();
+	},
+	
+	_updateGradient: function() {
+		let canvas = this.$$('#gradient');
+		let context = canvas.getContext('2d');
+		
+		for (var y = 0; y < canvas.height; y += this.resolution) {
+			context.fillStyle = this.colorScale(1 - (y / canvas.height)).hex();
+			context.fillRect(0, y, canvas.width, this.resolution);
+		}
 	},
 	
 	_getFormattedNumber: function(value) {
@@ -88,10 +84,6 @@ Polymer({
 		height = Math.min(Math.max(height, 0), containerHeight);
 		
 		return `bottom: ${height}px;`;
-	},
-	
-	_getGradientColor: function(item) {
-		return `background-color: ${item};`;
 	},
 	
 	_getSelectionClass: function(selectedValue) {

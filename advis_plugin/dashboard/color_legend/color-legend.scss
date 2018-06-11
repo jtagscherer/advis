@@ -7,7 +7,6 @@ $marker-width: 40px;
 :host {
 	--legend-width: 0px;
 	--legend-height: 0px;
-	--legend-resolution: 0px;
 }
 
 #legend-container {
@@ -24,11 +23,10 @@ $marker-width: 40px;
 		
 		#gradient {
 			width: var(--legend-width);
-			border: $border-size solid $medium-foreground-color;
+			height: var(--legend-height);
 			
-			.gradient-piece {
-				height: var(--legend-resolution);
-			}
+			box-sizing: border-box;
+			border: $border-size solid $medium-foreground-color;
 		}
 		
 		.marker-container {
