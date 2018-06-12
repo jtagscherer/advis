@@ -20,6 +20,7 @@ py_library(
 		"//advis_plugin:util",
 		"@org_tensorflow_tensorboard//tensorboard/backend:http_util",
 		requirement('numpy'),
+		requirement('scikit-learn'),
 		requirement('Pillow')
 	]
 )

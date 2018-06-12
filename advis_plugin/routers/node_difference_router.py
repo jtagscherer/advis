@@ -4,6 +4,7 @@ from advis_plugin.util.cache import DataCache
 
 from random import randrange
 import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
 
 def node_difference_list_route(request, model_manager, distortion_manager):
 	# Check for missing arguments and possibly return an error
@@ -222,7 +223,15 @@ def _get_node_difference(model_name, layer, distortion_name, input_image_amount,
 			distorted_result = _model.run(distorted_meta_data);
 			
 			# Calculate the tensor difference
-			difference = np.linalg.norm(original_result - distorted_result)
+			difference = cosine_similarity(
+				[original_result.flatten()],
+				[distorted_result.flatten()]
+			)[0][0]
+			
+			# Normalize the output to be between 0 and 100
+			difference = np.clip(difference, -1, 1)
+			difference = (difference + 1) / 2
+			difference *= 100
 			
 			activation_differences.append(difference)
 		
