@@ -127,14 +127,15 @@ class AdvisPlugin(base_plugin.TBPlugin):
 
 		Arguments:
 			request: The request which has to contain the model's name and an image 
-				number.
+				number. It can also contain the name of a distortion that should be 
+				applied to the input image before predicting its classification.
 		Returns:
 			A response that contains information about the input image as well as the 
 				model's prediction.
 		"""
 		
 		return prediction_router.single_prediction_route(request, 
-			self.model_manager)
+			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
 	def accuracy_prediction_route(self, request):

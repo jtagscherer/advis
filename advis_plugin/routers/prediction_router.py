@@ -7,8 +7,9 @@ from random import randrange
 data_type_single_prediction = 'single_prediction'
 data_type_prediction_accuracy = 'prediction_accuracy'
 
-def _get_single_prediction(model, image_index, model_manager):
-	key_tuple = (model, image_index)
+def _get_single_prediction(model, image_index, distortion,
+	model_manager, distortion_manager):
+	key_tuple = (model, image_index, distortion)
 	
 	if DataCache().has_data(data_type_single_prediction, key_tuple):
 		return DataCache().get_data(data_type_single_prediction, key_tuple)
@@ -19,6 +20,13 @@ def _get_single_prediction(model, image_index, model_manager):
 		'run_type': 'prediction',
 		'image': image_index
 	}
+	
+	if distortion is not None:
+		meta_data['input_image_data'] = distortion_manager \
+			.distortion_modules[distortion].distort(
+				_model._dataset.load_image(image_index),
+				amount=1, mode='non-repeatable-randomized'
+			)[0]
 	
 	response = _model.run(meta_data)
 	DataCache().set_data(data_type_single_prediction, key_tuple, response)
@@ -81,7 +89,7 @@ def _get_accuracy_prediction(model, distortion, input_image_amount,
 	DataCache().set_data(data_type_prediction_accuracy, key_tuple, result)
 	return result
 
-def single_prediction_route(request, model_manager):
+def single_prediction_route(request, model_manager, distortion_manager):
 	# Check for missing arguments and possibly return an error
 	missing_arguments = argutil.check_missing_arguments(
 		request, ['model', 'imageIndex']
@@ -90,10 +98,17 @@ def single_prediction_route(request, model_manager):
 	if missing_arguments != None:
 		return missing_arguments
 	
+	if 'distortion' in request.args:
+		distortion = request.args['distortion']
+	else:
+		distortion = None
+	
 	result = _get_single_prediction(
 		request.args.get('model'),
 		int(request.args.get('imageIndex')),
-		model_manager
+		distortion,
+		model_manager,
+		distortion_manager
 	)
 	
 	return http_util.Respond(request, result, 'application/json')
