@@ -71,6 +71,7 @@ def _cache_graph_structures(routers, managers):
 def _cache_single_predictions(routers, managers):
 	prediction_router = routers['prediction']
 	model_manager = managers['model']
+	distortion_manager = managers['distortion']
 	model_modules = model_manager.get_model_modules()
 	
 	image_amount = 0
@@ -84,8 +85,13 @@ def _cache_single_predictions(routers, managers):
 		
 		for image_index in range(0, len(_model._dataset.images)):
 			prediction_router._get_single_prediction(
-				model, image_index, model_manager
+				model, image_index, None, model_manager, distortion_manager
 			)
+			
+			for distortion in distortion_manager.get_distortion_modules():
+				prediction_router._get_single_prediction(
+					model, image_index, distortion, model_manager, distortion_manager
+				)
 		
 			current_image_index += 1
 			_print_progress('(2/4)', current_image_index, image_amount)
