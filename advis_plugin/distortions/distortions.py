@@ -4,8 +4,8 @@ import importlib.util
 import collections
 
 from os import makedirs, path, listdir, walk
-from os.path import isfile, join, splitext
-from shutil import copyfile
+from os.path import isfile, isdir, join, splitext
+from shutil import copytree, ignore_patterns
 
 from advis_plugin.distortions import parameters
 
@@ -119,19 +119,23 @@ class DistortionManager:
 		
 		# Extract a list of presets supplied during the build
 		preset_directory = path.join(path.dirname(__file__), 'presets')
-		presets = [f for f in listdir(preset_directory) \
-			if isfile(join(preset_directory, f)) \
-			and splitext(join(preset_directory, f))[1] == '.py' \
-			and f != '__init__.py']
+		
+		presets = []
+		
+		for directory in listdir(preset_directory):
+			_directory = join(preset_directory, directory)
+			_module = join(_directory, '{}.py'.format(directory))
+			
+			if isdir(_directory) and isfile(_module):
+				presets.append(directory)
 		
 		# Copy each preset to its own directory in the working directory
-		for file in presets:
-			distortion_directory = join(self.directory, splitext(file)[0])
+		for directory in presets:
+			distortion_directory = join(self.directory, directory)
 			
 			if not path.exists(distortion_directory):
-				makedirs(distortion_directory)
-			
-			copyfile(
-				join(preset_directory, file),
-				join(distortion_directory, file)
-			)
+				copytree(
+					join(preset_directory, directory),
+					distortion_directory,
+					ignore=ignore_patterns('__init__.py', '__pycache__', '*.pyc')
+				)
