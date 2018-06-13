@@ -36,6 +36,17 @@ class DataCache:
 		def disable_caching(self):
 			self.caching_enabled = False
 		
+		def remove_cached_data(self, type, condition=None):
+			if condition is None:
+				pruned_cache = {key: value for key, value in self.__cache.items() \
+					if key[0] != type}
+			else:
+				pruned_cache = {key: value for key, value in self.__cache.items() \
+					if key[0] != type and not condition(key)}
+			
+			self.__cache = pruned_cache
+			self.persist_cache()
+		
 		def persist_cache(self):
 			with open(self.storage_file, 'wb') as handle:
 				pickle.dump(self.__cache, handle, protocol=pickle.HIGHEST_PROTOCOL)
