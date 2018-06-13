@@ -71,6 +71,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/predictions/single': self.single_prediction_route,
 			'/predictions/accuracy': self.accuracy_prediction_route,
 			'/distortions': self.distortions_route,
+			'/distortions/single': self.distortions_single_route,
 			'/datasets': self.datasets_route,
 			'/datasets/images/list': self.datasets_images_list_route,
 			'/datasets/images/image': self.datasets_images_image_route,
@@ -167,6 +168,20 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""
 		
 		return distortion_router.distortions_route(request, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def distortions_single_route(self, request):
+		"""A route that distorts a single input image and returns the result.
+
+		Arguments:
+			request: The request which has to contain the distortion's name as well 
+				as the name of the dataset and the image index of the input image.
+		Returns:
+			A response that contains the image after having been randomly distorted.
+		"""
+		
+		return distortion_router.distortions_single_route(request,
+			self.distortion_manager, self.dataset_manager)
 	
 	@wrappers.Request.application
 	def datasets_route(self, request):
