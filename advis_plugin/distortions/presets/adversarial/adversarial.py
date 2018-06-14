@@ -3,7 +3,6 @@ from __future__ import division
 import numpy as np
 import scipy.ndimage
 
-import os
 from os.path import join, dirname, realpath
 
 def _load_perturbation_array():
