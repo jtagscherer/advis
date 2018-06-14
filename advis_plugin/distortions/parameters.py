@@ -8,13 +8,15 @@ import random
 class ParameterType(Enum):
 	'''An enumeration of all available parameter types'''
 	CONSTANT = 1,
-	RANGE = 2
+	RANGE = 2,
+	ENUM = 3
 
 class Parameter:
 	name = None
 	display_name = None
 	type = None
 	constraints = None
+	options = None
 	
 	_value = None
 	_configuration_file = None
@@ -23,7 +25,12 @@ class Parameter:
 		self.name = content['name']
 		self.display_name = content['display_name']
 		self.type = ParameterType[content['type'].upper()]
-		self.constraints = content['constraints']
+		
+		if self.type is ParameterType.ENUM:
+			self.options = content['options']
+		else:
+			self.constraints = content['constraints']
+		
 		self._configuration_file = configuration_file
 		
 		# Fetch the current value from the configuration file or use the default 
@@ -40,19 +47,24 @@ class Parameter:
 	
 	def set_value(self, value):
 		# Check whether the new value is valid given the parameter type
-		if not _is_valid_value(value, self.type):
+		if not _is_valid_value(value, self.type, self.options):
 			raise ValueError('The value {} is invalid for the parameter {} of type {}'
 				.format(value, self.name, self.type))
 		
 		# Clamp the value according to the constraints
-		min_value = self.constraints['min']
-		max_value = self.constraints['max']
+		if self.type is not ParameterType.ENUM:
+			min_value = self.constraints['min']
+			max_value = self.constraints['max']
 		
 		if self.type is ParameterType.CONSTANT:
 			value = max(min(value, max_value), min_value)
 		elif self.type is ParameterType.RANGE:
 			value['lower'] = max(min(value['lower'], max_value), min_value)
 			value['upper'] = max(min(value['upper'], max_value), min_value)
+		elif self.type is ParameterType.ENUM:
+			key = value
+			value = self.options[key]
+			value['key'] = key
 		
 		# Update the non-persistent representation of the value
 		self._value = value
@@ -79,7 +91,7 @@ class Parameter:
 		
 		return configuration
 
-def _is_valid_value(value, type):
+def _is_valid_value(value, type, options=None):
 	"""Given a value and a parameter type, check whether the value is a valid one.
 
 	Arguments:
@@ -96,6 +108,8 @@ def _is_valid_value(value, type):
 			and value['lower'] <= value['upper']
 	elif type is ParameterType.CONSTANT:
 		return isinstance(value, numbers.Number)
+	elif type is ParameterType.ENUM:
+		return options is not None and value in options
 	else:
 		return False
 
@@ -133,5 +147,7 @@ def generate_configuration(parameters, percentage=None, randomize=True):
 				configuration[parameter_name] = random.uniform(lower, upper)
 			elif percentage != None:
 				configuration[parameter_name] = lower + percentage * (upper - lower)
+		elif parameter.type is ParameterType.ENUM:
+			configuration[parameter_name] = parameter.get_value()
 	
 	return configuration
