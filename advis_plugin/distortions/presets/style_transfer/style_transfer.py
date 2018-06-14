@@ -1,4 +1,12 @@
+from __future__ import division
+
 import tensorflow as tf
+from os.path import join, dirname, realpath
+
+parent_directory = dirname(realpath(__file__))
+
+exec(open(join(parent_directory, 'transform.py')).read())
+exec(open(join(parent_directory, 'style_transfer_runner.py')).read())
 
 def get_display_name():
 	return 'Style Transfer'
@@ -34,8 +42,24 @@ def get_parameters():
 	]
 
 def distort(image, configuration):
-	tf.logging.warn(configuration)
-	return image
+	image = image * 255
+	
+	# Open a session
+	soft_config = tf.ConfigProto(allow_soft_placement=True)
+	soft_config.gpu_options.allow_growth = True
+	sess = tf.Session(config=soft_config)
+
+	# Build the graph
+	runner = StyleTransferRunner(
+		session=sess,
+		model_path=join(join(parent_directory, 'data'), 'wave.ckpt'),
+		content_image=image
+	)
+	
+	# Execute the graph
+	output_image = runner.run()
+	
+	return output_image / 255
 
 def get_icon():
 	# TODO: Add a nice icon
