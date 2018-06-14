@@ -41,23 +41,37 @@ def get_parameters():
 		}
 	]
 
+_style_transfer_runners = {}
+
+def _get_style_transfer_runner(image_size, style):
+	key_tuple = (image_size, style)
+	
+	if key_tuple in _style_transfer_runners:
+		return _style_transfer_runners[key_tuple]
+	
+	model_path = join(join(parent_directory, 'data'), '{}.ckpt'.format(style))
+	
+	# Create a new session
+	soft_config = tf.ConfigProto(allow_soft_placement=True)
+	soft_config.gpu_options.allow_growth = True
+	_session = tf.Session(config=soft_config)
+	
+	runner = StyleTransferRunner(
+		session=_session,
+		model_path=model_path,
+		image_size=image_size
+	)
+	
+	_style_transfer_runners[key_tuple] = runner
+	return runner
+
 def distort(image, configuration):
 	image = image * 255
 	
-	# Open a session
-	soft_config = tf.ConfigProto(allow_soft_placement=True)
-	soft_config.gpu_options.allow_growth = True
-	sess = tf.Session(config=soft_config)
-
-	# Build the graph
-	runner = StyleTransferRunner(
-		session=sess,
-		model_path=join(join(parent_directory, 'data'), 'wave.ckpt'),
-		content_image=image
-	)
-	
-	# Execute the graph
-	output_image = runner.run()
+	output_image = _get_style_transfer_runner(
+		image.shape[0], 
+		configuration['style']['key']
+	).run(image)
 	
 	return output_image / 255
 
