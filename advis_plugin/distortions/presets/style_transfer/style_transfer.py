@@ -68,12 +68,14 @@ def _get_style_transfer_runner(image_size, style):
 def distort(image, configuration):
 	image = image * 255
 	
+	image_size = image.shape[0]
+	
 	output_image = _get_style_transfer_runner(
-		image.shape[0], 
+		image_size, 
 		configuration['style']['key']
 	).run(image)
 	
-	return output_image / 255
+	return output_image[0:image_size, 0:image_size, :] / 255
 
 def get_icon():
 	return 'M12.0063401,2 C11.7423606,2 11.4730436,2.10210169 ' \
