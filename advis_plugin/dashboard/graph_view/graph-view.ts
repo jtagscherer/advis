@@ -221,33 +221,46 @@ Polymer({
 		
 		this.$$('color-legend').state = 'loading';
 		
-		// Construct a URL for the node activation list
-		const url = tf_backend.addParams(tf_backend.getRouter()
-			.pluginRoute('advis', '/node/list'), {
+		// First of all, retrieve meta information to configure the node colors
+		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/node/list/meta'), {
 			model: this.selectedModel.name,
-			distortion: this.distortions.map(d => d.name).join(','),
 			inputImageAmount: String(advis.config.requests.imageAmounts
 				.nodeActivation),
 			accumulationMethod: this.accumulationMethod,
-			percentageMode: this.percentageMode,
-			outputMode: 'mapping'
+			percentageMode: this.percentageMode
 		});
 		
-		// Fetch the node activations and calculate node colors
-		this.requestManager.request(url).then(data => {
-			var nodeColors = {};
-			let nodes = data.data;
-      
-      this.set('_nodeValues', nodes);
+		this.requestManager.request(metaUrl).then(meta => {
+			this.set('_valueRange', meta.range);
 			
-			for (let node in nodes) {
-				nodeColors[node] = this._colorScale(nodes[node].percentual).hex();
-			}
+			// Construct a URL for the node activation list
+			const url = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/node/list'), {
+				model: this.selectedModel.name,
+				distortion: this.distortions.map(d => d.name).join(','),
+				inputImageAmount: String(advis.config.requests.imageAmounts
+					.nodeActivation),
+				accumulationMethod: this.accumulationMethod,
+				percentageMode: this.percentageMode,
+				outputMode: 'mapping'
+			});
 			
-			this.set('nodeColors', nodeColors);
-			this.set('_valueRange', data.meta.range);
-			
-			this.$$('color-legend').state = 'loaded';
+			// Fetch the node activations and calculate node colors
+			this.requestManager.request(url).then(data => {
+				var nodeColors = {};
+				let nodes = data.data;
+	      
+	      this.set('_nodeValues', nodes);
+				
+				for (let node in nodes) {
+					nodeColors[node] = this._colorScale(nodes[node].percentual).hex();
+				}
+				
+				this.set('nodeColors', nodeColors);
+				
+				this.$$('color-legend').state = 'loaded';
+			});
 		});
 	}
 });
