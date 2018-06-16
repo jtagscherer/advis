@@ -81,6 +81,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/layer/composite/image': self.layer_composite_image_route,
 			'/node': self.node_difference_route,
 			'/node/list': self.node_difference_list_route,
+			'/node/list/meta': self.node_difference_list_meta_route,
 			'/cache': self.cache_route
 		}
 
@@ -333,10 +334,31 @@ class AdvisPlugin(base_plugin.TBPlugin):
 				relatively (default) or absolutely to the full range.
 		Returns:
 			A response that contains the percentual average activation difference 
-			between original and distorted images for all nodes in the model.
+				between original and distorted images for all nodes in the model.
 		"""
 		
 		return node_difference_router.node_difference_list_route(request,
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def node_difference_list_meta_route(self, request):
+		"""A route that returns meta information about the percentual average
+		difference in activation of all layers in a graph between a set of original 
+		input images and distorted input images. All available distortions will 
+		be used to generate this meta information. A method of accumulating 
+		activation differences in higher-level nodes has to be supplied.
+
+		Arguments:
+			request: The request which has to contain the model's name and an amount
+				of input images to be fetched from the input data set. Moreover, the 
+				request must specify a method of accumulating activation differences in 
+				higher-level nodes.
+		Returns:
+			A response that contains meta information about the activation
+				differences.
+		"""
+		
+		return node_difference_router.node_difference_list_meta_route(request,
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application

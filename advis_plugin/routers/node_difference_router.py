@@ -2,6 +2,7 @@ from tensorboard.backend import http_util
 from advis_plugin.util import argutil
 from advis_plugin.util.cache import DataCache
 
+import math
 from random import randrange
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -23,7 +24,12 @@ def node_difference_list_route(request, model_manager, distortion_manager):
 	input_image_amount = int(request.args.get('inputImageAmount'))
 	accumulation_method = request.args.get('accumulationMethod')
 	percentage_mode = request.args.get('percentageMode')
+	if 'outputMode' not in request.args:
+		output_mode = 'mapping'
+	else:
+		output_mode = request.args['outputMode']
 	
+	# Check parameter validity
 	if percentage_mode not in ['relative', 'absolute']:
 		return http_util.Respond(
 			request,
@@ -33,11 +39,113 @@ def node_difference_list_route(request, model_manager, distortion_manager):
 			code=400
 		)
 	
-	if 'outputMode' not in request.args:
-		output_mode = 'mapping'
-	else:
-		output_mode = request.args['outputMode']
+	if output_mode not in ['mapping', 'graph']:
+		return http_util.Respond(
+			request,
+			'The output mode \"{}\" is invalid. Possible values are \"mapping\" ' \
+			'and \"graph\".'.format(output_mode),
+			'text/plain',
+			code=400
+		)
 	
+	response = _list_node_differences(model_name, distortions, input_image_amount,
+		accumulation_method, percentage_mode, output_mode, model_manager,
+		distortion_manager)
+	
+	return http_util.Respond(request, response, 'application/json')
+
+def node_difference_route(request, model_manager, distortion_manager):
+	# Check for missing arguments and possibly return an error
+	missing_arguments = argutil.check_missing_arguments(
+		request, ['model', 'layer', 'distortion', 'inputImageAmount']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	# Extract all parameters
+	model_name = request.args.get('model')
+	layer = request.args.get('layer')
+	distortion_name = request.args.get('distortion')
+	input_image_amount = int(request.args.get('inputImageAmount'))
+	
+	node_difference = _get_node_difference(model_name, layer, distortion_name,
+		input_image_amount, model_manager, distortion_manager);
+		
+	response = {
+		'input': {
+			'model': model_name,
+			'layer': layer,
+			'distortion': distortion_name,
+			'inputImageAmount': input_image_amount
+		},
+		'activationDifference': node_difference
+	}
+	
+	return http_util.Respond(request, response, 'application/json')
+
+def node_difference_list_meta_route(request, model_manager, distortion_manager):
+	# Check for missing arguments and possibly return an error
+	missing_arguments = argutil.check_missing_arguments(
+		request,
+		['model', 'inputImageAmount', 'accumulationMethod', 'percentageMode']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	# Extract all parameters
+	model_name = request.args.get('model')
+	input_image_amount = int(request.args.get('inputImageAmount'))
+	accumulation_method = request.args.get('accumulationMethod')
+	percentage_mode = request.args.get('percentageMode')
+	output_mode = 'mapping'
+	
+	# Check parameter validity
+	if percentage_mode not in ['relative', 'absolute']:
+		return http_util.Respond(
+			request,
+			'The output mode \"{}\" is invalid. Possible values are \"relative\" ' \
+			'and \"absolute\".'.format(percentage_mode),
+			'text/plain',
+			code=400
+		)
+	
+	# Retrieve node differences for all available distortions
+	differences = []
+	
+	for distortion in distortion_manager.get_distortion_modules():
+		differences.append(
+			_list_node_differences(model_name, [distortion], input_image_amount,
+				accumulation_method, percentage_mode, output_mode, model_manager,
+				distortion_manager)
+		)
+	
+	# Sum up some meta information
+	value_range = {
+		'minimum': math.inf,
+		'maximum': -math.inf
+	}
+	
+	# Find the value range for all distortions
+	for difference in differences:
+		current_range = difference['meta']['range']
+		
+		if current_range['minimum'] < value_range['minimum']:
+			value_range['minimum'] = current_range['minimum']
+		
+		if current_range['maximum'] > value_range['maximum']:
+			value_range['maximum'] = current_range['maximum']
+	
+	response = {
+		'range': value_range
+	}
+	
+	return http_util.Respond(request, response, 'application/json')
+
+def _list_node_differences(model_name, distortions, input_image_amount,
+	accumulation_method, percentage_mode, output_mode, model_manager,
+	distortion_manager):
 	_model = model_manager.get_model_modules()[model_name]
 	low_level_nodes = _model._activation_tensors.keys()
 	
@@ -111,14 +219,6 @@ def node_difference_list_route(request, model_manager, distortion_manager):
 		result = node_values
 	elif output_mode == 'graph':
 		result = graph_activations
-	else:
-		return http_util.Respond(
-			request,
-			'The output mode \"{}\" is invalid. Possible values are \"mapping\" ' \
-			'and \"graph\".'.format(output_mode),
-			'text/plain',
-			code=400
-		)
 	
 	# Add some additional meta data
 	response = {
@@ -138,37 +238,7 @@ def node_difference_list_route(request, model_manager, distortion_manager):
 		'data': result
 	}
 	
-	return http_util.Respond(request, response, 'application/json')
-
-def node_difference_route(request, model_manager, distortion_manager):
-	# Check for missing arguments and possibly return an error
-	missing_arguments = argutil.check_missing_arguments(
-		request, ['model', 'layer', 'distortion', 'inputImageAmount']
-	)
-	
-	if missing_arguments != None:
-		return missing_arguments
-	
-	# Extract all parameters
-	model_name = request.args.get('model')
-	layer = request.args.get('layer')
-	distortion_name = request.args.get('distortion')
-	input_image_amount = int(request.args.get('inputImageAmount'))
-	
-	node_difference = _get_node_difference(model_name, layer, distortion_name,
-		input_image_amount, model_manager, distortion_manager);
-		
-	response = {
-		'input': {
-			'model': model_name,
-			'layer': layer,
-			'distortion': distortion_name,
-			'inputImageAmount': input_image_amount
-		},
-		'activationDifference': node_difference
-	}
-	
-	return http_util.Respond(request, response, 'application/json')
+	return response
 
 def _accumulate_activation_difference(differences, accumulation_method):
 	if accumulation_method == 'minimum':
