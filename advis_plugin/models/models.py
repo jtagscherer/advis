@@ -174,6 +174,9 @@ class Model:
 					
 					self._image_tensors[n.name] = image_tensor
 					self._activation_tensors[n.name] = activation_tensor
+					
+					# DEBUG
+					break
 			
 			if USE_MODEL_CACHING:
 				# Cache the annotated graph for later use
