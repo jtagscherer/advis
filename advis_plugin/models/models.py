@@ -62,6 +62,10 @@ class Model:
 		self.version = self._module.get_version()
 		self._input_image_size = self._module.get_input_image_size()
 		
+		self._image_tensors = {}
+		self._activation_tensors = {}
+		self._output_node = None
+		
 		tf.logging.warn('Setting up \"{}\", version {}...'
 			.format(self.display_name, self.version))
 		
