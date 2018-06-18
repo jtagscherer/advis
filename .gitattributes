@@ -1,3 +1,4 @@
+checkpoints/inception_v1/* filter=lfs diff=lfs merge=lfs -text
 checkpoints/inception_v3/* filter=lfs diff=lfs merge=lfs -text
 advis_plugin/distortions/presets/style_transfer/data/* filter=lfs diff=lfs merge=lfs -text
 advis_plugin/shared/libraries/**/* linguist-vendored
