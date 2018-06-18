@@ -15,6 +15,9 @@ def get_checkpoint_directory():
 def get_dataset():
 	return 'nips_2017'
 
+def get_input_image_size():
+	return 299
+
 def get_output_node():
 	return 'Softmax'
 

@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+from skimage.transform import resize
 
 import traceback
 import logging
@@ -30,6 +31,7 @@ class Model:
 	
 	# Internal references
 	_dataset = None
+	_input_image_size = None
 	_distortions = None
 	
 	# The loaded Python module and its directory
@@ -58,6 +60,7 @@ class Model:
 		
 		self.display_name = self._module.get_display_name()
 		self.version = self._module.get_version()
+		self._input_image_size = self._module.get_input_image_size()
 		
 		tf.logging.warn('Setting up \"{}\", version {}...'
 			.format(self.display_name, self.version))
@@ -204,7 +207,8 @@ class Model:
 				
 				return self._session.run(
 					self._image_tensors[layer_name],
-					feed_dict={'input:0': self._dataset.load_image(meta_data['image'])}
+					feed_dict={'input:0': self._preprocess_input_image(
+						self._dataset.load_image(meta_data['image']))}
 				)[2:]
 			elif meta_data['run_type'] == 'distorted_activation_visualization':
 				# Get one input image, distort it multiple times, run all distorted 
@@ -234,7 +238,7 @@ class Model:
 					visualizations.append(
 						self._session.run(
 							self._image_tensors[layer_name],
-							feed_dict={'input:0': image}
+							feed_dict={'input:0': self._preprocess_input_image(image)}
 						)[2:]
 					)
 				
@@ -270,7 +274,7 @@ class Model:
 				
 				return self._session.run(
 					self._activation_tensors[layer_name],
-					feed_dict={'input:0': input_data}
+					feed_dict={'input:0': self._preprocess_input_image(input_data)}
 				)
 			elif meta_data['run_type'] == 'prediction':
 				# Predict the class of an input image
@@ -284,7 +288,7 @@ class Model:
 				
 				model_output = self._session.run(
 					self._output_node,
-					feed_dict={'input:0': input_data}
+					feed_dict={'input:0': self._preprocess_input_image(input_data)}
 				)[0]
 				
 				top_5_predictions = [{
@@ -297,6 +301,15 @@ class Model:
 					'input': input_image,
 					'predictions': top_5_predictions
 				}
+	
+	def _preprocess_input_image(self, input_image):
+		if self._input_image_size is None:
+			return input_image
+		
+		image_dimensions = (self._input_image_size, self._input_image_size)
+		
+		return resize(input_image, image_dimensions, mode='constant',
+			anti_aliasing=True)
 
 class ModelManager:
 	directory = None
