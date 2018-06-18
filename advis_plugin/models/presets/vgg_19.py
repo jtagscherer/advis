@@ -22,5 +22,5 @@ def get_output_node():
 	return 'Result'
 
 def annotate_node(node):
-	return 'eval_image' not in node.name \
+	return 'eval_image' not in node.name and node.name != 'Result' \
 	 	and node.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2']
