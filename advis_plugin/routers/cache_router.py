@@ -131,6 +131,10 @@ def _cache_node_differences(routers, managers, input_image_amount):
 	
 	for model in model_modules:
 		_model = model_modules[model]
+		model_display_name = _model.display_name
+		
+		layer_index = 0
+		layer_amount = len(_model._activation_tensors)
 		
 		for layer in _model._activation_tensors:
 			for distortion in distortion_manager.get_distortion_modules():
@@ -141,8 +145,16 @@ def _cache_node_differences(routers, managers, input_image_amount):
 			
 			DataCache().persist_cache()
 			current_step_index += 1
-			_print_progress('(4/4)', current_step_index, step_amount)
+			layer_index += 1
+			_print_progress('(4/4)', current_step_index, step_amount,
+				'{}, Layer {} out of {}'.format(model_display_name, layer_index,
+				layer_amount))
 
-def _print_progress(prefix, current, length):
-	tf.logging.warn('{}: {}%'.format(prefix,
-		int(round((current / length) * 100))))
+def _print_progress(prefix, current, length, suffix=None):
+	progress_string = '{}: {}%'.format(prefix,
+		int(round((current / length) * 100)))
+	
+	if suffix is not None:
+		progress_string += ' ({})'.format(suffix)
+	
+	tf.logging.warn(progress_string)
