@@ -79,6 +79,8 @@ class Model:
 		if declared_directory['type'] == 'preset':
 			checkpoint_directory = checkpoints.get_checkpoint_directory(
 				declared_directory['directory'])
+		elif declared_directory['type'] == 'custom':
+			checkpoint_directory = declared_directory['directory']
 		else:
 			tf.logging.error('Invalid checkpoint directory type {} for model \"{}\"!'
 				.format(declared_directory['type'], self.display_name))
