@@ -49,7 +49,7 @@ Polymer({
 	},
 	
 	getDialogTitle: function(data) {
-		let title = `Tensor ${Number(data.selectedTile.index) + 1}`;
+		let title = `Slice ${Number(data.selectedTile.index) + 1}`;
 		let visualizationType = this._getClickedVisualizationType(
 			data.clickCoordinates);
 		
