@@ -125,8 +125,16 @@ Polymer({
 			datasetIndex = this._selectedDataPoint.datasetIndex;
 		}
 		
+		var pointIndex = 0;
+		
+		this.data.names.forEach((name, index) => {
+			if (name == this.selectedDistortion.name) {
+				pointIndex = index;
+			}
+		});
+		
 		this.set('_selectedDataPoint', {
-			pointIndex: this.selectedDistortion.index,
+			pointIndex: pointIndex,
 			datasetIndex: datasetIndex
 		});
 	},

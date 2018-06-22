@@ -54,13 +54,16 @@ Polymer({
 		
 		// Create a label for each selected distortion method
 		var labels = [];
+		var names = [];
 		
 		for (var distortion of this.distortions) {
 			labels.push(distortion.displayName);
+			names.push(distortion.name);
 		}
 		
 		// Assign the labels to the data
 		this.data.labels = labels;
+		this.data.names = names;
 		
 		// Update the datasets with the models we have retrieved
 		this._updateDatasets(selectedModels);

@@ -12,7 +12,12 @@ Polymer({
 	},
 	
 	_distortionSelected: function(e) {
-		this.selectedDistortion = this.availableDistortions[e.detail.item.value];
+		for (var distortion of this.availableDistortions) {
+			if (distortion.index == e.detail.item.distortionIndex) {
+				this.set('selectedDistortion', distortion);
+				break;
+			}
+		}
 	},
 	
 	hasValidData: function() {
