@@ -18,6 +18,9 @@ def get_dataset():
 def get_input_image_size():
 	return 224
 
+def get_input_node():
+	return 'input'
+
 def get_output_node():
 	return 'Softmax'
 

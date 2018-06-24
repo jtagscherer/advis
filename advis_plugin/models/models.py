@@ -47,7 +47,8 @@ class Model:
 	_image_tensors = {}
 	_activation_tensors = {}
 	
-	# The node containing the model's final output
+	# The nodes containing the model's input and final output
+	_input_node = None
 	_output_node = None
 	
 	def __init__(self, name, module, directory, dataset, distortions):
@@ -64,6 +65,7 @@ class Model:
 		
 		self._image_tensors = {}
 		self._activation_tensors = {}
+		self._input_node = None
 		self._output_node = None
 		
 		tf.logging.warn('Setting up \"{}\", version {}...'
@@ -133,6 +135,10 @@ class Model:
 								self._activation_tensors[node] = self._graph.get_tensor_by_name(
 									activation_tensor)
 							
+							# Store the operation that the input will be fed to
+							self._input_node = self._graph.get_tensor_by_name('{}:0'
+								.format(self._module.get_input_node()))
+							
 							# Store the tensor containing the model's prediction
 							self._output_node = self._graph.get_tensor_by_name('{}:0'
 								.format(self._module.get_output_node()))
@@ -195,6 +201,10 @@ class Model:
 				with open(join(cached_model_directory, 'meta.json'), 'w') as meta_file:
 					json.dump(cache_meta_data, meta_file)
 			
+			# Store the operation that the input will be fed to
+			self._input_node = self._graph.get_tensor_by_name('{}:0'
+				.format(self._module.get_input_node()))
+			
 			# Store the tensor containing the model's prediction
 			self._output_node = self._graph.get_tensor_by_name('{}:0'
 				.format(self._module.get_output_node()))
@@ -213,7 +223,7 @@ class Model:
 				
 				return self._session.run(
 					self._image_tensors[layer_name],
-					feed_dict={'input:0': self._preprocess_input_image(
+					feed_dict={self._input_node.name: self._preprocess_input_image(
 						self._dataset.load_image(meta_data['image']))}
 				)[2:]
 			elif meta_data['run_type'] == 'distorted_activation_visualization':
@@ -244,7 +254,9 @@ class Model:
 					visualizations.append(
 						self._session.run(
 							self._image_tensors[layer_name],
-							feed_dict={'input:0': self._preprocess_input_image(image)}
+							feed_dict={
+								self._input_node.name: self._preprocess_input_image(image)
+							}
 						)[2:]
 					)
 				
@@ -280,7 +292,9 @@ class Model:
 				
 				return self._session.run(
 					self._activation_tensors[layer_name],
-					feed_dict={'input:0': self._preprocess_input_image(input_data)}
+					feed_dict={
+						self._input_node.name: self._preprocess_input_image(input_data)
+					}
 				)
 			elif meta_data['run_type'] == 'prediction':
 				# Predict the class of an input image
@@ -294,7 +308,9 @@ class Model:
 				
 				model_output = self._session.run(
 					self._output_node,
-					feed_dict={'input:0': self._preprocess_input_image(input_data)}
+					feed_dict={
+						self._input_node.name: self._preprocess_input_image(input_data)
+					}
 				)[0]
 				
 				top_5_predictions = [{
@@ -315,7 +331,7 @@ class Model:
 		image_dimensions = (self._input_image_size, self._input_image_size)
 		
 		return resize(input_image, image_dimensions, mode='constant',
-			anti_aliasing=True)
+			order=0, anti_aliasing=False)
 
 class ModelManager:
 	directory = None
@@ -350,7 +366,7 @@ class ModelManager:
 		model_directories = next(walk(self.directory))[1]
 		
 		# Load each file as a module
-		for name in model_directories:
+		for name in model_directories:			
 			model_directory = join(self.directory, name)
 			
 			spec = importlib.util.spec_from_file_location(
