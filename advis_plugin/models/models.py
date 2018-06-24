@@ -366,7 +366,7 @@ class ModelManager:
 		model_directories = next(walk(self.directory))[1]
 		
 		# Load each file as a module
-		for name in model_directories:			
+		for name in model_directories:
 			model_directory = join(self.directory, name)
 			
 			spec = importlib.util.spec_from_file_location(
