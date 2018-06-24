@@ -42,10 +42,14 @@ class DataCache:
 					if key[0] != type}
 			else:
 				pruned_cache = {key: value for key, value in self.__cache.items() \
-					if key[0] != type and not condition(key)}
+					if key[0] != type or not condition(key[1])}
+			
+			removed_elements = len(self.__cache) - len(pruned_cache)
 			
 			self.__cache = pruned_cache
 			self.persist_cache()
+			
+			return removed_elements
 		
 		def persist_cache(self):
 			with open(self.storage_file, 'wb') as handle:
