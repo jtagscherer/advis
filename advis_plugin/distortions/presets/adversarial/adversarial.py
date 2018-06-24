@@ -2,40 +2,19 @@ from __future__ import division
 
 import numpy as np
 import scipy.ndimage
+from scipy.misc import imresize
+
+import tensorflow as tf
 
 from os.path import join, dirname, realpath
 
 def _load_perturbation_array():
 	path = join(join(dirname(realpath(__file__)), 'data'),
 		'universal_perturbation.npy')
-	return np.load(path) / 255
+	return np.load(path)
 
 # Load the perturbation array and store it
 perturbation_array = _load_perturbation_array()[0]
-
-# Create a cache for scaled perturbation arrays
-perturbation_cache = {}
-
-def _get_cached_perturbation(size):
-	if size in perturbation_cache:
-		return perturbation_cache[size]
-	else:
-		# Resize the perturbation array to the desired size
-		zoom_factor = size / perturbation_array.shape[0]
-		interpolation_order = 3
-		
-		red = perturbation_array[:, :, 0]
-		green = perturbation_array[:, :, 1]
-		blue = perturbation_array[:, :, 2]
-		
-		red = scipy.ndimage.zoom(red, zoom_factor, order=interpolation_order)
-		green = scipy.ndimage.zoom(green, zoom_factor, order=interpolation_order)
-		blue = scipy.ndimage.zoom(blue, zoom_factor, order=interpolation_order)
-		
-		result = np.stack([red, green, blue], axis=2)
-		
-		perturbation_cache[size] = result
-		return result
 
 def get_display_name():
 	return 'Adversarial'
@@ -45,7 +24,15 @@ def get_parameters():
 
 def distort(image, configuration):
 	image_size = image.shape[0]
-	return np.clip(image + _get_cached_perturbation(image_size), 0, 1)
+	
+	image = image * 255.0
+	image = imresize(image, (224, 224))
+	
+	clipped_perturbation = np.clip(image + perturbation_array, 0, 255) \
+		- np.clip(image, 0, 255)
+	perturbed_image = image + clipped_perturbation
+	
+	return imresize(perturbed_image, (image_size, image_size)) / 255.0
 
 def get_icon():
 	return 'M11,2 L11,4.07 C7.38,4.53 4.53,7.38 4.07,11 L2,11 L2,13 L4.07,13 ' \
