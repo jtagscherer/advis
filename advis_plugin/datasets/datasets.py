@@ -18,6 +18,7 @@ class Dataset:
 	display_name = None
 	images = None
 	categories = None
+	category_hierarchy = None
 	
 	# The loaded Python module and its directory
 	_module = None
@@ -33,6 +34,7 @@ class Dataset:
 		self.display_name = self._module.get_display_name()
 		self.images = self._module.get_all_images()
 		self.categories = self._module.get_categories()
+		self.category_hierarchy = self._module.get_category_hierarchy()
 	
 	def load_image(self, index, output='array'):
 		image_data = imread(self.images[index]['path'])

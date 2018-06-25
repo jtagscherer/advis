@@ -12,6 +12,15 @@ def get_categories():
 	
 	return categories
 
+def get_category_hierarchy():
+	category_hierarchy_file = join(dirname(__file__),
+		join('data', 'category_hierarchy.json'))
+	
+	with open(category_hierarchy_file, 'r') as category_hierarchy_data:
+		category_hierarchy = json.load(category_hierarchy_data)
+	
+	return category_hierarchy
+
 def get_all_images():
 	# Retrieve image descriptions from their file
 	images_file = join(dirname(__file__), join('data', 'images.json'))
