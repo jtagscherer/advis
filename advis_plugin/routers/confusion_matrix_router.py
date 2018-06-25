@@ -145,6 +145,47 @@ def _get_empty_matrix(nodes):
 			
 	return matrix
 
+def _calculate_precision_and_recall(matrix):
+	precision = []
+	recall = []
+	
+	# Convert the matrix dictionary to a multi-dimensional array
+	values = []
+	
+	for actual_label in matrix:
+		row = []
+		for predicted_label in matrix[actual_label]:
+			row.append(matrix[actual_label][predicted_label])
+		values.append(row)
+	
+	# Calculate the recall values
+	for x in range(0, len(values)):
+		true_positive = values[x][x]
+		all_positive = 0
+		
+		for y in range(0, len(values[0])):
+			all_positive += values[x][y]
+		
+		if all_positive == 0:
+			recall.append(None)
+		else:
+			recall.append(true_positive / all_positive)
+	
+	# Calculate the precision values
+	for x in range(0, len(values)):
+		true_positive = values[x][x]
+		all_positive = 0
+		
+		for y in range(0, len(values[0])):
+			all_positive += values[y][x]
+		
+		if all_positive == 0:
+			precision.append(None)
+		else:
+			precision.append(true_positive / all_positive)
+	
+	return precision, recall
+
 def confusion_matrix_route(request, model_manager, distortion_manager):
 	# First of all, retrieve all parameters
 	missing_arguments = argutil.check_missing_arguments(
@@ -206,10 +247,16 @@ def confusion_matrix_route(request, model_manager, distortion_manager):
 					distorted_confusion_matrix[actual_label][predicted_label] += 1
 	
 	# Format the output matrix depending on the chosen mode
+	matrix = None
+	precision = None
+	recall = None
+	
 	if mode == 'original':
-		response = original_confusion_matrix
+		matrix = original_confusion_matrix
+		precision, recall = _calculate_precision_and_recall(matrix)
 	elif mode == 'distorted':
-		response = distorted_confusion_matrix
+		matrix = distorted_confusion_matrix
+		precision, recall = _calculate_precision_and_recall(matrix)
 	elif mode == 'difference':
 		difference_confusion_matrix = _get_empty_matrix(direct_children)
 		
@@ -220,6 +267,25 @@ def confusion_matrix_route(request, model_manager, distortion_manager):
 					distorted_confusion_matrix[actual_label][predicted_label] \
 					- original_confusion_matrix[actual_label][predicted_label]
 		
-		response = difference_confusion_matrix
+		matrix = difference_confusion_matrix
+		
+		# Calculate the precision and recall differences
+		original_precision, original_recall = _calculate_precision_and_recall(
+			original_confusion_matrix
+		)
+		distorted_precision, distorted_recall = _calculate_precision_and_recall(
+			distorted_confusion_matrix
+		)
+		
+		precision = [i - j if i is not None and j is not None else None \
+			for i, j in zip(distorted_precision, original_precision)]
+		recall = [i - j if i is not None and j is not None else None \
+			for i, j in zip(distorted_recall, original_recall)]
+	
+	response = {
+		'confusionMatrix': matrix,
+		'precision': precision,
+		'recall': recall
+	}
 	
 	return http_util.Respond(request, response, 'application/json')
