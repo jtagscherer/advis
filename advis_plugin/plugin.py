@@ -400,6 +400,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		routers = {
 			'model': model_router,
 			'prediction': prediction_router,
+			'confusionMatrix': confusion_matrix_router,
 			'distortion': distortion_router,
 			'dataset': dataset_router,
 			'singleVisualization': single_visualization_router,

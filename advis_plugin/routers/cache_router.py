@@ -41,6 +41,11 @@ def cache_route(request, routers, managers):
 	_cache_node_differences(routers, managers, node_activation)
 	DataCache().persist_cache()
 	
+	# Cache all node differences
+	tf.logging.warn('Caching confusion matrices...')
+	_cache_confusion_matrices(routers, managers)
+	DataCache().persist_cache()
+	
 	# Re-enable caching
 	DataCache().enable_caching()
 	
@@ -66,7 +71,7 @@ def _cache_graph_structures(routers, managers):
 		model_router._get_graph_structure(model_manager, model, 'simplified')
 		
 		current_model_index += 1
-		_print_progress('(1/4)', current_model_index, model_amount)
+		_print_progress('(1/5)', current_model_index, model_amount)
 
 def _cache_single_predictions(routers, managers):
 	prediction_router = routers['prediction']
@@ -94,7 +99,7 @@ def _cache_single_predictions(routers, managers):
 				)
 		
 			current_image_index += 1
-			_print_progress('(2/4)', current_image_index, image_amount)
+			_print_progress('(2/5)', current_image_index, image_amount)
 
 def _cache_prediction_accuracy(routers, managers, input_image_amount):
 	prediction_router = routers['prediction']
@@ -115,7 +120,7 @@ def _cache_prediction_accuracy(routers, managers, input_image_amount):
 			)
 		
 			current_step_index += 1
-			_print_progress('(3/4)', current_step_index, step_amount)
+			_print_progress('(3/5)', current_step_index, step_amount)
 
 def _cache_node_differences(routers, managers, input_image_amount):
 	node_difference_router = routers['nodeDifference']
@@ -146,9 +151,34 @@ def _cache_node_differences(routers, managers, input_image_amount):
 			DataCache().persist_cache()
 			current_step_index += 1
 			layer_index += 1
-			_print_progress('(4/4)', current_step_index, step_amount,
+			_print_progress('(4/5)', current_step_index, step_amount,
 				'{}, Layer {} out of {}'.format(model_display_name, layer_index,
 				layer_amount))
+
+def _cache_confusion_matrices(routers, managers):
+	confusion_matrix_router = routers['confusionMatrix']
+	model_manager = managers['model']
+	distortion_manager = managers['distortion']
+	
+	model_modules = model_manager.get_model_modules()
+	distortion_modules = distortion_manager.get_distortion_modules()
+	
+	step_amount = len(model_modules) \
+		* len(distortion_manager.get_distortion_modules())
+	current_step_index = 0
+	
+	for model in model_modules:
+		_model = model_modules[model]
+		
+		for distortion in distortion_modules:
+			_distortion = distortion_modules[distortion]
+			
+			confusion_matrix_router._get_hierarchical_node_predictions(
+				_model, _distortion, model_manager, distortion_manager
+			)
+		
+			current_step_index += 1
+			_print_progress('(5/5)', current_step_index, step_amount)
 
 def _print_progress(prefix, current, length, suffix=None):
 	progress_string = '{}: {}%'.format(prefix,
