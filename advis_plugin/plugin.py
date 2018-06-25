@@ -13,8 +13,9 @@ from advis_plugin.datasets import datasets
 from advis_plugin.distortions import distortions
 
 from advis_plugin.routers import model_router, prediction_router, \
-	distortion_router, dataset_router, single_visualization_router, \
-	composite_visualization_router, node_difference_router, cache_router
+	confusion_matrix_router, distortion_router, dataset_router, \
+	single_visualization_router, composite_visualization_router, \
+	node_difference_router, cache_router
 
 from advis_plugin.util.cache import DataCache
 
@@ -70,6 +71,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/graphs': self.graphs_route,
 			'/predictions/single': self.single_prediction_route,
 			'/predictions/accuracy': self.accuracy_prediction_route,
+			'/confusion/matrix': self.confusion_matrix_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
 			'/datasets': self.datasets_route,
@@ -157,6 +159,27 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""
 		
 		return prediction_router.accuracy_prediction_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def confusion_matrix_route(self, request):
+		"""A route that returns a model's confusion matrix delta given a distortion 
+		and a specific dataset hierarchy level.
+
+		Arguments:
+			request: The request which has to contain the model's name, the name of 
+				a distortion and the name of a hierarchy superset. If no superset name 
+				is supplied, the most high-level one is used. On top of that, a mode 
+				has to be supplied. If it is 'original', the confusion matrix for 
+				original input images will be returned. If it is 'distorted', the 
+				confusion matrix for distorted input images will be returned. If it is 
+				'difference', the delta between the two aforementioned confusion 
+				matrices will be returned.
+		Returns:
+			A response that contains all rows of the confusion matrix.
+		"""
+		
+		return confusion_matrix_router.confusion_matrix_route(request, 
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
