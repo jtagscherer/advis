@@ -12,7 +12,7 @@ def _get_single_prediction(model, image_index, distortion,
 	key_tuple = (model, image_index, distortion)
 	
 	if DataCache().has_data(data_type_single_prediction, key_tuple):
-		return DataCache().get_data(data_type_single_prediction, key_tuple)
+		response = DataCache().get_data(data_type_single_prediction, key_tuple)
 	
 	_model = model_manager.get_model_modules()[model]
 	
@@ -29,11 +29,11 @@ def _get_single_prediction(model, image_index, distortion,
 			)[0]
 	
 	response = _model.run(meta_data)
+	DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
+	# Limit the amount of predictions if so desired
 	if prediction_amount is not None:
 		response['predictions'] = response['predictions'][:prediction_amount]
-	
-	DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
 	return response
 
@@ -160,7 +160,8 @@ def _calculate_accuracy(predictions):
 				
 				break
 			
-			
+			if rank > 5:
+				continue
 	
 	# Calculate the accuracy as the quotient of correct guesses and the total 
 	# amount of predictions
