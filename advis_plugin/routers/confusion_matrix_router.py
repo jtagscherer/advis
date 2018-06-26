@@ -7,7 +7,7 @@ def _get_images_of_category(dataset, category_id):
 	images = []
 	
 	for image in dataset.images:
-		if image['categoryId'] == category_id:
+		if image['categoryId'] == category_id + 1:
 			images.append(image)
 	
 	return images
@@ -82,7 +82,7 @@ def _get_hierarchical_node_predictions(model, distortion, model_manager,
 		original_predictions = {}
 		distorted_predictions = {}
 		
-		images = _get_images_of_category(dataset, category_index + 1)
+		images = _get_images_of_category(dataset, category_index)
 		
 		for image in images:
 			_predict_image(
@@ -289,3 +289,41 @@ def confusion_matrix_route(request, model_manager, distortion_manager):
 	}
 	
 	return http_util.Respond(request, response, 'application/json')
+
+def confusion_images_route(request, model_manager):
+	# First of all, retrieve all parameters
+	missing_arguments = argutil.check_missing_arguments(
+		request, ['model', 'superset']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	model_name = request.args.get('model')
+	superset_name = request.args.get('superset')
+	
+	model = model_manager.get_model_modules()[model_name]
+	dataset = model._dataset
+	category_hierarchy = dataset.category_hierarchy.copy()[0]
+	
+	# Get all unique categories within the superset
+	superset_node = _find_node_by_name(category_hierarchy, superset_name)
+	
+	if superset_node is None:
+		return http_util.Respond(
+			request,
+			'The superset \"{}\" you defined is not present within the model\'s ' \
+			'dataset \"{}\".'.format(superset_name, dataset.name),
+			'text/plain',
+			code=400
+		)
+	
+	categories = _find_all_leaves(superset_node)
+	
+	# Create a list of all input images within all categories in the superset
+	input_images = []
+	
+	for node in categories:
+		input_images.extend(_get_images_of_category(dataset, int(node['category'])))
+	
+	return http_util.Respond(request, input_images, 'application/json')

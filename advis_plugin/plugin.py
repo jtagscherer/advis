@@ -72,6 +72,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/predictions/single': self.single_prediction_route,
 			'/predictions/accuracy': self.accuracy_prediction_route,
 			'/confusion/matrix': self.confusion_matrix_route,
+			'/confusion/images': self.confusion_images_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
 			'/datasets': self.datasets_route,
@@ -181,6 +182,23 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		return confusion_matrix_router.confusion_matrix_route(request, 
 			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def confusion_images_route(self, request):
+		"""A route that returns a list of input images within a superset given a 
+		model name.
+
+		Arguments:
+			request: The request which has to contain the model's name and the name 
+				of a superset within the category hierarchy of the dataset that the 
+				model uses.
+		Returns:
+			A response that contains a list of all input images within the given 
+				superset.
+		"""
+		
+		return confusion_matrix_router.confusion_images_route(request, 
+			self.model_manager)
 	
 	@wrappers.Request.application
 	def distortions_route(self, request):
