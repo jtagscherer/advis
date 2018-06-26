@@ -290,17 +290,26 @@ def confusion_matrix_route(request, model_manager, distortion_manager):
 	
 	return http_util.Respond(request, response, 'application/json')
 
-def confusion_images_route(request, model_manager):
+def _get_prediction_certainty(predictions, category_id):
+	for prediction in predictions:
+		if int(prediction['categoryId']) == int(category_id):
+			return float(prediction['certainty'])
+	
+	return 0.0
+
+def confusion_images_route(request, model_manager, distortion_manager):
 	# First of all, retrieve all parameters
 	missing_arguments = argutil.check_missing_arguments(
-		request, ['model', 'superset']
+		request, ['model', 'distortion', 'superset', 'sort']
 	)
 	
 	if missing_arguments != None:
 		return missing_arguments
 	
 	model_name = request.args.get('model')
+	distortion_name = request.args.get('distortion')
 	superset_name = request.args.get('superset')
+	sort_by = request.args.get('sort')
 	
 	model = model_manager.get_model_modules()[model_name]
 	dataset = model._dataset
@@ -325,5 +334,48 @@ def confusion_images_route(request, model_manager):
 	
 	for node in categories:
 		input_images.extend(_get_images_of_category(dataset, int(node['category'])))
+	
+	# Add prediction certainties to each image
+	for image in input_images:
+		# Make the model predict both the original and the distorted input image
+		original_predictions = prediction_router._get_single_prediction(
+			model_name, int(image['index']), None, model_manager,
+			distortion_manager, prediction_amount=None
+		)		
+		distorted_predictions = prediction_router._get_single_prediction(
+			model_name, int(image['index']), distortion_name, model_manager,
+			distortion_manager, prediction_amount=None
+		)
+		
+		# Retrieve the certainty of the ground-truth category from the predictions
+		original_certainty = _get_prediction_certainty(
+			original_predictions['predictions'], int(image['categoryId'])
+		)
+		distorted_certainty = _get_prediction_certainty(
+			distorted_predictions['predictions'], int(image['categoryId'])
+		)
+		
+		# Add the data to each image
+		certainty = {}
+		certainty['original'] = original_certainty
+		certainty['distorted'] = distorted_certainty
+		certainty['difference'] = distorted_certainty - original_certainty
+		
+		image['certainty'] = certainty
+	
+	# Finally, sort the list of images
+	if sort_by == 'ascending':
+		input_images = sorted(
+			input_images, key=lambda image: image['certainty']['difference']
+		)
+	elif sort_by == 'descending':
+		input_images = sorted(
+			input_images, key=lambda image: image['certainty']['difference'],
+			reverse=True
+		)
+	elif sort_by == 'index':
+		input_images = sorted(
+			input_images, key=lambda image: image['index']
+		)
 	
 	return http_util.Respond(request, input_images, 'application/json')

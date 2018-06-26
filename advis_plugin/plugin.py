@@ -191,14 +191,19 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Arguments:
 			request: The request which has to contain the model's name and the name 
 				of a superset within the category hierarchy of the dataset that the 
-				model uses.
+				model uses. On top of that, the request has to contain the name of a 
+				distortion that will be used to compare prediction certainties. 
+				Moreover, a sort method has to be supplied that will be used to sort 
+				the list of images. This can be either 'ascending' to sort by the 
+				increasing amount of certainty change, 'descending' to do the same but 
+				in reverse or 'index' to sort by image indices.
 		Returns:
 			A response that contains a list of all input images within the given 
 				superset.
 		"""
 		
 		return confusion_matrix_router.confusion_images_route(request, 
-			self.model_manager)
+			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
 	def distortions_route(self, request):
