@@ -13,23 +13,23 @@ def _get_single_prediction(model, image_index, distortion,
 	
 	if DataCache().has_data(data_type_single_prediction, key_tuple):
 		response = DataCache().get_data(data_type_single_prediction, key_tuple)
-	
-	_model = model_manager.get_model_modules()[model]
-	
-	meta_data = {
-		'run_type': 'prediction',
-		'image': image_index
-	}
-	
-	if distortion is not None:
-		meta_data['input_image_data'] = distortion_manager \
-			.distortion_modules[distortion].distort(
-				_model._dataset.load_image(image_index),
-				amount=1, mode='non-repeatable-randomized'
-			)[0]
-	
-	response = _model.run(meta_data)
-	DataCache().set_data(data_type_single_prediction, key_tuple, response)
+	else:
+		_model = model_manager.get_model_modules()[model]
+		
+		meta_data = {
+			'run_type': 'prediction',
+			'image': image_index
+		}
+		
+		if distortion is not None:
+			meta_data['input_image_data'] = distortion_manager \
+				.distortion_modules[distortion].distort(
+					_model._dataset.load_image(image_index),
+					amount=1, mode='non-repeatable-randomized'
+				)[0]
+		
+		response = _model.run(meta_data)
+		DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
 	# Limit the amount of predictions if so desired
 	if prediction_amount is not None:
