@@ -282,10 +282,23 @@ def confusion_matrix_route(request, model_manager, distortion_manager):
 		recall = [i - j if i is not None and j is not None else None \
 			for i, j in zip(distorted_recall, original_recall)]
 	
+	# Collect the amount of direct children of children of this superset
+	children = {}
+	
+	for child in direct_children:
+		if 'children' in child and child['children'] is not None:
+			children[child['name']] = len(child['children'])
+		else:
+			children[child['name']] = 0
+	
 	response = {
+		'input': {
+			'superset': superset_name
+		},
 		'confusionMatrix': matrix,
 		'precision': precision,
-		'recall': recall
+		'recall': recall,
+		'children': children
 	}
 	
 	return http_util.Respond(request, response, 'application/json')
