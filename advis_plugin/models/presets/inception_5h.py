@@ -26,4 +26,4 @@ def get_output_node():
 
 def annotate_node(node):
 	return node.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2'] \
-		and node.name not in ['nn0', 'nn1']
+		and node.name not in ['Inception5h/nn0', 'Inception5h/nn1']
