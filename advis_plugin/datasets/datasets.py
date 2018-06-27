@@ -56,9 +56,6 @@ class DatasetManager:
 		self.directory = path.join(directory, 'datasets')
 		self.dataset_modules = {}
 		
-		if not path.exists(self.directory):
-			makedirs(self.directory)
-		
 		self._copy_preset_datasets()
 		self._update_dataset_modules()
 	
