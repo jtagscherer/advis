@@ -72,18 +72,12 @@ class DistortionManager:
 	def __init__(self, directory):
 		self.directory = path.join(directory, 'distortions')
 		
-		if not path.exists(self.directory):
-			makedirs(self.directory)
-		
 		self._copy_preset_distortions()
 		self._update_distortion_modules()
 		
 		self.distortion_modules = collections.OrderedDict(
 			sorted(self.distortion_modules.items())
 		)
-	
-	def is_setup(self):
-		return self.directory != None
 	
 	def get_distortion_modules(self):
 		return self.distortion_modules
@@ -114,8 +108,10 @@ class DistortionManager:
 					.format(name, traceback.format_exc()))
 	
 	def _copy_preset_distortions(self):
-		if not self.is_setup():
+		if path.exists(self.directory):
 			return
+		else:
+			makedirs(self.directory)
 		
 		# Extract a list of presets supplied during the build
 		preset_directory = path.join(path.dirname(__file__), 'presets')

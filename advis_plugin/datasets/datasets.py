@@ -62,9 +62,6 @@ class DatasetManager:
 		self._copy_preset_datasets()
 		self._update_dataset_modules()
 	
-	def is_setup(self):
-		return self.directory != None
-	
 	def get_dataset_modules(self):
 		return self.dataset_modules
 	
@@ -93,8 +90,10 @@ class DatasetManager:
 					.format(name, traceback.format_exc()))
 	
 	def _copy_preset_datasets(self):
-		if not self.is_setup():
+		if path.exists(self.directory):
 			return
+		else:
+			makedirs(self.directory)
 		
 		# Extract a list of presets supplied during the build
 		preset_root = path.join(path.dirname(__file__), 'presets')
