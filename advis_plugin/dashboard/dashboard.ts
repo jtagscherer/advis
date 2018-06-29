@@ -48,6 +48,7 @@ Polymer({
   
   openDistortionConfigurationDialog: function() {
     this.$$('distortion-configuration-dialog').open({
+      distortions: this._availableDistortions,
 			animationTarget: this.$$('#distortion-configuration-button')
 				.getBoundingClientRect()
 		});

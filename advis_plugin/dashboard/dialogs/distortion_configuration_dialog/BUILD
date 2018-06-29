@@ -17,8 +17,10 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_paper_dialog",
 		"@org_polymer_paper_button",
+		"@org_polymer_iron_selector",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
-		"//advis_plugin/dashboard/dialogs/components/dialog_behavior"
+		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
+		"//advis_plugin/dashboard/distortion_list_item"
 	]
 )
 

@@ -7,6 +7,7 @@ Polymer({
 	],
 	
   properties: {
+		distortions: Array,
 		eventId: {
 			type: String,
 			value: 'distortion-configuration-dialog'
@@ -14,7 +15,7 @@ Polymer({
   },
 	
 	setContent: function(content) {
-		// TODO
+		this.distortions = content.distortions;
 	},
 	
 	getContentOnDismiss: function() {
