@@ -50,7 +50,7 @@ paper-dialog {
 }
 
 // Circle that can be used as the background of an icon
-$icon-background-size: 40px;
+$icon-background-size: 40px !default;
 
 .icon-background {
 	width: $icon-background-size;

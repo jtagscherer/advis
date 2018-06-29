@@ -2,6 +2,11 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 
 $line-spacing: 2px;
+$icon-padding: 10px;
+$icon-size: 30px;
+$icon-background-size: 30px;
+
+@import 'advis_plugin/dashboard/shared/style/style';
 
 #container {
 	position: relative;
@@ -13,14 +18,58 @@ $line-spacing: 2px;
 		flex-direction: row;
 		align-items: center;
 		
-		#icon {
-			transition: fill 0.5s ease;
+		#text {
+			display: flex;
+			flex-direction: column;
+			padding-left: $icon-padding;
+			
+			* {
+				margin-top: $line-spacing;
+				margin-bottom: $line-spacing;
+			}
+			
+			.caption {
+				margin-bottom: 0px;
+			}
 		}
 		
-		.title {
+		#icon {
+			transition: fill 0.5s ease;
+			
+			padding-left: $icon-padding;
+			padding-right: $icon-padding;
+		}
+		
+		#icon-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
+			position: relative;
+			
+			padding-top: 5px;
+			padding-bottom: 5px;
+			padding-left: $icon-padding;
+			padding-right: $icon-padding;
+			
+			width: $icon-size;
+			height: $icon-size;
+			
+			* {
+				position: absolute;
+			}
+			
+			svg {
+				width: 20px;
+				height: 20px;
+				fill: white;
+			}
+		}
+		
+		/*.title {
 			margin-left: 10px;
 			margin-top: $line-spacing;
 			margin-bottom: $line-spacing;
-		}
+		}*/
 	}
 }
