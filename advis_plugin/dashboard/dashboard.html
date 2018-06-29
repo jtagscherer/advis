@@ -21,6 +21,8 @@
 <link rel="import" href="../../layer-visualization/layer-visualization.html">
 <link rel="import" href="../../graph-view/graph-view.html">
 
+<link rel="import" href="../../dialogs/distortion-configuration-dialog/distortion-configuration-dialog.html">
+
 <!--
 	This frontend displays all Advis visualizations.
 -->
@@ -42,7 +44,8 @@
 								</template>
 							</iron-selector>
 						</div>
-						<paper-button>
+						<paper-button id="distortion-configuration-button"
+							on-tap="openDistortionConfigurationDialog">
 							<p>Edit Distortions</p>
 						</paper-button>
 					</div>
@@ -126,6 +129,8 @@
 				</template>
 			</div>
 		</tf-dashboard-layout>
+		
+		<distortion-configuration-dialog></distortion-configuration-dialog>
 
 		<style include="dashboard-style"></style>
 		<link rel="stylesheet" type="text/css" href="dashboard.css">

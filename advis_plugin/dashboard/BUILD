@@ -21,6 +21,7 @@ tf_web_library(
 		"//advis_plugin/dashboard/accuracy_radar_chart",
 		"//advis_plugin/dashboard/layer_visualization",
 		"//advis_plugin/dashboard/graph_view",
+		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog",
 		"@org_polymer_iron_icon",
 		"@org_polymer_iron_selector",
 		"@org_polymer_paper_input",

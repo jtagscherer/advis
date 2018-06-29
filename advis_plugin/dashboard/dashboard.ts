@@ -45,6 +45,13 @@ Polymer({
 		
     this._reloadModels();
 	},
+  
+  openDistortionConfigurationDialog: function() {
+    this.$$('distortion-configuration-dialog').open({
+			animationTarget: this.$$('#distortion-configuration-button')
+				.getBoundingClientRect()
+		});
+  },
 	
   _reloadModels: function() {
 		if (this.selectedModel != null) {

@@ -1,0 +1,26 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+@import 'advis_plugin/dashboard/shared/style/style';
+
+dialog-header {
+	padding: 0;
+}
+
+#content {
+	display: flex;
+	flex-direction: row;
+	
+	margin: 0;
+	
+	width: 70vw;
+	height: 70vh;
+	
+	#sidebar {
+		width: 15vw;
+		
+		border-right: 1px solid $light-foreground-color;
+	}
+	
+	#center {
+		flex: 1;
+	}
+}
