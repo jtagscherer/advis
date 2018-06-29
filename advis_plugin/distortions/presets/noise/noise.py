@@ -3,6 +3,9 @@ from skimage.util import random_noise
 def get_display_name():
 	return 'Noise'
 
+def get_type():
+	return 'Preset'
+
 def get_parameters():
 	return [
 		{

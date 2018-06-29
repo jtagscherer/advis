@@ -11,6 +11,9 @@ exec(open(join(parent_directory, 'style_transfer_runner.py')).read())
 def get_display_name():
 	return 'Style Transfer'
 
+def get_type():
+	return 'Preset'
+
 def get_parameters():
 	return [
 		{

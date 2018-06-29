@@ -3,6 +3,9 @@ from skimage.transform import rotate
 def get_display_name():
 	return 'Rotate'
 
+def get_type():
+	return 'Preset'
+
 def get_parameters():
 	return [
 		{

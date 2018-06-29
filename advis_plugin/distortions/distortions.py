@@ -12,6 +12,7 @@ from advis_plugin.distortions import parameters
 class Distortion:
 	name = None
 	display_name = None
+	type = None
 	icon = None
 	_module = None
 	_directory = None
@@ -24,6 +25,11 @@ class Distortion:
 		
 		self.display_name = self._module.get_display_name()
 		self.icon = self._module.get_icon()
+		
+		if hasattr(self._module, 'get_type'):
+			self.type = self._module.get_type()
+		else:
+			self.type = 'Custom'
 		
 		# Fetch and set up the module's parameters
 		self._parameters = {}

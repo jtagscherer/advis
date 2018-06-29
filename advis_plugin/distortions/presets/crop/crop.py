@@ -3,6 +3,9 @@ from skimage.transform import resize
 def get_display_name():
 	return 'Crop'
 
+def get_type():
+	return 'Preset'
+
 def get_parameters():
 	return [
 		{
