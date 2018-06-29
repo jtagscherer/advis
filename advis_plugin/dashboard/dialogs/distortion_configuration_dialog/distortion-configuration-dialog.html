@@ -1,5 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-button/paper-button.html">
 
 <link rel="import" href="../../dialog-header/dialog-header.html">
 <link rel="import" href="../../dialog-behavior/dialog-behavior.html">
@@ -23,6 +24,15 @@
 				<div id="center">
 					<!-- TODO -->
 				</div>
+			</div>
+			<div class="buttons">
+				<paper-button id="button-cancel"
+					on-tap="_dismissDialog">
+					Cancel
+				</paper-button>
+				<paper-button id="button-apply">
+					Apply
+				</paper-button>
 			</div>
 		</paper-dialog>
 		

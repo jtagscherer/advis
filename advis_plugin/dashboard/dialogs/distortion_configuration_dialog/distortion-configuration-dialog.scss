@@ -24,3 +24,25 @@ dialog-header {
 		flex: 1;
 	}
 }
+
+.buttons {
+	border-top: 1px solid $light-foreground-color;
+	background-color: $medium-background-color;
+	
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	
+	padding: 0px 10px 0px 0px;
+	
+	paper-button {
+		font-weight: bold;
+	}
+	
+	#button-cancel {
+		color: $medium-foreground-color;
+	}
+	
+	#button-apply {
+		color: $accent-color;
+	}
+}

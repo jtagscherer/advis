@@ -16,6 +16,7 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_paper_dialog",
+		"@org_polymer_paper_button",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior"
 	]
