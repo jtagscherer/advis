@@ -19,6 +19,10 @@ dialog-header {
 		width: 15vw;
 		overflow: scroll;
 		border-right: 1px solid $light-foreground-color;
+		
+		#distortion-selector > * {
+			transition: background-color 0.3s ease;
+		}
 	}
 	
 	#center {
