@@ -45,6 +45,12 @@
 			<paper-ripple></paper-ripple>
 		</div>
 		
+		<template is="dom-if" if="[[!compact]]">
+			<template is="dom-if" if="[[!lastItem]]">
+				<hr class="horizontal-divider">
+			</template>
+		</template>
+		
 		<link rel="stylesheet" type="text/css" href="distortion-list-item.css">
 	</template>
 

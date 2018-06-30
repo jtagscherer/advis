@@ -23,6 +23,10 @@ Polymer({
 		return distortions[_selectedDistortion];
 	},
 	
+	_isLastDistortionListItem: function(index) {
+		return index == this.distortions.length - 1;
+	},
+	
 	setContent: function(content) {
 		this.distortions = content.distortions;
 		this.requestManager = content.requestManager;

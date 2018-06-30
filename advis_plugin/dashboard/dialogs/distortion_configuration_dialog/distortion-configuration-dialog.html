@@ -28,7 +28,8 @@
 						<template is="dom-repeat" items="[[distortions]]">
 							<div class="list-item distortions" data-args$=[[item.index]]>
 								<distortion-list-item
-									distortion=[[item]]>
+									distortion=[[item]]
+									last-item="[[_isLastDistortionListItem(index)]]">
 								</distortion-list-item>
 							</div>
 						</template>
