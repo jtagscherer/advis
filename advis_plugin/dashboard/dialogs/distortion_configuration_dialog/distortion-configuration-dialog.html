@@ -6,6 +6,7 @@
 <link rel="import" href="../../dialog-header/dialog-header.html">
 <link rel="import" href="../../dialog-behavior/dialog-behavior.html">
 <link rel="import" href="../../distortion-list-item/distortion-list-item.html">
+<link rel="import" href="../../distortion-preview/distortion-preview.html">
 <link rel="import" href="../../section-header/section-header.html">
 
 <!--
@@ -22,7 +23,8 @@
 			</dialog-header>
 			<div id="content">
 				<div id="sidebar">
-					<iron-selector id="distortion-selector" selected="0">
+					<iron-selector id="distortion-selector"
+						selected="{{_selectedDistortion}}">
 						<template is="dom-repeat" items="[[distortions]]">
 							<div class="list-item distortions" data-args$=[[item.index]]>
 								<distortion-list-item
@@ -39,7 +41,10 @@
 					</div>
 					<div id="preview">
 						<section-header text="Preview"></section-header>
-						<!-- TODO -->
+						<distortion-preview
+							distortion="[[_getSelectedDistortion(distortions, _selectedDistortion)]]"
+							request-manager=[[requestManager]]>
+						</distortion-preview>
 					</div>
 				</div>
 			</div>

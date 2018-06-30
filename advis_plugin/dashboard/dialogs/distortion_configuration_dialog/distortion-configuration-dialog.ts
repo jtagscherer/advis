@@ -8,14 +8,24 @@ Polymer({
 	
   properties: {
 		distortions: Array,
+		requestManager: Object,
 		eventId: {
 			type: String,
 			value: 'distortion-configuration-dialog'
-		}
+		},
+		_selectedDistortion: {
+			type: Number,
+			value: 0
+		} 
   },
+	
+	_getSelectedDistortion: function(distortions, _selectedDistortion) {
+		return distortions[_selectedDistortion];
+	},
 	
 	setContent: function(content) {
 		this.distortions = content.distortions;
+		this.requestManager = content.requestManager;
 	},
 	
 	getContentOnDismiss: function() {

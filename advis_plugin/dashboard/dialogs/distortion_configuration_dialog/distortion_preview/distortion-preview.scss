@@ -1,0 +1,76 @@
+@import 'advis_plugin/dashboard/shared/style/text';
+@import 'advis_plugin/dashboard/shared/style/color';
+
+$image-grid-padding: 3px;
+
+#container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	
+	.preview-content {
+		display: flex;
+		flex-direction: column;
+	}
+	
+	#center {
+		iron-icon {
+			color: $medium-foreground-color;
+		}
+	}
+	
+	#left {
+		flex: 1;
+		align-items: center;
+		padding-bottom: 14px;
+		
+		#left-content {
+			p {
+				margin-top: 5px;
+				margin-bottom: 5px;
+				padding-left: $image-grid-padding;
+				padding-right: $image-grid-padding;
+			}
+			
+			#left-image-container {
+				width: 200px;
+				height: 200px;
+				
+				img {
+					width: calc(200px - (2 * #{$image-grid-padding}));
+					height: auto;
+					padding: $image-grid-padding;
+				}
+			}
+		}
+	}
+	
+	#right {
+		flex: 1;
+		align-items: center;
+		padding-bottom: 14px;
+		
+		#right-content {
+			p {
+				margin-top: 5px;
+				margin-bottom: 5px;
+				padding-left: $image-grid-padding;
+				padding-right: $image-grid-padding;
+			}
+			
+			#right-image-container {
+				width: 200px;
+				height: 200px;
+				
+				font-size: 0;
+				line-height: 0;
+				
+				img {
+					width: calc(100px - (2 * #{$image-grid-padding}));
+					height: auto;
+					padding: $image-grid-padding;
+				}
+			}
+		}
+	}
+}
