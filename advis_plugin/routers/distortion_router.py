@@ -27,6 +27,11 @@ def distortions_single_route(request, distortion_manager, dataset_manager):
 	dataset = request.args.get('dataset')
 	image_index = int(request.args.get('imageIndex'))
 	
+	if 'distortionIndex' in request.args:
+		distortion_index = int(request.args.get('distortionIndex'))
+	else:
+		distortion_index = 0
+	
 	# Retrieve the input image
 	_dataset = dataset_manager.get_dataset_modules()[dataset]
 	input_image = _dataset.load_image(image_index, output='array')
@@ -35,8 +40,8 @@ def distortions_single_route(request, distortion_manager, dataset_manager):
 	_distortion = distortion_manager.get_distortion_modules()[distortion]
 	distorted_image = _distortion.distort(
 		input_image,
-		amount=1, mode='randomized'
-	)[0]
+		amount=(distortion_index + 1), mode='randomized'
+	)[distortion_index]
 	
 	# Output the distorted image as a byte array
 	image = Image.fromarray((distorted_image * 255).astype('uint8'), 'RGB')
