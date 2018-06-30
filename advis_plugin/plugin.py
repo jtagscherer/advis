@@ -161,12 +161,15 @@ class AdvisPlugin(base_plugin.TBPlugin):
 	
 	@wrappers.Request.application
 	def distortions_route(self, request):
-		"""A route that returns a list of all available distortion methods.
+		"""A route that returns a list of all available distortion methods. If a 
+		distortion name is supplied, detailed information about this distortion 
+		will be retrieved.
 
 		Arguments:
 			request: The request which has to contain no additional information.
 		Returns:
-			A response that contains a list of all available distortion methods.
+			Either a response that contains a list of all available distortion 
+				methods or detailed information about a single distortion.
 		"""
 		
 		return distortion_router.distortions_route(request, self.distortion_manager)
