@@ -20,7 +20,8 @@ tf_web_library(
 		"@org_polymer_iron_selector",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
-		"//advis_plugin/dashboard/distortion_list_item"
+		"//advis_plugin/dashboard/distortion_list_item",
+		"//advis_plugin/dashboard/section_header"
 	]
 )
 
