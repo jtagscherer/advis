@@ -36,7 +36,13 @@ dialog-header {
 		
 		#parameters {
 			flex: 1;
-			overflow: scroll;
+			display: flex;
+			flex-direction: column;
+			
+			#parameter-container {
+				flex: 1;
+				overflow: scroll;
+			}
 		}
 	}
 }
