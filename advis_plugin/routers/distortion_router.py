@@ -5,10 +5,9 @@ from PIL import Image
 from io import BytesIO
 
 def distortions_route(request, distortion_manager):
-	if 'distortion' in request.args:
-		distortion_name = request.args.get('distortion')
-		distortion = distortion_manager.get_distortion_modules()[distortion_name]
-		
+	distortions = []
+	
+	for name, distortion in distortion_manager.get_distortion_modules().items():
 		parameters = [{
 			'name': parameter.name,
 			'displayName': parameter.display_name,
@@ -18,23 +17,15 @@ def distortions_route(request, distortion_manager):
 			'value': parameter._value
 		} for name, parameter in distortion._parameters.items()]
 		
-		response = {
-			'name': distortion.name,
-			'displayName': distortion.display_name,
-			'type': distortion.type,
-			'parameters': parameters
-		}
-	else:
-		response = [{
+		distortions.append({
 			'name': name,
 			'displayName': distortion.display_name,
 			'type': distortion.type,
-			'parameters': list(distortion._parameters.keys()),
+			'parameters': parameters,
 			'icon': distortion.icon
-		} for name, distortion in distortion_manager \
-			.get_distortion_modules().items()]
+		})
 	
-	return http_util.Respond(request, response, 'application/json')
+	return http_util.Respond(request, distortions, 'application/json')
 
 def distortions_single_route(request, distortion_manager, dataset_manager):
 	missing_arguments = argutil.check_missing_arguments(
