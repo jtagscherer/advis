@@ -15,14 +15,17 @@ tf_web_library(
 	path = "/dialogs/distortion-configuration-dialog",
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_polymer_paper_dialog",
 		"@org_polymer_paper_button",
 		"@org_polymer_iron_selector",
+		"@org_polymer_neon_animation",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
 		"//advis_plugin/dashboard/distortion_list_item",
+		"//advis_plugin/dashboard/section_header",
 		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog/distortion_preview",
-		"//advis_plugin/dashboard/section_header"
+		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog/parameter_configuration"
 	]
 )
 

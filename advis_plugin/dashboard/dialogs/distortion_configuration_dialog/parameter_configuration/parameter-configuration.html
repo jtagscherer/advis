@@ -1,0 +1,25 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<link rel="import" href="../../constant-parameter/constant-parameter.html">
+
+<!--
+	This component displays a configuration elements for all parameters 
+	of a distortion method.
+-->
+<dom-module id="parameter-configuration">
+	<template>
+		<div id="container">
+			<template is="dom-repeat" items="{{parameters}}">
+				<template is="dom-if" if="[[_isType(item, 'constant')]]">
+					<constant-parameter
+						parameter={{item}}>
+					</constant-parameter>
+				</template>
+			</template>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="parameter-configuration.css">
+	</template>
+
+	<script src="parameter-configuration.js"></script>
+</dom-module>

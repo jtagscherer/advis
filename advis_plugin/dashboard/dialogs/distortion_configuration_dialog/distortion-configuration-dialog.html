@@ -1,13 +1,16 @@
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
 <link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../iron-selector/iron-selector.html">
+<link rel="import" href="../../neon-animation/neon-animated-pages.html">
 
 <link rel="import" href="../../dialog-header/dialog-header.html">
 <link rel="import" href="../../dialog-behavior/dialog-behavior.html">
 <link rel="import" href="../../distortion-list-item/distortion-list-item.html">
-<link rel="import" href="../../distortion-preview/distortion-preview.html">
 <link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../distortion-preview/distortion-preview.html">
+<link rel="import" href="../../parameter-configuration/parameter-configuration.html">
 
 <!--
 	When opened, this module displays a dialog with a list of all available 
@@ -24,7 +27,7 @@
 			<div id="content">
 				<div id="sidebar">
 					<iron-selector id="distortion-selector"
-						selected="{{_selectedDistortion}}">
+						selected="{{_selectedDistortionIndex}}">
 						<template is="dom-repeat" items="[[distortions]]">
 							<div class="list-item distortions" data-args$=[[item.index]]>
 								<distortion-list-item
@@ -38,12 +41,19 @@
 				<div id="center">
 					<div id="parameters">
 						<section-header text="Parameters"></section-header>
-						<!-- TODO -->
+						<neon-animated-pages selected=[[_selectedDistortionIndex]]>
+							<template id="parameter-list" is="dom-repeat" items="[[modifiedDistortions]]">
+								<parameter-configuration
+									index="[[index]]"
+									parameters="[[item.parameters]]">
+								</parameter-configuration>
+							</template>
+						</neon-animated-pages>
 					</div>
 					<div id="preview">
 						<section-header text="Preview"></section-header>
 						<distortion-preview
-							distortion="[[_getSelectedDistortion(distortions, _selectedDistortion)]]"
+							distortion="[[_getSelectedDistortion(distortions, _selectedDistortionIndex)]]"
 							request-manager=[[requestManager]]>
 						</distortion-preview>
 					</div>
