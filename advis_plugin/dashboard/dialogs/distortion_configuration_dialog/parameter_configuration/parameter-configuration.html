@@ -1,6 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 
 <link rel="import" href="../../constant-parameter/constant-parameter.html">
+<link rel="import" href="../../range-parameter/range-parameter.html">
 
 <!--
 	This component displays a configuration elements for all parameters 
@@ -14,6 +15,11 @@
 					<constant-parameter
 						parameter={{item}}>
 					</constant-parameter>
+				</template>
+				<template is="dom-if" if="[[_isType(item, 'range')]]">
+					<range-parameter
+						parameter={{item}}>
+					</range-parameter>
 				</template>
 			</template>
 		</div>

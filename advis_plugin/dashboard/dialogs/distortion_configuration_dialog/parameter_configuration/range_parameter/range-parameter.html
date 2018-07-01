@@ -1,0 +1,27 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<link rel="import" href="../../paper-range-slider/paper-range-slider.html">
+
+<!--
+	This component displays a normal slider for adjusting a range parameter.
+-->
+<dom-module id="range-parameter">
+	<template>
+		<div id="container">
+			<p class="title">[[parameter.displayName]]: [[_roundNumber(parameter.value.lower)]] – [[_roundNumber(parameter.value.upper)]]</p>
+			<div>
+				<paper-range-slider pin snaps
+					step="[[parameter.constraints.step]]"
+					min="[[parameter.constraints.min]]"
+					max="[[parameter.constraints.max]]"
+					value-min="{{parameter.value.lower}}"
+					value-max="{{parameter.value.upper}}">
+				</paper-range-slider>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="range-parameter.css">
+	</template>
+
+	<script src="range-parameter.js"></script>
+</dom-module>

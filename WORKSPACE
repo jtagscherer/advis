@@ -114,6 +114,36 @@ web_library_external(
 )
 
 ################################################################################
+# PAPER RANGE SLIDER - Load the component that contains a range slider
+#
+
+web_library_external(
+	name = "org_polymer_paper_range_slider",
+	licenses = ["notice"],
+	sha256 = "7f6c7e7fdd7386b44110b4eb95b32dc5901ec415874fb114f0230fd0d429d096",
+	urls = [
+		"https://github.com/IftachSadeh/paper-range-slider/archive/v0.2.7.tar.gz"
+	],
+	strip_prefix = "paper-range-slider-0.2.7",
+	path = "/paper-range-slider",
+	srcs = [
+		"paper-range-slider.html"
+	],
+	deps = [
+		"@org_polymer",
+		"@org_polymer_paper_input",
+		"@org_polymer_paper_progress",
+		"@org_polymer_iron_flex_layout",
+		"@org_polymer_paper_styles",
+		"@org_polymer_iron_behaviors",
+		"@org_polymer_iron_range_behavior",
+		"@org_polymer_paper_behaviors",
+		"@org_polymer_iron_a11y_keys_behavior",
+		"@org_polymer_iron_form_element_behavior"
+	]
+)
+
+################################################################################
 # SASS RULES - Build rules and libraries for Sass support
 #
 
