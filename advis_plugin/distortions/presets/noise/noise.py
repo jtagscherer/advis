@@ -14,7 +14,8 @@ def get_parameters():
 			'type': 'constant',
 			'constraints': {
 				'min': 0,
-				'max': 1
+				'max': 1,
+				'step': 0.1
 			},
 			'default': 0.1
 		}

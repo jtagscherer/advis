@@ -14,7 +14,8 @@ def get_parameters():
 			'type': 'constant',
 			'constraints': {
 				'min': 1,
-				'max': 10
+				'max': 10,
+				'step': 1
 			},
 			'default': 2
 		},
@@ -24,7 +25,8 @@ def get_parameters():
 			'type': 'range',
 			'constraints': {
 				'min': 0,
-				'max': 1
+				'max': 1,
+				'step': 0.1
 			},
 			'default': {
 				'lower': 0,
@@ -37,7 +39,8 @@ def get_parameters():
 			'type': 'range',
 			'constraints': {
 				'min': 0,
-				'max': 1
+				'max': 1,
+				'step': 0.1
 			},
 			'default': {
 				'lower': 0,

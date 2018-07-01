@@ -14,7 +14,8 @@ def get_parameters():
 			'type': 'range',
 			'constraints': {
 				'min': -180,
-				'max': 180
+				'max': 180,
+				'step': 1
 			},
 			'default': {
 				'lower': -45,
