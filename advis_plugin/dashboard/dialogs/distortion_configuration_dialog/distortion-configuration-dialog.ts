@@ -121,5 +121,17 @@ Polymer({
 		
 		this.set('_dirty', !this._dirty);
 		this._updateResetButtonOpacity();
+	},
+	
+	getContentOnApply: function() {
+		var result = [];
+		
+		for (var distortion of this.modifiedDistortions) {
+			if (this._hasBeenChanged(distortion)) {
+				result.push(distortion);
+			}
+		}
+		
+		return result;
 	}
 });

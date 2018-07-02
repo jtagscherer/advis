@@ -8,7 +8,8 @@ Polymer({
     'nodeSelectedEvent': '_nodeSelected',
 		'iron-select': '_itemSelected',
 		'iron-deselect': '_itemDeselected',
-		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged'
+		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged',
+    'dialogReturnedEvent': '_dialogReturned'
   },
   properties: {
     selectedModel: {
@@ -55,6 +56,21 @@ Polymer({
 		});
   },
 	
+	_dialogReturned: function(e) {
+		if (e.detail.eventId == 'distortion-configuration-dialog') {
+			const updateUrl = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/distortions/update'), {
+				distortions: JSON.stringify(e.detail.content)
+			});
+			
+			const self = this;
+			this._requestManager.request(updateUrl).then(result => {
+				self._reloadDistortions(false);
+				self._calculateModelAccuracy();
+			});
+		}
+	},
+	
   _reloadModels: function() {
 		if (this.selectedModel != null) {
 			this.$$('graph-view').update();
@@ -66,7 +82,7 @@ Polymer({
 		});
   },
 	
-	_reloadDistortions: function() {
+	_reloadDistortions: function(selectAll: Boolean = true) {
 		var self = this;
 		
 		// Update the list of available distortions
@@ -85,12 +101,14 @@ Polymer({
 			
 			self._availableDistortions = newDistortions;
 			
-			// Select all available distortions
-			for (var distortion of self._availableDistortions) {
-				self.$$('#distortion-selector').select(distortion.index);
+			if (selectAll) {
+				// Select all available distortions
+				for (var distortion of self._availableDistortions) {
+					self.$$('#distortion-selector').select(distortion.index);
+				}
+				
+				this._selectedDistortions = this._availableDistortions;
 			}
-			
-			this._selectedDistortions = this._availableDistortions;
 		});
 	},
 	
