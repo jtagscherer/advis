@@ -16,6 +16,7 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:lodash",
 		"@org_polymer_paper_dialog",
 		"@org_polymer_paper_button",
 		"@org_polymer_iron_selector",

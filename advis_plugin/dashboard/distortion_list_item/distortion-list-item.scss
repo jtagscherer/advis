@@ -9,6 +9,10 @@ $icon-background-size: 30px;
 
 @import 'advis_plugin/dashboard/shared/style/style';
 
+:host {
+	--title-style: normal;
+}
+
 #container {
 	position: relative;
 	padding: 10px;
@@ -24,13 +28,16 @@ $icon-background-size: 30px;
 			flex-direction: column;
 			padding-left: $icon-padding;
 			
-			* {
+			div > .title {
+				font-style: var(--title-style);
 				margin-top: $line-spacing;
 				margin-bottom: $line-spacing;
 			}
 			
 			.caption {
 				margin-bottom: 0px;
+				margin-top: $line-spacing;
+				margin-bottom: $line-spacing;
 			}
 		}
 		

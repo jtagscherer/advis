@@ -17,6 +17,10 @@ Polymer({
 		_selectedDistortionIndex: {
 			type: Number,
 			value: 0
+		},
+		_dirty: {
+			type: Boolean,
+			notify: true
 		}
   },
 	
@@ -29,12 +33,37 @@ Polymer({
 			return;
 		}
 		
-		this.modifiedDistortions[e.detail.distortionIndex].parameters =
-			e.detail.parameters;
+		this.set(
+			'modifiedDistortions.' + e.detail.distortionIndex + '.parameters',
+			e.detail.parameters
+		);
+		
+		this.set('_dirty', !this._dirty);
+	},
+	
+	_getModifiedDistortionNames: function(originalDistortions,
+		modifiedDistortions) {
+		var modifiedDistortionNames = [];
+		
+		for (var i = 0; i < originalDistortions.length; i++) {
+			const originalDistortion = originalDistortions[i];
+			const modifiedDistortion = modifiedDistortions[i];
+			
+			if (!_.isEqual(originalDistortion, modifiedDistortion)) {
+				modifiedDistortionNames.push(originalDistortion.name);
+			}
+		}
+		
+		return modifiedDistortionNames;
 	},
 	
 	_getSelectedDistortion: function(distortions, _selectedDistortionIndex) {
 		return distortions[_selectedDistortionIndex];
+	},
+	
+	_hasBeenChanged: function(distortion) {
+		return this._getModifiedDistortionNames(this.distortions,
+			this.modifiedDistortions).includes(distortion.name);
 	},
 	
 	_isLastDistortionListItem: function(index) {
@@ -49,9 +78,6 @@ Polymer({
 		this.set('modifiedDistortions', JSON.parse(JSON.stringify(
 			this.distortions)));
 		this.set('_selectedDistortionIndex', 0);
-	},
-	
-	getContentOnDismiss: function() {
-		// TODO
+		this.$$('#distortion-list').render();
 	}
 });

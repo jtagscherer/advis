@@ -35,7 +35,11 @@
 				</template>
 				
 				<div id="text">
-					<p class="single-line title">[[distortion.displayName]]</p>
+					<div>
+						<p class="single-line title">
+							[[_getTitle(distortion, highlighted)]]
+						</p>
+					</div>
 					<template is="dom-if" if="[[!compact]]">
 						<p class="single-line caption">[[distortion.type]]</p>
 					</template>
