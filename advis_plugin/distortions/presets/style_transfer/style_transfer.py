@@ -20,26 +20,32 @@ def get_parameters():
 			'name': 'style',
 			'display_name': 'Style',
 			'type': 'enum',
-			'options': {
-				'la_muse': {
+			'options': [
+				{
+					'name': 'la_muse',
 					'display_name': 'La Muse (Pablo Picasso)'
 				},
-				'rain_princess': {
+				{
+					'name': 'rain_princess',
 					'display_name': 'Rain Princess (Leonid Afremov)'
 				},
-				'shipwreck': {
+				{
+					'name': 'shipwreck',
 					'display_name': 'The Shipwreck (J. M. W. Turner)'
 				},
-				'the_scream': {
+				{
+					'name': 'the_scream',
 					'display_name': 'The Scream (Edvard Munch)'
 				},
-				'udnie': {
+				{
+					'name': 'udnie',
 					'display_name': 'Udnie (Francis Picabia)'
 				},
-				'wave': {
+				{
+					'name': 'wave',
 					'display_name': 'The Great Wave off Kanagawa (Katsushika Hokusai)'
 				}
-			},
+			],
 			'default': 'wave'
 		}
 	]

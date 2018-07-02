@@ -5,6 +5,8 @@ import numbers
 import json
 import random
 
+import tensorflow as tf
+
 class ParameterType(Enum):
 	'''An enumeration of all available parameter types'''
 	CONSTANT = 1,
@@ -62,9 +64,10 @@ class Parameter:
 			value['lower'] = max(min(value['lower'], max_value), min_value)
 			value['upper'] = max(min(value['upper'], max_value), min_value)
 		elif self.type is ParameterType.ENUM:
-			key = value
-			value = self.options[key]
-			value['key'] = key
+			tf.logging.warn(value)
+			for option in self.options:
+				if option['name'] == value:
+					value = option
 		
 		# Update the non-persistent representation of the value
 		self._value = value
@@ -109,7 +112,14 @@ def _is_valid_value(value, type, options=None):
 	elif type is ParameterType.CONSTANT:
 		return isinstance(value, numbers.Number)
 	elif type is ParameterType.ENUM:
-		return options is not None and value in options
+		if options is not None:
+			for option in options:
+				if option['name'] == value:
+					return True
+			tf.logging.warn('{} is invalid.'.format(value))
+			return False
+		else:
+			return False
 	else:
 		return False
 
