@@ -1,6 +1,12 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 @import 'advis_plugin/dashboard/shared/style/style';
 
+/*:host {
+	--paper-button-disabled: {
+		color: $medium-foreground-color !important;
+	};
+}*/
+
 dialog-header {
 	padding: 0;
 }
@@ -64,7 +70,7 @@ dialog-header {
 		color: $medium-foreground-color;
 	}
 	
-	#button-apply {
+	#button-apply[aria-disabled="false"] {
 		color: $accent-color;
 	}
 }

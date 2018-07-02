@@ -68,7 +68,8 @@
 					on-tap="_dismissDialog">
 					Cancel
 				</paper-button>
-				<paper-button id="button-apply">
+				<paper-button id="button-apply"
+					disabled=[[_isNotDirty(_dirty)]]>
 					Apply
 				</paper-button>
 			</div>

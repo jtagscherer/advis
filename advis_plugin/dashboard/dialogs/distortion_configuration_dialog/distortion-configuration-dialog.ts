@@ -66,6 +66,11 @@ Polymer({
 			this.modifiedDistortions).includes(distortion.name);
 	},
 	
+	_isNotDirty: function() {
+		return this._getModifiedDistortionNames(this.distortions,
+			this.modifiedDistortions).length == 0;
+	},
+	
 	_isLastDistortionListItem: function(index) {
 		return index == this.distortions.length - 1;
 	},
@@ -79,5 +84,7 @@ Polymer({
 			this.distortions)));
 		this.set('_selectedDistortionIndex', 0);
 		this.$$('#distortion-list').render();
+		
+		this.set('_dirty', !this._dirty);
 	}
 });
