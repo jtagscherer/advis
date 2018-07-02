@@ -16,7 +16,8 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog/parameter_configuration/constant_parameter",
-		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog/parameter_configuration/range_parameter"
+		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog/parameter_configuration/range_parameter",
+		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog/parameter_configuration/enum_parameter"
 	]
 )
 

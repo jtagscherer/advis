@@ -2,6 +2,7 @@
 
 <link rel="import" href="../../constant-parameter/constant-parameter.html">
 <link rel="import" href="../../range-parameter/range-parameter.html">
+<link rel="import" href="../../enum-parameter/enum-parameter.html">
 
 <!--
 	This component displays a configuration elements for all parameters 
@@ -20,6 +21,11 @@
 					<range-parameter
 						parameter={{item}}>
 					</range-parameter>
+				</template>
+				<template is="dom-if" if="[[_isType(item, 'enum')]]">
+					<enum-parameter
+						parameter={{item}}>
+					</enum-parameter>
 				</template>
 			</template>
 		</div>
