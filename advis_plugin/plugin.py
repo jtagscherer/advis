@@ -180,7 +180,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 				as the name of the dataset and the image index of the input image. On 
 				top of that, a distortion index may be supplied, allowing you to fetch 
 				multiple random distortions of a single image with each distorted image 
-				with the same index staying the same.
+				with the same index staying the same. Moreover, you can supply your own 
+				set of parameters as JSON to preview a configuration.
 		Returns:
 			A response that contains the image after having been randomly distorted.
 		"""
