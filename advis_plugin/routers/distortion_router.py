@@ -1,9 +1,13 @@
 from tensorboard.backend import http_util
 from advis_plugin.util import argutil
+from advis_plugin.util.cache import DataCache
 
 from PIL import Image
 from io import BytesIO
 import json
+
+# DEBUG
+import tensorflow as tf
 
 def distortions_route(request, distortion_manager):
 	distortions = []
@@ -90,7 +94,18 @@ def distortions_update_route(request, distortion_manager):
 		for parameter in distortion['parameters']:
 			_distortion.set_parameter_value(parameter['name'], parameter['value'])
 		
-		# TODO: Remove old invalid cache data
+		# Remove old invalid cache data
+		def fourth_distortion(key): return key[3] == distortion['name']
+		def third_distortion(key): return key[2] == distortion['name']
+		
+		DataCache().remove_cached_data('composite_visualization_meta',
+			fourth_distortion)
+		DataCache().remove_cached_data('composite_visualization_composition',
+			fourth_distortion)
+		DataCache().remove_cached_data('layer_visualization', fourth_distortion)
+		DataCache().remove_cached_data('node_difference', third_distortion)
+		DataCache().remove_cached_data('single_prediction', third_distortion)
+		DataCache().remove_cached_data('prediction_accuracy', third_distortion)
 	
 	return http_util.Respond(request, [], 'application/json')
 	
