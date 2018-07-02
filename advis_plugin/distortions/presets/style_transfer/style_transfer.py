@@ -23,27 +23,27 @@ def get_parameters():
 			'options': [
 				{
 					'name': 'la_muse',
-					'display_name': 'La Muse (Pablo Picasso)'
+					'displayName': 'La Muse (Pablo Picasso)'
 				},
 				{
 					'name': 'rain_princess',
-					'display_name': 'Rain Princess (Leonid Afremov)'
+					'displayName': 'Rain Princess (Leonid Afremov)'
 				},
 				{
 					'name': 'shipwreck',
-					'display_name': 'The Shipwreck (J. M. W. Turner)'
+					'displayName': 'The Shipwreck (J. M. W. Turner)'
 				},
 				{
 					'name': 'the_scream',
-					'display_name': 'The Scream (Edvard Munch)'
+					'displayName': 'The Scream (Edvard Munch)'
 				},
 				{
 					'name': 'udnie',
-					'display_name': 'Udnie (Francis Picabia)'
+					'displayName': 'Udnie (Francis Picabia)'
 				},
 				{
 					'name': 'wave',
-					'display_name': 'The Great Wave off Kanagawa (Katsushika Hokusai)'
+					'displayName': 'The Great Wave off Kanagawa (Katsushika Hokusai)'
 				}
 			],
 			'default': 'wave'
