@@ -41,6 +41,7 @@ Polymer({
 		
 		this.set('_dirty', !this._dirty);
 		this._updateResetButtonOpacity();
+		this.$$('#distortion-preview').reload();
 	},
 	
 	_selectedDistortionChanged: function() {

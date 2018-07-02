@@ -67,7 +67,8 @@
 					<div id="preview">
 						<section-header text="Preview"></section-header>
 						<distortion-preview
-							distortion="[[_getSelectedDistortion(distortions, _selectedDistortionIndex)]]"
+							id='distortion-preview'
+							distortion="[[_getSelectedDistortion(modifiedDistortions, _selectedDistortionIndex)]]"
 							request-manager=[[requestManager]]>
 						</distortion-preview>
 					</div>
