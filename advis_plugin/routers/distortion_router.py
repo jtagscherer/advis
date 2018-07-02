@@ -3,6 +3,7 @@ from advis_plugin.util import argutil
 
 from PIL import Image
 from io import BytesIO
+import json
 
 def distortions_route(request, distortion_manager):
 	distortions = []
@@ -69,4 +70,27 @@ def distortions_single_route(request, distortion_manager, dataset_manager):
 		response = byte_array.getvalue()
 	
 	return http_util.Respond(request, response, 'image/png')
+
+def distortions_update_route(request, distortion_manager):
+	missing_arguments = argutil.check_missing_arguments(
+		request, ['distortions']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	_distortions = request.args.get('distortions')
+	distortions = json.loads(_distortions)
+	
+	for distortion in distortions:
+		_distortion = distortion_manager \
+			.get_distortion_modules()[distortion['name']]
+		
+		# Update all parameter values
+		for parameter in distortion['parameters']:
+			_distortion.set_parameter_value(parameter['name'], parameter['value'])
+		
+		# TODO: Remove old invalid cache data
+	
+	return http_util.Respond(request, [], 'application/json')
 	

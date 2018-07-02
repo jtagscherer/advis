@@ -72,6 +72,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/predictions/accuracy': self.accuracy_prediction_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
+			'/distortions/update': self.distortions_update_route,
 			'/datasets': self.datasets_route,
 			'/datasets/images/list': self.datasets_images_list_route,
 			'/datasets/images/image': self.datasets_images_image_route,
@@ -188,6 +189,22 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		
 		return distortion_router.distortions_single_route(request,
 			self.distortion_manager, self.dataset_manager)
+	
+	@wrappers.Request.application
+	def distortions_update_route(self, request):
+		"""A route that updates the parameter values of a list of distortions.
+
+		Arguments:
+			request: The request which has to contain the list of distortions whose 
+				parameter values should be updated. After these values have been 
+				updated, the changes will be persisted and cached data that has become 
+				invalid will be removed.
+		Returns:
+			An empty response if everything went as expected.
+		"""
+		
+		return distortion_router.distortions_update_route(request,
+			self.distortion_manager)
 	
 	@wrappers.Request.application
 	def datasets_route(self, request):
