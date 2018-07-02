@@ -81,7 +81,7 @@ def distort(image, configuration):
 	
 	output_image = _get_style_transfer_runner(
 		image_size, 
-		configuration['style']['key']
+		configuration['style']['name']
 	).run(image)
 	
 	return output_image[0:image_size, 0:image_size, :] / 255
