@@ -16,7 +16,8 @@ Polymer({
 		},
 		_selectedDistortionIndex: {
 			type: Number,
-			value: 0
+			value: 0,
+			observer: '_selectedDistortionChanged'
 		},
 		_dirty: {
 			type: Boolean,
@@ -39,6 +40,11 @@ Polymer({
 		);
 		
 		this.set('_dirty', !this._dirty);
+		this._updateResetButtonOpacity();
+	},
+	
+	_selectedDistortionChanged: function() {
+		this._updateResetButtonOpacity();
 	},
 	
 	_getModifiedDistortionNames: function(originalDistortions,
@@ -75,6 +81,33 @@ Polymer({
 		return index == this.distortions.length - 1;
 	},
 	
+	_updateResetButtonOpacity: function() {
+		if (this.distortions == null || this.modifiedDistortions == null) {
+			this.customStyle['--reset-button-opacity'] = '0';
+		} else {
+			if (this._hasBeenChanged(this.distortions
+				[this._selectedDistortionIndex])) {
+				this.customStyle['--reset-button-opacity'] = '1';
+			} else {
+				this.customStyle['--reset-button-opacity'] = '0';
+			}
+		}
+		
+		this.updateStyles();
+	},
+	
+	resetDistortion: function(e) {
+		const distortionIndex = e.target.getAttribute('data-args');
+		
+		this.set(
+			'modifiedDistortions.' + distortionIndex + '.parameters',
+			JSON.parse(JSON.stringify(this.distortions[distortionIndex].parameters))
+		);
+		
+		this.set('_dirty', !this._dirty);
+		this._updateResetButtonOpacity();
+	},
+	
 	setContent: function(content) {
 		this.distortions = content.distortions;
 		this.requestManager = content.requestManager;
@@ -86,5 +119,6 @@ Polymer({
 		this.$$('#distortion-list').render();
 		
 		this.set('_dirty', !this._dirty);
+		this._updateResetButtonOpacity();
 	}
 });

@@ -46,10 +46,20 @@
 						<div id="parameter-container">
 							<neon-animated-pages selected=[[_selectedDistortionIndex]]>
 								<template id="parameter-list" is="dom-repeat" items="[[modifiedDistortions]]">
-									<parameter-configuration
-										index="[[index]]"
-										parameters="[[item.parameters]]">
-									</parameter-configuration>
+									<div class="parameter-page-container">
+										<parameter-configuration
+											index="[[index]]"
+											parameters="[[item.parameters]]">
+										</parameter-configuration>
+										<div class="reset-button-container">
+											<paper-button
+												on-tap="resetDistortion"
+												data-args$=[[item.index]]
+												disabled="[[!_hasBeenChanged(item, _dirty)]]">
+												Reset
+											</paper-button>
+										</div>
+									</div>
 								</template>
 							</neon-animated-pages>
 					</div>

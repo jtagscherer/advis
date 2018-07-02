@@ -1,11 +1,9 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 @import 'advis_plugin/dashboard/shared/style/style';
 
-/*:host {
-	--paper-button-disabled: {
-		color: $medium-foreground-color !important;
-	};
-}*/
+:host {
+	--reset-button-opacity: '0';
+}
 
 dialog-header {
 	padding: 0;
@@ -48,6 +46,23 @@ dialog-header {
 			#parameter-container {
 				flex: 1;
 				overflow: scroll;
+				
+				.parameter-page-container {
+					display: flex;
+					flex-direction: column;
+					
+					.reset-button-container {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						
+						paper-button {
+							width: 100px;
+							transition: opacity 0.5s ease-in-out;
+							opacity: var(--reset-button-opacity);
+						}
+					}
+				}
 			}
 		}
 	}
