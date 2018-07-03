@@ -83,7 +83,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/node': self.node_difference_route,
 			'/node/list': self.node_difference_list_route,
 			'/node/list/meta': self.node_difference_list_meta_route,
-			'/cache': self.cache_route
+			'/cache': self.cache_route,
+			'/cache/progress': self.cache_progress_route
 		}
 
 	def is_active(self):
@@ -412,3 +413,15 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		}
 		
 		return cache_router.cache_route(request, routers, managers)
+	
+	@wrappers.Request.application
+	def cache_progress_route(self, request):
+		"""A route that retrieves the current progress of the caching process.
+
+		Arguments:
+			request: The request which does not have to contain any parameters.
+		Returns:
+			A response with the current progress and status of the caching progress.
+		"""
+		
+		return cache_router.cache_progress_route(request)

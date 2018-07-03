@@ -11,6 +11,25 @@ _progress = {
 	'total': 0
 }
 
+def cache_progress_route(request):
+	global _progress
+	
+	if _progress['total'] > 0:
+		percentage = int(round((_progress['progress']	/ _progress['total']) * 100))
+	else:
+		percentage = 100
+	
+	response = {
+		'status': _progress['status'],
+		'progress': {
+			'current': _progress['progress'],
+			'total': _progress['total'],
+			'percentage': percentage
+		}
+	}
+	
+	return http_util.Respond(request, response, 'application/json')
+
 def cache_route(request, routers, managers):
 	missing_arguments = argutil.check_missing_arguments(
 		request, ['modelAccuracy', 'nodeActivation']
