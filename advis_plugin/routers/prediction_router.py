@@ -4,6 +4,10 @@ from advis_plugin.util.cache import DataCache
 
 from random import randrange
 
+import warnings
+import numpy as np
+from sklearn.metrics import f1_score, precision_score, recall_score
+
 data_type_single_prediction = 'single_prediction'
 data_type_prediction_accuracy = 'prediction_accuracy'
 
@@ -87,7 +91,8 @@ def _get_accuracy_prediction(model, distortion, input_image_amount,
 			'displayName': _model.display_name
 		},
 		'input': input_meta_data,
-		'accuracy': _calculate_accuracy(predictions)
+		'accuracy': _calculate_accuracy(predictions),
+		'metrics': _calculate_metrics(predictions)
 	}
 	
 	DataCache().set_data(data_type_prediction_accuracy, key_tuple, result)
@@ -171,3 +176,31 @@ def _calculate_accuracy(predictions):
 	}
 	
 	return accuracy
+
+def _calculate_metrics(predictions):
+	# Bring ground truth labels and predictions into the right form
+	sample_labels = np.zeros(len(predictions))
+	sample_predictions = np.zeros(len(predictions))
+	
+	for prediction_index, prediction in enumerate(predictions):
+		sample_labels[prediction_index] = prediction['input']['categoryId']
+		sample_predictions[prediction_index] \
+			= prediction['predictions'][0]['categoryId']
+	
+	f1 = precision = recall = 0.0
+	
+	with warnings.catch_warnings():
+		# Finally, calculate the F1 score
+		warnings.simplefilter('ignore')
+		
+		f1 = f1_score(sample_labels, sample_predictions, average='weighted')
+		precision = precision_score(sample_labels, sample_predictions,
+			average='weighted')
+		recall = recall_score(sample_labels, sample_predictions, average='weighted')
+		
+	return {
+		'f1': f1,
+		'precision': precision,
+		'recall': recall
+	}
+	
