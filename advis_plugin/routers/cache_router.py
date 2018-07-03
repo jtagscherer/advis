@@ -11,6 +11,8 @@ _progress = {
 	'total': 0
 }
 
+_verbose = False
+
 def cache_progress_route(request):
 	global _progress
 	
@@ -41,6 +43,12 @@ def cache_route(request, routers, managers):
 	model_accuracy = int(request.args.get('modelAccuracy'))
 	node_activation = int(request.args.get('nodeActivation'))
 	
+	global _verbose
+	if 'verbose' in request.args:
+		_verbose = request.args['verbose']
+	else:
+		_verbose = False
+	
 	# Disable immediate caching
 	DataCache().disable_caching()
 	
@@ -66,16 +74,17 @@ def cache_route(request, routers, managers):
 	# Re-enable caching
 	DataCache().enable_caching()
 	
-	tf.logging.warn('Caching completed!')
+	if _verbose:
+		tf.logging.warn('Caching completed!')
+	
 	end_time = time.time()
 	_stop_progress()
 	
-	return http_util.Respond(
-		request,
-		'Caching completed. Time taken: {} s.' \
-			.format(int(round(end_time - start_time))),
-		'text/plain'
-	)
+	response = {
+		'runtime': int(round(end_time - start_time))
+	}
+	
+	return http_util.Respond(request, response, 'application/json')
 
 def _cache_graph_structures(routers, managers):
 	model_router = routers['model']
@@ -193,11 +202,12 @@ def _stop_progress():
 
 def _update_progress(status, verbose=False):
 	global _progress
+	global _verbose
 	
 	_progress['status'] = status
 	_progress['progress'] += 1
 	
-	if verbose:
+	if _verbose:
 		progress_string = '{}%: {}'.format(int(round((_progress['progress'] \
 			/ _progress['total']) * 100)), _progress['status'])
 		tf.logging.warn(progress_string)
