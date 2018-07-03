@@ -13,23 +13,31 @@ Polymer({
 		},
 		distortions: {
 			type: Array,
-			observer: '_calculateAccuracyDifference'
+			observer: '_updateAllMetrics'
 		},
 		accuracyCalculationFlag: {
 			type: Boolean,
-			observer: '_calculateAccuracyDifference'
+			observer: '_updateAllMetrics'
 		},
 		lastItem: Boolean,
 		_selected: Boolean,
-		_top5AccuracyDifference: Number,
-		_top1AccuracyDifference: Number
+		_metricDifferences: {
+			type: Object,
+			value: {
+				top5: undefined,
+				top1: undefined,
+				f1: undefined,
+				precision: undefined,
+				recall: undefined
+			}
+		}
 	},
 	
 	_modelChanged: function() {
 		this._selected = this.model.selectedForStatistics;
 		this.$$('#checkbox').checked = this._selected;
 		
-		this._calculateAccuracyDifference();
+		this._updateAllMetrics();
 	},
 	
 	_computeTitleStyle: function(model, _selected) {
@@ -62,49 +70,50 @@ Polymer({
 		});
 	},
 	
-	_calculateAccuracyDifference: function() {
-		if (this.model == null || this.distortions == null) {
+	_updateAllMetrics: function() {
+		if (this.model == null || this.distortions == null ||
+			this.model.metrics == null || !('original' in this.model.metrics)) {
 			return;
 		}
 		
-		// Only calculate the accuracy difference if accuracies for all selected 
+		for (const metric of Object.keys(this.model.metrics.original)) {
+			this.set(
+				`_metricDifferences.${metric}`,
+				this._calculateMetricDifference(metric)
+			);
+		}
+	},
+	
+	_calculateMetricDifference: function(name) {
+		// Only calculate the metric difference if metrics for all selected 
 		// distortions and the original input have been retrieved
-		if (Object.keys(this.model.accuracy).length >= this.distortions
-			.length + 1 && 'original' in this.model.accuracy) {
+		if (Object.keys(this.model.metrics).length >= this.distortions
+			.length + 1 && 'original' in this.model.metrics) {
 			if (this.distortions.length == 0) {
-				this._top5AccuracyDifference = 0;
-				this._top1AccuracyDifference = 0;
+				return 0;
 			} else {
-				var top5deltaSum = 0;
-				var top1deltaSum = 0;
+				var deltaSum = 0;
 				
-				// Calculate the difference between the accuracy of each distorted 
+				// Calculate the difference between the metric of each distorted 
 				// prediction and the original one
 				for (let selectedDistortion in this.distortions) {
-					for (let distortion in this.model.accuracy) {
+					for (let distortion in this.model.metrics) {
 						if (distortion == this.distortions[selectedDistortion].name) {
-							top5deltaSum += (this.model.accuracy[distortion].top5 
-								- this.model.accuracy.original.top5);
-							top1deltaSum += (this.model.accuracy[distortion].top1
-								- this.model.accuracy.original.top1);
+							deltaSum += (this.model.metrics[distortion][name] 
+								- this.model.metrics.original[name]);
 							break;
 						}
 					}
 				}
 				
 				// Calculate the average of the differences
-				let top5result = (top5deltaSum * 1.0)
-				 	/ (Object.keys(this.model.accuracy).length - 1);
-				let top1result = (top1deltaSum * 1.0)
-				 	/ (Object.keys(this.model.accuracy).length - 1);
+				let result = (deltaSum * 1.0)
+				 	/ (Object.keys(this.model.metrics).length - 1);
 				
-				// Finally, set the variable that will be shown
-				this._top5AccuracyDifference = top5result;
-				this._top1AccuracyDifference = top1result;
+				return result;
 			}
 		} else {
-			this._top5AccuracyDifference = undefined;
-			this._top1AccuracyDifference = undefined;
+			return undefined;
 		}
 	}
 });

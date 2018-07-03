@@ -25,7 +25,7 @@ Polymer({
 		_inputImageAmount: {
 			type: Number,
 			value: advis.config.requests.imageAmounts.modelAccuracy,
-			observer: '_calculateModelAccuracy'
+			observer: '_calculateModelMetrics'
 		},
 		_accuracyCalculationFlag: Boolean,
     _requestManager: {
@@ -64,7 +64,7 @@ Polymer({
 			});
 		} else if (e.detail.eventId == 'distortion-update-confirmation-dialog') {
 			this._reloadDistortions(false);
-			this._calculateModelAccuracy();
+			this._calculateModelMetrics();
 		}
 	},
 	
@@ -163,7 +163,7 @@ Polymer({
 			newSelectedDistortions.sort(this._compareByName)
 			
 			this._selectedDistortions = newSelectedDistortions;
-			this._calculateModelAccuracy();
+			this._calculateModelMetrics();
 		}
 	},
 	
@@ -214,7 +214,7 @@ Polymer({
 						version: model['version'],
 						color: colorPalette[Number(index) % maximumAmountOfColors],
 						selectedForStatistics: false,
-						accuracy: {}
+						metrics: {}
 					}
 					
 					// If the model existed beforehand, remember its statistics selection
@@ -225,10 +225,10 @@ Polymer({
 							if (oldModel.name == model['name']) {
 								newModel.selectedForStatistics = oldModel.selectedForStatistics;
 								
-								// If the old model's accuracy had already been calculated, 
+								// If the old model's metrics had already been calculated, 
 								// remember it
-								if ('accuracy' in oldModel) {
-									newModel.accuracy = oldModel.accuracy;
+								if ('metrics' in oldModel) {
+									newModel.metrics = oldModel.metrics;
 								}
 								
 								break;
@@ -241,7 +241,7 @@ Polymer({
 				}
 				
 				this._availableModels = availableModels;
-				this._calculateModelAccuracy();
+				this._calculateModelMetrics();
 				
 				this._dataNotFound = false;
 			} else {
@@ -250,7 +250,7 @@ Polymer({
     });
   },
 	
-	_calculateModelAccuracy: function() {
+	_calculateModelMetrics: function() {
 		if (this._selectedDistortions == null || this._requestManager == null
 			|| this._availableModels == null) {
 			return;
@@ -258,15 +258,17 @@ Polymer({
 		
 		let self = this;
 		
-		// Store the accuracy of the model on the original or a distorted dataset
-		let storeAccuracy = async function(modelName, distortionName, top1, top5,
-			metrics) {
+		// Store the metrics of the model on the original or a distorted dataset
+		let storeMetrics = async function(modelName, distortionName, top1, top5,
+			f1, precision, recall) {
 			for (var model of self._availableModels) {
 				if (model.name == modelName) {
-					model.accuracy[distortionName] = {
+					model.metrics[distortionName] = {
 						'top1': top1,
 						'top5': top5,
-						'metrics': metrics
+						'f1': f1,
+						'precision': precision,
+						'recall': recall
 					}
 				}
 			}
@@ -277,7 +279,7 @@ Polymer({
 		
 		// Loop through all models and request their accuracies
 		for (var model of this._availableModels) {
-			// First of all, request the accuracy of non-distorted input images
+			// First of all, request the metrics of non-distorted input images
 			var originalUrl = tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('advis', '/predictions/accuracy'), {
 				model: model.name,
@@ -285,12 +287,14 @@ Polymer({
 			});
 			
 			this._requestManager.request(originalUrl).then(data => {
-				storeAccuracy(
+				storeMetrics(
 					data.model.name,
 					'original',
 					data.accuracy.top1,
 					data.accuracy.top5,
-					data.metrics
+					data.metrics.f1,
+					data.metrics.precision,
+					data.metrics.recall
 				);
 			});
 			
@@ -305,12 +309,14 @@ Polymer({
 				});
 				
 				this._requestManager.request(url).then(data => {
-					storeAccuracy(
+					storeMetrics(
 						data.model.name,
 						data.input.distortion,
 						data.accuracy.top1,
 						data.accuracy.top5,
-						data.metrics
+						data.metrics.f1,
+						data.metrics.precision,
+						data.metrics.recall
 					);
 				});
 			}
