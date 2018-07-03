@@ -58,16 +58,13 @@ Polymer({
 	
 	_dialogReturned: function(e) {
 		if (e.detail.eventId == 'distortion-configuration-dialog') {
-			const updateUrl = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/distortions/update'), {
-				distortions: JSON.stringify(e.detail.content)
+			this.$$('distortion-update-confirmation-dialog').open({
+	      changedDistortions: e.detail.content,
+	      requestManager: this._requestManager
 			});
-			
-			const self = this;
-			this._requestManager.request(updateUrl).then(result => {
-				self._reloadDistortions(false);
-				self._calculateModelAccuracy();
-			});
+		} else if (e.detail.eventId == 'distortion-update-confirmation-dialog') {
+			this._reloadDistortions(false);
+			this._calculateModelAccuracy();
 		}
 	},
 	

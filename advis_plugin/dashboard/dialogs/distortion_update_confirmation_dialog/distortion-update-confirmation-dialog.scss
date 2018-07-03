@@ -1,0 +1,54 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+@import 'advis_plugin/dashboard/shared/style/style';
+@import 'advis_plugin/dashboard/shared/style/text';
+
+dialog-header {
+	padding: 0;
+}
+
+#content {
+	display: flex;
+	flex-direction: column;
+	
+	margin: 0;
+	margin-left: 10px;
+	margin-right: 10px;
+	padding: 0;
+	
+	width: 40vw;
+	
+	paper-progress {
+		width: 100%;
+		padding-top: 50px;
+		padding-bottom: 50px;
+		
+		--paper-progress-active-color: $accent-color;
+		--paper-progress-secondary-color: transparent;
+	}
+}
+
+.buttons {
+	border-top: 1px solid $light-foreground-color;
+	background-color: $medium-background-color;
+	
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	
+	padding: 0px 10px 0px 0px;
+	
+	paper-button {
+		font-weight: bold;
+	}
+	
+	#button-cancel {
+		color: $medium-foreground-color;
+	}
+	
+	#button-apply[aria-disabled="false"] {
+		color: $accent-color;
+	}
+	
+	#button-apply-and-cache[aria-disabled="false"] {
+		color: $accent-color;
+	}
+}
