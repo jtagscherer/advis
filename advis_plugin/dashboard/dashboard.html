@@ -72,12 +72,16 @@
 				</div>
 				<div id="chart">
 					<section-header text="Model Accuracy"></section-header>
-					<accuracy-radar-chart
-						models=[[_availableModels]]
-						distortions=[[_selectedDistortions]]
-						selected-distortion={{_selectedVisualizationDistortion}}
-						accuracy-calculation-flag=[[_accuracyCalculationFlag]]>
-					</accuracy-radar-chart>
+					<div id="chart-wrapper">
+						<div id="chart-container">
+							<accuracy-radar-chart
+								models=[[_availableModels]]
+								distortions=[[_selectedDistortions]]
+								selected-distortion={{_selectedVisualizationDistortion}}
+								accuracy-calculation-flag=[[_accuracyCalculationFlag]]>
+							</accuracy-radar-chart>
+						</div>
+					</div>
 				</div>
 			</paper-material>
 			<div class="center">
