@@ -28,8 +28,13 @@
 						Distorted
 					</p>
 					<div id="right-image-container">
-						<template is="dom-repeat" items="[[_distortedImageUrls]]">
-							<img src$="[[item]]"></img>
+						<template is="dom-if" if="[[!_singlePreviewImage]]">
+							<template is="dom-repeat" items="[[_distortedImageUrls]]">
+								<img class="image-grid" src$="[[item]]"></img>
+							</template>
+						</template>
+						<template is="dom-if" if="[[_singlePreviewImage]]">
+							<img class="single-image" src$="[[_distortedImageUrls.0]]"></img>
 						</template>
 					</div>
 				</div>

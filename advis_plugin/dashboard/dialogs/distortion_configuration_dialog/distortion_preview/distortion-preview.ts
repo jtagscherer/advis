@@ -12,7 +12,11 @@ Polymer({
 			observer: 'reload'
 		},
 		_originalImageUrl: String,
-		_distortedImageUrls: Array
+		_distortedImageUrls: Array,
+		_singlePreviewImage: {
+			type: Boolean,
+			value: false
+		}
 	},
 	
 	reload: function() {
@@ -43,8 +47,22 @@ Polymer({
 						})
 					);
 					
+					// If there are no range or constant parameters allowing for image 
+					// variation, we display a single preview image instead of four
+					this.set('_singlePreviewImage', true);
+					var urlAmount = 1;
+					
+					for (const parameter in this.distortion.parameters) {
+						const _parameter = this.distortion.parameters[parameter];
+						
+						if (_parameter.type == 'constant' || _parameter.type == 'range') {
+							this.set('_singlePreviewImage', false);
+							urlAmount = 4;
+						}
+					}
+					
 					var distortedImageUrls = [];
-					for (var i = 0; i < 4; i++) {
+					for (var i = 0; i < urlAmount; i++) {
 						distortedImageUrls.push(tf_backend.addParams(tf_backend.getRouter()
 							.pluginRoute('advis', '/distortions/single'), {
 							distortion: this.distortion.name,

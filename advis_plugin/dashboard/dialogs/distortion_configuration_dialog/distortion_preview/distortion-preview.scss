@@ -65,8 +65,14 @@ $image-grid-padding: 3px;
 				font-size: 0;
 				line-height: 0;
 				
-				img {
+				.image-grid {
 					width: calc(100px - (2 * #{$image-grid-padding}));
+					height: auto;
+					padding: $image-grid-padding;
+				}
+				
+				.single-image {
+					width: calc(200px - (2 * #{$image-grid-padding}));
 					height: auto;
 					padding: $image-grid-padding;
 				}
