@@ -1,0 +1,21 @@
+@import 'advis_plugin/dashboard/shared/style/text';
+@import 'advis_plugin/dashboard/shared/style/color';
+
+$text-margin: 16px;
+
+#container {
+	p {
+		margin-left: $text-margin;
+		margin-right: $text-margin;
+	}
+	
+	div > paper-radio-group {
+		margin-left: $text-margin;
+		margin-right: $text-margin;
+		
+		paper-radio-button {
+			--paper-radio-button-checked-color: $accent-color;
+			--paper-radio-button-checked-ink-color: $accent-color;
+		}
+	}
+}

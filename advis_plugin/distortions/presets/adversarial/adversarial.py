@@ -19,6 +19,9 @@ perturbation_array = _load_perturbation_array()[0]
 def get_display_name():
 	return 'Adversarial'
 
+def get_type():
+	return 'Preset'
+
 def get_parameters():
 	return []
 

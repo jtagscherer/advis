@@ -1,0 +1,26 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<link rel="import" href="../../paper-slider/paper-slider.html">
+
+<!--
+	This component displays a normal slider for adjusting a constant parameter.
+-->
+<dom-module id="constant-parameter">
+	<template>
+		<div id="container">
+			<p class="title">[[parameter.displayName]]: [[parameter.value]]</p>
+			<div>
+				<paper-slider pin snaps
+					step="[[parameter.constraints.step]]"
+					min="[[parameter.constraints.min]]"
+					max="[[parameter.constraints.max]]"
+					value="{{parameter.value}}">
+				</paper-slider>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="constant-parameter.css">
+	</template>
+
+	<script src="constant-parameter.js"></script>
+</dom-module>

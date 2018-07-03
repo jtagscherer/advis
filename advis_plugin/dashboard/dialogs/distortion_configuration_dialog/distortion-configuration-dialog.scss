@@ -1,0 +1,91 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+@import 'advis_plugin/dashboard/shared/style/style';
+
+:host {
+	--reset-button-opacity: '0';
+}
+
+dialog-header {
+	padding: 0;
+}
+
+#content {
+	display: flex;
+	flex-direction: row;
+	
+	margin: 0;
+	padding: 0;
+	
+	width: 70vw;
+	height: 70vh;
+	
+	#sidebar {
+		width: 15vw;
+		overflow: scroll;
+		border-right: 1px solid $light-foreground-color;
+		
+		#distortion-selector > * {
+			transition: background-color 0.3s ease;
+		}
+	}
+	
+	#center {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		
+		* {
+			width: 100%;
+		}
+		
+		#parameters {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			
+			#parameter-container {
+				flex: 1;
+				overflow: scroll;
+				
+				.parameter-page-container {
+					display: flex;
+					flex-direction: column;
+					
+					.reset-button-container {
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						
+						paper-button {
+							width: 100px;
+							transition: opacity 0.5s ease-in-out;
+							opacity: var(--reset-button-opacity);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.buttons {
+	border-top: 1px solid $light-foreground-color;
+	background-color: $medium-background-color;
+	
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	
+	padding: 0px 10px 0px 0px;
+	
+	paper-button {
+		font-weight: bold;
+	}
+	
+	#button-cancel {
+		color: $medium-foreground-color;
+	}
+	
+	#button-apply[aria-disabled="false"] {
+		color: $accent-color;
+	}
+}

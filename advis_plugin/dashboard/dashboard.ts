@@ -8,7 +8,8 @@ Polymer({
     'nodeSelectedEvent': '_nodeSelected',
 		'iron-select': '_itemSelected',
 		'iron-deselect': '_itemDeselected',
-		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged'
+		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged',
+    'dialogReturnedEvent': '_dialogReturned'
   },
   properties: {
     selectedModel: {
@@ -45,6 +46,27 @@ Polymer({
 		
     this._reloadModels();
 	},
+  
+  openDistortionConfigurationDialog: function() {
+    this.$$('distortion-configuration-dialog').open({
+      distortions: this._availableDistortions,
+      requestManager: this._requestManager,
+			animationTarget: this.$$('#distortion-configuration-button')
+				.getBoundingClientRect()
+		});
+  },
+	
+	_dialogReturned: function(e) {
+		if (e.detail.eventId == 'distortion-configuration-dialog') {
+			this.$$('distortion-update-confirmation-dialog').open({
+	      changedDistortions: e.detail.content,
+	      requestManager: this._requestManager
+			});
+		} else if (e.detail.eventId == 'distortion-update-confirmation-dialog') {
+			this._reloadDistortions(false);
+			this._calculateModelAccuracy();
+		}
+	},
 	
   _reloadModels: function() {
 		if (this.selectedModel != null) {
@@ -57,7 +79,7 @@ Polymer({
 		});
   },
 	
-	_reloadDistortions: function() {
+	_reloadDistortions: function(selectAll: Boolean = true) {
 		var self = this;
 		
 		// Update the list of available distortions
@@ -76,12 +98,14 @@ Polymer({
 			
 			self._availableDistortions = newDistortions;
 			
-			// Select all available distortions
-			for (var distortion of self._availableDistortions) {
-				self.$$('#distortion-selector').select(distortion.index);
+			if (selectAll) {
+				// Select all available distortions
+				for (var distortion of self._availableDistortions) {
+					self.$$('#distortion-selector').select(distortion.index);
+				}
+				
+				this._selectedDistortions = this._availableDistortions;
 			}
-			
-			this._selectedDistortions = this._availableDistortions;
 		});
 	},
 	

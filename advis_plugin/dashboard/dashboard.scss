@@ -31,6 +31,8 @@ $sidebar-width: 450px;
 			border-right: 1px solid $light-foreground-color;
 			
 			#distortion-list-container {
+				flex: 1;
+				
 				overflow: scroll;
 				
 				.list-item {

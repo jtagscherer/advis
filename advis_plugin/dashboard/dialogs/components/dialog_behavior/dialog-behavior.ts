@@ -97,6 +97,19 @@ const DialogBehavior = {
 		}
 	},
 	
+	_applyDialog: function() {
+		// Close the dialog
+		this.close();
+		
+		// Fire an event with potential output data
+		if (this.getContentOnApply() != null) {
+			this.fire('dialogReturnedEvent', {
+				eventId: this.eventId,
+				content: this.getContentOnApply()
+			});
+		}
+	},
+	
 	_dismissDialog: function() {
 		// Close the dialog
 		this.close();

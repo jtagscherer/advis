@@ -2,6 +2,7 @@
 <link rel="import" href="../../iron-selector/iron-selector.html">
 <link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../paper-material/paper-material.html">
+<link rel="import" href="../../paper-button/paper-button.html">
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../tf-categorization-utils/tf-categorization-utils.html">
@@ -20,6 +21,9 @@
 <link rel="import" href="../../layer-visualization/layer-visualization.html">
 <link rel="import" href="../../graph-view/graph-view.html">
 
+<link rel="import" href="../../dialogs/distortion-configuration-dialog/distortion-configuration-dialog.html">
+<link rel="import" href="../../dialogs/distortion-update-confirmation-dialog/distortion-update-confirmation-dialog.html">
+
 <!--
 	This frontend displays all Advis visualizations.
 -->
@@ -34,13 +38,17 @@
 							<iron-selector id="distortion-selector" multi>
 								<template is="dom-repeat" items="[[_availableDistortions]]">
 									<div class="list-item distortions" data-args$=[[item.index]]>
-										<distortion-list-item
+										<distortion-list-item compact
 											distortion=[[item]]>
 										</distortion-list-item>
 									</div>
 								</template>
 							</iron-selector>
 						</div>
+						<paper-button id="distortion-configuration-button"
+							on-tap="openDistortionConfigurationDialog">
+							<p>Edit Distortions</p>
+						</paper-button>
 					</div>
 					<div class="sidebar-item" id="model-list">
 						<section-header text="Models"></section-header>
@@ -122,6 +130,9 @@
 				</template>
 			</div>
 		</tf-dashboard-layout>
+		
+		<distortion-configuration-dialog></distortion-configuration-dialog>
+		<distortion-update-confirmation-dialog></distortion-update-confirmation-dialog>
 
 		<style include="dashboard-style"></style>
 		<link rel="stylesheet" type="text/css" href="dashboard.css">

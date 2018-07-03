@@ -1,0 +1,54 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-progress/paper-progress.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+<link rel="import" href="../../constants/constants.html">
+
+<!--
+	When opened, this module displays a dialog that allows the user to confirm 
+	their distortion update and optionally rebuild the data cache.
+-->
+<dom-module id="distortion-update-confirmation-dialog">
+	<template>
+		<paper-dialog with-backdrop modal>
+			<dialog-header event-id="distortion-update-confirmation-dialog" modal>
+				<div class="header-items">
+					<h2>Confirm Your Changes</h2>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<p class="title">[[_getContentText(_status)]]</p>
+				<paper-progress
+					min="0" max="100"
+					value=[[_progress.progress.percentage]]
+					indeterminate=[[_isIndeterminate(_status)]]>
+				</paper-progress>
+			</div>
+			<div class="buttons">
+				<paper-button id="button-cancel"
+					disabled=[[_buttonsDisabled(_status)]]
+					on-tap="_dismissDialog">
+					Cancel
+				</paper-button>
+				<paper-button id="button-apply"
+					disabled=[[_buttonsDisabled(_status)]]
+					on-tap="applyWithoutCache">
+					Apply Changes
+				</paper-button>
+				<paper-button id="button-apply-and-cache"
+					disabled=[[_buttonsDisabled(_status)]]
+					on-tap="applyAndCache">
+					Apply Changes and Rebuild Cache
+				</paper-button>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="distortion-update-confirmation-dialog.css">
+	</template>
+
+	<script src="distortion-update-confirmation-dialog.js"></script>
+</dom-module>

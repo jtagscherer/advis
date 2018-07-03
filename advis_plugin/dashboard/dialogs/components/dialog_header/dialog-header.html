@@ -12,11 +12,13 @@
 			<div id="content">
 				<slot></slot>
 			</div>
-			<paper-icon-button
-				id="close-button"
-				icon="close"
-				on-tap="closeButtonClicked">
-			</paper-icon-button>
+			<template is="dom-if" if="[[!modal]]">
+				<paper-icon-button
+					id="close-button"
+					icon="close"
+					on-tap="closeButtonClicked">
+				</paper-icon-button>
+			</template>
 		</div>
 		
 		<hr class="horizontal-divider">

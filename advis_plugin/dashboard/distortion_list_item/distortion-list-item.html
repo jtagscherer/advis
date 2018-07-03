@@ -8,20 +8,52 @@
 	<template>
 		<div id="container">
 			<div id="main">
-				<svg id="icon"
-					width="24px" height="24px" viewBox="0 0 24 24"
-					version="1.1"
-					xmlns="http://www.w3.org/2000/svg"
-					xmlns:xlink="http://www.w3.org/1999/xlink">
-					<g stroke="none" stroke-width="1">
-						<path d$=[[distortion.icon]]></path>
-					</g>
-				</svg>
-				<p class="single-line title">[[distortion.displayName]]</p>
+				<template is="dom-if" if="[[compact]]">
+					<svg id="icon"
+						width="24px" height="24px" viewBox="0 0 24 24"
+						version="1.1"
+						xmlns="http://www.w3.org/2000/svg"
+						xmlns:xlink="http://www.w3.org/1999/xlink">
+						<g stroke="none" stroke-width="1">
+							<path d$=[[distortion.icon]]></path>
+						</g>
+					</svg>
+				</template>
+				<template is="dom-if" if="[[!compact]]">
+					<div id="icon-container">
+						<div class="icon-background"></div>
+						<svg id="icon"
+							width="24px" height="24px" viewBox="0 0 24 24"
+							version="1.1"
+							xmlns="http://www.w3.org/2000/svg"
+							xmlns:xlink="http://www.w3.org/1999/xlink">
+							<g stroke="none" stroke-width="1">
+								<path d$=[[distortion.icon]]></path>
+							</g>
+						</svg>
+					</div>
+				</template>
+				
+				<div id="text">
+					<div>
+						<p class="single-line title">
+							[[_getTitle(distortion, highlighted)]]
+						</p>
+					</div>
+					<template is="dom-if" if="[[!compact]]">
+						<p class="single-line caption">[[distortion.type]]</p>
+					</template>
+				</div>
 			</div>
 			
 			<paper-ripple></paper-ripple>
 		</div>
+		
+		<template is="dom-if" if="[[!compact]]">
+			<template is="dom-if" if="[[!lastItem]]">
+				<hr class="horizontal-divider">
+			</template>
+		</template>
 		
 		<link rel="stylesheet" type="text/css" href="distortion-list-item.css">
 	</template>

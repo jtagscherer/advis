@@ -1,0 +1,94 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
+<link rel="import" href="../../tf-imports/lodash.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../iron-selector/iron-selector.html">
+<link rel="import" href="../../neon-animation/neon-animated-pages.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+<link rel="import" href="../../distortion-list-item/distortion-list-item.html">
+<link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../distortion-preview/distortion-preview.html">
+<link rel="import" href="../../parameter-configuration/parameter-configuration.html">
+
+<!--
+	When opened, this module displays a dialog with a list of all available 
+	distortions and allows the user to interactively configure their parameters.
+-->
+<dom-module id="distortion-configuration-dialog">
+	<template>
+		<paper-dialog with-backdrop modal>
+			<dialog-header event-id="distortion-configuration-dialog" modal>
+				<div class="header-items">
+					<h2>Distortions</h2>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<div id="sidebar">
+					<iron-selector id="distortion-selector"
+						selected="{{_selectedDistortionIndex}}">
+						<template id="distortion-list" is="dom-repeat" items="[[modifiedDistortions]]">
+							<div class="list-item distortions" data-args$=[[item.index]]>
+								<distortion-list-item
+									distortion=[[item]]
+									highlighted="[[_hasBeenChanged(item, _dirty)]]"
+									last-item="[[_isLastDistortionListItem(index)]]">
+								</distortion-list-item>
+							</div>
+						</template>
+					</iron-selector>
+				</div>
+				<div id="center">
+					<div id="parameters">
+						<section-header text="Parameters"></section-header>
+						<div id="parameter-container">
+							<neon-animated-pages selected=[[_selectedDistortionIndex]]>
+								<template id="parameter-list" is="dom-repeat" items="[[modifiedDistortions]]">
+									<div class="parameter-page-container">
+										<parameter-configuration
+											index="[[index]]"
+											parameters="[[item.parameters]]">
+										</parameter-configuration>
+										<div class="reset-button-container">
+											<paper-button
+												on-tap="resetDistortion"
+												data-args$=[[item.index]]
+												disabled="[[!_hasBeenChanged(item, _dirty)]]">
+												Reset
+											</paper-button>
+										</div>
+									</div>
+								</template>
+							</neon-animated-pages>
+					</div>
+					</div>
+					<div id="preview">
+						<section-header text="Preview"></section-header>
+						<distortion-preview
+							id='distortion-preview'
+							distortion="[[_getSelectedDistortion(modifiedDistortions, _selectedDistortionIndex)]]"
+							request-manager=[[requestManager]]>
+						</distortion-preview>
+					</div>
+				</div>
+			</div>
+			<div class="buttons">
+				<paper-button id="button-cancel"
+					on-tap="_dismissDialog">
+					Cancel
+				</paper-button>
+				<paper-button id="button-apply"
+					on-tap="_applyDialog"
+					disabled=[[_isNotDirty(_dirty)]]>
+					Apply
+				</paper-button>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="distortion-configuration-dialog.css">
+	</template>
+
+	<script src="distortion-configuration-dialog.js"></script>
+</dom-module>

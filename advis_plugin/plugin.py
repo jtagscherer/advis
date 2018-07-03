@@ -72,6 +72,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/predictions/accuracy': self.accuracy_prediction_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
+			'/distortions/update': self.distortions_update_route,
 			'/datasets': self.datasets_route,
 			'/datasets/images/list': self.datasets_images_list_route,
 			'/datasets/images/image': self.datasets_images_image_route,
@@ -82,7 +83,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/node': self.node_difference_route,
 			'/node/list': self.node_difference_list_route,
 			'/node/list/meta': self.node_difference_list_meta_route,
-			'/cache': self.cache_route
+			'/cache': self.cache_route,
+			'/cache/progress': self.cache_progress_route
 		}
 
 	def is_active(self):
@@ -177,13 +179,33 @@ class AdvisPlugin(base_plugin.TBPlugin):
 
 		Arguments:
 			request: The request which has to contain the distortion's name as well 
-				as the name of the dataset and the image index of the input image.
+				as the name of the dataset and the image index of the input image. On 
+				top of that, a distortion index may be supplied, allowing you to fetch 
+				multiple random distortions of a single image with each distorted image 
+				with the same index staying the same. Moreover, you can supply your own 
+				set of parameters as JSON to preview a configuration.
 		Returns:
 			A response that contains the image after having been randomly distorted.
 		"""
 		
 		return distortion_router.distortions_single_route(request,
 			self.distortion_manager, self.dataset_manager)
+	
+	@wrappers.Request.application
+	def distortions_update_route(self, request):
+		"""A route that updates the parameter values of a list of distortions.
+
+		Arguments:
+			request: The request which has to contain the list of distortions whose 
+				parameter values should be updated. After these values have been 
+				updated, the changes will be persisted and cached data that has become 
+				invalid will be removed.
+		Returns:
+			An empty response if everything went as expected.
+		"""
+		
+		return distortion_router.distortions_update_route(request,
+			self.distortion_manager)
 	
 	@wrappers.Request.application
 	def datasets_route(self, request):
@@ -391,3 +413,15 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		}
 		
 		return cache_router.cache_route(request, routers, managers)
+	
+	@wrappers.Request.application
+	def cache_progress_route(self, request):
+		"""A route that retrieves the current progress of the caching process.
+
+		Arguments:
+			request: The request which does not have to contain any parameters.
+		Returns:
+			A response with the current progress and status of the caching progress.
+		"""
+		
+		return cache_router.cache_progress_route(request)

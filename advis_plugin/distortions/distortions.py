@@ -12,6 +12,7 @@ from advis_plugin.distortions import parameters
 class Distortion:
 	name = None
 	display_name = None
+	type = None
 	icon = None
 	_module = None
 	_directory = None
@@ -25,6 +26,11 @@ class Distortion:
 		self.display_name = self._module.get_display_name()
 		self.icon = self._module.get_icon()
 		
+		if hasattr(self._module, 'get_type'):
+			self.type = self._module.get_type()
+		else:
+			self.type = 'Custom'
+		
 		# Fetch and set up the module's parameters
 		self._parameters = {}
 		
@@ -32,8 +38,14 @@ class Distortion:
 			self._parameters[parameter['name']] = parameters.Parameter(parameter,
 				join(self._directory, '{}.json'.format(self.name)))
 	
-	def distort(self, image, amount=1, mode='randomized'):
+	def distort(self, image, amount=1, mode='randomized', \
+		custom_parameters=None):
 		distorted_images = []
+		
+		if custom_parameters is not None:
+			_parameters = parameters.from_json(custom_parameters)
+		else:
+			_parameters = self._parameters
 		
 		# Reset the random seed for repeatable randomization
 		if mode == 'randomized':
@@ -42,11 +54,11 @@ class Distortion:
 		for i in range(0, amount):
 			if mode == 'sequential':
 				distorted_images.append(self._module.distort(image, parameters
-					.generate_configuration(self._parameters,
+					.generate_configuration(_parameters,
 					percentage=i / float(amount))))
 			elif mode == 'randomized' or mode == 'non-repeatable-randomized':
 				distorted_images.append(self._module.distort(image, parameters
-					.generate_configuration(self._parameters, randomize=True)))
+					.generate_configuration(_parameters, randomize=True)))
 		
 		return distorted_images
 	
