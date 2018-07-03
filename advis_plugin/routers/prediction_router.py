@@ -8,28 +8,32 @@ data_type_single_prediction = 'single_prediction'
 data_type_prediction_accuracy = 'prediction_accuracy'
 
 def _get_single_prediction(model, image_index, distortion,
-	model_manager, distortion_manager):
+	model_manager, distortion_manager, prediction_amount=5):
 	key_tuple = (model, image_index, distortion)
 	
 	if DataCache().has_data(data_type_single_prediction, key_tuple):
-		return DataCache().get_data(data_type_single_prediction, key_tuple)
+		response = DataCache().get_data(data_type_single_prediction, key_tuple)
+	else:
+		_model = model_manager.get_model_modules()[model]
+		
+		meta_data = {
+			'run_type': 'prediction',
+			'image': image_index
+		}
+		
+		if distortion is not None:
+			meta_data['input_image_data'] = distortion_manager \
+				.distortion_modules[distortion].distort(
+					_model._dataset.load_image(image_index),
+					amount=1, mode='non-repeatable-randomized'
+				)[0]
+		
+		response = _model.run(meta_data)
+		DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
-	_model = model_manager.get_model_modules()[model]
-	
-	meta_data = {
-		'run_type': 'prediction',
-		'image': image_index
-	}
-	
-	if distortion is not None:
-		meta_data['input_image_data'] = distortion_manager \
-			.distortion_modules[distortion].distort(
-				_model._dataset.load_image(image_index),
-				amount=1, mode='non-repeatable-randomized'
-			)[0]
-	
-	response = _model.run(meta_data)
-	DataCache().set_data(data_type_single_prediction, key_tuple, response)
+	# Limit the amount of predictions if so desired
+	if prediction_amount is not None:
+		response['predictions'] = response['predictions'][:prediction_amount]
 	
 	return response
 
@@ -155,6 +159,9 @@ def _calculate_accuracy(predictions):
 					top_5_hits += 1
 				
 				break
+			
+			if rank > 5:
+				continue
 	
 	# Calculate the accuracy as the quotient of correct guesses and the total 
 	# amount of predictions
