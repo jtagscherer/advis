@@ -1,0 +1,39 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+
+:host {
+	--image-width: 0px;
+	--image-height: 0px;
+}
+
+#container {
+	width: var(--image-width);
+	height: var(--image-height);
+	
+	img {
+		width: var(--image-width);
+		height: var(--image-height);
+	}
+	
+	.spinner-container {
+		position: absolute;
+		width: var(--image-width);
+		height: var(--image-height);
+		
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		
+		paper-spinner-lite {
+			--paper-spinner-color: $accent-color;
+			transition: opacity 0.5s ease-in-out;
+			
+			&.shown {
+				opacity: 1;
+			}
+			
+			&.hidden {
+				opacity: 0;
+			}
+		}
+	}
+}
