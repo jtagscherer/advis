@@ -43,7 +43,7 @@ Polymer({
 		for (var model of this.models) {
 			if (model.selectedForStatistics) {
 				for (var distortion of this.distortions) {
-					if (!(distortion.name in model.accuracy)) {
+					if (!(distortion.name in model.metrics)) {
 						continue modelLoop;
 					}
 				}
@@ -100,7 +100,7 @@ Polymer({
 			var data = [];
 			
 			for (var distortion of this.distortions) {
-				data.push(model.accuracy[distortion.name].top5 * 100);
+				data.push(model.metrics[distortion.name].top5 * 100);
 			}
 			
 			// Check if there is already a dataset for this model
