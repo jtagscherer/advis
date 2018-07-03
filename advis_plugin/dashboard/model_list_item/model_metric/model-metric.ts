@@ -7,7 +7,7 @@ Polymer({
 		value: Number,
 		percent: {
 			type: Boolean,
-			value: true
+			value: false
 		}
 	},
 	
