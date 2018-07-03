@@ -29,8 +29,13 @@
 				
 				<div id="metrics">
 					<model-metric
-						title="ACC"
-						value="[[_modelAccuracyDifference]]">
+						title="TOP1"
+						value="[[_top1AccuracyDifference]]">
+					</model-metric>
+					
+					<model-metric
+						title="TOP5"
+						value="[[_top5AccuracyDifference]]">
 					</model-metric>
 				</div>
 			</div>

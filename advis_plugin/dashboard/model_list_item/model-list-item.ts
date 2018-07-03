@@ -21,7 +21,8 @@ Polymer({
 		},
 		lastItem: Boolean,
 		_selected: Boolean,
-		_modelAccuracyDifference: Number
+		_top5AccuracyDifference: Number,
+		_top1AccuracyDifference: Number
 	},
 	
 	_modelChanged: function() {
@@ -71,31 +72,39 @@ Polymer({
 		if (Object.keys(this.model.accuracy).length >= this.distortions
 			.length + 1 && 'original' in this.model.accuracy) {
 			if (this.distortions.length == 0) {
-				this._modelAccuracyDifference = 0;
+				this._top5AccuracyDifference = 0;
+				this._top1AccuracyDifference = 0;
 			} else {
-				var deltaSum = 0;
+				var top5deltaSum = 0;
+				var top1deltaSum = 0;
 				
 				// Calculate the difference between the accuracy of each distorted 
 				// prediction and the original one
 				for (let selectedDistortion in this.distortions) {
 					for (let distortion in this.model.accuracy) {
 						if (distortion == this.distortions[selectedDistortion].name) {
-							deltaSum += (this.model.accuracy[distortion].top5 
+							top5deltaSum += (this.model.accuracy[distortion].top5 
 								- this.model.accuracy.original.top5);
+							top1deltaSum += (this.model.accuracy[distortion].top1
+								- this.model.accuracy.original.top1);
 							break;
 						}
 					}
 				}
 				
 				// Calculate the average of the differences
-				let result = (deltaSum * 1.0)
+				let top5result = (top5deltaSum * 1.0)
+				 	/ (Object.keys(this.model.accuracy).length - 1);
+				let top1result = (top1deltaSum * 1.0)
 				 	/ (Object.keys(this.model.accuracy).length - 1);
 				
 				// Finally, set the variable that will be shown
-				this._modelAccuracyDifference = result;
+				this._top5AccuracyDifference = top5result;
+				this._top1AccuracyDifference = top1result;
 			}
 		} else {
-			this._modelAccuracyDifference = undefined;
+			this._top5AccuracyDifference = undefined;
+			this._top1AccuracyDifference = undefined;
 		}
 	}
 });

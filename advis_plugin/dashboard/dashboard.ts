@@ -259,12 +259,14 @@ Polymer({
 		let self = this;
 		
 		// Store the accuracy of the model on the original or a distorted dataset
-		let storeAccuracy = async function(modelName, distortionName, top1, top5) {
+		let storeAccuracy = async function(modelName, distortionName, top1, top5,
+			metrics) {
 			for (var model of self._availableModels) {
 				if (model.name == modelName) {
 					model.accuracy[distortionName] = {
 						'top1': top1,
-						'top5': top5
+						'top5': top5,
+						'metrics': metrics
 					}
 				}
 			}
@@ -287,7 +289,8 @@ Polymer({
 					data.model.name,
 					'original',
 					data.accuracy.top1,
-					data.accuracy.top5
+					data.accuracy.top5,
+					data.metrics
 				);
 			});
 			
@@ -306,7 +309,8 @@ Polymer({
 						data.model.name,
 						data.input.distortion,
 						data.accuracy.top1,
-						data.accuracy.top5
+						data.accuracy.top5,
+						data.metrics
 					);
 				});
 			}
