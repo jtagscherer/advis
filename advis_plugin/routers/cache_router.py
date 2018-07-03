@@ -5,6 +5,12 @@ from tensorboard.backend import http_util
 from advis_plugin.util import argutil
 from advis_plugin.util.cache import DataCache
 
+_progress = {
+	'status': 'Idle',
+	'progress': 0,
+	'total': 0
+}
+
 def cache_route(request, routers, managers):
 	missing_arguments = argutil.check_missing_arguments(
 		request, ['modelAccuracy', 'nodeActivation']
@@ -20,24 +26,21 @@ def cache_route(request, routers, managers):
 	DataCache().disable_caching()
 	
 	start_time = time.time()
+	_start_progress(_get_total_steps(managers))
 	
 	# Cache all graph structures
-	tf.logging.warn('Caching graph structures...')
 	_cache_graph_structures(routers, managers)
 	DataCache().persist_cache()
 	
 	# Cache all single predictions
-	tf.logging.warn('Caching single predictions...')
 	_cache_single_predictions(routers, managers)
 	DataCache().persist_cache()
 	
 	# Cache all prediction accuracies
-	tf.logging.warn('Caching prediction accuracies...')
 	_cache_prediction_accuracy(routers, managers, model_accuracy)
 	DataCache().persist_cache()
 	
 	# Cache all node differences
-	tf.logging.warn('Caching node differences...')
 	_cache_node_differences(routers, managers, node_activation)
 	DataCache().persist_cache()
 	
@@ -46,6 +49,7 @@ def cache_route(request, routers, managers):
 	
 	tf.logging.warn('Caching completed!')
 	end_time = time.time()
+	_stop_progress()
 	
 	return http_util.Respond(
 		request,
@@ -58,27 +62,17 @@ def _cache_graph_structures(routers, managers):
 	model_router = routers['model']
 	model_manager = managers['model']
 	
-	model_amount = len(model_manager.get_model_modules())
-	current_model_index = 0
-	
 	for model in model_manager.get_model_modules():
 		model_router._get_graph_structure(model_manager, model, 'full')
 		model_router._get_graph_structure(model_manager, model, 'simplified')
 		
-		current_model_index += 1
-		_print_progress('(1/4)', current_model_index, model_amount)
+		_update_progress('Caching graph structures…')
 
 def _cache_single_predictions(routers, managers):
 	prediction_router = routers['prediction']
 	model_manager = managers['model']
 	distortion_manager = managers['distortion']
 	model_modules = model_manager.get_model_modules()
-	
-	image_amount = 0
-	for model in model_modules:
-		image_amount += len(model_modules[model]._dataset.images)
-	
-	current_image_index = 0
 	
 	for model in model_modules:
 		_model = model_modules[model]
@@ -92,19 +86,14 @@ def _cache_single_predictions(routers, managers):
 				prediction_router._get_single_prediction(
 					model, image_index, distortion, model_manager, distortion_manager
 				)
-		
-			current_image_index += 1
-			_print_progress('(2/4)', current_image_index, image_amount)
+			
+			_update_progress('Caching single predictions…')
 
 def _cache_prediction_accuracy(routers, managers, input_image_amount):
 	prediction_router = routers['prediction']
 	model_manager = managers['model']
 	distortion_manager = managers['distortion']
 	model_modules = model_manager.get_model_modules()
-	
-	step_amount = len(model_modules) \
-		* len(distortion_manager.get_distortion_modules())
-	current_step_index = 0
 	
 	for model in model_modules:
 		_model = model_modules[model]
@@ -113,21 +102,14 @@ def _cache_prediction_accuracy(routers, managers, input_image_amount):
 			prediction_router._get_accuracy_prediction(
 				model, distortion, input_image_amount, model_manager, distortion_manager
 			)
-		
-			current_step_index += 1
-			_print_progress('(3/4)', current_step_index, step_amount)
+			
+			_update_progress('Caching prediction accuracies…')
 
 def _cache_node_differences(routers, managers, input_image_amount):
 	node_difference_router = routers['nodeDifference']
 	model_manager = managers['model']
 	distortion_manager = managers['distortion']
 	model_modules = model_manager.get_model_modules()
-	
-	step_amount = 0
-	for model in model_modules:
-		step_amount += len(model_modules[model]._activation_tensors)
-	
-	current_step_index = 0
 	
 	for model in model_modules:
 		_model = model_modules[model]
@@ -144,17 +126,59 @@ def _cache_node_differences(routers, managers, input_image_amount):
 				)
 			
 			DataCache().persist_cache()
-			current_step_index += 1
 			layer_index += 1
-			_print_progress('(4/4)', current_step_index, step_amount,
-				'{}, Layer {} out of {}'.format(model_display_name, layer_index,
-				layer_amount))
+			
+			_update_progress('Caching node differences: ' \
+				'Model \"{}\", Layer {} out of {}…'.format(model_display_name,
+				layer_index, layer_amount))
 
-def _print_progress(prefix, current, length, suffix=None):
-	progress_string = '{}: {}%'.format(prefix,
-		int(round((current / length) * 100)))
+def _get_total_steps(managers):
+	model_manager = managers['model']
+	distortion_manager = managers['distortion']
+	model_modules = model_manager.get_model_modules()
+	distortion_modules = distortion_manager.get_distortion_modules()
 	
-	if suffix is not None:
-		progress_string += ' ({})'.format(suffix)
+	total_steps = 0
 	
-	tf.logging.warn(progress_string)
+	# Add steps for caching graph structures
+	total_steps += len(model_modules)
+	
+	# Add steps for caching single predictions
+	for model in model_modules:
+		total_steps += len(model_modules[model]._dataset.images)
+	
+	# Add steps for caching prediction accuracies
+	total_steps += len(model_modules)	* len(distortion_modules)
+	
+	# Add steps for caching node differences
+	for model in model_modules:
+		total_steps += len(model_modules[model]._activation_tensors)
+	
+	return total_steps
+
+def _start_progress(total):
+	global _progress
+	_progress = {
+		'status': 'Working',
+		'progress': 0,
+		'total': total
+	}
+
+def _stop_progress():
+	global _progress
+	_progress = {
+		'status': 'Idle',
+		'progress': 0,
+		'total': 0
+	}
+
+def _update_progress(status, verbose=False):
+	global _progress
+	
+	_progress['status'] = status
+	_progress['progress'] += 1
+	
+	if verbose:
+		progress_string = '{}%: {}'.format(int(round((_progress['progress'] \
+			/ _progress['total']) * 100)), _progress['status'])
+		tf.logging.warn(progress_string)
