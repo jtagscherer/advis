@@ -36,9 +36,8 @@ $image-grid-padding: 3px;
 				width: 200px;
 				height: 200px;
 				
-				img {
-					width: calc(200px - (2 * #{$image-grid-padding}));
-					height: auto;
+				image-loader {
+					display: flex;
 					padding: $image-grid-padding;
 				}
 			}
@@ -65,15 +64,16 @@ $image-grid-padding: 3px;
 				font-size: 0;
 				line-height: 0;
 				
+				display: flex;
+				flex-wrap: wrap;
+				
 				.image-grid {
-					width: calc(100px - (2 * #{$image-grid-padding}));
-					height: auto;
+					display: flex;
 					padding: $image-grid-padding;
 				}
 				
 				.single-image {
-					width: calc(200px - (2 * #{$image-grid-padding}));
-					height: auto;
+					display: flex;
 					padding: $image-grid-padding;
 				}
 			}

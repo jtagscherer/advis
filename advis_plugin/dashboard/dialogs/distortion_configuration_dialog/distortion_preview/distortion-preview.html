@@ -1,7 +1,8 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../tf-backend/tf-backend.html">
-
 <link rel="import" href="../../iron-icons/iron-icons.html">
+
+<link rel="import" href="../../image-loader/image-loader.html">
 
 <!--
 	This component displays a preview of what a distortion does to an input image.
@@ -15,7 +16,11 @@
 						Original
 					</p>
 					<div id="left-image-container">
-						<img src$="[[_originalImageUrl]]"></img>
+						<image-loader
+							url=[[_originalImageUrl]]
+							width="194px"
+							height="194px">
+						</image-loader>
 					</div>
 				</div>
 			</div>
@@ -30,11 +35,21 @@
 					<div id="right-image-container">
 						<template is="dom-if" if="[[!_singlePreviewImage]]">
 							<template is="dom-repeat" items="[[_distortedImageUrls]]">
-								<img class="image-grid" src$="[[item]]"></img>
+								<image-loader
+									class="image-grid"
+									url=[[item]]
+									width="94px"
+									height="94px">
+								</image-loader>
 							</template>
 						</template>
 						<template is="dom-if" if="[[_singlePreviewImage]]">
-							<img class="single-image" src$="[[_distortedImageUrls.0]]"></img>
+							<image-loader
+								class="single-image"
+								url=[[_distortedImageUrls.0]]
+								width="194px"
+								height="194px">
+							</image-loader>
 						</template>
 					</div>
 				</div>
