@@ -15,4 +15,13 @@ dialog-header {
 			--paper-radio-button-checked-ink-color: $accent-color;
 		}
 	}
+	
+	.checkbox-group {
+		paper-checkbox {
+			padding: 12px;
+			
+			--paper-checkbox-checked-color: $accent-color;
+			--paper-checkbox-checked-ink-color: $accent-color;
+		}
+	}
 }

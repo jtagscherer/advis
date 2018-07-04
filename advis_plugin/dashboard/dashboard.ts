@@ -100,6 +100,10 @@ Polymer({
 				'_selectedRadarChartMetric',
 				e.detail.content.selectedRadarChartMetric
 			);
+			this.set(
+				'_selectedModelListMetrics',
+				e.detail.content.selectedModelListMetrics
+			);
 		}
 	},
 	
