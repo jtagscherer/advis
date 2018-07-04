@@ -28,6 +28,14 @@ Polymer({
 			observer: '_calculateModelMetrics'
 		},
 		_accuracyCalculationFlag: Boolean,
+		_selectedRadarChartMetric: {
+			type: String,
+			value: 'top5'
+		},
+		_selectedModelListMetrics: {
+			type: Array,
+			value: ['f1', 'top5']
+		},
     _requestManager: {
       type: Object,
       value: () => new tf_backend.RequestManager()
@@ -54,6 +62,10 @@ Polymer({
 			animationTarget: this.$$('#distortion-configuration-button')
 				.getBoundingClientRect()
 		});
+  },
+  
+  openSettingsDialog: function() {
+    console.log('TODO');
   },
 	
 	_dialogReturned: function(e) {
@@ -179,6 +191,21 @@ Polymer({
 			return 1;
 		} else {
 			return 0;
+		}
+	},
+	
+	_getRadarChartMetricTitle: function(metric) {
+		switch (metric) {
+			case 'top1':
+				return 'Model Top 1 Accuracy';
+			case 'top5':
+				return 'Model Top 5 Accuracy';
+			case 'f1':
+				return 'Model F1 Score';
+			case 'precision':
+				return 'Model Precision';
+			case 'recall':
+				return 'Model Recall';
 		}
 	},
 	

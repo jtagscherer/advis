@@ -72,6 +72,20 @@ $sidebar-width: 500px;
 			}
 		}
 	}
+	
+	#settings-button {
+		position: absolute;
+		left: 5px;
+		bottom: 5px;
+		
+		color: $light-foreground-color;
+		opacity: 0.5;
+		transition: opacity 0.5s ease;
+		
+		&:hover {
+			opacity: 1;
+		}
+	}
 }
 
 .center {

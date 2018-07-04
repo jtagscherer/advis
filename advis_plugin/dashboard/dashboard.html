@@ -71,18 +71,26 @@
 					</div>
 				</div>
 				<div id="chart">
-					<section-header text="Model Accuracy"></section-header>
+					<section-header
+						text=[[_getRadarChartMetricTitle(_selectedRadarChartMetric)]]>
+					</section-header>
 					<div id="chart-wrapper">
 						<div id="chart-container">
 							<accuracy-radar-chart
 								models=[[_availableModels]]
 								distortions=[[_selectedDistortions]]
+								metric=[[_selectedRadarChartMetric]]
 								selected-distortion={{_selectedVisualizationDistortion}}
 								accuracy-calculation-flag=[[_accuracyCalculationFlag]]>
 							</accuracy-radar-chart>
 						</div>
 					</div>
 				</div>
+				
+				<paper-icon-button id="settings-button"
+					icon="settings"
+					on-tap="openSettingsDialog">
+				</paper-icon-button>
 			</paper-material>
 			<div class="center">
 				<template is="dom-if" if="[[_dataNotFound]]">

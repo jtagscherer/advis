@@ -28,6 +28,7 @@ tf_web_library(
 		"@org_polymer_paper_input",
 		"@org_polymer_paper_material",
 		"@org_polymer_paper_button",
+		"@org_polymer_paper_icon_button",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_categorization_utils",
