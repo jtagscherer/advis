@@ -3,7 +3,8 @@
 Polymer({
   is: 'model-metric',
 	properties: {
-		title: String,
+		name: String,
+		description: String,
 		value: Number,
 		percent: {
 			type: Boolean,

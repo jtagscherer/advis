@@ -1,4 +1,5 @@
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 
 <!--
 	This component displays a numeric value alongside a title.
@@ -10,9 +11,13 @@
 				[[_getFormattedValue(value, percent)]]
 			</p>
 			<p class="single-line caption">
-				[[title]]
+				[[name]]
 			</p>
 		</div>
+		
+		<paper-tooltip for="container" position="left">
+			[[description]]
+		</paper-tooltip>
 		
 		<link rel="stylesheet" type="text/css" href="model-metric.css">
 	</template>

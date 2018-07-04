@@ -29,27 +29,32 @@
 				
 				<div id="metrics">
 					<model-metric
-						title="REC"
+						name="REC"
+						description="Recall"
 						value="[[_metricDifferences.recall]]">
 					</model-metric>
 					
 					<model-metric
-						title="PRE"
+						name="PRE"
+						description="Precision"
 						value="[[_metricDifferences.precision]]">
 					</model-metric>
 					
 					<model-metric
-						title="F1"
+						name="F1"
+						description="F1 Score"
 						value="[[_metricDifferences.f1]]">
 					</model-metric>
 					
 					<model-metric percent
-						title="TOP1"
+						name="TOP1"
+						description="Top 1 Accuracy"
 						value="[[_metricDifferences.top1]]">
 					</model-metric>
 					
 					<model-metric percent
-						title="TOP5"
+						name="TOP5"
+						description="Top 5 Accuracy"
 						value="[[_metricDifferences.top5]]">
 					</model-metric>
 				</div>
