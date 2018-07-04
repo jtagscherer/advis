@@ -28,35 +28,45 @@
 				</div>
 				
 				<div id="metrics">
-					<model-metric
-						name="REC"
-						description="Recall"
-						value="[[_metricDifferences.recall]]">
-					</model-metric>
+					<template is="dom-if" if="[[_displayMetric(metrics, 'recall')]]">
+						<model-metric
+							name="REC"
+							description="Recall"
+							value="[[_metricDifferences.recall]]">
+						</model-metric>
+					</template>
 					
-					<model-metric
-						name="PRE"
-						description="Precision"
-						value="[[_metricDifferences.precision]]">
-					</model-metric>
+					<template is="dom-if" if="[[_displayMetric(metrics, 'precision')]]">
+						<model-metric
+							name="PRE"
+							description="Precision"
+							value="[[_metricDifferences.precision]]">
+						</model-metric>
+					</template>
 					
-					<model-metric
-						name="F1"
-						description="F1 Score"
-						value="[[_metricDifferences.f1]]">
-					</model-metric>
+					<template is="dom-if" if="[[_displayMetric(metrics, 'f1')]]">
+						<model-metric
+							name="F1"
+							description="F1 Score"
+							value="[[_metricDifferences.f1]]">
+						</model-metric>
+					</template>
 					
-					<model-metric percent
-						name="TOP1"
-						description="Top 1 Accuracy"
-						value="[[_metricDifferences.top1]]">
-					</model-metric>
+					<template is="dom-if" if="[[_displayMetric(metrics, 'top1')]]">
+						<model-metric percent
+							name="TOP1"
+							description="Top 1 Accuracy"
+							value="[[_metricDifferences.top1]]">
+						</model-metric>
+					</template>
 					
-					<model-metric percent
-						name="TOP5"
-						description="Top 5 Accuracy"
-						value="[[_metricDifferences.top5]]">
-					</model-metric>
+					<template is="dom-if" if="[[_displayMetric(metrics, 'top5')]]">
+						<model-metric percent
+							name="TOP5"
+							description="Top 5 Accuracy"
+							value="[[_metricDifferences.top5]]">
+						</model-metric>
+					</template>
 				</div>
 			</div>
 			

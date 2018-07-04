@@ -11,6 +11,7 @@ Polymer({
 			observer: '_modelChanged',
 			notify: true
 		},
+		metrics: Array,
 		distortions: {
 			type: Array,
 			observer: '_updateAllMetrics'
@@ -46,6 +47,10 @@ Polymer({
 		} else {
 			return '';
 		}
+	},
+	
+	_displayMetric: function(metrics, metric) {
+		return metrics.includes(metric);
 	},
 	
 	_onCheckboxTapped: function(e) {
