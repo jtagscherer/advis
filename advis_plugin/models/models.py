@@ -313,15 +313,15 @@ class Model:
 					}
 				)[0]
 				
-				top_5_predictions = [{
+				predictions = [{
 					'categoryId': int(index),
 					'categoryName': self._dataset.categories[int(index) - 1],
 					'certainty': float(model_output[index])
-				} for index in model_output.argsort()[-5:][::-1]]
+				} for index in model_output.argsort()[::-1]]
 				
 				return {
 					'input': input_image,
-					'predictions': top_5_predictions
+					'predictions': predictions
 				}
 	
 	def _preprocess_input_image(self, input_image):

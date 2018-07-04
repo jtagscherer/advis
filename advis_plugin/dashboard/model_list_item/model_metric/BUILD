@@ -13,7 +13,8 @@ tf_web_library(
 	],
 	path = "/model-metric",
 	deps = [
-		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer"
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+		"@org_polymer_paper_tooltip"
 	]
 )
 

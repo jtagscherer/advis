@@ -1,0 +1,46 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+
+<!--
+	When opened, this module displays options for configuring the sidebar in a 
+	dialog.
+-->
+<dom-module id="sidebar-settings-dialog">
+	<template>
+		<paper-dialog with-backdrop>
+			<dialog-header event-id="sidebar-settings-dialog">
+				<div class="header-items">
+					<h2>Sidebar Settings</h2>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<h3>Metrics displayed in the model list</h3>
+				<div class="checkbox-group">
+					<template is="dom-repeat" items="[[availableMetrics]]">
+						<paper-checkbox checked="{{item.inModelList}}">
+							[[item.description]]
+						</paper-checkbox>
+					</template>
+				</div>
+				
+				<h3>Metric displayed in the radar chart</h3>
+				<paper-radio-group selected={{selectedRadarChartMetric}}>
+					<template is="dom-repeat" items="[[availableMetrics]]">
+						<paper-radio-button name="[[item.name]]">
+							[[item.description]]
+						</paper-radio-button>
+					</template>
+				</paper-radio-group>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="sidebar-settings-dialog.css">
+	</template>
+
+	<script src="sidebar-settings-dialog.js"></script>
+</dom-module>

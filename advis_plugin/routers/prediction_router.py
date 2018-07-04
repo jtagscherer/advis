@@ -4,32 +4,40 @@ from advis_plugin.util.cache import DataCache
 
 from random import randrange
 
+import warnings
+import numpy as np
+from sklearn.metrics import f1_score, precision_score, recall_score
+
 data_type_single_prediction = 'single_prediction'
 data_type_prediction_accuracy = 'prediction_accuracy'
 
 def _get_single_prediction(model, image_index, distortion,
-	model_manager, distortion_manager):
+	model_manager, distortion_manager, prediction_amount=5):
 	key_tuple = (model, image_index, distortion)
 	
 	if DataCache().has_data(data_type_single_prediction, key_tuple):
-		return DataCache().get_data(data_type_single_prediction, key_tuple)
+		response = DataCache().get_data(data_type_single_prediction, key_tuple)
+	else:
+		_model = model_manager.get_model_modules()[model]
+		
+		meta_data = {
+			'run_type': 'prediction',
+			'image': image_index
+		}
+		
+		if distortion is not None:
+			meta_data['input_image_data'] = distortion_manager \
+				.distortion_modules[distortion].distort(
+					_model._dataset.load_image(image_index),
+					amount=1, mode='non-repeatable-randomized'
+				)[0]
+		
+		response = _model.run(meta_data)
+		DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
-	_model = model_manager.get_model_modules()[model]
-	
-	meta_data = {
-		'run_type': 'prediction',
-		'image': image_index
-	}
-	
-	if distortion is not None:
-		meta_data['input_image_data'] = distortion_manager \
-			.distortion_modules[distortion].distort(
-				_model._dataset.load_image(image_index),
-				amount=1, mode='non-repeatable-randomized'
-			)[0]
-	
-	response = _model.run(meta_data)
-	DataCache().set_data(data_type_single_prediction, key_tuple, response)
+	# Limit the amount of predictions if so desired
+	if prediction_amount is not None:
+		response['predictions'] = response['predictions'][:prediction_amount]
 	
 	return response
 
@@ -83,7 +91,8 @@ def _get_accuracy_prediction(model, distortion, input_image_amount,
 			'displayName': _model.display_name
 		},
 		'input': input_meta_data,
-		'accuracy': _calculate_accuracy(predictions)
+		'accuracy': _calculate_accuracy(predictions),
+		'metrics': _calculate_metrics(predictions)
 	}
 	
 	DataCache().set_data(data_type_prediction_accuracy, key_tuple, result)
@@ -155,6 +164,9 @@ def _calculate_accuracy(predictions):
 					top_5_hits += 1
 				
 				break
+			
+			if rank > 5:
+				continue
 	
 	# Calculate the accuracy as the quotient of correct guesses and the total 
 	# amount of predictions
@@ -164,3 +176,31 @@ def _calculate_accuracy(predictions):
 	}
 	
 	return accuracy
+
+def _calculate_metrics(predictions):
+	# Bring ground truth labels and predictions into the right form
+	sample_labels = np.zeros(len(predictions))
+	sample_predictions = np.zeros(len(predictions))
+	
+	for prediction_index, prediction in enumerate(predictions):
+		sample_labels[prediction_index] = prediction['input']['categoryId']
+		sample_predictions[prediction_index] \
+			= prediction['predictions'][0]['categoryId']
+	
+	f1 = precision = recall = 0.0
+	
+	with warnings.catch_warnings():
+		# Finally, calculate the F1 score
+		warnings.simplefilter('ignore')
+		
+		f1 = f1_score(sample_labels, sample_predictions, average='weighted')
+		precision = precision_score(sample_labels, sample_predictions,
+			average='weighted')
+		recall = recall_score(sample_labels, sample_predictions, average='weighted')
+		
+	return {
+		'f1': f1,
+		'precision': precision,
+		'recall': recall
+	}
+	
