@@ -36,6 +36,10 @@ Polymer({
 			type: Array,
 			value: ['f1', 'top5']
 		},
+		_availableMetrics: {
+			type: Array,
+			value: ['top1', 'top5', 'f1', 'precision', 'recall']
+		},
     _requestManager: {
       type: Object,
       value: () => new tf_backend.RequestManager()
@@ -65,7 +69,21 @@ Polymer({
   },
   
   openSettingsDialog: function() {
-    console.log('TODO');
+		var availableMetrics = [];
+		for (const metric of this._availableMetrics) {
+			availableMetrics.push({
+				name: metric,
+				description: this._getMetricDescription(metric)
+			});
+		}
+		
+    this.$$('sidebar-settings-dialog').open({
+      selectedRadarChartMetric: this._selectedRadarChartMetric,
+      selectedModelListMetrics: this._selectedModelListMetrics,
+			availableMetrics: availableMetrics,
+			animationTarget: this.$$('#sidebar-settings-button')
+				.getBoundingClientRect()
+		});
   },
 	
 	_dialogReturned: function(e) {
@@ -77,6 +95,11 @@ Polymer({
 		} else if (e.detail.eventId == 'distortion-update-confirmation-dialog') {
 			this._reloadDistortions(false);
 			this._calculateModelMetrics();
+		} else if (e.detail.eventId == 'sidebar-settings-dialog') {
+			this.set(
+				'_selectedRadarChartMetric',
+				e.detail.content.selectedRadarChartMetric
+			);
 		}
 	},
 	
@@ -194,19 +217,23 @@ Polymer({
 		}
 	},
 	
-	_getRadarChartMetricTitle: function(metric) {
+	_getMetricDescription: function(metric) {
 		switch (metric) {
 			case 'top1':
-				return 'Model Top 1 Accuracy';
+				return 'Top 1 Accuracy';
 			case 'top5':
-				return 'Model Top 5 Accuracy';
+				return 'Top 5 Accuracy';
 			case 'f1':
-				return 'Model F1 Score';
+				return 'F1 Score';
 			case 'precision':
-				return 'Model Precision';
+				return 'Precision';
 			case 'recall':
-				return 'Model Recall';
+				return 'Recall';
 		}
+	},
+	
+	_getRadarChartMetricTitle: function(metric) {
+		return `Model ${this._getMetricDescription(metric)}`;
 	},
 	
 	_isLastModelItem: function(index) {

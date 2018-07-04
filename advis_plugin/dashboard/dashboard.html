@@ -21,6 +21,7 @@
 <link rel="import" href="../../layer-visualization/layer-visualization.html">
 <link rel="import" href="../../graph-view/graph-view.html">
 
+<link rel="import" href="../../dialogs/sidebar-settings-dialog/sidebar-settings-dialog.html">
 <link rel="import" href="../../dialogs/distortion-configuration-dialog/distortion-configuration-dialog.html">
 <link rel="import" href="../../dialogs/distortion-update-confirmation-dialog/distortion-update-confirmation-dialog.html">
 
@@ -88,7 +89,7 @@
 					</div>
 				</div>
 				
-				<paper-icon-button id="settings-button"
+				<paper-icon-button id="sidebar-settings-button"
 					icon="settings"
 					on-tap="openSettingsDialog">
 				</paper-icon-button>
@@ -144,6 +145,7 @@
 			</div>
 		</tf-dashboard-layout>
 		
+		<sidebar-settings-dialog></sidebar-settings-dialog>
 		<distortion-configuration-dialog></distortion-configuration-dialog>
 		<distortion-update-confirmation-dialog></distortion-update-confirmation-dialog>
 

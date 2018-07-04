@@ -1,0 +1,18 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+
+dialog-header {
+	padding: 0;
+}
+
+#content {
+	padding-left: 15px;
+	padding-right: 15px;
+	margin-bottom: 5px;
+	
+	paper-radio-group {
+		paper-radio-button {
+			--paper-radio-button-checked-color: $accent-color;
+			--paper-radio-button-checked-ink-color: $accent-color;
+		}
+	}
+}
