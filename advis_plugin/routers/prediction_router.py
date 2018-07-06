@@ -13,13 +13,14 @@ data_type_prediction_accuracy = 'prediction_accuracy'
 
 def _get_single_prediction(model, image_index, distortion, distortion_index,
 	model_manager, distortion_manager, prediction_amount=5):
-	_distortion = distortion_manager.distortion_modules[distortion]
+	if distortion is not None:
+		_distortion = distortion_manager.distortion_modules[distortion]
 	
-	# If the chosen distortion introduces no actual random changes because it has 
-	# no parameters that can be randomly configured, we can simply use the first 
-	# distortion index.
-	if _distortion.is_invariant():
-		distortion_index = 0
+		# If the chosen distortion introduces no actual random changes because it 
+		# has no parameters that can be randomly configured, we can simply use the 
+		# first distortion index.
+		if _distortion.is_invariant():
+			distortion_index = 0
 	
 	key_tuple = (model, image_index, distortion, distortion_index)
 	
