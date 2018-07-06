@@ -157,12 +157,13 @@ def _cache_node_differences(routers, managers, input_image_amount):
 					distortion_manager
 				)
 			
-			DataCache().persist_cache()
 			layer_index += 1
 			
 			_update_progress('Caching node differences: ' \
 				'Model \"{}\", Layer {} out of {}…'.format(model_display_name,
 				layer_index, layer_amount))
+		
+		DataCache().persist_cache()
 
 def _get_total_steps(managers):
 	model_manager = managers['model']
