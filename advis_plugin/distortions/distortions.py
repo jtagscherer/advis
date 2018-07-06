@@ -48,7 +48,7 @@ class Distortion:
 			_parameters = self._parameters
 		
 		# Reset the random seed for repeatable randomization
-		if mode == 'randomized':
+		if mode == 'randomized' or mode == 'single-randomized':
 			parameters.reset_random_seed()
 		
 		for i in range(0, amount):
@@ -59,6 +59,13 @@ class Distortion:
 			elif mode == 'randomized' or mode == 'non-repeatable-randomized':
 				distorted_images.append(self._module.distort(image, parameters
 					.generate_configuration(_parameters, randomize=True)))
+			elif mode == 'single-randomized':
+				if i == amount - 1:
+					distorted_images.append(self._module.distort(image, parameters
+						.generate_configuration(_parameters, randomize=True)))
+				else:
+					parameters.generate_configuration(_parameters, randomize=True)
+					distorted_images.append(None)
 		
 		return distorted_images
 	
