@@ -3,6 +3,7 @@ module advis.config {
 		imageAmounts: {
 			modelAccuracy: 100,
 			activationVisualization: 10,
+			distortedPredictions: 10,
 			nodeActivation: 10
 		}
 	};
