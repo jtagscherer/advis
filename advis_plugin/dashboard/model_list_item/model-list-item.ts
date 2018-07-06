@@ -34,6 +34,15 @@ Polymer({
 		}
 	},
 	
+	_openDetailedPerformanceDialog: function(e) {
+		this.fire('open-detailed-performance-dialog', {
+			model: this.model,
+			animationTarget: this.$$('#metrics').getBoundingClientRect()
+		});
+		
+		e.stopPropagation();
+	},
+	
 	_modelChanged: function() {
 		this._selected = this.model.selectedForStatistics;
 		this.$$('#checkbox').checked = this._selected;

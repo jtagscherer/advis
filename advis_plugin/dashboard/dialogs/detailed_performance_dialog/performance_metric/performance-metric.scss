@@ -1,0 +1,33 @@
+@import 'advis_plugin/dashboard/shared/style/text';
+@import 'advis_plugin/dashboard/shared/style/color';
+
+#container {
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 20px;
+	
+	#name {
+		text-transform: uppercase;
+	}
+	
+	#values {
+		display: flex;
+		flex-direction: row;
+		overflow: scroll;
+		
+		border: 1px solid $light-foreground-color;
+		border-radius: 6px;
+			
+		metric-value {
+			flex: 1;
+			padding: 10px;
+		}
+		
+		#separator {
+			padding: 0.5px;
+			margin-left: 10px;
+			margin-right: 10px;
+			background-color: $light-foreground-color;
+		}
+	}
+}

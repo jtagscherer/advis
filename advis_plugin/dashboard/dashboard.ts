@@ -9,7 +9,8 @@ Polymer({
 		'iron-select': '_itemSelected',
 		'iron-deselect': '_itemDeselected',
 		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged',
-    'dialogReturnedEvent': '_dialogReturned'
+    'dialogReturnedEvent': '_dialogReturned',
+    'open-detailed-performance-dialog': 'openDetailedPerformanceDialog'
   },
   properties: {
     selectedModel: {
@@ -85,6 +86,25 @@ Polymer({
 				.getBoundingClientRect()
 		});
   },
+	
+	openDetailedPerformanceDialog: function(e) {
+    // Compile a list of available metrics and display names
+    var availableMetrics = [];
+    for (let metric of this._availableMetrics) {
+      availableMetrics.push({
+        name: metric,
+        displayName: this._getMetricDescription(metric),
+				percent: metric == 'top1' || metric == 'top5'
+      });
+    }
+    
+		this.$$('detailed-performance-dialog').open({
+      model: e.detail.model,
+      availableMetrics: availableMetrics,
+			availableDistortions: this._availableDistortions,
+			animationTarget: e.detail.animationTarget
+		});
+	},
 	
 	_dialogReturned: function(e) {
 		if (e.detail.eventId == 'distortion-configuration-dialog') {

@@ -1,0 +1,41 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../metric-value/metric-value.html">
+
+<!--
+	This component displays a row of values of a performance metric.
+-->
+<dom-module id="performance-metric">
+	<template>
+		<div id="container">
+			<p id="name" class="single-line title">
+				[[name]]
+			</p>
+			<div id="values">
+				<metric-value
+					name="Original"
+					value=[[_originalValue.value]]
+					percent=[[percent]]>
+				</metric-value>
+				<metric-value
+					name="Distorted"
+					value=[[_distortedValue.value]]
+					original-value=[[_distortedValue.originalValue]]
+					percent=[[percent]]>
+				</metric-value>
+				<div id="separator"></div>
+				<template is="dom-repeat" items="[[_valueList]]">
+					<metric-value
+						name=[[item.name]]
+						value=[[item.value]]
+						original-value=[[item.originalValue]]
+						percent=[[percent]]>
+					</metric-value>
+				</template>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="performance-metric.css">
+	</template>
+
+	<script src="performance-metric.js"></script>
+</dom-module>
