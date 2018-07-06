@@ -391,8 +391,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 
 		Arguments:
 			request: The request which has to contain the image amounts used for 
-				calculating model accuracies, activation visualizations and node 
-				activations.
+				calculating model accuracies, activation visualizations, distorted 
+				predictions, and node activations.
 		Returns:
 			A response with the time taken after the caching has been completed.
 		"""

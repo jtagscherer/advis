@@ -34,7 +34,7 @@ def cache_progress_route(request):
 
 def cache_route(request, routers, managers):
 	missing_arguments = argutil.check_missing_arguments(
-		request, ['modelAccuracy', 'nodeActivation']
+		request, ['modelAccuracy', 'nodeActivation', 'distortedPredictions']
 	)
 	
 	if missing_arguments != None:
@@ -42,6 +42,7 @@ def cache_route(request, routers, managers):
 	
 	model_accuracy = int(request.args.get('modelAccuracy'))
 	node_activation = int(request.args.get('nodeActivation'))
+	distorted_predictions = int(request.args.get('distortedPredictions'))
 	
 	global _verbose
 	if 'verbose' in request.args:
@@ -60,7 +61,7 @@ def cache_route(request, routers, managers):
 	DataCache().persist_cache()
 	
 	# Cache all single predictions
-	_cache_single_predictions(routers, managers)
+	_cache_single_predictions(routers, managers, distorted_predictions)
 	DataCache().persist_cache()
 	
 	# Cache all prediction accuracies
@@ -96,7 +97,7 @@ def _cache_graph_structures(routers, managers):
 		
 		_update_progress('Caching graph structures…')
 
-def _cache_single_predictions(routers, managers):
+def _cache_single_predictions(routers, managers, distorted_predictions):
 	prediction_router = routers['prediction']
 	model_manager = managers['model']
 	distortion_manager = managers['distortion']
@@ -107,13 +108,16 @@ def _cache_single_predictions(routers, managers):
 		
 		for image_index in range(0, len(_model._dataset.images)):
 			prediction_router._get_single_prediction(
-				model, image_index, None, model_manager, distortion_manager
+				model, image_index, None, None, model_manager, distortion_manager, \
+				prediction_amount=None
 			)
 			
 			for distortion in distortion_manager.get_distortion_modules():
-				prediction_router._get_single_prediction(
-					model, image_index, distortion, model_manager, distortion_manager
-				)
+				for distortion_index in range(0, distorted_predictions):
+					prediction_router._get_single_prediction(
+						model, image_index, distortion, distortion_index, model_manager, \
+						distortion_manager, prediction_amount=None
+					)
 			
 			_update_progress('Caching single predictions…')
 
