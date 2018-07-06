@@ -155,7 +155,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Returns:
 			A response that contains the top 5 and top 1 accuracy of the model's 
 				predictions on the original input images as well as on each set of 
-				distorted images.
+				distorted images. On top of that, a host of other performance metrics 
+				such as recall, precision and the F1 score will be returned.
 		"""
 		
 		return prediction_router.accuracy_prediction_route(request, 
