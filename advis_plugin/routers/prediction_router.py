@@ -11,9 +11,17 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 data_type_single_prediction = 'single_prediction'
 data_type_prediction_accuracy = 'prediction_accuracy'
 
-def _get_single_prediction(model, image_index, distortion,
+def _get_single_prediction(model, image_index, distortion, distortion_index,
 	model_manager, distortion_manager, prediction_amount=5):
-	key_tuple = (model, image_index, distortion)
+	_distortion = distortion_manager.distortion_modules[distortion]
+	
+	# If the chosen distortion introduces no actual random changes because it has 
+	# no parameters that can be randomly configured, we can simply use the first 
+	# distortion index.
+	if _distortion.is_invariant():
+		distortion_index = 0
+	
+	key_tuple = (model, image_index, distortion, distortion_index)
 	
 	if DataCache().has_data(data_type_single_prediction, key_tuple):
 		response = DataCache().get_data(data_type_single_prediction, key_tuple)
@@ -26,11 +34,10 @@ def _get_single_prediction(model, image_index, distortion,
 		}
 		
 		if distortion is not None:
-			meta_data['input_image_data'] = distortion_manager \
-				.distortion_modules[distortion].distort(
+			meta_data['input_image_data'] = _distortion.distort(
 					_model._dataset.load_image(image_index),
-					amount=1, mode='non-repeatable-randomized'
-				)[0]
+					amount=(distortion_index + 1), mode='single-randomized'
+				)[distortion_index]
 		
 		response = _model.run(meta_data)
 		DataCache().set_data(data_type_single_prediction, key_tuple, response)
@@ -112,10 +119,16 @@ def single_prediction_route(request, model_manager, distortion_manager):
 	else:
 		distortion = None
 	
+	if 'distortionIndex' in request.args:
+		distortion_index = int(request.args['distortionIndex'])
+	else:
+		distortion_index = 0
+	
 	result = _get_single_prediction(
 		request.args.get('model'),
 		int(request.args.get('imageIndex')),
 		distortion,
+		distortion_index,
 		model_manager,
 		distortion_manager
 	)

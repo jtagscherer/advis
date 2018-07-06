@@ -83,6 +83,14 @@ class Distortion:
 			raise ValueError('No parameter with name {} found.'.format(name))
 		
 		self._parameters[name].set_value(value)
+	
+	def is_invariant(self):
+		for parameter in self._parameters.values():
+			if parameter.type is parameters.ParameterType.CONSTANT or \
+				parameter.type is parameters.ParameterType.RANGE:
+				return False
+		
+		return True
 
 class DistortionManager:
 	directory = None
