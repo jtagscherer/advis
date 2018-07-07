@@ -1,0 +1,35 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+<link rel="import" href="../../section-header/section-header.html">
+
+<!--
+	When opened, this module displays a dialog with a list of the predictions of 
+	a model on an input image and on its distorted versions.
+-->
+<dom-module id="detailed-predictions-dialog">
+	<template>
+		<paper-dialog with-backdrop>
+			<dialog-header event-id="detailed-predictions-dialog">
+				<div class="header-items">
+					<h2>Predictions</h2>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<div class="side">
+					<section-header text="Original"></section-header>
+				</div>
+				<div class="side">
+					<section-header text="Average Distorted"></section-header>
+				</div>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="detailed-predictions-dialog.css">
+	</template>
+
+	<script src="detailed-predictions-dialog.js"></script>
+</dom-module>

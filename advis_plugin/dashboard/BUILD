@@ -25,6 +25,7 @@ tf_web_library(
 		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog",
 		"//advis_plugin/dashboard/dialogs/distortion_update_confirmation_dialog",
 		"//advis_plugin/dashboard/dialogs/detailed_performance_dialog",
+		"//advis_plugin/dashboard/dialogs/detailed_predictions_dialog",
 		"@org_polymer_iron_icon",
 		"@org_polymer_iron_selector",
 		"@org_polymer_paper_input",

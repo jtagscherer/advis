@@ -31,7 +31,8 @@
 				<div id="predictions-button-container">
 					<paper-icon-button id="detailed-predictions-button"
 						icon="advis-icons:predictions"
-						on-tap="openDetailedPredictions">
+						on-tap="openDetailedPredictions"
+						disabled="[[!_imageSelected(selectedImage)]]">
 					</paper-icon-button>
 				</div>
 				

@@ -51,11 +51,18 @@ Polymer({
 	},
 	
 	openDetailedPredictions: function() {
-		this.fire('open-detailed-predictions-dialog', {
-			animationTarget: this.$$('#detailed-predictions-button')
-				.getBoundingClientRect()
-		});
+    if (this._imageSelected()) {
+      this.fire('open-detailed-predictions-dialog', {
+				imageIndex: this.selectedImage.index,
+  			animationTarget: this.$$('#detailed-predictions-button')
+  				.getBoundingClientRect()
+  		});
+    }
 	},
+  
+  _imageSelected: function() {
+    return this.selectedImage != null;
+  },
 	
 	_selectedImageChanged: function() {
 		this.reload();

@@ -10,7 +10,8 @@ Polymer({
 		'iron-deselect': '_itemDeselected',
 		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged',
     'dialogReturnedEvent': '_dialogReturned',
-    'open-detailed-performance-dialog': 'openDetailedPerformanceDialog'
+    'open-detailed-performance-dialog': 'openDetailedPerformanceDialog',
+    'open-detailed-predictions-dialog': 'openDetailedPredictionsDialog'
   },
   properties: {
     selectedModel: {
@@ -105,6 +106,18 @@ Polymer({
 			animationTarget: e.detail.animationTarget
 		});
 	},
+  
+  openDetailedPredictionsDialog: function(e) {
+		if (this.selectedModel != null
+			&& this._selectedVisualizationDistortion != null) {
+			this.$$('detailed-predictions-dialog').open({
+				model: this.selectedModel.name,
+				imageIndex: e.detail.imageIndex,
+				distortion: this._selectedVisualizationDistortion.name,
+				animationTarget: e.detail.animationTarget
+			});
+		}
+  },
 	
 	_dialogReturned: function(e) {
 		if (e.detail.eventId == 'distortion-configuration-dialog') {
