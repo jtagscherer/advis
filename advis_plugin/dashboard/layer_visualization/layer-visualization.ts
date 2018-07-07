@@ -50,6 +50,13 @@ Polymer({
 		}
 	},
 	
+	openDetailedPredictions: function() {
+		this.fire('open-detailed-predictions-dialog', {
+			animationTarget: this.$$('#detailed-predictions-button')
+				.getBoundingClientRect()
+		});
+	},
+	
 	_selectedImageChanged: function() {
 		this.reload();
 	},
