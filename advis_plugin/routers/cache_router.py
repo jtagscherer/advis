@@ -107,13 +107,13 @@ def _cache_single_predictions(routers, managers):
 		
 		for image_index in range(0, len(_model._dataset.images)):
 			prediction_router._get_single_prediction(
-				model, image_index, None, None, model_manager, distortion_manager, \
-				prediction_amount=None
+				model, image_index, None, None, None, model_manager, \
+				distortion_manager, prediction_amount=None
 			)
 			
 			for distortion in distortion_manager.get_distortion_modules():
 				prediction_router._get_single_prediction(
-					model, image_index, distortion, 0, model_manager, \
+					model, image_index, distortion, None, None, model_manager, \
 					distortion_manager, prediction_amount=None
 				)
 			

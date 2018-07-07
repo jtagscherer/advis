@@ -36,14 +36,21 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 		}
 		
 		if distortion is not None:
-			meta_data['input_image_data'] = _distortion.distort(
+			if distortion_amount is not None:
+				meta_data['input_image_data'] = _distortion.distort(
 					_model._dataset.load_image(image_index),
-					amount=distortion_amount, mode='single-sequential',
-					distortion_index=distortion_index
+					amount=distortion_amount, distortion_index=distortion_index,
+					mode='single-sequential'
+				)
+			else:
+				meta_data['input_image_data'] = _distortion.distort(
+					_model._dataset.load_image(image_index),
+					amount=1, distortion_index=0,
+					mode='single-randomized'
 				)
 		
 		response = _model.run(meta_data)
-		# DataCache().set_data(data_type_single_prediction, key_tuple, response)
+		DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
 	# Limit the amount of predictions if so desired
 	if prediction_amount is not None:
@@ -125,13 +132,15 @@ def single_prediction_route(request, model_manager, distortion_manager):
 	if 'distortionAmount' in request.args:
 		distortion_amount = int(request.args['distortionAmount'])
 	else:
-		distortion_amount = distortion_index + 1
+		distortion_amount = None
 	
 	if 'distortionIndex' in request.args:
 		distortion_index = int(request.args['distortionIndex'])
 	else:
 		distortion_index = 0
-	distortion_index = np.clip(distortion_index, 0, distortion_amount)
+	
+	if distortion_amount is not None:
+		distortion_index = np.clip(distortion_index, 0, distortion_amount)
 	
 	if 'predictionAmount' in request.args:
 		prediction_amount = int(request.args['predictionAmount'])
