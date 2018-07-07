@@ -39,7 +39,7 @@ class Distortion:
 				join(self._directory, '{}.json'.format(self.name)))
 	
 	def distort(self, image, amount=1, mode='randomized', \
-		custom_parameters=None):
+		custom_parameters=None, distortion_index=None):
 		distorted_images = []
 		
 		if custom_parameters is not None:
@@ -55,17 +55,20 @@ class Distortion:
 			if mode == 'sequential':
 				distorted_images.append(self._module.distort(image, parameters
 					.generate_configuration(_parameters,
-					percentage=i / float(amount))))
+					percentage=i / float(amount)), randomize=False))
+			elif mode == 'single-sequential':
+				return self._module.distort(image, parameters.generate_configuration(
+					_parameters, percentage=(distortion_index / float(amount)),
+					randomize=False))
 			elif mode == 'randomized' or mode == 'non-repeatable-randomized':
 				distorted_images.append(self._module.distort(image, parameters
 					.generate_configuration(_parameters, randomize=True)))
 			elif mode == 'single-randomized':
-				if i == amount - 1:
-					distorted_images.append(self._module.distort(image, parameters
-						.generate_configuration(_parameters, randomize=True)))
+				if i == distortion_index:
+					return self._module.distort(image, parameters
+						.generate_configuration(_parameters, randomize=True))
 				else:
 					parameters.generate_configuration(_parameters, randomize=True)
-					distorted_images.append(None)
 		
 		return distorted_images
 	
@@ -86,8 +89,7 @@ class Distortion:
 	
 	def is_invariant(self):
 		for parameter in self._parameters.values():
-			if parameter.type is parameters.ParameterType.CONSTANT or \
-				parameter.type is parameters.ParameterType.RANGE:
+			if parameter.type is parameters.ParameterType.RANGE:
 				return False
 		
 		return True

@@ -12,7 +12,7 @@ data_type_single_prediction = 'single_prediction'
 data_type_prediction_accuracy = 'prediction_accuracy'
 
 def _get_single_prediction(model, image_index, distortion, distortion_index,
-	model_manager, distortion_manager, prediction_amount=5):
+	distortion_amount, model_manager, distortion_manager, prediction_amount=5):
 	if distortion is not None:
 		_distortion = distortion_manager.distortion_modules[distortion]
 	
@@ -22,7 +22,8 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 		if _distortion.is_invariant():
 			distortion_index = 0
 	
-	key_tuple = (model, image_index, distortion, distortion_index)
+	key_tuple = (model, image_index, distortion, distortion_index, \
+		distortion_amount)
 	
 	if DataCache().has_data(data_type_single_prediction, key_tuple):
 		response = DataCache().get_data(data_type_single_prediction, key_tuple)
@@ -37,11 +38,12 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 		if distortion is not None:
 			meta_data['input_image_data'] = _distortion.distort(
 					_model._dataset.load_image(image_index),
-					amount=(distortion_index + 1), mode='single-randomized'
-				)[distortion_index]
+					amount=distortion_amount, mode='single-sequential',
+					distortion_index=distortion_index
+				)
 		
 		response = _model.run(meta_data)
-		DataCache().set_data(data_type_single_prediction, key_tuple, response)
+		# DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
 	# Limit the amount of predictions if so desired
 	if prediction_amount is not None:
@@ -120,18 +122,33 @@ def single_prediction_route(request, model_manager, distortion_manager):
 	else:
 		distortion = None
 	
+	if 'distortionAmount' in request.args:
+		distortion_amount = int(request.args['distortionAmount'])
+	else:
+		distortion_amount = distortion_index + 1
+	
 	if 'distortionIndex' in request.args:
 		distortion_index = int(request.args['distortionIndex'])
 	else:
 		distortion_index = 0
+	distortion_index = np.clip(distortion_index, 0, distortion_amount)
+	
+	if 'predictionAmount' in request.args:
+		prediction_amount = int(request.args['predictionAmount'])
+	else:
+		prediction_amount = 5
+	if prediction_amount == -1:
+		prediction_amount = None
 	
 	result = _get_single_prediction(
 		request.args.get('model'),
 		int(request.args.get('imageIndex')),
 		distortion,
 		distortion_index,
+		distortion_amount,
 		model_manager,
-		distortion_manager
+		distortion_manager,
+		prediction_amount=prediction_amount
 	)
 	
 	return http_util.Respond(request, result, 'application/json')

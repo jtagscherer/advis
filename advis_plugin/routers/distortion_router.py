@@ -4,6 +4,7 @@ from advis_plugin.util.cache import DataCache
 
 from PIL import Image
 from io import BytesIO
+import numpy as np
 import json
 
 def distortions_route(request, distortion_manager):
@@ -51,17 +52,32 @@ def distortions_single_route(request, distortion_manager, dataset_manager):
 	else:
 		parameters = None
 	
+	# If a distortion amount is supplied, we will use the sequential 
+	# interpolation mode
+	distortion_amount = None
+	if 'distortionAmount' in request.args:
+		distortion_amount = int(request.args['distortionAmount'])
+		distortion_index = np.clip(distortion_index, 0, distortion_amount)
+	
 	# Retrieve the input image
 	_dataset = dataset_manager.get_dataset_modules()[dataset]
 	input_image = _dataset.load_image(image_index, output='array')
 	
 	# Distort the image
 	_distortion = distortion_manager.get_distortion_modules()[distortion]
-	distorted_image = _distortion.distort(
-		input_image,
-		amount=(distortion_index + 1), mode='randomized',
-		custom_parameters=parameters
-	)[distortion_index]
+	
+	if distortion_amount is not None:
+		distorted_image = _distortion.distort(
+			input_image,
+			amount=distortion_amount, mode='single-sequential',
+			distortion_index=distortion_index, custom_parameters=parameters
+		)
+	else:
+		distorted_image = _distortion.distort(
+			input_image,
+			amount=(distortion_index + 1), mode='single-randomized',
+			custom_parameters=parameters, distortion_index=distortion_index
+		)
 	
 	# Output the distorted image as a byte array
 	image = Image.fromarray((distorted_image * 255).astype('uint8'), 'RGB')

@@ -131,7 +131,10 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Arguments:
 			request: The request which has to contain the model's name and an image 
 				number. It can also contain the name of a distortion that should be 
-				applied to the input image before predicting its classification.
+				applied to the input image before predicting its classification. On top 
+				of that, you can supply a distortion index and the amount of 
+				predictions you want to retrieve. If you specify this amount as -1, all 
+				predictions will be retrieved.
 		Returns:
 			A response that contains information about the input image as well as the 
 				model's prediction.
@@ -391,8 +394,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 
 		Arguments:
 			request: The request which has to contain the image amounts used for 
-				calculating model accuracies, activation visualizations, distorted 
-				predictions, and node activations.
+				calculating model accuracies, activation visualizations, and node 
+				activations.
 		Returns:
 			A response with the time taken after the caching has been completed.
 		"""
