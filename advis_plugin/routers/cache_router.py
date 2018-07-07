@@ -34,7 +34,7 @@ def cache_progress_route(request):
 
 def cache_route(request, routers, managers):
 	missing_arguments = argutil.check_missing_arguments(
-		request, ['modelAccuracy', 'nodeActivation', 'distortedPredictions']
+		request, ['modelAccuracy', 'nodeActivation']
 	)
 	
 	if missing_arguments != None:
@@ -42,7 +42,6 @@ def cache_route(request, routers, managers):
 	
 	model_accuracy = int(request.args.get('modelAccuracy'))
 	node_activation = int(request.args.get('nodeActivation'))
-	distorted_predictions = int(request.args.get('distortedPredictions'))
 	
 	global _verbose
 	if 'verbose' in request.args:
@@ -61,7 +60,7 @@ def cache_route(request, routers, managers):
 	DataCache().persist_cache()
 	
 	# Cache all single predictions
-	_cache_single_predictions(routers, managers, distorted_predictions)
+	_cache_single_predictions(routers, managers)
 	DataCache().persist_cache()
 	
 	# Cache all prediction accuracies
@@ -97,7 +96,7 @@ def _cache_graph_structures(routers, managers):
 		
 		_update_progress('Caching graph structures…')
 
-def _cache_single_predictions(routers, managers, distorted_predictions):
+def _cache_single_predictions(routers, managers):
 	prediction_router = routers['prediction']
 	model_manager = managers['model']
 	distortion_manager = managers['distortion']
@@ -113,11 +112,10 @@ def _cache_single_predictions(routers, managers, distorted_predictions):
 			)
 			
 			for distortion in distortion_manager.get_distortion_modules():
-				for distortion_index in range(0, distorted_predictions):
-					prediction_router._get_single_prediction(
-						model, image_index, distortion, distortion_index, model_manager, \
-						distortion_manager, prediction_amount=None
-					)
+				prediction_router._get_single_prediction(
+					model, image_index, distortion, 0, model_manager, \
+					distortion_manager, prediction_amount=None
+				)
 			
 			_update_progress('Caching single predictions…')
 
