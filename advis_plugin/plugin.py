@@ -69,6 +69,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
 			'/predictions/single': self.single_prediction_route,
+			'/predictions/average': self.average_prediction_route,
 			'/predictions/accuracy': self.accuracy_prediction_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
@@ -141,6 +142,23 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""
 		
 		return prediction_router.single_prediction_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def average_prediction_route(self, request):
+		"""A route that returns a model's average prediction on a set of distorted 
+		versions of a single input image.
+
+		Arguments:
+			request: The request which has to contain the model's name, the input 
+				image index, the name of the distortion to be used, as well as the 
+				amount of distorted versions of the input image to be generated.
+		Returns:
+			A response that contains information about the input image as well as the 
+				model's prediction, averaged over all distorted versions.
+		"""
+		
+		return prediction_router.average_prediction_route(request, 
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application

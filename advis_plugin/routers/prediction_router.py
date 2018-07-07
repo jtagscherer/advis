@@ -12,7 +12,8 @@ data_type_single_prediction = 'single_prediction'
 data_type_prediction_accuracy = 'prediction_accuracy'
 
 def _get_single_prediction(model, image_index, distortion, distortion_index,
-	distortion_amount, model_manager, distortion_manager, prediction_amount=5):
+	distortion_amount, model_manager, distortion_manager, prediction_amount=5,
+	cache_data=True):
 	if distortion is not None:
 		_distortion = distortion_manager.distortion_modules[distortion]
 	
@@ -50,7 +51,9 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 				)
 		
 		response = _model.run(meta_data)
-		DataCache().set_data(data_type_single_prediction, key_tuple, response)
+		
+		if cache_data:
+			DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
 	# Limit the amount of predictions if so desired
 	if prediction_amount is not None:
@@ -161,6 +164,75 @@ def single_prediction_route(request, model_manager, distortion_manager):
 	)
 	
 	return http_util.Respond(request, result, 'application/json')
+
+def average_prediction_route(request, model_manager, distortion_manager):
+	# Check for missing arguments and possibly return an error
+	missing_arguments = argutil.check_missing_arguments(
+		request, ['model', 'imageIndex', 'distortion', 'distortionAmount']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	model_name = request.args.get('model')
+	input_image_index = int(request.args.get('imageIndex'))
+	distortion_name = request.args.get('distortion')
+	distortion_amount = int(request.args.get('distortionAmount'))
+	
+	# Retrieve predictions for all distorted images
+	predictions = []
+	
+	for distortion_index in range(0, distortion_amount):
+		predictions.append(_get_single_prediction(
+			model_name, input_image_index, distortion_name, distortion_index,
+			distortion_amount, model_manager, distortion_manager,
+			prediction_amount=None, cache_data=False
+		))
+	
+	# Collect all single predictions
+	category_certainties = {}
+	
+	for prediction in predictions:
+		for category in prediction['predictions']:
+			category_id = int(category['categoryId'])
+			
+			if category_id not in category_certainties:
+				category_certainties[category_id] = {
+					'certainty': category['certainty'],
+					'valueAmount': 1,
+					'categoryName': category['categoryName']
+				}
+			else:
+				certainty = category_certainties[category_id]
+				certainty['certainty'] += category['certainty']
+				certainty['valueAmount'] += 1
+	
+	# Compile the list of certainties back into a prediction list by averaging them
+	average_predictions = []
+	
+	for category_id, certainty in category_certainties.items():
+		average_predictions.append({
+			'categoryId': category_id,
+			'categoryName': certainty['categoryName'],
+			'certainty': certainty['certainty'] / float(certainty['valueAmount'])
+		})
+	
+	# Order the average predictions by certainty
+	average_predictions = sorted(
+		average_predictions,
+		key=lambda category: category['certainty'],
+		reverse=True
+	)
+	
+	input_information = predictions[0]['input']
+	input_information['distortionAmount'] = distortion_amount
+	
+	response = {
+		'input': input_information,
+		'predictions': average_predictions
+	}
+	
+	return http_util.Respond(request, response, 'application/json')
 
 def accuracy_prediction_route(request, model_manager, distortion_manager):
 	# Check for missing arguments and possibly return an error
