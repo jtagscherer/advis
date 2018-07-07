@@ -47,15 +47,15 @@ Polymer({
 						})
 					);
 					
-					// If there are no range or constant parameters allowing for image 
-					// variation, we display a single preview image instead of four
+					// If there are no range parameters allowing for image variation, 
+					// we display a single preview image instead of four
 					this.set('_singlePreviewImage', true);
 					var urlAmount = 1;
 					
 					for (const parameter in this.distortion.parameters) {
 						const _parameter = this.distortion.parameters[parameter];
 						
-						if (_parameter.type == 'constant' || _parameter.type == 'range') {
+						if (_parameter.type == 'range') {
 							this.set('_singlePreviewImage', false);
 							urlAmount = 4;
 						}
