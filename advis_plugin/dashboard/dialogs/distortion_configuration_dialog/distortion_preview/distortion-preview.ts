@@ -69,6 +69,7 @@ Polymer({
 							dataset: previewDataset,
 							imageIndex: '0',
 							distortionIndex: String(i),
+							distortionAmount: String(urlAmount),
 							parameters: JSON.stringify(this.distortion.parameters)
 						}));
 					}
