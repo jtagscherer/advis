@@ -1,0 +1,37 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-progress/paper-progress.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+
+<!--
+	This component displays a category and its prediction certainty.
+-->
+<dom-module id="prediction-category">
+	<template>
+		<div id="container">
+			<paper-progress
+				min="0" max="100"
+				value=[[_getPercentage(value)]]>
+			</paper-progress>
+			<div id="text">
+				<p id="name" class="single-line title">
+					[[name]]
+				</p>
+				<p id="value">
+					[[_getFormattedValue(value)]]
+				</p>
+			</div>
+		</div>
+		
+		<paper-tooltip for="name" position="bottom">
+			[[name]]
+		</paper-tooltip>
+		
+		<paper-tooltip for="value" position="bottom">
+			[[_getPercentage(value)]]%
+		</paper-tooltip>
+		
+		<link rel="stylesheet" type="text/css" href="prediction-category.css">
+	</template>
+
+	<script src="prediction-category.js"></script>
+</dom-module>

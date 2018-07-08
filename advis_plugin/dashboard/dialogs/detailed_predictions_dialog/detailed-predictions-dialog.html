@@ -2,10 +2,12 @@
 <link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
 
+<link rel="import" href="../../constants/constants.html">
 <link rel="import" href="../../dialog-header/dialog-header.html">
 <link rel="import" href="../../dialog-behavior/dialog-behavior.html">
 <link rel="import" href="../../section-header/section-header.html">
 <link rel="import" href="../../image-loader/image-loader.html">
+<link rel="import" href="../../prediction-category/prediction-category.html">
 
 <!--
 	When opened, this module displays a dialog with a list of the predictions of 
@@ -29,6 +31,14 @@
 							height="300px">
 						</image-loader>
 					</div>
+					<div class="predictions">
+						<template is="dom-repeat" items="[[_originalPredictions]]">
+							<prediction-category
+								name=[[item.categoryName]]
+								value=[[item.certainty]]>
+							</prediction-category>
+						</template>
+					</div>
 				</div>
 				<div class="side">
 					<section-header text="Average Distorted"></section-header>
@@ -50,6 +60,14 @@
 								width="300px"
 								height="300px">
 							</image-loader>
+						</template>
+					</div>
+					<div class="predictions">
+						<template is="dom-repeat" items="[[_distortedPredictions]]">
+							<prediction-category
+								name=[[item.categoryName]]
+								value=[[item.certainty]]>
+							</prediction-category>
 						</template>
 					</div>
 				</div>

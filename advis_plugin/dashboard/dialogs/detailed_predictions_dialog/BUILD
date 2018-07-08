@@ -18,10 +18,12 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_polymer_paper_dialog",
 		"@org_polymer_paper_button",
+		"//advis_plugin/dashboard/shared/constants",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
 		"//advis_plugin/dashboard/section_header",
-		"//advis_plugin/dashboard/image_loader"
+		"//advis_plugin/dashboard/image_loader",
+		"//advis_plugin/dashboard/dialogs/detailed_predictions_dialog/prediction_category"
 	]
 )
 

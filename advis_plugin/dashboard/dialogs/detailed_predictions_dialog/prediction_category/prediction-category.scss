@@ -1,0 +1,40 @@
+@import 'advis_plugin/dashboard/shared/style/text';
+@import 'advis_plugin/dashboard/shared/style/color';
+
+$vertical-padding: 10px;
+
+#container {
+	display: flex;
+	flex-direction: column;
+	
+	width: 100%;
+	padding-top: $vertical-padding;
+	padding-bottom: $vertical-padding;
+	
+	paper-progress {
+		width: 100%;
+		
+		--paper-progress-active-color: $accent-color;
+		--paper-progress-secondary-color: transparent;
+	}
+	
+	#text {
+		display: flex;
+		flex-direction: row;
+		
+		width: 100%;
+		
+		p {
+			margin: 0;
+		}
+		
+		#name {
+			flex: 1;
+		}
+		
+		#value {
+			width: 50px;
+			text-align: right;
+		}
+	}
+}

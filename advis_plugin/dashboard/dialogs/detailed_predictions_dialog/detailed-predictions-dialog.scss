@@ -11,6 +11,7 @@ dialog-header {
 #content {
 	display: flex;
 	flex-direction: row;
+	overflow: scroll;
 	
 	margin: 0;
 	padding: 0;
@@ -67,4 +68,8 @@ dialog-header {
 			}
 		}
 	}
+}
+
+.predictions {
+	padding-top: 20px;
 }
