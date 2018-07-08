@@ -54,6 +54,7 @@ Polymer({
     if (this._imageSelected()) {
       this.fire('open-detailed-predictions-dialog', {
 				imageIndex: this.selectedImage.index,
+        associatedDataset: this.associatedDataset.name,
   			animationTarget: this.$$('#detailed-predictions-button')
   				.getBoundingClientRect()
   		});

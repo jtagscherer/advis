@@ -110,10 +110,25 @@ Polymer({
   openDetailedPredictionsDialog: function(e) {
 		if (this.selectedModel != null
 			&& this._selectedVisualizationDistortion != null) {
+			var invariantDistortion = true;
+			for (const parameter in this._selectedVisualizationDistortion
+				.parameters) {
+				const _parameter = this._selectedVisualizationDistortion
+					.parameters[parameter];
+				
+				if (_parameter.type == 'range') {
+					invariantDistortion = false;
+					break;
+				}
+			}
+			
 			this.$$('detailed-predictions-dialog').open({
 				model: this.selectedModel.name,
+				associatedDataset: e.detail.associatedDataset,
 				imageIndex: e.detail.imageIndex,
 				distortion: this._selectedVisualizationDistortion.name,
+				invariantDistortion: invariantDistortion,
+				requestManager: this._requestManager,
 				animationTarget: e.detail.animationTarget
 			});
 		}

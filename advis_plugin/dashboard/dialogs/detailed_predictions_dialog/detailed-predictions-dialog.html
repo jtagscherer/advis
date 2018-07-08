@@ -5,6 +5,7 @@
 <link rel="import" href="../../dialog-header/dialog-header.html">
 <link rel="import" href="../../dialog-behavior/dialog-behavior.html">
 <link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../image-loader/image-loader.html">
 
 <!--
 	When opened, this module displays a dialog with a list of the predictions of 
@@ -21,9 +22,36 @@
 			<div id="content">
 				<div class="side">
 					<section-header text="Original"></section-header>
+					<div id="original-image-container">
+						<image-loader
+							url=[[_originalImageUrl]]
+							width="300px"
+							height="300px">
+						</image-loader>
+					</div>
 				</div>
 				<div class="side">
 					<section-header text="Average Distorted"></section-header>
+					<div id="distorted-image-container">
+						<template is="dom-if" if="[[!_singlePreviewImage]]">
+							<template is="dom-repeat" items="[[_distortedImageUrls]]">
+								<image-loader
+									class$="image-grid image-grid-[[index]]"
+									url=[[item]]
+									width="147px"
+									height="147px">
+								</image-loader>
+							</template>
+						</template>
+						<template is="dom-if" if="[[_singlePreviewImage]]">
+							<image-loader
+								class="single-image"
+								url=[[_distortedImageUrls.0]]
+								width="300px"
+								height="300px">
+							</image-loader>
+						</template>
+					</div>
 				</div>
 			</div>
 		</paper-dialog>
