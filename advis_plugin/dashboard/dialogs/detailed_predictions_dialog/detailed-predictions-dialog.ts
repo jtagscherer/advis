@@ -20,7 +20,7 @@ Polymer({
 		
 		_originalPredictions: Array,
 		_distortedPredictions: Array,
-		_initialPredictionAmount: {
+		_predictionAmount: {
 			type: Number,
 			value: 10
 		},
@@ -32,6 +32,14 @@ Polymer({
   },
 	
 	reload: function() {
+		// Clean up potential old values
+		this.set('_originalImageUrl', '');
+		this.set('_distortedImageUrls', '');
+		this.set('_singlePreviewImage', true);
+		this.set('_originalPredictions', []);
+		this.set('_distortedPredictions', []);
+		this.set('_predictionAmount', 10);
+		
 		if (this.requestManager != null) {
 			this._fetchPreviewImageUrls();
 			this._fetchPredictions();
@@ -47,6 +55,29 @@ Polymer({
 		this.requestManager = content.requestManager;
 		
 		this.reload();
+	},
+	
+	loadMorePredictions: function() {
+		if (!this._allPredictionsShown(this._originalPredictions,
+			this.predictionAmount)) {
+			this.set('_predictionAmount', this._predictionAmount + 10);
+		}
+	},
+	
+	_allPredictionsShown: function(predictions, predictionAmount) {
+		return predictionAmount > predictions.length;
+	},
+	
+	_sliceArray: function(array, endIndex) {
+		if (array == null || endIndex == null || endIndex < 0) {
+			return [];
+		}
+		
+		if (endIndex >= array.length) {
+			return array;
+		} else {
+			return array.slice(0, endIndex);
+		}
 	},
 	
 	_fetchPreviewImageUrls: function() {

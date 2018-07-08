@@ -1,6 +1,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-button/paper-button.html">
 
 <link rel="import" href="../../constants/constants.html">
 <link rel="import" href="../../dialog-header/dialog-header.html">
@@ -22,54 +23,65 @@
 				</div>
 			</dialog-header>
 			<div id="content">
-				<div class="side">
-					<section-header text="Original"></section-header>
-					<div id="original-image-container">
-						<image-loader
-							url=[[_originalImageUrl]]
-							width="300px"
-							height="300px">
-						</image-loader>
-					</div>
-					<div class="predictions">
-						<template is="dom-repeat" items="[[_originalPredictions]]">
-							<prediction-category
-								name=[[item.categoryName]]
-								value=[[item.certainty]]>
-							</prediction-category>
-						</template>
-					</div>
-				</div>
-				<div class="side">
-					<section-header text="Average Distorted"></section-header>
-					<div id="distorted-image-container">
-						<template is="dom-if" if="[[!_singlePreviewImage]]">
-							<template is="dom-repeat" items="[[_distortedImageUrls]]">
-								<image-loader
-									class$="image-grid image-grid-[[index]]"
-									url=[[item]]
-									width="147px"
-									height="147px">
-								</image-loader>
-							</template>
-						</template>
-						<template is="dom-if" if="[[_singlePreviewImage]]">
+				<div id="sides">
+					<div class="side">
+						<section-header text="Original"></section-header>
+						<div id="original-image-container">
 							<image-loader
-								class="single-image"
-								url=[[_distortedImageUrls.0]]
+								url=[[_originalImageUrl]]
 								width="300px"
 								height="300px">
 							</image-loader>
-						</template>
+						</div>
+						<div class="predictions">
+							<template is="dom-repeat"
+								items="[[_sliceArray(_originalPredictions, _predictionAmount)]]">
+								<prediction-category
+									name=[[item.categoryName]]
+									value=[[item.certainty]]>
+								</prediction-category>
+							</template>
+						</div>
 					</div>
-					<div class="predictions">
-						<template is="dom-repeat" items="[[_distortedPredictions]]">
-							<prediction-category
-								name=[[item.categoryName]]
-								value=[[item.certainty]]>
-							</prediction-category>
-						</template>
+					<div class="side">
+						<section-header text="Average Distorted"></section-header>
+						<div id="distorted-image-container">
+							<template is="dom-if" if="[[!_singlePreviewImage]]">
+								<template is="dom-repeat" items="[[_distortedImageUrls]]">
+									<image-loader
+										class$="image-grid image-grid-[[index]]"
+										url=[[item]]
+										width="147px"
+										height="147px">
+									</image-loader>
+								</template>
+							</template>
+							<template is="dom-if" if="[[_singlePreviewImage]]">
+								<image-loader
+									class="single-image"
+									url=[[_distortedImageUrls.0]]
+									width="300px"
+									height="300px">
+								</image-loader>
+							</template>
+						</div>
+						<div class="predictions">
+							<template is="dom-repeat"
+								items="[[_sliceArray(_distortedPredictions, _predictionAmount)]]">
+								<prediction-category
+									name=[[item.categoryName]]
+									value=[[item.certainty]]>
+								</prediction-category>
+							</template>
+						</div>
 					</div>
+				</div>
+				<div id="bottom">
+					<paper-button id="load-more-predictions-button"
+						disabled="[[_allPredictionsShown(_originalPredictions, _predictionAmount)]]"
+						on-tap="loadMorePredictions">
+						<p>Load more predictions</p>
+					</paper-button>
 				</div>
 			</div>
 		</paper-dialog>

@@ -9,63 +9,73 @@ dialog-header {
 }
 
 #content {
-	display: flex;
-	flex-direction: row;
 	overflow: scroll;
 	
 	margin: 0;
-	padding: 0;
-	
-	height: 80vh;
-	
 	padding: 10px;
 	
-	.side {
-		width: $side-width;
+	height: 85.3vh;
+	
+	#sides {
+		display: flex;
+		flex-direction: row;
+		
+		.side {
+			width: $side-width;
+			padding-left: 20px;
+			padding-right: 20px;
+			
+			#distorted-image-container {
+				width: $side-width;
+				height: $side-width;
+				
+				font-size: 0;
+				line-height: 0;
+				
+				display: flex;
+				flex-wrap: wrap;
+				
+				.image-grid {
+					display: flex;
+					
+					width: 147px;
+					height: 147px;
+					
+					&.image-grid-0 {
+						padding-right: $image-grid-padding;
+						padding-bottom: $image-grid-padding;
+					}
+					
+					&.image-grid-1 {
+						padding-left: $image-grid-padding;
+						padding-bottom: $image-grid-padding;
+					}
+					
+					&.image-grid-2 {
+						padding-right: $image-grid-padding;
+						padding-top: $image-grid-padding;
+					}
+					
+					&.image-grid-3 {
+						padding-left: $image-grid-padding;
+						padding-top: $image-grid-padding;
+					}
+				}
+				
+				.single-image {
+					display: flex;
+					padding: 0px;
+				}
+			}
+		}
+	}
+	
+	#bottom {
 		padding-left: 20px;
 		padding-right: 20px;
 		
-		#distorted-image-container {
-			width: $side-width;
-			height: $side-width;
-			
-			font-size: 0;
-			line-height: 0;
-			
-			display: flex;
-			flex-wrap: wrap;
-			
-			.image-grid {
-				display: flex;
-				
-				width: 147px;
-				height: 147px;
-				
-				&.image-grid-0 {
-					padding-right: $image-grid-padding;
-					padding-bottom: $image-grid-padding;
-				}
-				
-				&.image-grid-1 {
-					padding-left: $image-grid-padding;
-					padding-bottom: $image-grid-padding;
-				}
-				
-				&.image-grid-2 {
-					padding-right: $image-grid-padding;
-					padding-top: $image-grid-padding;
-				}
-				
-				&.image-grid-3 {
-					padding-left: $image-grid-padding;
-					padding-top: $image-grid-padding;
-				}
-			}
-			
-			.single-image {
-				display: flex;
-				padding: 0px;
-			}
+		paper-button {
+			width: 100%;
 		}
 	}
 }
