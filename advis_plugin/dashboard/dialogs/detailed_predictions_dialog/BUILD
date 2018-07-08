@@ -18,6 +18,7 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_polymer_paper_dialog",
 		"@org_polymer_paper_button",
+		"@org_polymer_paper_spinner",
 		"//advis_plugin/dashboard/shared/constants",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",

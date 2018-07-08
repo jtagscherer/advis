@@ -1,7 +1,9 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../tf-backend/tf-backend.html">
+
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
 <link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../../constants/constants.html">
 <link rel="import" href="../../dialog-header/dialog-header.html">
@@ -34,6 +36,11 @@
 							</image-loader>
 						</div>
 						<div class="predictions">
+							<div class="spinner-container">
+								<paper-spinner-lite active
+									class$="[[_getSpinnerClass(_loadingOriginalPredictions)]]">
+								</paper-spinner-lite>
+							</div>
 							<template is="dom-repeat"
 								items="[[_sliceArray(_originalPredictions, _predictionAmount)]]">
 								<prediction-category
@@ -66,6 +73,11 @@
 							</template>
 						</div>
 						<div class="predictions">
+							<div class="spinner-container">
+								<paper-spinner-lite active
+									class$="[[_getSpinnerClass(_loadingDistortedPredictions)]]">
+								</paper-spinner-lite>
+							</div>
 							<template is="dom-repeat"
 								items="[[_sliceArray(_distortedPredictions, _predictionAmount)]]">
 								<prediction-category
@@ -78,7 +90,7 @@
 				</div>
 				<div id="bottom">
 					<paper-button id="load-more-predictions-button"
-						disabled="[[_allPredictionsShown(_originalPredictions, _predictionAmount)]]"
+						disabled="[[_loadMoreButtonDisabled(_originalPredictions, _predictionAmount, _loadingOriginalPredictions, _loadingDistortedPredictions)]]"
 						on-tap="loadMorePredictions">
 						<p>Load more predictions</p>
 					</paper-button>

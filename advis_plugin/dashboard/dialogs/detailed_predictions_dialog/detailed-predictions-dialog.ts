@@ -25,6 +25,9 @@ Polymer({
 			value: 10
 		},
 		
+		_loadingOriginalPredictions: Boolean,
+		_loadingDistortedPredictions: Boolean,
+		
 		eventId: {
 			type: String,
 			value: 'detailed-predictions-dialog'
@@ -64,8 +67,22 @@ Polymer({
 		}
 	},
 	
+	_getSpinnerClass: function(loading) {
+		if (loading) {
+			return 'shown';
+		} else {
+			return 'hidden';
+		}
+	},
+	
 	_allPredictionsShown: function(predictions, predictionAmount) {
 		return predictionAmount > predictions.length;
+	},
+	
+	_loadMoreButtonDisabled: function(predictions, predictionAmount,
+		loadingOriginalPredictions, loadingDistortedPredictions) {
+		return this._allPredictionsShown(predictions, predictionAmount) ||
+			loadingOriginalPredictions || loadingDistortedPredictions;
 	},
 	
 	_sliceArray: function(array, endIndex) {
@@ -114,6 +131,9 @@ Polymer({
 	_fetchPredictions: function() {
 		const self = this;
 		
+		this.set('_loadingOriginalPredictions', true);
+		this.set('_loadingDistortedPredictions', true);
+		
 		// Fetch the predictions of the original input image
 		const originalPredictionsUrl = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/predictions/single'), {
@@ -123,6 +143,7 @@ Polymer({
 		});
 		
 		this.requestManager.request(originalPredictionsUrl).then(result => {
+			self.set('_loadingOriginalPredictions', false);
 			self.set('_originalPredictions', result.predictions);
 		});
 		
@@ -137,6 +158,7 @@ Polymer({
 		});
 		
 		this.requestManager.request(distortedPredictionsUrl).then(result => {
+			self.set('_loadingDistortedPredictions', false);
 			self.set('_distortedPredictions', result.predictions);
 		});
 	}
