@@ -57,16 +57,17 @@ class Distortion:
 					.generate_configuration(_parameters,
 					percentage=i / float(amount)), randomize=False))
 			elif mode == 'single-sequential':
-				return self._module.distort(image, parameters.generate_configuration(
-					_parameters, percentage=(distortion_index / float(amount)),
-					randomize=False))
+				configuration = parameters.generate_configuration(_parameters,
+					percentage=(distortion_index / float(amount)), randomize=False)
+				return self._module.distort(image, configuration), configuration
 			elif mode == 'randomized' or mode == 'non-repeatable-randomized':
 				distorted_images.append(self._module.distort(image, parameters
 					.generate_configuration(_parameters, randomize=True)))
 			elif mode == 'single-randomized':
 				if i == distortion_index:
-					return self._module.distort(image, parameters
-						.generate_configuration(_parameters, randomize=True))
+					configuration = parameters.generate_configuration(_parameters,
+						randomize=True)
+					return self._module.distort(image, configuration), configuration
 				else:
 					parameters.generate_configuration(_parameters, randomize=True)
 		

@@ -36,21 +36,42 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 			'image': image_index
 		}
 		
+		configuration = None
+		
 		if distortion is not None:
 			if distortion_amount is not None:
-				meta_data['input_image_data'] = _distortion.distort(
+				meta_data['input_image_data'], configuration = _distortion.distort(
 					_model._dataset.load_image(image_index),
 					amount=distortion_amount, distortion_index=distortion_index,
 					mode='single-sequential'
 				)
 			else:
-				meta_data['input_image_data'] = _distortion.distort(
+				meta_data['input_image_data'], configuration = _distortion.distort(
 					_model._dataset.load_image(image_index),
 					amount=1, distortion_index=0,
 					mode='single-randomized'
 				)
 		
 		response = _model.run(meta_data)
+		
+		if distortion is not None and configuration is not None:
+			# Enrich the configuration with further parameter information
+			_configuration = []
+			for configuration_key, configuration_value in configuration.items():
+				for parameter_name, parameter in _distortion._parameters.items():
+					if configuration_key == parameter_name:
+						_configuration.append({
+							'name': configuration_key,
+							'displayName': parameter.display_name,
+							'type': parameter.type.name.lower(),
+							'value': configuration_value
+						})
+			
+			# Append information about the configuration to the response
+			response['input']['distortion'] = {
+				'name': distortion,
+				'configuration': _configuration
+			}
 		
 		if cache_data:
 			DataCache().set_data(data_type_single_prediction, key_tuple, response)
