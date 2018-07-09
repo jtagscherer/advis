@@ -67,13 +67,13 @@ def distortions_single_route(request, distortion_manager, dataset_manager):
 	_distortion = distortion_manager.get_distortion_modules()[distortion]
 	
 	if distortion_amount is not None:
-		distorted_image = _distortion.distort(
+		distorted_image, _ = _distortion.distort(
 			input_image,
 			amount=distortion_amount, mode='single-sequential',
 			distortion_index=distortion_index, custom_parameters=parameters
 		)
 	else:
-		distorted_image = _distortion.distort(
+		distorted_image, _ = _distortion.distort(
 			input_image,
 			amount=(distortion_index + 1), mode='single-randomized',
 			custom_parameters=parameters, distortion_index=distortion_index
