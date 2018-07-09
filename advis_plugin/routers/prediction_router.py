@@ -15,6 +15,8 @@ data_type_prediction_accuracy = 'prediction_accuracy'
 def _get_single_prediction(model, image_index, distortion, distortion_index,
 	distortion_amount, model_manager, distortion_manager, prediction_amount=5,
 	only_category=None, cache_data=True):
+	original_distortion_index = distortion_index
+	
 	if distortion is not None:
 		_distortion = distortion_manager.distortion_modules[distortion]
 	
@@ -73,6 +75,12 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 				'name': distortion,
 				'configuration': _configuration
 			}
+			
+			if original_distortion_index is not None \
+				and distortion_amount is not None:
+				response['input']['distortion']['distortionIndex'] \
+					= original_distortion_index.item()
+				response['input']['distortion']['distortionAmount'] = distortion_amount
 		
 		if cache_data:
 			DataCache().set_data(data_type_single_prediction, key_tuple, response)
