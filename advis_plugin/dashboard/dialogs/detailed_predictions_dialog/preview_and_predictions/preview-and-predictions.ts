@@ -58,6 +58,15 @@ Polymer({
 			this._fetchPredictions();
 		}
 	},
+  
+  openDistortedImagePredictionDialog: function() {
+    this.fire('open-distorted-image-prediction-dialog', {
+			model: this.model,
+			imageIndex: this.imageIndex,
+			distortion: this.distortion,
+			animationTarget: this.$$('#button-overlay').getBoundingClientRect()
+		});
+  },
 	
 	_getSpinnerClass: function(loading) {
 		if (loading) {

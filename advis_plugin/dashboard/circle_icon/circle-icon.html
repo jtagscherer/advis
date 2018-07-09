@@ -1,0 +1,22 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<link rel="import" href="../advis-icons/icons.html">
+
+<!--
+	This component displays a circle and an arbitrary icon within.
+-->
+<dom-module id="circle-icon">
+	<template>
+		<div id="container">
+			<div id="background"></div>
+			<div id="icon-container">
+				<iron-icon icon="[[icon]]"></iron-icon>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="circle-icon.css">
+	</template>
+
+	<script src="circle-icon.js"></script>
+</dom-module>

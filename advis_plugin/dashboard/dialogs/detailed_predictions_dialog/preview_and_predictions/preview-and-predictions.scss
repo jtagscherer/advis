@@ -2,6 +2,7 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 
 $side-padding: 20px;
+$images-button-size: 40px;
 
 :host {
 	--container-width: 0px;
@@ -21,6 +22,7 @@ $side-padding: 20px;
 		font-size: 0;
 		line-height: 0;
 		
+		position: relative;
 		display: flex;
 		flex-wrap: wrap;
 		
@@ -48,6 +50,28 @@ $side-padding: 20px;
 			&.image-grid-3 {
 				padding-left: var(--image-grid-padding);
 				padding-top: var(--image-grid-padding);
+			}
+		}
+		
+		#button-overlay {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			
+			background-color: rgba(0.0, 0.0, 0.0, 0.3);
+			
+			width: var(--image-grid-size);
+			height: var(--image-grid-size);
+			
+			cursor: pointer;
+			
+			circle-icon {
+				width: $images-button-size;
+				height: $images-button-size;
 			}
 		}
 		

@@ -17,8 +17,10 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
+		"@org_polymer_paper_ripple",
 		"//advis_plugin/dashboard/shared/constants",
 		"//advis_plugin/dashboard/section_header",
+		"//advis_plugin/dashboard/circle_icon",
 		"//advis_plugin/dashboard/image_loader",
 		"//advis_plugin/dashboard/dialogs/detailed_predictions_dialog/preview_and_predictions/prediction_category"
 	]

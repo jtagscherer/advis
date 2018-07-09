@@ -11,7 +11,8 @@ Polymer({
 		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged',
     'dialogReturnedEvent': '_dialogReturned',
     'open-detailed-performance-dialog': 'openDetailedPerformanceDialog',
-    'open-detailed-predictions-dialog': 'openDetailedPredictionsDialog'
+    'open-detailed-predictions-dialog': 'openDetailedPredictionsDialog',
+    'open-distorted-image-prediction-dialog': 'openDistortedImagePredictionDialog'
   },
   properties: {
     selectedModel: {
@@ -132,6 +133,10 @@ Polymer({
 				animationTarget: e.detail.animationTarget
 			});
 		}
+  },
+	
+	openDistortedImagePredictionDialog: function(e) {
+		console.log('Open dialog here.');
   },
 	
 	_dialogReturned: function(e) {

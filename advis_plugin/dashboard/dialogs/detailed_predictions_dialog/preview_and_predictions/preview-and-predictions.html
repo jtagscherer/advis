@@ -1,8 +1,11 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../tf-backend/tf-backend.html">
 
+<link rel="import" href="../../paper-ripple/paper-ripple.html">
+
 <link rel="import" href="../../constants/constants.html">
 <link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../circle-icon/circle-icon.html">
 <link rel="import" href="../../image-loader/image-loader.html">
 <link rel="import" href="../../prediction-category/prediction-category.html">
 
@@ -24,6 +27,11 @@
 							height="[[_getImageGridSize(width, _imageGridPadding)]]">
 						</image-loader>
 					</template>
+					<div id="button-overlay"
+						on-tap="openDistortedImagePredictionDialog">
+						<circle-icon icon="add"></circle-icon>
+						<paper-ripple></paper-ripple>
+					</div>
 				</template>
 				<template is="dom-if" if="[[_singlePreviewImage]]">
 					<image-loader
