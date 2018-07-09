@@ -1,0 +1,57 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
+
+<link rel="import" href="../../constants/constants.html">
+<link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../image-loader/image-loader.html">
+<link rel="import" href="../../prediction-category/prediction-category.html">
+
+<!--
+	This component displays a preview of the input image that may be distorted 
+	and the predictions of a model when given this image.
+-->
+<dom-module id="preview-and-predictions">
+	<template>
+		<div id="container">
+			<section-header text=[[title-text]]></section-header>
+			<div id="image-container">
+				<template is="dom-if" if="[[!_singlePreviewImage]]">
+					<template is="dom-repeat" items="[[_imageUrls]]">
+						<image-loader
+							class$="image-grid image-grid-[[index]]"
+							url=[[item]]
+							width="[[_getImageGridSize(width, _imageGridPadding)]]"
+							height="[[_getImageGridSize(width, _imageGridPadding)]]">
+						</image-loader>
+					</template>
+				</template>
+				<template is="dom-if" if="[[_singlePreviewImage]]">
+					<image-loader
+						class="single-image"
+						url=[[_imageUrls.0]]
+						width="[[_getContainerWidth(width)]]"
+						height="[[_getContainerWidth(width)]]">
+					</image-loader>
+				</template>
+			</div>
+			<div class="predictions">
+				<div class="spinner-container">
+					<paper-spinner-lite active
+						class$="[[_getSpinnerClass(loadingPredictions)]]">
+					</paper-spinner-lite>
+				</div>
+				<template is="dom-repeat"
+					items="[[_sliceArray(_predictions, predictionAmount)]]">
+					<prediction-category
+						name=[[item.categoryName]]
+						value=[[item.certainty]]>
+					</prediction-category>
+				</template>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="preview-and-predictions.css">
+	</template>
+
+	<script src="preview-and-predictions.js"></script>
+</dom-module>
