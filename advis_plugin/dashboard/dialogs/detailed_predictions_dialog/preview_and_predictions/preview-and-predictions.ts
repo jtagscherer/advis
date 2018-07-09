@@ -12,6 +12,10 @@ Polymer({
 		associatedDataset: String,
 		imageIndex: Number,
 		distortion: String,
+		distortionIndex: {
+			type: Number,
+			observer: 'reload'
+		},
 		invariantDistortion: Boolean,
 		predictionAmount: {
 			type: Number,
@@ -91,22 +95,36 @@ Polymer({
 			);
 		} else {
 			// Fetch the URLs of distorted images
-			this.set('_singlePreviewImage', this.invariantDistortion);
-			
-			var urlAmount = 1;
-			if (!this._singlePreviewImage) {
-				urlAmount = 4;
-			}
-			
-			var distortedImageUrls = [];
-			for (var i = 0; i < urlAmount; i++) {
+			if (this.distortionIndex == null) {
+				this.set('_singlePreviewImage', this.invariantDistortion);
+				
+				var urlAmount = 1;
+				if (!this._singlePreviewImage) {
+					urlAmount = 4;
+				}
+				
+				var distortedImageUrls = [];
+				for (var i = 0; i < urlAmount; i++) {
+					imageUrls.push(tf_backend.addParams(tf_backend.getRouter()
+						.pluginRoute('advis', '/distortions/single'), {
+						distortion: this.distortion,
+						dataset: this.associatedDataset,
+						imageIndex: String(this.imageIndex),
+						distortionIndex: String(i),
+						distortionAmount: String(urlAmount)
+					}));
+				}
+			} else {
+				this.set('_singlePreviewImage', true);
+				
 				imageUrls.push(tf_backend.addParams(tf_backend.getRouter()
 					.pluginRoute('advis', '/distortions/single'), {
 					distortion: this.distortion,
 					dataset: this.associatedDataset,
 					imageIndex: String(this.imageIndex),
-					distortionIndex: String(i),
-					distortionAmount: String(urlAmount)
+					distortionIndex: String(this.distortionIndex),
+					distortionAmount: String(advis.config.requests.imageAmounts
+						.distortedPredictions)
 				}));
 			}
 		}
@@ -139,20 +157,38 @@ Polymer({
 				predictionsReceived(result);
 			});
 		} else {
-			// Fetch the average predictions of the distorted input image
-			const distortedPredictionsUrl = tf_backend.addParams(
-				tf_backend.getRouter().pluginRoute('advis', '/predictions/average'), {
-					model: this.model,
-					imageIndex: String(this.imageIndex),
-					distortion: this.distortion,
-					distortionAmount: String(advis.config.requests.imageAmounts
-						.distortedPredictions)
-				}
-			);
-			
-			this.requestManager.request(distortedPredictionsUrl).then(result => {
-				predictionsReceived(result);
-			});
+			// Fetch the predictions of the distorted input image
+			if (this.distortionIndex == null) {
+				const distortedPredictionsUrl = tf_backend.addParams(
+					tf_backend.getRouter().pluginRoute('advis', '/predictions/average'), {
+						model: this.model,
+						imageIndex: String(this.imageIndex),
+						distortion: this.distortion,
+						distortionAmount: String(advis.config.requests.imageAmounts
+							.distortedPredictions)
+					}
+				);
+				
+				this.requestManager.request(distortedPredictionsUrl).then(result => {
+					predictionsReceived(result);
+				});
+			} else {
+				const originalPredictionsUrl = tf_backend.addParams(
+					tf_backend.getRouter().pluginRoute('advis', '/predictions/single'), {
+						model: this.model,
+						imageIndex: String(this.imageIndex),
+						distortion: this.distortion,
+						distortionIndex: String(this.distortionIndex),
+						distortionAmount: String(advis.config.requests.imageAmounts
+							.distortedPredictions),
+						predictionAmount: '-1'
+					}
+				);
+				
+				this.requestManager.request(originalPredictionsUrl).then(result => {
+					predictionsReceived(result);
+				});
+			}
 		}
 	},
 	

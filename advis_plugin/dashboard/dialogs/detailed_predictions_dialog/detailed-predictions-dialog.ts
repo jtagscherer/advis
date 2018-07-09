@@ -23,6 +23,10 @@ Polymer({
 			type: Number,
 			value: 10
 		},
+		_distortionIndex: {
+			type: Number,
+			value: null
+		},
 		
 		eventId: {
 			type: String,
@@ -67,5 +71,13 @@ Polymer({
 		return this._allPredictionsShown(_allLeftPredictionsShown, 
 			_allRightPredictionsShown) || _loadingLeftPredictions ||
 			_loadingRightPredictions;
+	},
+	
+	_getRightPredictionsTitle: function(distortionIndex) {
+		if (distortionIndex == null) {
+			return 'Average Distorted';
+		} else {
+			return 'Distorted';
+		}
 	}
 });

@@ -35,12 +35,13 @@
 					</preview-and-predictions>
 					
 					<preview-and-predictions id="right-predictions"
-						title-text="Average Distorted"
+						title-text="[[_getRightPredictionsTitle(_distortionIndex)]]"
 						width=300
 						model=[[model]]
 						associated-dataset=[[associatedDataset]]
 						image-index=[[imageIndex]]
 						distortion=[[distortion]]
+						distortion-index=[[_distortionIndex]]
 						invariant-distortion=[[invariantDistortion]]
 						prediction-amount=[[_predictionAmount]]
 						request-manager=[[requestManager]]
