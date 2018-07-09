@@ -135,7 +135,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 				applied to the input image before predicting its classification. On top 
 				of that, you can supply a distortion index and the amount of 
 				predictions you want to retrieve. If you specify this amount as -1, all 
-				predictions will be retrieved.
+				predictions will be retrieved. Alternatively, if you are only 
+				interested in the certainty of a single category, you can supply its ID.
 		Returns:
 			A response that contains information about the input image as well as the 
 				model's prediction.

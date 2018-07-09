@@ -3,6 +3,7 @@ from advis_plugin.util import argutil
 from advis_plugin.util.cache import DataCache
 
 from random import randrange
+import copy
 
 import warnings
 import numpy as np
@@ -13,7 +14,7 @@ data_type_prediction_accuracy = 'prediction_accuracy'
 
 def _get_single_prediction(model, image_index, distortion, distortion_index,
 	distortion_amount, model_manager, distortion_manager, prediction_amount=5,
-	cache_data=True):
+	only_category=None, cache_data=True):
 	if distortion is not None:
 		_distortion = distortion_manager.distortion_modules[distortion]
 	
@@ -76,11 +77,23 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 		if cache_data:
 			DataCache().set_data(data_type_single_prediction, key_tuple, response)
 	
+	# Copy the response to avoid corrupting the cache
+	_response = copy.deepcopy(response)
+	
+	# Remove all categories other than a single one if so desired
+	if only_category is not None:
+		single_prediction = None
+		for prediction in _response['predictions']:
+			if prediction['categoryId'] == only_category:
+				single_prediction = prediction
+				break
+		_response['predictions'] = [single_prediction]
+	
 	# Limit the amount of predictions if so desired
 	if prediction_amount is not None:
-		response['predictions'] = response['predictions'][:prediction_amount]
+		_response['predictions'] = _response['predictions'][:prediction_amount]
 	
-	return response
+	return _response
 
 def _get_accuracy_prediction(model, distortion, input_image_amount,
 	model_manager, distortion_manager):
@@ -173,6 +186,11 @@ def single_prediction_route(request, model_manager, distortion_manager):
 	if prediction_amount == -1:
 		prediction_amount = None
 	
+	if 'onlyCategory' in request.args:
+		only_category = int(request.args['onlyCategory'])
+	else:
+		only_category = None
+	
 	result = _get_single_prediction(
 		request.args.get('model'),
 		int(request.args.get('imageIndex')),
@@ -181,7 +199,8 @@ def single_prediction_route(request, model_manager, distortion_manager):
 		distortion_amount,
 		model_manager,
 		distortion_manager,
-		prediction_amount=prediction_amount
+		prediction_amount=prediction_amount,
+		only_category=only_category
 	)
 	
 	return http_util.Respond(request, result, 'application/json')
