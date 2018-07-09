@@ -12,10 +12,15 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 data_type_single_prediction = 'single_prediction'
 data_type_prediction_accuracy = 'prediction_accuracy'
 
+import tensorflow as tf
+
 def _get_single_prediction(model, image_index, distortion, distortion_index,
 	distortion_amount, model_manager, distortion_manager, prediction_amount=5,
 	only_category=None, cache_data=True):
-	original_distortion_index = distortion_index
+	if type(distortion_index).__module__ == np.__name__:
+		original_distortion_index = distortion_index.item()
+	else:
+		original_distortion_index = distortion_index
 	
 	if distortion is not None:
 		_distortion = distortion_manager.distortion_modules[distortion]
@@ -79,7 +84,7 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 			if original_distortion_index is not None \
 				and distortion_amount is not None:
 				response['input']['distortion']['distortionIndex'] \
-					= original_distortion_index.item()
+					= original_distortion_index
 				response['input']['distortion']['distortionAmount'] = distortion_amount
 		
 		if cache_data:
