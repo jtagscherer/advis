@@ -15,6 +15,8 @@ Polymer({
 		requestManager: Object,
 		
 		_images: Array,
+		_loadingImages: Boolean,
+		_loadingProgress: Number,
 		
 		eventId: {
 			type: String,
@@ -42,6 +44,10 @@ Polymer({
 	_generateImageList: function() {
 		const self = this;
 		
+		this.set('_loadingImages', true);
+		this.set('_loadingProgress', 0);
+		this.set('_images', []);
+		
 		const distortionAmount = advis.config.requests.imageAmounts
 			.distortedPredictions;
 		var imageList = [];
@@ -62,10 +68,13 @@ Polymer({
 				configuration: result.input.distortion.configuration
 			});
 			
-			console.log('Got ' + imageList.length + ' of ' + distortionAmount + ' predictions.');
-			console.log(result.input.distortion);
+			self.set(
+				'_loadingProgress',
+				(imageList.length / distortionAmount) * 100
+			);
 			
 			if (imageList.length == distortionAmount) {
+				self.set('_loadingImages', false);
 				self.set('_images', imageList);
 			}
 		};
@@ -83,7 +92,6 @@ Polymer({
 				}
 			);
 			
-			console.log(predictionUrl);
 			this.requestManager.request(predictionUrl).then(result => {
 				predictionsReceived(result);
 			});

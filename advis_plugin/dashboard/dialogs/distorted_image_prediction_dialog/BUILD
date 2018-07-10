@@ -19,6 +19,7 @@ tf_web_library(
 		"@org_polymer_paper_dialog",
 		"@org_polymer_iron_list",
 		"@org_polymer_iron_flex_layout",
+		"@org_polymer_paper_progress",
 		"//advis_plugin/dashboard/shared/constants",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
@@ -32,7 +33,8 @@ sass_binary(
   src = "distorted-image-prediction-dialog.scss",
 	deps = [
 		"//advis_plugin/dashboard/shared/style:color",
-		"//advis_plugin/dashboard/shared/style:style"
+		"//advis_plugin/dashboard/shared/style:style",
+		"//advis_plugin/dashboard/shared/style:text"
 	]
 )
 

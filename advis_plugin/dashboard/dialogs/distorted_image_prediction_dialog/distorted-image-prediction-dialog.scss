@@ -1,5 +1,6 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 @import 'advis_plugin/dashboard/shared/style/style';
+@import 'advis_plugin/dashboard/shared/style/text';
 
 $header-height: 61px;
 
@@ -20,6 +21,29 @@ dialog-header {
 	
 	width: 80vw;
 	height: calc(100% - #{$header-height});
+	
+	#progress-container {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		
+		width: 100%;
+		height: 100%;
+		
+		#progress-content {
+			display: flex;
+			flex-direction: column;
+			width: 50%;
+			
+			paper-progress {
+				width: 100%;
+				padding-top: 20px;
+				
+				--paper-progress-active-color: $accent-color;
+				--paper-progress-secondary-color: transparent;
+			}
+		}
+	}
 	
 	iron-list {
 		width: 100%;
