@@ -11,13 +11,17 @@
 	<template>
 		<div id="container">
 			<paper-card image=[[imageUrl]]>
-				<div class="card-content">
-					<!-- TODO -->
+				<div id="card-footer" class="card-content">
+					<div class="certainty"></div>
 				</div>
 				
 				<paper-ripple></paper-ripple>
 			</paper-card>
 		</div>
+		
+		<paper-tooltip for="card-footer" position="top">
+			[[_getFormattedValue(certainty)]] Prediction Certainty for the Ground-Truth Category
+		</paper-tooltip>
 		
 		<link rel="stylesheet" type="text/css" href="distorted-image-item.css">
 	</template>

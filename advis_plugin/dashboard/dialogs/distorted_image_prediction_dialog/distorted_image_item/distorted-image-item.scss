@@ -1,12 +1,30 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 
+$certainty-bar-height: 5px;
+
+:host {
+	--certainty-value: 0%;
+}
+
 #container {
 	padding: 10px;
 	
 	paper-card {
 		width: 200px;
-		height: 205px;
+		height: calc(200px + #{$certainty-bar-height});
 		
 		cursor: pointer;
+		
+		.card-content {
+			padding: 0;
+			border-radius: 0px 0px 2px 2px;
+			overflow: hidden;
+			
+			.certainty {
+				width: var(--certainty-value);
+				height: $certainty-bar-height;
+				background-color: $accent-color;
+			}
+		}
 	}
 }
