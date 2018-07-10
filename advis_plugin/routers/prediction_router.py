@@ -3,6 +3,7 @@ from advis_plugin.util import argutil
 from advis_plugin.util.cache import DataCache
 
 from random import randrange
+import copy
 
 import warnings
 import numpy as np
@@ -57,7 +58,7 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 					mode='single-randomized'
 				)
 		
-		response = _model.run(meta_data)
+		response = copy.deepcopy(_model.run(meta_data))
 		
 		if distortion is not None and configuration is not None:
 			# Enrich the configuration with further parameter information
