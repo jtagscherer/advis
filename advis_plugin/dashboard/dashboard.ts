@@ -136,7 +136,15 @@ Polymer({
   },
 	
 	openDistortedImagePredictionDialog: function(e) {
-		console.log('Open dialog here.');
+		this.$$('distorted-image-prediction-dialog').open({
+			model: e.detail.model,
+			associatedDataset: e.detail.associatedDataset,
+			imageIndex: e.detail.imageIndex,
+			distortion: e.detail.distortion,
+      groundTruthCategory: e.detail.groundTruthCategory,
+			requestManager: this._requestManager,
+			animationTarget: e.detail.animationTarget
+		});
   },
 	
 	_dialogReturned: function(e) {

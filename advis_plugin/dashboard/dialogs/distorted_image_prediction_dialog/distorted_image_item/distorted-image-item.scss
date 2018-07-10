@@ -1,0 +1,12 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+
+#container {
+	padding: 10px;
+	
+	paper-card {
+		width: 200px;
+		height: 205px;
+		
+		cursor: pointer;
+	}
+}

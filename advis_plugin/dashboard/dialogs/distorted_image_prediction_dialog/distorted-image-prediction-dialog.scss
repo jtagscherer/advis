@@ -1,0 +1,28 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+@import 'advis_plugin/dashboard/shared/style/style';
+
+$header-height: 61px;
+
+paper-dialog {
+	height: 90vh;
+}
+
+dialog-header {
+	padding: 0;
+	height: 61px;
+}
+
+#content {
+	overflow: scroll;
+	
+	margin: 0;
+	padding: 0;
+	
+	width: 80vw;
+	height: calc(100% - #{$header-height});
+	
+	iron-list {
+		width: 100%;
+		height: 100%;
+	}
+}

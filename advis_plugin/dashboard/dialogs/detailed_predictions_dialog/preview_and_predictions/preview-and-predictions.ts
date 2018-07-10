@@ -35,6 +35,7 @@ Polymer({
 		_imageUrls: Array,
 		_singlePreviewImage: Boolean,
 		_predictions: Array,
+    _groundTruthCategory: Number,
 		
 		_imageGridPadding: {
 			type: Number,
@@ -52,6 +53,7 @@ Polymer({
 		this.set('_imageUrls', []);
 		this.set('_singlePreviewImage', true);
 		this.set('_predictions', []);
+    this.set('_groundTruthCategory', null);
 		
 		if (this.requestManager != null) {
 			this._fetchPreviewImageUrls();
@@ -60,12 +62,16 @@ Polymer({
 	},
   
   openDistortedImagePredictionDialog: function() {
-    this.fire('open-distorted-image-prediction-dialog', {
-			model: this.model,
-			imageIndex: this.imageIndex,
-			distortion: this.distortion,
-			animationTarget: this.$$('#button-overlay').getBoundingClientRect()
-		});
+		if (this._groundTruthCategory != null && !this.invariantDistortion) {
+			this.fire('open-distorted-image-prediction-dialog', {
+				model: this.model,
+				associatedDataset: this.associatedDataset,
+				imageIndex: this.imageIndex,
+				distortion: this.distortion,
+				groundTruthCategory: this._groundTruthCategory,
+				animationTarget: this.$$('#button-overlay').getBoundingClientRect()
+			});
+		}
   },
 	
 	_getSpinnerClass: function(loading) {
@@ -147,6 +153,10 @@ Polymer({
 		this.set('loadingPredictions', true);
 		
 		const predictionsReceived = function(result) {
+      if (self._groundTruthCategory == null) {
+        self.set('_groundTruthCategory', result.input.categoryId);
+      }
+      
 			self.set('loadingPredictions', false);
 			self.set('_predictions', result.predictions);
 			self._updateShowingAllPredictions();
