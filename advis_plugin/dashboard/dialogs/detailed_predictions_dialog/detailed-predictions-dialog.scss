@@ -2,19 +2,18 @@
 @import 'advis_plugin/dashboard/shared/style/style';
 
 $side-width: 300px;
-$side-padding: 20px;
+$side-padding: 10px;
+
+paper-dialog {
+	top: 0 !important;
+}
 
 dialog-header {
 	padding: 0;
 }
 
 #content {
-	overflow: scroll;
-	
 	margin: 0;
-	padding: 10px;
-	
-	height: 85.3vh;
 	
 	#sides {
 		display: flex;
