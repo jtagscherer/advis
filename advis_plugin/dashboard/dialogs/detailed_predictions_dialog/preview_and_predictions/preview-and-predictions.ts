@@ -74,6 +74,10 @@ Polymer({
 		}
   },
 	
+	_isGroundTruth: function(categoryId, groundTruthCategory) {
+		return categoryId == groundTruthCategory;
+	},
+	
 	_getSpinnerClass: function(loading) {
 		if (loading) {
 			return 'shown';

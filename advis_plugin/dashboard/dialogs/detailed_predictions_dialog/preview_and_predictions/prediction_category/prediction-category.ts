@@ -4,7 +4,11 @@ Polymer({
   is: 'prediction-category',
 	properties: {
 		name: String,
-		value: Number
+		value: Number,
+		highlighted: {
+			type: Boolean,
+			value: false
+		}
 	},
 	
 	_getFormattedValue: function(value) {
@@ -18,5 +22,15 @@ Polymer({
 	
 	_getPercentage: function(value) {
 		return value * 100;
+	},
+	
+	_getTextClass: function(highlighted) {
+		var baseClass = 'single-line title';
+		
+		if (highlighted) {
+			return baseClass + ' highlighted';
+		} else {
+			return baseClass;
+		}
 	}
 });

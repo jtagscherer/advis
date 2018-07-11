@@ -30,6 +30,10 @@ $vertical-padding: 10px;
 		
 		#name {
 			flex: 1;
+			
+			&.highlighted {
+				color: $accent-color;
+			}
 		}
 		
 		#value {

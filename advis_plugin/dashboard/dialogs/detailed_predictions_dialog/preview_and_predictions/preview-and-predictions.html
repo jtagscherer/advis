@@ -52,7 +52,8 @@
 					items="[[_sliceArray(_predictions, predictionAmount)]]">
 					<prediction-category
 						name=[[item.categoryName]]
-						value=[[item.certainty]]>
+						value=[[item.certainty]]
+						highlighted="[[_isGroundTruth(item.categoryId, _groundTruthCategory)]]">
 					</prediction-category>
 				</template>
 			</div>
