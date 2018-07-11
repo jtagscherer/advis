@@ -3,6 +3,8 @@
 
 $side-padding: 20px;
 $images-button-size: 40px;
+$distortion-index-indicator-padding: 20px;
+$distortion-index-indicator-size: 35px;
 
 :host {
 	--container-width: 0px;
@@ -73,6 +75,16 @@ $images-button-size: 40px;
 				width: $images-button-size;
 				height: $images-button-size;
 			}
+		}
+		
+		#distortion-index {
+			position: absolute;
+			
+			width: $distortion-index-indicator-size;
+			height: $distortion-index-indicator-size;
+			
+			top: $distortion-index-indicator-padding;
+			right: $distortion-index-indicator-padding;
 		}
 		
 		.single-image {

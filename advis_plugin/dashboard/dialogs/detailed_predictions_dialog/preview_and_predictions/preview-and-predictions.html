@@ -40,6 +40,12 @@
 						width="[[_getContainerWidth(width)]]"
 						height="[[_getContainerWidth(width)]]">
 					</image-loader>
+					<template is="dom-if" if="[[!invariantDistortion]]">
+						<circle-icon
+							id="distortion-index"
+							text="[[distortionIndex]]">
+						</circle-icon>
+					</template>
 				</template>
 			</div>
 			<div class="predictions">
