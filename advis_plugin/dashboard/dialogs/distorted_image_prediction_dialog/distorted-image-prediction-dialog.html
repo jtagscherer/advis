@@ -32,7 +32,7 @@
 						</p>
 						<div id="sort-dropdown">
 							<paper-dropdown-menu label="Sort By">
-								<paper-listbox slot="dropdown-content" class="dropdown-content" selected="0">
+								<paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{_selectedSortMethod}}">
 									<paper-item>Certainty</paper-item>
 									<paper-item>Index</paper-item>
 									<template is="dom-repeat" items="[[_parameters]]">

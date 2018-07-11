@@ -21,6 +21,12 @@ Polymer({
 			notify: true,
 			observer: '_imageSelected'
 		},
+		_selectedSortMethod: {
+			type: Number,
+			notify: true,
+			value: 0,
+			observer: '_sortImages'
+		},
 		_loadingImages: Boolean,
 		_loadingProgress: Number,
 		_distortionDisplayName: {
@@ -59,6 +65,41 @@ Polymer({
 		};
 	},
 	
+	_sortImages: function(method) {
+		if (this._images == null) {
+			return;
+		}
+		
+		var images = this._images;
+		this.set('_images', null);
+		
+		if (method == 0) {
+			// Sort by certainty
+			images.sort((a, b) => b.certainty - a.certainty);
+		} else if (method == 1) {
+			// Sort by index
+			images.sort((a, b) => b.index - a.index);
+		} else if (this._parameters != null) {
+			// Sort by a parameter
+			let parameterName = this._parameters[method - 2].name;
+			
+			let findParameterValue = function(configuration, name) {
+				for (let parameter of configuration) {
+					if (parameter.name == name) {
+						return parameter.value;
+					}
+				}
+				
+				return 0;
+			}
+			
+			images.sort((a, b) => findParameterValue(b.configuration, parameterName)
+				- findParameterValue(a.configuration, parameterName));
+		}
+		
+		this.set('_images', images);
+	},
+	
 	_imageSelected: function(image) {
 		if (image != null) {
 			this._applyDialog();
@@ -72,6 +113,7 @@ Polymer({
 		this.set('_loadingProgress', 0);
 		this.set('_distortionDisplayName', '...');
 		this.set('_parameters', null);
+		this.set('_selectedSortMethod', 0);
 		this.set('_images', []);
 		
 		const distortionAmount = advis.config.requests.imageAmounts
@@ -120,6 +162,7 @@ Polymer({
 			if (imageList.length == distortionAmount) {
 				self.set('_loadingImages', false);
 				self.set('_images', imageList);
+				self._sortImages(self._selectedSortMethod);
 			}
 		};
 		
