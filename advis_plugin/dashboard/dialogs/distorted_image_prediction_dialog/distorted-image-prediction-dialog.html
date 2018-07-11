@@ -6,6 +6,7 @@
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../paper-progress/paper-progress.html">
 <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../paper-button/paper-button.html">
 
 <link rel="import" href="../../constants/constants.html">
 <link rel="import" href="../../dialog-header/dialog-header.html">
@@ -30,6 +31,11 @@
 						<p id="description" class="single-line title">
 							Distortion Method: [[_distortionDisplayName]]
 						</p>
+						<div id="average-button-container">
+							<paper-button on-tap="_selectDistortionAverage">
+								Select Distortion Average
+							</paper-button>
+						</div>
 						<div id="sort-dropdown">
 							<paper-dropdown-menu label="Sort By">
 								<paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{_selectedSortMethod}}">

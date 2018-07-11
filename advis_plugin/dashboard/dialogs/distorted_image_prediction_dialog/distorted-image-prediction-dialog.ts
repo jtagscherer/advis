@@ -60,8 +60,14 @@ Polymer({
 	},
 	
 	getContentOnApply: function() {
+		var index = null;
+		
+		if (this._selectedImage != null) {
+			index = this._selectedImage.index;
+		}
+		
 		return {
-			index: this._selectedImage.index
+			index: index
 		};
 	},
 	
@@ -98,6 +104,11 @@ Polymer({
 		}
 		
 		this.set('_images', images);
+	},
+	
+	_selectDistortionAverage: function() {
+		this.set('_selectedImage', null);
+		this._applyDialog();
 	},
 	
 	_imageSelected: function(image) {

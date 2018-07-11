@@ -35,7 +35,7 @@ dialog-header {
 		height: $toolbar-height;
 		
 		* {
-			flex: 0.5;
+			flex: 0.33;
 			
 			padding-left: $toolbar-padding;
 			padding-right: $toolbar-padding;
@@ -45,12 +45,17 @@ dialog-header {
 			text-transform: uppercase;
 		}
 		
+		#average-button-container {
+			text-align: center;
+		}
+		
 		#sort-dropdown {
 			display: flex;
 			flex-direction: row;
 			justify-content: flex-end;
 			
 			paper-dropdown-menu {
+				flex: 1;
 				--paper-input-container-focus-color: $accent-color;
 			}
 		}
