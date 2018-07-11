@@ -35,7 +35,9 @@
 				</template>
 				<template is="dom-if" if="[[_singlePreviewImage]]">
 					<image-loader
-						class="single-image"
+						id="single-preview-image-loader"
+						on-tap="openDistortedImagePredictionDialog"
+						class$="[[_getSingleImageLoaderClass(invariantDistortion)]]"
 						url=[[_imageUrls.0]]
 						width="[[_getContainerWidth(width)]]"
 						height="[[_getContainerWidth(width)]]">
@@ -47,6 +49,10 @@
 						</circle-icon>
 					</template>
 				</template>
+				<paper-ripple
+					id="single-image-ripple"
+					class$="[[_getSingleImageRippleClass(distortion, invariantDistortion, distortionIndex)]]">
+				</paper-ripple>
 			</div>
 			<div class="predictions">
 				<div class="spinner-container">

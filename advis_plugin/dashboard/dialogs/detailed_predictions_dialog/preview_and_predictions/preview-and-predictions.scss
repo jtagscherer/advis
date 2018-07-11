@@ -90,6 +90,10 @@ $distortion-index-indicator-size: 35px;
 		.single-image {
 			display: flex;
 			padding: 0px;
+			
+			&.clickable {
+				cursor: pointer;
+			}
 		}
 	}
 	
@@ -122,5 +126,17 @@ $distortion-index-indicator-size: 35px;
 				}
 			}
 		}
+	}
+}
+
+#single-image-ripple {
+	opacity: 0;
+	
+	&.shown {
+		opacity: 1;
+	}
+	
+	&.hidden {
+		opacity: 0;
 	}
 }

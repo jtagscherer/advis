@@ -62,20 +62,50 @@ Polymer({
 	},
   
   openDistortedImagePredictionDialog: function() {
-		if (this._groundTruthCategory != null && !this.invariantDistortion) {
+		if (this._groundTruthCategory != null && !this.invariantDistortion
+			&& this.distortion != null) {
+			var animationTarget = null;
+			
+			if (this._singlePreviewImage) {
+				animationTarget = this.$$('#single-preview-image-loader')
+					.getBoundingClientRect();
+			} else {
+				animationTarget = this.$$('#button-overlay').getBoundingClientRect();
+			}
+			
 			this.fire('open-distorted-image-prediction-dialog', {
 				model: this.model,
 				associatedDataset: this.associatedDataset,
 				imageIndex: this.imageIndex,
 				distortion: this.distortion,
+				distortionIndex: this.distortionIndex,
 				groundTruthCategory: this._groundTruthCategory,
-				animationTarget: this.$$('#button-overlay').getBoundingClientRect()
+				animationTarget: animationTarget
 			});
 		}
   },
 	
 	_isGroundTruth: function(categoryId, groundTruthCategory) {
 		return categoryId == groundTruthCategory;
+	},
+	
+	_getSingleImageLoaderClass: function(invariantDistortion) {
+		var baseClass = 'single-image';
+		
+		if (this.distortion != null && !invariantDistortion) {
+			return baseClass + ' clickable';
+		} else {
+			return baseClass;
+		}
+	},
+	
+	_getSingleImageRippleClass: function(distortion, invariantDistortion,
+		distortionIndex) {
+		if (distortion != null && !invariantDistortion && distortionIndex != null) {
+			return 'shown';
+		} else {
+			return 'hidden';
+		}
 	},
 	
 	_getSpinnerClass: function(loading) {

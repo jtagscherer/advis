@@ -141,6 +141,7 @@ Polymer({
 			associatedDataset: e.detail.associatedDataset,
 			imageIndex: e.detail.imageIndex,
 			distortion: e.detail.distortion,
+      distortionIndex: e.detail.distortionIndex,
       groundTruthCategory: e.detail.groundTruthCategory,
 			requestManager: this._requestManager,
 			animationTarget: e.detail.animationTarget

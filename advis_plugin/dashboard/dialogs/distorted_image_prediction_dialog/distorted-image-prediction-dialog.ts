@@ -11,6 +11,7 @@ Polymer({
 		associatedDataset: String,
 		imageIndex: Number,
 		distortion: String,
+		distortionIndex: Number,
 		groundTruthCategory: Number,
 		requestManager: Object,
 		
@@ -35,6 +36,7 @@ Polymer({
 		this.associatedDataset = content.associatedDataset;
 		this.imageIndex = content.imageIndex;
 		this.distortion = content.distortion;
+		this.distortionIndex = content.distortionIndex;
 		this.groundTruthCategory = content.groundTruthCategory;
 		this.requestManager = content.requestManager;
 		
