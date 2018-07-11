@@ -1,0 +1,39 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-card/paper-card.html">
+<link rel="import" href="../../paper-ripple/paper-ripple.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+
+<link rel="import" href="../../circle-icon/circle-icon.html">
+
+<!--
+	This component displays a single distorted version of an input image and its 
+	prediction certainty.
+-->
+<dom-module id="distorted-image-item">
+	<template>
+		<div id="container">
+			<paper-card image=[[imageUrl]]>
+				<div id="card-footer" class="card-content">
+					<div class="certainty"></div>
+				</div>
+				
+				<circle-icon
+					text="[[_getParameterValue(displayedParameter, certainty, index,
+						parameters, configuration)]]"
+					font-size="12"
+					border-radius="35px">
+				</circle-icon>
+				
+				<paper-ripple></paper-ripple>
+			</paper-card>
+		</div>
+		
+		<paper-tooltip for="card-footer" position="top">
+			[[_getFormattedValue(certainty)]] Prediction Certainty for the Ground-Truth Category
+		</paper-tooltip>
+		
+		<link rel="stylesheet" type="text/css" href="distorted-image-item.css">
+	</template>
+	
+	<script src="distorted-image-item.js"></script>
+</dom-module>

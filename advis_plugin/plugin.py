@@ -69,6 +69,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
 			'/predictions/single': self.single_prediction_route,
+			'/predictions/average': self.average_prediction_route,
 			'/predictions/accuracy': self.accuracy_prediction_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
@@ -131,13 +132,34 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Arguments:
 			request: The request which has to contain the model's name and an image 
 				number. It can also contain the name of a distortion that should be 
-				applied to the input image before predicting its classification.
+				applied to the input image before predicting its classification. On top 
+				of that, you can supply a distortion index and the amount of 
+				predictions you want to retrieve. If you specify this amount as -1, all 
+				predictions will be retrieved. Alternatively, if you are only 
+				interested in the certainty of a single category, you can supply its ID.
 		Returns:
 			A response that contains information about the input image as well as the 
 				model's prediction.
 		"""
 		
 		return prediction_router.single_prediction_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def average_prediction_route(self, request):
+		"""A route that returns a model's average prediction on a set of distorted 
+		versions of a single input image.
+
+		Arguments:
+			request: The request which has to contain the model's name, the input 
+				image index, the name of the distortion to be used, as well as the 
+				amount of distorted versions of the input image to be generated.
+		Returns:
+			A response that contains information about the input image as well as the 
+				model's prediction, averaged over all distorted versions.
+		"""
+		
+		return prediction_router.average_prediction_route(request, 
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
@@ -155,7 +177,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Returns:
 			A response that contains the top 5 and top 1 accuracy of the model's 
 				predictions on the original input images as well as on each set of 
-				distorted images.
+				distorted images. On top of that, a host of other performance metrics 
+				such as recall, precision and the F1 score will be returned.
 		"""
 		
 		return prediction_router.accuracy_prediction_route(request, 
@@ -390,7 +413,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 
 		Arguments:
 			request: The request which has to contain the image amounts used for 
-				calculating model accuracies, activation visualizations and node 
+				calculating model accuracies, activation visualizations, and node 
 				activations.
 		Returns:
 			A response with the time taken after the caching has been completed.

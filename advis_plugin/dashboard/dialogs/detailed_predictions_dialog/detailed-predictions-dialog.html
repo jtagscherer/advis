@@ -1,0 +1,68 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
+
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+<link rel="import" href="../../preview-and-predictions/preview-and-predictions.html">
+
+<!--
+	When opened, this module displays a dialog with a list of the predictions of 
+	a model on an input image and on its distorted versions.
+-->
+<dom-module id="detailed-predictions-dialog">
+	<template>
+		<paper-dialog with-backdrop>
+			<dialog-header event-id="detailed-predictions-dialog">
+				<div class="header-items">
+					<h2>Predictions</h2>
+				</div>
+			</dialog-header>
+			<paper-dialog-scrollable id="content">
+				<div id="sides">
+					<preview-and-predictions id="left-predictions"
+						title-text="Original"
+						width=300
+						model=[[model]]
+						associated-dataset=[[associatedDataset]]
+						image-index=[[imageIndex]]
+						prediction-amount=[[_predictionAmount]]
+						request-manager=[[requestManager]]
+						loading-predictions={{_loadingLeftPredictions}}
+						showing-all-predictions={{_allLeftPredictionsShown}}>
+					</preview-and-predictions>
+					
+					<preview-and-predictions id="right-predictions"
+						title-text="[[_getRightPredictionsTitle(_distortionIndex)]]"
+						width=300
+						model=[[model]]
+						associated-dataset=[[associatedDataset]]
+						image-index=[[imageIndex]]
+						distortion=[[distortion]]
+						distortion-index=[[_distortionIndex]]
+						invariant-distortion=[[invariantDistortion]]
+						prediction-amount=[[_predictionAmount]]
+						request-manager=[[requestManager]]
+						loading-predictions={{_loadingRightPredictions}}
+						showing-all-predictions={{_allRightPredictionsShown}}>
+					</preview-and-predictions>
+				</div>
+				<div id="bottom">
+					<paper-button id="load-more-predictions-button"
+						disabled="[[_loadMoreButtonDisabled(_loadingLeftPredictions,
+							_loadingRightPredictions, _allLeftPredictionsShown,
+							_allRightPredictionsShown)]]"
+						on-tap="loadMorePredictions">
+						<p>Load more predictions</p>
+					</paper-button>
+				</div>
+			</paper-dialog-scrollable>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="detailed-predictions-dialog.css">
+	</template>
+
+	<script src="detailed-predictions-dialog.js"></script>
+</dom-module>

@@ -39,7 +39,7 @@ class Distortion:
 				join(self._directory, '{}.json'.format(self.name)))
 	
 	def distort(self, image, amount=1, mode='randomized', \
-		custom_parameters=None):
+		custom_parameters=None, distortion_index=None):
 		distorted_images = []
 		
 		if custom_parameters is not None:
@@ -48,17 +48,28 @@ class Distortion:
 			_parameters = self._parameters
 		
 		# Reset the random seed for repeatable randomization
-		if mode == 'randomized':
+		if mode == 'randomized' or mode == 'single-randomized':
 			parameters.reset_random_seed()
 		
 		for i in range(0, amount):
 			if mode == 'sequential':
 				distorted_images.append(self._module.distort(image, parameters
 					.generate_configuration(_parameters,
-					percentage=i / float(amount))))
+					percentage=i / float(amount)), randomize=False))
+			elif mode == 'single-sequential':
+				configuration = parameters.generate_configuration(_parameters,
+					percentage=(distortion_index / float(amount)), randomize=False)
+				return self._module.distort(image, configuration), configuration
 			elif mode == 'randomized' or mode == 'non-repeatable-randomized':
 				distorted_images.append(self._module.distort(image, parameters
 					.generate_configuration(_parameters, randomize=True)))
+			elif mode == 'single-randomized':
+				if i == distortion_index:
+					configuration = parameters.generate_configuration(_parameters,
+						randomize=True)
+					return self._module.distort(image, configuration), configuration
+				else:
+					parameters.generate_configuration(_parameters, randomize=True)
 		
 		return distorted_images
 	
@@ -76,6 +87,13 @@ class Distortion:
 			raise ValueError('No parameter with name {} found.'.format(name))
 		
 		self._parameters[name].set_value(value)
+	
+	def is_invariant(self):
+		for parameter in self._parameters.values():
+			if parameter.type is parameters.ParameterType.RANGE:
+				return False
+		
+		return True
 
 class DistortionManager:
 	directory = None

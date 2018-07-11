@@ -1,0 +1,93 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
+
+<link rel="import" href="../../paper-ripple/paper-ripple.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+
+<link rel="import" href="../../constants/constants.html">
+<link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../circle-icon/circle-icon.html">
+<link rel="import" href="../../image-loader/image-loader.html">
+<link rel="import" href="../../prediction-category/prediction-category.html">
+
+<!--
+	This component displays a preview of the input image that may be distorted 
+	and the predictions of a model when given this image.
+-->
+<dom-module id="preview-and-predictions">
+	<template>
+		<div id="container">
+			<section-header text=[[title-text]]></section-header>
+			<div id="image-container">
+				<template is="dom-if" if="[[!_singlePreviewImage]]">
+					<template is="dom-repeat" items="[[_imageUrls]]">
+						<image-loader
+							class$="image-grid image-grid-[[index]]"
+							url=[[item]]
+							width="[[_getImageGridSize(width, _imageGridPadding)]]"
+							height="[[_getImageGridSize(width, _imageGridPadding)]]">
+						</image-loader>
+					</template>
+					<div id="button-overlay"
+						on-tap="openDistortedImagePredictionDialog">
+						<circle-icon icon="add"></circle-icon>
+						<paper-ripple></paper-ripple>
+					</div>
+				</template>
+				<template is="dom-if" if="[[_singlePreviewImage]]">
+					<image-loader
+						id="single-preview-image-loader"
+						on-tap="openDistortedImagePredictionDialog"
+						class$="[[_getSingleImageLoaderClass(invariantDistortion)]]"
+						url=[[_imageUrls.0]]
+						width="[[_getContainerWidth(width)]]"
+						height="[[_getContainerWidth(width)]]">
+					</image-loader>
+					<template is="dom-if" if="[[!invariantDistortion]]">
+						<circle-icon
+							id="distortion-index"
+							text="[[distortionIndex]]">
+						</circle-icon>
+					</template>
+				</template>
+				<paper-ripple
+					id="single-image-ripple"
+					class$="[[_getSingleImageRippleClass(distortion, invariantDistortion, distortionIndex)]]">
+				</paper-ripple>
+			</div>
+			<div class="predictions">
+				<div class="spinner-container">
+					<paper-spinner-lite active
+						class$="[[_getSpinnerClass(loadingPredictions)]]">
+					</paper-spinner-lite>
+				</div>
+				<template is="dom-repeat"
+					items="[[_sliceArray(_predictions, predictionAmount)]]">
+					<prediction-category
+						name=[[item.categoryName]]
+						value=[[item.certainty]]
+						highlighted="[[_isGroundTruth(item.categoryId, _groundTruthCategory)]]">
+					</prediction-category>
+				</template>
+			</div>
+		</div>
+		
+		<template is="dom-if" if="[[!invariantDistortion]]">
+			<paper-tooltip for="distortion-index" position="left">
+				Index of this distorted version of the original input image among all other versions that have been generated
+			</paper-tooltip>
+		</template>
+		
+		<template is="dom-if" if="[[_displayInvariantSinglePreviewImage(_singlePreviewImage, invariantDistortion)]]">
+			<paper-tooltip for="single-preview-image-loader" position="bottom">
+				<template is="dom-repeat" items="[[_generateConfigurationDescription(_distortionConfiguration)]]">
+					<p>[[item]]</p>
+				</template>
+			</paper-tooltip>
+		</template>
+		
+		<link rel="stylesheet" type="text/css" href="preview-and-predictions.css">
+	</template>
+
+	<script src="preview-and-predictions.js"></script>
+</dom-module>

@@ -9,7 +9,10 @@ Polymer({
 		'iron-select': '_itemSelected',
 		'iron-deselect': '_itemDeselected',
 		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged',
-    'dialogReturnedEvent': '_dialogReturned'
+    'dialogReturnedEvent': '_dialogReturned',
+    'open-detailed-performance-dialog': 'openDetailedPerformanceDialog',
+    'open-detailed-predictions-dialog': 'openDetailedPredictionsDialog',
+    'open-distorted-image-prediction-dialog': 'openDistortedImagePredictionDialog'
   },
   properties: {
     selectedModel: {
@@ -86,6 +89,65 @@ Polymer({
 		});
   },
 	
+	openDetailedPerformanceDialog: function(e) {
+    // Compile a list of available metrics and display names
+    var availableMetrics = [];
+    for (let metric of this._availableMetrics) {
+      availableMetrics.push({
+        name: metric,
+        displayName: this._getMetricDescription(metric),
+				percent: metric == 'top1' || metric == 'top5'
+      });
+    }
+    
+		this.$$('detailed-performance-dialog').open({
+      model: e.detail.model,
+      availableMetrics: availableMetrics,
+			availableDistortions: this._availableDistortions,
+			animationTarget: e.detail.animationTarget
+		});
+	},
+  
+  openDetailedPredictionsDialog: function(e) {
+		if (this.selectedModel != null
+			&& this._selectedVisualizationDistortion != null) {
+			var invariantDistortion = true;
+			for (const parameter in this._selectedVisualizationDistortion
+				.parameters) {
+				const _parameter = this._selectedVisualizationDistortion
+					.parameters[parameter];
+				
+				if (_parameter.type == 'range') {
+					invariantDistortion = false;
+					break;
+				}
+			}
+			
+			this.$$('detailed-predictions-dialog').open({
+				model: this.selectedModel.name,
+				associatedDataset: e.detail.associatedDataset,
+				imageIndex: e.detail.imageIndex,
+				distortion: this._selectedVisualizationDistortion.name,
+				invariantDistortion: invariantDistortion,
+				requestManager: this._requestManager,
+				animationTarget: e.detail.animationTarget
+			});
+		}
+  },
+	
+	openDistortedImagePredictionDialog: function(e) {
+		this.$$('distorted-image-prediction-dialog').open({
+			model: e.detail.model,
+			associatedDataset: e.detail.associatedDataset,
+			imageIndex: e.detail.imageIndex,
+			distortion: e.detail.distortion,
+      distortionIndex: e.detail.distortionIndex,
+      groundTruthCategory: e.detail.groundTruthCategory,
+			requestManager: this._requestManager,
+			animationTarget: e.detail.animationTarget
+		});
+  },
+	
 	_dialogReturned: function(e) {
 		if (e.detail.eventId == 'distortion-configuration-dialog') {
 			this.$$('distortion-update-confirmation-dialog').open({
@@ -104,6 +166,9 @@ Polymer({
 				'_selectedModelListMetrics',
 				e.detail.content.selectedModelListMetrics
 			);
+		} else if (e.detail.eventId == 'distorted-image-prediction-dialog') {
+			this.$$('detailed-predictions-dialog').setDistortionIndex(e.detail
+				.content.index);
 		}
 	},
 	

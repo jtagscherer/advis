@@ -3,25 +3,26 @@ package(default_visibility = ["//visibility:public"])
 load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 load("@io_bazel_rules_sass//sass:sass.bzl", "sass_binary")
 
-# Build the web library that displays a numeric value alongside a title.
+# Build the web library that contains a circle with an icon.
 tf_web_library(
-	name = "model_metric",
+	name = "circle_icon",
 	srcs = [
-		"model-metric.html",
-		"model-metric.css",
-		"model-metric.ts"
+		"circle-icon.html",
+		"circle-icon.css",
+		"circle-icon.ts"
 	],
-	path = "/model-metric",
+	path = "/circle-icon",
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
-		"@org_polymer_paper_tooltip"
+		"@org_polymer_iron_icon",
+		"//advis_plugin/dashboard/shared/icons"
 	]
 )
 
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
-  name = "model_metric_scss",
-  src = "model-metric.scss",
+  name = "circle_icon_scss",
+  src = "circle-icon.scss",
 	deps = [
 		"//advis_plugin/dashboard/shared/style:text"
 	]
@@ -29,8 +30,8 @@ sass_binary(
 
 # Move the compiled CSS file to our desired path
 genrule(
-  name = "model_metric_css",
-  srcs = [":model_metric_scss"],
-  outs = ["model-metric.css"],
-  cmd = "cat $(locations :model_metric_scss) > $@"
+  name = "circle_icon_css",
+  srcs = [":circle_icon_scss"],
+  outs = ["circle-icon.css"],
+  cmd = "cat $(locations :circle_icon_scss) > $@"
 )

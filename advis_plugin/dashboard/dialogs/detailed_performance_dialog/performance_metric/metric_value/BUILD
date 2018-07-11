@@ -3,15 +3,16 @@ package(default_visibility = ["//visibility:public"])
 load("@org_tensorflow_tensorboard//tensorboard/defs:web.bzl", "tf_web_library")
 load("@io_bazel_rules_sass//sass:sass.bzl", "sass_binary")
 
-# Build the web library that displays a numeric value alongside a title.
+# Build the web library that contains a component that displays a value along 
+# with its name and its difference to another value.
 tf_web_library(
-	name = "model_metric",
+	name = "metric_value",
 	srcs = [
-		"model-metric.html",
-		"model-metric.css",
-		"model-metric.ts"
+		"metric-value.html",
+		"metric-value.css",
+		"metric-value.ts"
 	],
-	path = "/model-metric",
+	path = "/metric-value",
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_paper_tooltip"
@@ -20,8 +21,8 @@ tf_web_library(
 
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
-  name = "model_metric_scss",
-  src = "model-metric.scss",
+  name = "metric_value_scss",
+  src = "metric-value.scss",
 	deps = [
 		"//advis_plugin/dashboard/shared/style:text"
 	]
@@ -29,8 +30,8 @@ sass_binary(
 
 # Move the compiled CSS file to our desired path
 genrule(
-  name = "model_metric_css",
-  srcs = [":model_metric_scss"],
-  outs = ["model-metric.css"],
-  cmd = "cat $(locations :model_metric_scss) > $@"
+  name = "metric_value_css",
+  srcs = [":metric_value_scss"],
+  outs = ["metric-value.css"],
+  cmd = "cat $(locations :metric_value_scss) > $@"
 )

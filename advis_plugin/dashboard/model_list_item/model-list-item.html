@@ -27,7 +27,7 @@
 					</p>
 				</div>
 				
-				<div id="metrics">
+				<div id="metrics" on-tap="_openDetailedPerformanceDialog">
 					<template is="dom-if" if="[[_displayMetric(metrics, 'recall')]]">
 						<model-metric
 							name="REC"

@@ -107,12 +107,14 @@ def _cache_single_predictions(routers, managers):
 		
 		for image_index in range(0, len(_model._dataset.images)):
 			prediction_router._get_single_prediction(
-				model, image_index, None, model_manager, distortion_manager
+				model, image_index, None, None, None, model_manager, \
+				distortion_manager, prediction_amount=None
 			)
 			
 			for distortion in distortion_manager.get_distortion_modules():
 				prediction_router._get_single_prediction(
-					model, image_index, distortion, model_manager, distortion_manager
+					model, image_index, distortion, None, None, model_manager, \
+					distortion_manager, prediction_amount=None
 				)
 			
 			_update_progress('Caching single predictions…')
@@ -153,12 +155,13 @@ def _cache_node_differences(routers, managers, input_image_amount):
 					distortion_manager
 				)
 			
-			DataCache().persist_cache()
 			layer_index += 1
 			
 			_update_progress('Caching node differences: ' \
 				'Model \"{}\", Layer {} out of {}…'.format(model_display_name,
 				layer_index, layer_amount))
+		
+		DataCache().persist_cache()
 
 def _get_total_steps(managers):
 	model_manager = managers['model']

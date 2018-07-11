@@ -18,6 +18,8 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_polymer_neon_animation",
 		"@org_polymer_paper_tabs",
+		"@org_polymer_paper_icon_button",
+		"//advis_plugin/dashboard/shared/icons",
 		"//advis_plugin/dashboard/layer_visualization/selectors/input_image_selector",
 		"//advis_plugin/dashboard/layer_visualization/selectors/distortion_selector",
 		"//advis_plugin/dashboard/layer_visualization/comparisons/side_by_side",

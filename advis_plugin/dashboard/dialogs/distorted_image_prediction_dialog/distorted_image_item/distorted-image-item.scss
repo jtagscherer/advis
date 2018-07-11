@@ -1,0 +1,41 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+
+$certainty-bar-height: 5px;
+$value-indicator-padding: 10px;
+
+:host {
+	--certainty-value: 0%;
+}
+
+#container {
+	padding: 10px;
+	
+	paper-card {
+		width: 200px;
+		height: calc(200px + #{$certainty-bar-height});
+		
+		cursor: pointer;
+		
+		.card-content {
+			padding: 0;
+			border-radius: 0px 0px 2px 2px;
+			overflow: hidden;
+			
+			.certainty {
+				width: var(--certainty-value);
+				height: $certainty-bar-height;
+				background-color: $accent-color;
+			}
+		}
+		
+		circle-icon {
+			position: absolute;
+			
+			width: 60px;
+			height: 35px;
+			
+			top: $value-indicator-padding;
+			right: $value-indicator-padding;
+		}
+	}
+}

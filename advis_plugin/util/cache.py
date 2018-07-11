@@ -1,5 +1,6 @@
 from os.path import isfile
 import pickle
+import copy
 
 class DataCache:
 	class __DataCache:
@@ -22,10 +23,10 @@ class DataCache:
 			return (type, key) in self.__cache
 		
 		def get_data(self, type, key):
-			return self.__cache[(type, key)]
+			return copy.deepcopy(self.__cache[(type, key)])
 		
 		def set_data(self, type, key, data):
-			self.__cache[(type, key)] = data
+			self.__cache[(type, key)] = copy.deepcopy(data)
 			
 			if self.caching_enabled and self.storage_file != None:
 				self.persist_cache()

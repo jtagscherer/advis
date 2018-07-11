@@ -14,8 +14,28 @@
 		display: flex;
 		flex-direction: row;
 		
-		* {
-			flex: 0.5;
+		#predictions-button-container {
+			display: flex;
+			align-items: center;
+			flex: 0 1 auto;
+			
+			#detailed-predictions-button {
+				color: $light-foreground-color;
+				opacity: 0.5;
+				transition: opacity 0.5s ease;
+				
+				&:hover {
+					opacity: 1;
+				}
+			}
+		}
+		
+		input-image-selector {
+			flex: 1;
+		}
+		
+		distortion-selector {
+			flex: 1;
 		}
 	}
 	

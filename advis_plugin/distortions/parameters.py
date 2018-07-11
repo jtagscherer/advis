@@ -63,7 +63,6 @@ class Parameter:
 			value['lower'] = max(min(value['lower'], max_value), min_value)
 			value['upper'] = max(min(value['upper'], max_value), min_value)
 		elif self.type is ParameterType.ENUM:
-			tf.logging.warn(value)
 			for option in self.options:
 				if option['name'] == value:
 					value = option
@@ -116,7 +115,6 @@ def _is_valid_value(value, type, options=None):
 			for option in options:
 				if option['name'] == value:
 					return True
-			tf.logging.warn('{} is invalid.'.format(value))
 			return False
 		else:
 			return False
