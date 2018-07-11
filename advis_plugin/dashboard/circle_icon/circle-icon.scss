@@ -2,6 +2,10 @@
 
 $icon-size: 80%;
 
+:host {
+	--font-size: 0px;
+}
+
 #container {
 	position: relative;
 	width: 100%;
@@ -34,7 +38,7 @@ $icon-size: 80%;
 		}
 		
 		#icon-text {
-			font-size: 16px;
+			font-size: var(--font-size);
 			color: white;
 			line-height: 100%;
 			margin: 0;
