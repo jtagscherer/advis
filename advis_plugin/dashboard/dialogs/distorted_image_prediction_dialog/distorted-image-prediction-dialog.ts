@@ -16,6 +16,11 @@ Polymer({
 		requestManager: Object,
 		
 		_images: Array,
+		_selectedImage: {
+			type: Object,
+			notify: true,
+			observer: '_imageSelected'
+		},
 		_loadingImages: Boolean,
 		_loadingProgress: Number,
 		
@@ -43,6 +48,18 @@ Polymer({
 		this.reload();
 	},
 	
+	getContentOnApply: function() {
+		return {
+			index: this._selectedImage.index
+		};
+	},
+	
+	_imageSelected: function(image) {
+		if (image != null) {
+			this._applyDialog();
+		}
+	},
+	
 	_generateImageList: function() {
 		const self = this;
 		
@@ -67,7 +84,8 @@ Polymer({
 			imageList.push({
 				url: imageUrl,
 				certainty: result.predictions[0].certainty,
-				configuration: result.input.distortion.configuration
+				configuration: result.input.distortion.configuration,
+				index: result.input.distortion.distortionIndex
 			});
 			
 			self.set(

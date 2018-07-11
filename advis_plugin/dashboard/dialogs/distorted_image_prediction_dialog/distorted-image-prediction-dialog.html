@@ -36,12 +36,13 @@
 					</div>
 				</template>
 				<template is="dom-if" if="[[!_loadingImages]]">
-					<iron-list items="[[_images]]" grid>
+					<iron-list items="[[_images]]" grid
+						selection-enabled selected-item="{{_selectedImage}}">
 						<template>
 							<distorted-image-item
 								image-url=[[item.url]]
 								certainty=[[item.certainty]]
-								data-image-index$=[[index]]>
+								selected={{selected}}>
 							</distorted-image-item>
 						</template>
 					</iron-list>

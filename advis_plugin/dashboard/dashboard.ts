@@ -166,6 +166,9 @@ Polymer({
 				'_selectedModelListMetrics',
 				e.detail.content.selectedModelListMetrics
 			);
+		} else if (e.detail.eventId == 'distorted-image-prediction-dialog') {
+			this.$$('detailed-predictions-dialog').setDistortionIndex(e.detail
+				.content.index);
 		}
 	},
 	

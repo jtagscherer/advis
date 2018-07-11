@@ -49,7 +49,13 @@ Polymer({
 		this.distortion = content.distortion;
 		this.invariantDistortion = content.invariantDistortion;
 		this.requestManager = content.requestManager;
+		this._distortionIndex = null;
 		
+		this.reload();
+	},
+	
+	setDistortionIndex: function(index) {
+		this.set('_distortionIndex', index);
 		this.reload();
 	},
 	

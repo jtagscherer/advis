@@ -7,6 +7,18 @@ Polymer({
 		certainty: {
 			type: Number,
 			observer: '_certaintyChanged'
+		},
+		selected: {
+			type: Boolean,
+			observer: '_selectionChanged'
+		}
+	},
+	
+	_selectionChanged: function(selected) {
+		if (selected) {
+			this.$$('paper-card').elevation = 3;
+		} else {
+			this.$$('paper-card').elevation = 1;
 		}
 	},
 	
