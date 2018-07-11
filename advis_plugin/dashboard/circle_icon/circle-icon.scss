@@ -1,3 +1,5 @@
+@import 'advis_plugin/dashboard/shared/style/text';
+
 $icon-size: 80%;
 
 #container {
@@ -29,6 +31,14 @@ $icon-size: 80%;
 			height: $icon-size;
 			
 			fill: white;
+		}
+		
+		#icon-text {
+			font-size: 16px;
+			color: white;
+			line-height: 100%;
+			margin: 0;
+			z-index: 2;
 		}
 	}
 }

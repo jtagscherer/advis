@@ -11,7 +11,12 @@
 		<div id="container">
 			<div id="background"></div>
 			<div id="icon-container">
-				<iron-icon icon="[[icon]]"></iron-icon>
+				<template is="dom-if" if="[[_displayIcon(icon)]]">
+					<iron-icon icon="[[icon]]"></iron-icon>
+				</template>
+				<template is="dom-if" if="[[_displayText(text)]]">
+					<p id="icon-text" class="single-line title">[[text]]</p>
+				</template>
 			</div>
 		</div>
 		

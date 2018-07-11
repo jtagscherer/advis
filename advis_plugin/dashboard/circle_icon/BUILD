@@ -22,7 +22,10 @@ tf_web_library(
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
   name = "circle_icon_scss",
-  src = "circle-icon.scss"
+  src = "circle-icon.scss",
+	deps = [
+		"//advis_plugin/dashboard/shared/style:text"
+	]
 )
 
 # Move the compiled CSS file to our desired path
