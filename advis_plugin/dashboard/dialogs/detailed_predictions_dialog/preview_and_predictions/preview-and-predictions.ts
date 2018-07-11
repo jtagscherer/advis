@@ -207,8 +207,11 @@ Polymer({
         self.set('_groundTruthCategory', result.input.categoryId);
       }
       
-			self.set('_distortionConfiguration', result.input.distortion
-				.configuration);
+      if ('distortion' in result.input) {
+        self.set('_distortionConfiguration', result.input.distortion
+  				.configuration);
+      }
+			
 			self.set('loadingPredictions', false);
 			self.set('_predictions', result.predictions);
 			self._updateShowingAllPredictions();
