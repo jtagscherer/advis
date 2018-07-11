@@ -76,6 +76,7 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 			# Append information about the configuration to the response
 			response['input']['distortion'] = {
 				'name': distortion,
+				'displayName': _distortion.display_name,
 				'configuration': _configuration
 			}
 			
