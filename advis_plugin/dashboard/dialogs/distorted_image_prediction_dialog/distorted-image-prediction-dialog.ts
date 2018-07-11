@@ -23,6 +23,11 @@ Polymer({
 		},
 		_loadingImages: Boolean,
 		_loadingProgress: Number,
+		_distortionDisplayName: {
+			type: String,
+			value: 'Unknown'
+		},
+		_parameters: Array,
 		
 		eventId: {
 			type: String,
@@ -65,6 +70,8 @@ Polymer({
 		
 		this.set('_loadingImages', true);
 		this.set('_loadingProgress', 0);
+		this.set('_distortionDisplayName', '...');
+		this.set('_parameters', null);
 		this.set('_images', []);
 		
 		const distortionAmount = advis.config.requests.imageAmounts
@@ -87,6 +94,23 @@ Polymer({
 				configuration: result.input.distortion.configuration,
 				index: result.input.distortion.distortionIndex
 			});
+			
+			self.set('_distortionDisplayName', result.input.distortion.displayName);
+			
+			if (self._parameters == null) {
+				var parameters = [];
+				
+				for (let parameter of result.input.distortion.configuration) {
+					if (parameter.type == 'range') {
+						parameters.push({
+							name: parameter.name,
+							displayName: parameter.displayName
+						});
+					}
+				}
+				
+				self.set('_parameters', parameters);
+			}
 			
 			self.set(
 				'_loadingProgress',

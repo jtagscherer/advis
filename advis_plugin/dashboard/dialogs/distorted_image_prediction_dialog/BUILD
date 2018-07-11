@@ -20,6 +20,7 @@ tf_web_library(
 		"@org_polymer_iron_list",
 		"@org_polymer_iron_flex_layout",
 		"@org_polymer_paper_progress",
+		"@org_polymer_paper_dropdown_menu",
 		"//advis_plugin/dashboard/shared/constants",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",

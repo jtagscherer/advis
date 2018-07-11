@@ -3,6 +3,8 @@
 @import 'advis_plugin/dashboard/shared/style/text';
 
 $header-height: 61px;
+$toolbar-height: 60px;
+$toolbar-padding: 10px;
 
 paper-dialog {
 	height: 90vh;
@@ -14,39 +16,81 @@ dialog-header {
 }
 
 #content {
-	overflow: scroll;
+	display: flex;
+	flex-direction: column;
 	
-	margin: 0;
 	padding: 0;
+	margin: 0;
 	
-	width: 80vw;
-	height: calc(100% - #{$header-height});
+	width: 100%;
+	height: 100%;
 	
-	#progress-container {
+	#toolbar {
 		display: flex;
+		flex-direction: row;
 		align-items: center;
 		justify-content: center;
 		
 		width: 100%;
-		height: 100%;
+		height: $toolbar-height;
 		
-		#progress-content {
-			display: flex;
-			flex-direction: column;
-			width: 50%;
+		* {
+			flex: 0.5;
 			
-			paper-progress {
-				width: 100%;
-				padding-top: 20px;
-				
-				--paper-progress-active-color: $accent-color;
-				--paper-progress-secondary-color: transparent;
+			padding-left: $toolbar-padding;
+			padding-right: $toolbar-padding;
+		}
+		
+		#description {
+			text-transform: uppercase;
+		}
+		
+		#sort-dropdown {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-end;
+			
+			paper-dropdown-menu {
+				--paper-input-container-focus-color: $accent-color;
 			}
 		}
 	}
 	
-	iron-list {
-		width: 100%;
-		height: 100%;
+	#list {
+		overflow: scroll;
+		
+		margin: 0;
+		padding: 0;
+		
+		width: 80vw;
+		height: calc(100% - #{$header-height} - #{$toolbar-height});
+		
+		#progress-container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			
+			width: 100%;
+			height: 100%;
+			
+			#progress-content {
+				display: flex;
+				flex-direction: column;
+				width: 50%;
+				
+				paper-progress {
+					width: 100%;
+					padding-top: 20px;
+					
+					--paper-progress-active-color: $accent-color;
+					--paper-progress-secondary-color: transparent;
+				}
+			}
+		}
+		
+		iron-list {
+			width: 100%;
+			height: 100%;
+		}
 	}
 }

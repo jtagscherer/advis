@@ -5,6 +5,7 @@
 <link rel="import" href="../../iron-list/iron-list.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../paper-progress/paper-progress.html">
+<link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
 
 <link rel="import" href="../../constants/constants.html">
 <link rel="import" href="../../dialog-header/dialog-header.html">
@@ -24,29 +25,49 @@
 				</div>
 			</dialog-header>
 			<div id="content">
-				<template is="dom-if" if="[[_loadingImages]]">
-					<div id="progress-container">
-						<div id="progress-content">
-							<p class="single-line title">Loading predictions…</p>
-							<paper-progress
-								min="0" max="100"
-								value=[[_loadingProgress]]>
-							</paper-progress>
+				<template is="dom-if" if="[[!_loadingImages]]">
+					<div id="toolbar">
+						<p id="description" class="single-line title">
+							Distortion Method: [[_distortionDisplayName]]
+						</p>
+						<div id="sort-dropdown">
+							<paper-dropdown-menu label="Sort By">
+								<paper-listbox slot="dropdown-content" class="dropdown-content" selected="0">
+									<paper-item>Certainty</paper-item>
+									<paper-item>Index</paper-item>
+									<template is="dom-repeat" items="[[_parameters]]">
+										<paper-item>[[item.displayName]]</paper-item>
+									</template>
+								</paper-listbox>
+							</paper-dropdown-menu>
 						</div>
 					</div>
 				</template>
-				<template is="dom-if" if="[[!_loadingImages]]">
-					<iron-list items="[[_images]]" grid
-						selection-enabled selected-item="{{_selectedImage}}">
-						<template>
-							<distorted-image-item
-								image-url=[[item.url]]
-								certainty=[[item.certainty]]
-								selected={{selected}}>
-							</distorted-image-item>
-						</template>
-					</iron-list>
-				</template>
+				<div id="list">
+					<template is="dom-if" if="[[_loadingImages]]">
+						<div id="progress-container">
+							<div id="progress-content">
+								<p class="single-line title">Loading predictions…</p>
+								<paper-progress
+									min="0" max="100"
+									value=[[_loadingProgress]]>
+								</paper-progress>
+							</div>
+						</div>
+					</template>
+					<template is="dom-if" if="[[!_loadingImages]]">
+						<iron-list items="[[_images]]" grid
+							selection-enabled selected-item="{{_selectedImage}}">
+							<template>
+								<distorted-image-item
+									image-url=[[item.url]]
+									certainty=[[item.certainty]]
+									selected={{selected}}>
+								</distorted-image-item>
+							</template>
+						</iron-list>
+					</template>
+				</div>
 			</div>
 		</paper-dialog>
 		
