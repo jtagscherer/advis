@@ -3,6 +3,8 @@
 <link rel="import" href="../../paper-ripple/paper-ripple.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 
+<link rel="import" href="../../circle-icon/circle-icon.html">
+
 <!--
 	This component displays a single distorted version of an input image and its 
 	prediction certainty.
@@ -14,6 +16,13 @@
 				<div id="card-footer" class="card-content">
 					<div class="certainty"></div>
 				</div>
+				
+				<circle-icon
+					text="[[_getParameterValue(displayedParameter, certainty, index,
+						parameters, configuration)]]"
+					font-size="12"
+					border-radius="35px">
+				</circle-icon>
 				
 				<paper-ripple></paper-ripple>
 			</paper-card>

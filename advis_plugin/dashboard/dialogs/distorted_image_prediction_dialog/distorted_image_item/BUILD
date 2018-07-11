@@ -17,7 +17,8 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_paper_card",
 		"@org_polymer_paper_ripple",
-		"@org_polymer_paper_tooltip"
+		"@org_polymer_paper_tooltip",
+		"//advis_plugin/dashboard/circle_icon"
 	]
 )
 

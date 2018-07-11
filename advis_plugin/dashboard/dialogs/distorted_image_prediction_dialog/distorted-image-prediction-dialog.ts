@@ -99,8 +99,8 @@ Polymer({
 				return 0;
 			}
 			
-			images.sort((a, b) => findParameterValue(b.configuration, parameterName)
-				- findParameterValue(a.configuration, parameterName));
+			images.sort((a, b) => findParameterValue(a.configuration, parameterName)
+				- findParameterValue(b.configuration, parameterName));
 		}
 		
 		this.set('_images', images);

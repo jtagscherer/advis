@@ -1,6 +1,7 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 
 $certainty-bar-height: 5px;
+$value-indicator-padding: 10px;
 
 :host {
 	--certainty-value: 0%;
@@ -25,6 +26,16 @@ $certainty-bar-height: 5px;
 				height: $certainty-bar-height;
 				background-color: $accent-color;
 			}
+		}
+		
+		circle-icon {
+			position: absolute;
+			
+			width: 60px;
+			height: 35px;
+			
+			top: $value-indicator-padding;
+			right: $value-indicator-padding;
 		}
 	}
 }
