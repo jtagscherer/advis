@@ -1,3 +1,4 @@
+import time, threading
 from os.path import isfile
 import pickle
 import copy
@@ -5,11 +6,15 @@ import copy
 class DataCache:
 	class __DataCache:
 		__cache = None
+		__cache_dirty = False
 		storage_file = None
 		caching_enabled = True
 		
 		def __init__(self):
 			self.__cache = {}
+			cache_thread = threading.Thread(target = self._timed_persist)
+			cache_thread.daemon = True
+			cache_thread.start()
 		
 		def set_storage_file(self, storage_file):
 			self.storage_file = storage_file
@@ -29,7 +34,7 @@ class DataCache:
 			self.__cache[(type, key)] = copy.deepcopy(data)
 			
 			if self.caching_enabled and self.storage_file != None:
-				self.persist_cache()
+				self.__cache_dirty = True
 		
 		def enable_caching(self):
 			self.caching_enabled = True
@@ -55,6 +60,15 @@ class DataCache:
 		def persist_cache(self):
 			with open(self.storage_file, 'wb') as handle:
 				pickle.dump(self.__cache, handle, protocol=pickle.HIGHEST_PROTOCOL)
+			
+			self.__cache_dirty = False
+		
+		def _timed_persist(self):
+			while True:
+				if self.__cache_dirty:
+					self.persist_cache()
+				
+				time.sleep(10)
 	
 	__instance = None
 	
