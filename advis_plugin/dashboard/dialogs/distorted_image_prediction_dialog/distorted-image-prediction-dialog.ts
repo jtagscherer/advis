@@ -84,7 +84,7 @@ Polymer({
 			images.sort((a, b) => b.certainty - a.certainty);
 		} else if (method == 1) {
 			// Sort by index
-			images.sort((a, b) => b.index - a.index);
+			images.sort((a, b) => a.index - b.index);
 		} else if (this._parameters != null) {
 			// Sort by a parameter
 			let parameterName = this._parameters[method - 2].name;
