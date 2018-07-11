@@ -36,6 +36,7 @@ Polymer({
 		_singlePreviewImage: Boolean,
 		_predictions: Array,
     _groundTruthCategory: Number,
+		_distortionConfiguration: Array,
 		
 		_imageGridPadding: {
 			type: Number,
@@ -115,6 +116,21 @@ Polymer({
 			return 'hidden';
 		}
 	},
+  
+  _displayInvariantSinglePreviewImage: function(singlePreviewImage,
+    invariantDistortion) {
+    return singlePreviewImage && !invariantDistortion;
+  },
+	
+	_generateConfigurationDescription: function(configuration) {
+		var parameters = [];
+		
+		for (let parameter of configuration) {
+			parameters.push(parameter.displayName + ': ' + parameter.value);
+		}
+		
+		return parameters;
+	},
 	
 	_sliceArray: function(array, endIndex) {
 		if (array == null || endIndex == null || endIndex < 0) {
@@ -191,6 +207,8 @@ Polymer({
         self.set('_groundTruthCategory', result.input.categoryId);
       }
       
+			self.set('_distortionConfiguration', result.input.distortion
+				.configuration);
 			self.set('loadingPredictions', false);
 			self.set('_predictions', result.predictions);
 			self._updateShowingAllPredictions();

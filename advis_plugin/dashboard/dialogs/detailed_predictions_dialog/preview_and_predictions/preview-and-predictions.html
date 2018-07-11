@@ -2,6 +2,7 @@
 <link rel="import" href="../../tf-backend/tf-backend.html">
 
 <link rel="import" href="../../paper-ripple/paper-ripple.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
 
 <link rel="import" href="../../constants/constants.html">
 <link rel="import" href="../../section-header/section-header.html">
@@ -70,6 +71,20 @@
 				</template>
 			</div>
 		</div>
+		
+		<template is="dom-if" if="[[!invariantDistortion]]">
+			<paper-tooltip for="distortion-index" position="left">
+				Index of this distorted version of the original input image among all other versions that have been generated
+			</paper-tooltip>
+		</template>
+		
+		<template is="dom-if" if="[[_displayInvariantSinglePreviewImage(_singlePreviewImage, invariantDistortion)]]">
+			<paper-tooltip for="single-preview-image-loader" position="bottom">
+				<template is="dom-repeat" items="[[_generateConfigurationDescription(_distortionConfiguration)]]">
+					<p>[[item]]</p>
+				</template>
+			</paper-tooltip>
+		</template>
 		
 		<link rel="stylesheet" type="text/css" href="preview-and-predictions.css">
 	</template>
