@@ -4,6 +4,7 @@ $icon-size: 80%;
 
 :host {
 	--font-size: 0px;
+	--border-radius: 0px;
 }
 
 #container {
@@ -17,7 +18,7 @@ $icon-size: 80%;
 		height: 100%;
 		
 		border: 2px solid white;
-		border-radius: 100%;
+		border-radius: var(--border-radius);
 		box-sizing: border-box;
 		background-color: rgba(0.0, 0.0, 0.0, 0.5);
 	}

@@ -9,6 +9,11 @@ Polymer({
 			type: Number,
 			value: 16,
 			observer: '_updateStyles'
+		},
+		borderRadius: {
+			type: String,
+			value: '100%',
+			observer: '_updateStyles'
 		}
 	},
 	
@@ -22,6 +27,7 @@ Polymer({
 	
 	_updateStyles: function() {
 		this.customStyle['--font-size'] = `${this.fontSize}px`;
+		this.customStyle['--border-radius'] = this.borderRadius;
 		this.updateStyles();
 	}
 });
