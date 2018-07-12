@@ -12,6 +12,7 @@ from advis_plugin.distortions import parameters
 class Distortion:
 	name = None
 	display_name = None
+	type = None
 	icon = None
 	_module = None
 	_directory = None
@@ -25,6 +26,11 @@ class Distortion:
 		self.display_name = self._module.get_display_name()
 		self.icon = self._module.get_icon()
 		
+		if hasattr(self._module, 'get_type'):
+			self.type = self._module.get_type()
+		else:
+			self.type = 'Custom'
+		
 		# Fetch and set up the module's parameters
 		self._parameters = {}
 		
@@ -32,21 +38,38 @@ class Distortion:
 			self._parameters[parameter['name']] = parameters.Parameter(parameter,
 				join(self._directory, '{}.json'.format(self.name)))
 	
-	def distort(self, image, amount=1, mode='randomized'):
+	def distort(self, image, amount=1, mode='randomized', \
+		custom_parameters=None, distortion_index=None):
 		distorted_images = []
 		
+		if custom_parameters is not None:
+			_parameters = parameters.from_json(custom_parameters)
+		else:
+			_parameters = self._parameters
+		
 		# Reset the random seed for repeatable randomization
-		if mode == 'randomized':
+		if mode == 'randomized' or mode == 'single-randomized':
 			parameters.reset_random_seed()
 		
 		for i in range(0, amount):
 			if mode == 'sequential':
 				distorted_images.append(self._module.distort(image, parameters
-					.generate_configuration(self._parameters,
-					percentage=i / float(amount))))
+					.generate_configuration(_parameters,
+					percentage=i / float(amount)), randomize=False))
+			elif mode == 'single-sequential':
+				configuration = parameters.generate_configuration(_parameters,
+					percentage=(distortion_index / float(amount)), randomize=False)
+				return self._module.distort(image, configuration), configuration
 			elif mode == 'randomized' or mode == 'non-repeatable-randomized':
 				distorted_images.append(self._module.distort(image, parameters
-					.generate_configuration(self._parameters, randomize=True)))
+					.generate_configuration(_parameters, randomize=True)))
+			elif mode == 'single-randomized':
+				if i == distortion_index:
+					configuration = parameters.generate_configuration(_parameters,
+						randomize=True)
+					return self._module.distort(image, configuration), configuration
+				else:
+					parameters.generate_configuration(_parameters, randomize=True)
 		
 		return distorted_images
 	
@@ -64,6 +87,13 @@ class Distortion:
 			raise ValueError('No parameter with name {} found.'.format(name))
 		
 		self._parameters[name].set_value(value)
+	
+	def is_invariant(self):
+		for parameter in self._parameters.values():
+			if parameter.type is parameters.ParameterType.RANGE:
+				return False
+		
+		return True
 
 class DistortionManager:
 	directory = None
@@ -72,18 +102,12 @@ class DistortionManager:
 	def __init__(self, directory):
 		self.directory = path.join(directory, 'distortions')
 		
-		if not path.exists(self.directory):
-			makedirs(self.directory)
-		
 		self._copy_preset_distortions()
 		self._update_distortion_modules()
 		
 		self.distortion_modules = collections.OrderedDict(
 			sorted(self.distortion_modules.items())
 		)
-	
-	def is_setup(self):
-		return self.directory != None
 	
 	def get_distortion_modules(self):
 		return self.distortion_modules
@@ -114,8 +138,10 @@ class DistortionManager:
 					.format(name, traceback.format_exc()))
 	
 	def _copy_preset_distortions(self):
-		if not self.is_setup():
+		if path.exists(self.directory):
 			return
+		else:
+			makedirs(self.directory)
 		
 		# Extract a list of presets supplied during the build
 		preset_directory = path.join(path.dirname(__file__), 'presets')

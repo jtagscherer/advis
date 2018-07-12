@@ -11,6 +11,10 @@ Polymer({
 			type: Array,
 			observer: '_updateGraph'
 		},
+		metric: {
+			type: String,
+			observer: '_updateGraph'
+		},
 		selectedDistortion: {
 			type: Object,
 			notify: true
@@ -31,7 +35,8 @@ Polymer({
 			}
 		}
 		
-		if (this.models == null || this.distortions == null) {
+		if (this.models == null || this.distortions == null
+			|| this.metric == null) {
 			return;
 		}
 		
@@ -43,7 +48,7 @@ Polymer({
 		for (var model of this.models) {
 			if (model.selectedForStatistics) {
 				for (var distortion of this.distortions) {
-					if (!(distortion.name in model.accuracy)) {
+					if (!(distortion.name in model.metrics)) {
 						continue modelLoop;
 					}
 				}
@@ -100,7 +105,7 @@ Polymer({
 			var data = [];
 			
 			for (var distortion of this.distortions) {
-				data.push(model.accuracy[distortion.name].top5 * 100);
+				data.push(model.metrics[distortion.name][this.metric] * 100);
 			}
 			
 			// Check if there is already a dataset for this model

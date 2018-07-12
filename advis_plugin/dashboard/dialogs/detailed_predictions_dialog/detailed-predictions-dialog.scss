@@ -1,0 +1,35 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+@import 'advis_plugin/dashboard/shared/style/style';
+
+$side-width: 300px;
+$side-padding: 10px;
+
+paper-dialog {
+	top: 0 !important;
+}
+
+dialog-header {
+	padding: 0;
+}
+
+#content {
+	margin: 0;
+	
+	#sides {
+		display: flex;
+		flex-direction: row;
+		
+		preview-and-predictions {
+			min-width: $side-width;
+		}
+	}
+	
+	#bottom {
+		padding-left: $side-padding;
+		padding-right: $side-padding;
+		
+		paper-button {
+			width: 100%;
+		}
+	}
+}

@@ -50,6 +50,21 @@ Polymer({
 		}
 	},
 	
+	openDetailedPredictions: function() {
+    if (this._imageSelected()) {
+      this.fire('open-detailed-predictions-dialog', {
+				imageIndex: this.selectedImage.index,
+        associatedDataset: this.associatedDataset.name,
+  			animationTarget: this.$$('#detailed-predictions-button')
+  				.getBoundingClientRect()
+  		});
+    }
+	},
+  
+  _imageSelected: function() {
+    return this.selectedImage != null;
+  },
+	
 	_selectedImageChanged: function() {
 		this.reload();
 	},

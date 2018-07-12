@@ -1,0 +1,23 @@
+@import 'advis_plugin/dashboard/shared/style/text';
+@import 'advis_plugin/dashboard/shared/style/color';
+
+$text-margin: 16px;
+
+#container {
+	p {
+		margin-left: $text-margin;
+		margin-right: $text-margin;
+	}
+	
+	div > paper-slider {
+		width: 100%;
+		
+		--paper-slider-knob-color: $accent-color;
+		--paper-slider-knob-start-color: $accent-color;
+		--paper-slider-knob-start-border-color: $accent-color;
+		--paper-slider-active-color: $accent-color;
+		--paper-slider-secondary-color: transparent;
+		--paper-slider-pin-color: $accent-color;
+		--paper-slider-pin-start-color: $accent-color;
+	}
+}

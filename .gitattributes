@@ -5,4 +5,4 @@ checkpoints/vgg_19/* filter=lfs diff=lfs merge=lfs -text
 checkpoints/mobilenet_v1/* filter=lfs diff=lfs merge=lfs -text
 checkpoints/resnet_v2/* filter=lfs diff=lfs merge=lfs -text
 advis_plugin/distortions/presets/style_transfer/data/* filter=lfs diff=lfs merge=lfs -text
-advis_plugin/shared/libraries/**/* linguist-vendored
+advis_plugin/dashboard/shared/libraries/**/* linguist-vendored

@@ -1,0 +1,63 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
+<link rel="import" href="../../iron-icons/iron-icons.html">
+
+<link rel="import" href="../../image-loader/image-loader.html">
+
+<!--
+	This component displays a preview of what a distortion does to an input image.
+-->
+<dom-module id="distortion-preview">
+	<template>
+		<div id="container">
+			<div id="left" class="preview-content">
+				<div id="left-content">
+					<p class="title">
+						Original
+					</p>
+					<div id="left-image-container">
+						<image-loader
+							url=[[_originalImageUrl]]
+							width="194px"
+							height="194px">
+						</image-loader>
+					</div>
+				</div>
+			</div>
+			<div id="center">
+				<iron-icon icon="arrow-forward"></iron-icon>
+			</div>
+			<div id="right" class="preview-content">
+				<div id="right-content">
+					<p class="title">
+						Distorted
+					</p>
+					<div id="right-image-container">
+						<template is="dom-if" if="[[!_singlePreviewImage]]">
+							<template is="dom-repeat" items="[[_distortedImageUrls]]">
+								<image-loader
+									class="image-grid"
+									url=[[item]]
+									width="94px"
+									height="94px">
+								</image-loader>
+							</template>
+						</template>
+						<template is="dom-if" if="[[_singlePreviewImage]]">
+							<image-loader
+								class="single-image"
+								url=[[_distortedImageUrls.0]]
+								width="194px"
+								height="194px">
+							</image-loader>
+						</template>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="distortion-preview.css">
+	</template>
+
+	<script src="distortion-preview.js"></script>
+</dom-module>

@@ -1,0 +1,142 @@
+@import 'advis_plugin/dashboard/shared/style/text';
+@import 'advis_plugin/dashboard/shared/style/color';
+
+$side-padding: 20px;
+$images-button-size: 40px;
+$distortion-index-indicator-padding: 20px;
+$distortion-index-indicator-size: 35px;
+
+:host {
+	--container-width: 0px;
+	--image-grid-padding: 0px;
+	--image-grid-size: 0px;
+}
+
+#container {
+	width: var(--container-width);
+	padding-left: $side-padding;
+	padding-right: $side-padding;
+	
+	#image-container {
+		width: var(--container-width);
+		height: var(--container-width);
+		
+		font-size: 0;
+		line-height: 0;
+		
+		position: relative;
+		display: flex;
+		flex-wrap: wrap;
+		
+		.image-grid {
+			display: flex;
+			
+			width: var(--image-grid-size);
+			height: var(--image-grid-size);
+			
+			&.image-grid-0 {
+				padding-right: var(--image-grid-padding);
+				padding-bottom: var(--image-grid-padding);
+			}
+			
+			&.image-grid-1 {
+				padding-left: var(--image-grid-padding);
+				padding-bottom: var(--image-grid-padding);
+			}
+			
+			&.image-grid-2 {
+				padding-right: var(--image-grid-padding);
+				padding-top: var(--image-grid-padding);
+			}
+			
+			&.image-grid-3 {
+				padding-left: var(--image-grid-padding);
+				padding-top: var(--image-grid-padding);
+			}
+		}
+		
+		#button-overlay {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			
+			background-color: rgba(0.0, 0.0, 0.0, 0.3);
+			
+			width: var(--image-grid-size);
+			height: var(--image-grid-size);
+			
+			cursor: pointer;
+			
+			circle-icon {
+				width: $images-button-size;
+				height: $images-button-size;
+			}
+		}
+		
+		#distortion-index {
+			position: absolute;
+			
+			width: $distortion-index-indicator-size;
+			height: $distortion-index-indicator-size;
+			
+			top: $distortion-index-indicator-padding;
+			right: $distortion-index-indicator-padding;
+		}
+		
+		.single-image {
+			display: flex;
+			padding: 0px;
+			
+			&.clickable {
+				cursor: pointer;
+			}
+		}
+	}
+	
+	.predictions {
+		padding-top: 20px;
+		min-height: 100px;
+		position: relative;
+		
+		.spinner-container {
+			position: absolute;
+			width: 100%;
+			height: 100px;
+			
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			
+			z-index: -1;
+			
+			paper-spinner-lite {
+				--paper-spinner-color: $accent-color;
+				transition: opacity 0.5s ease-in-out;
+				
+				&.shown {
+					opacity: 1;
+				}
+				
+				&.hidden {
+					opacity: 0;
+				}
+			}
+		}
+	}
+}
+
+#single-image-ripple {
+	opacity: 0;
+	
+	&.shown {
+		opacity: 1;
+	}
+	
+	&.hidden {
+		opacity: 0;
+	}
+}

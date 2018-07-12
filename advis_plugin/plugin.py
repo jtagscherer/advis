@@ -70,11 +70,13 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/models': self.models_route,
 			'/graphs': self.graphs_route,
 			'/predictions/single': self.single_prediction_route,
+			'/predictions/average': self.average_prediction_route,
 			'/predictions/accuracy': self.accuracy_prediction_route,
 			'/confusion/matrix': self.confusion_matrix_route,
 			'/confusion/images': self.confusion_images_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
+			'/distortions/update': self.distortions_update_route,
 			'/datasets': self.datasets_route,
 			'/datasets/images/list': self.datasets_images_list_route,
 			'/datasets/images/image': self.datasets_images_image_route,
@@ -85,7 +87,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/node': self.node_difference_route,
 			'/node/list': self.node_difference_list_route,
 			'/node/list/meta': self.node_difference_list_meta_route,
-			'/cache': self.cache_route
+			'/cache': self.cache_route,
+			'/cache/progress': self.cache_progress_route
 		}
 
 	def is_active(self):
@@ -132,13 +135,34 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Arguments:
 			request: The request which has to contain the model's name and an image 
 				number. It can also contain the name of a distortion that should be 
-				applied to the input image before predicting its classification.
+				applied to the input image before predicting its classification. On top 
+				of that, you can supply a distortion index and the amount of 
+				predictions you want to retrieve. If you specify this amount as -1, all 
+				predictions will be retrieved. Alternatively, if you are only 
+				interested in the certainty of a single category, you can supply its ID.
 		Returns:
 			A response that contains information about the input image as well as the 
 				model's prediction.
 		"""
 		
 		return prediction_router.single_prediction_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def average_prediction_route(self, request):
+		"""A route that returns a model's average prediction on a set of distorted 
+		versions of a single input image.
+
+		Arguments:
+			request: The request which has to contain the model's name, the input 
+				image index, the name of the distortion to be used, as well as the 
+				amount of distorted versions of the input image to be generated.
+		Returns:
+			A response that contains information about the input image as well as the 
+				model's prediction, averaged over all distorted versions.
+		"""
+		
+		return prediction_router.average_prediction_route(request, 
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
@@ -156,7 +180,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		Returns:
 			A response that contains the top 5 and top 1 accuracy of the model's 
 				predictions on the original input images as well as on each set of 
-				distorted images.
+				distorted images. On top of that, a host of other performance metrics 
+				such as recall, precision and the F1 score will be returned.
 		"""
 		
 		return prediction_router.accuracy_prediction_route(request, 
@@ -223,13 +248,33 @@ class AdvisPlugin(base_plugin.TBPlugin):
 
 		Arguments:
 			request: The request which has to contain the distortion's name as well 
-				as the name of the dataset and the image index of the input image.
+				as the name of the dataset and the image index of the input image. On 
+				top of that, a distortion index may be supplied, allowing you to fetch 
+				multiple random distortions of a single image with each distorted image 
+				with the same index staying the same. Moreover, you can supply your own 
+				set of parameters as JSON to preview a configuration.
 		Returns:
 			A response that contains the image after having been randomly distorted.
 		"""
 		
 		return distortion_router.distortions_single_route(request,
 			self.distortion_manager, self.dataset_manager)
+	
+	@wrappers.Request.application
+	def distortions_update_route(self, request):
+		"""A route that updates the parameter values of a list of distortions.
+
+		Arguments:
+			request: The request which has to contain the list of distortions whose 
+				parameter values should be updated. After these values have been 
+				updated, the changes will be persisted and cached data that has become 
+				invalid will be removed.
+		Returns:
+			An empty response if everything went as expected.
+		"""
+		
+		return distortion_router.distortions_update_route(request,
+			self.distortion_manager)
 	
 	@wrappers.Request.application
 	def datasets_route(self, request):
@@ -414,7 +459,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 
 		Arguments:
 			request: The request which has to contain the image amounts used for 
-				calculating model accuracies, activation visualizations and node 
+				calculating model accuracies, activation visualizations, and node 
 				activations.
 		Returns:
 			A response with the time taken after the caching has been completed.
@@ -438,3 +483,15 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		}
 		
 		return cache_router.cache_route(request, routers, managers)
+	
+	@wrappers.Request.application
+	def cache_progress_route(self, request):
+		"""A route that retrieves the current progress of the caching process.
+
+		Arguments:
+			request: The request which does not have to contain any parameters.
+		Returns:
+			A response with the current progress and status of the caching progress.
+		"""
+		
+		return cache_router.cache_progress_route(request)

@@ -1,0 +1,88 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
+
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../iron-list/iron-list.html">
+<link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../paper-progress/paper-progress.html">
+<link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+
+<link rel="import" href="../../constants/constants.html">
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+<link rel="import" href="../../distorted-image-item/distorted-image-item.html">
+
+<!--
+	When opened, this module displays a dialog with a grid of distorted versions 
+	of a single input image and their prediction certainty.
+-->
+<dom-module id="distorted-image-prediction-dialog">
+	<template>
+		<paper-dialog with-backdrop>
+			<dialog-header event-id="distorted-image-prediction-dialog">
+				<div class="header-items">
+					<h2>Distorted Images</h2>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<template is="dom-if" if="[[!_loadingImages]]">
+					<div id="toolbar">
+						<p id="description" class="single-line title">
+							Distortion Method: [[_distortionDisplayName]]
+						</p>
+						<div id="average-button-container">
+							<paper-button on-tap="_selectDistortionAverage">
+								Select Distortion Average
+							</paper-button>
+						</div>
+						<div id="sort-dropdown">
+							<paper-dropdown-menu label="Sort By">
+								<paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{_selectedSortMethod}}">
+									<paper-item>Certainty</paper-item>
+									<paper-item>Index</paper-item>
+									<template is="dom-repeat" items="[[_parameters]]">
+										<paper-item>[[item.displayName]]</paper-item>
+									</template>
+								</paper-listbox>
+							</paper-dropdown-menu>
+						</div>
+					</div>
+				</template>
+				<div id="list">
+					<template is="dom-if" if="[[_loadingImages]]">
+						<div id="progress-container">
+							<div id="progress-content">
+								<p class="single-line title">Loading predictions…</p>
+								<paper-progress
+									min="0" max="100"
+									value=[[_loadingProgress]]>
+								</paper-progress>
+							</div>
+						</div>
+					</template>
+					<template is="dom-if" if="[[!_loadingImages]]">
+						<iron-list items="[[_images]]" grid
+							selection-enabled selected-item="{{_selectedImage}}">
+							<template>
+								<distorted-image-item
+									image-url=[[item.url]]
+									certainty=[[item.certainty]]
+									index=[[item.index]]
+									configuration=[[item.configuration]]
+									parameters=[[_parameters]]
+									displayed-parameter=[[_selectedSortMethod]]
+									selected={{selected}}>
+								</distorted-image-item>
+							</template>
+						</iron-list>
+					</template>
+				</div>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="distorted-image-prediction-dialog.css">
+	</template>
+
+	<script src="distorted-image-prediction-dialog.js"></script>
+</dom-module>

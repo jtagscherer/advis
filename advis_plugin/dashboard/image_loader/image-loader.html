@@ -1,0 +1,23 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
+
+<!--
+	This component displays a simple image. While the image is being loaded, a 
+	spinner is displayed.
+-->
+<dom-module id="image-loader">
+	<template>
+		<div id="container">
+			<div class="spinner-container">
+				<paper-spinner-lite active
+					class$="[[_getSpinnerClass(_loading)]]">
+				</paper-spinner-lite>
+			</div>
+			<img src$="[[url]]" on-load="_imageLoaded"></img>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="image-loader.css">
+	</template>
+
+	<script src="image-loader.js"></script>
+</dom-module>

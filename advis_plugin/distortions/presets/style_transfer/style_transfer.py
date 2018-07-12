@@ -11,32 +11,41 @@ exec(open(join(parent_directory, 'style_transfer_runner.py')).read())
 def get_display_name():
 	return 'Style Transfer'
 
+def get_type():
+	return 'Preset'
+
 def get_parameters():
 	return [
 		{
 			'name': 'style',
 			'display_name': 'Style',
 			'type': 'enum',
-			'options': {
-				'la_muse': {
-					'display_name': 'La Muse (Pablo Picasso)'
+			'options': [
+				{
+					'name': 'la_muse',
+					'displayName': 'La Muse (Pablo Picasso)'
 				},
-				'rain_princess': {
-					'display_name': 'Rain Princess (Leonid Afremov)'
+				{
+					'name': 'rain_princess',
+					'displayName': 'Rain Princess (Leonid Afremov)'
 				},
-				'shipwreck': {
-					'display_name': 'The Shipwreck (J. M. W. Turner)'
+				{
+					'name': 'shipwreck',
+					'displayName': 'The Shipwreck (J. M. W. Turner)'
 				},
-				'the_scream': {
-					'display_name': 'The Scream (Edvard Munch)'
+				{
+					'name': 'the_scream',
+					'displayName': 'The Scream (Edvard Munch)'
 				},
-				'udnie': {
-					'display_name': 'Udnie (Francis Picabia)'
+				{
+					'name': 'udnie',
+					'displayName': 'Udnie (Francis Picabia)'
 				},
-				'wave': {
-					'display_name': 'The Great Wave off Kanagawa (Katsushika Hokusai)'
+				{
+					'name': 'wave',
+					'displayName': 'The Great Wave off Kanagawa (Katsushika Hokusai)'
 				}
-			},
+			],
 			'default': 'wave'
 		}
 	]
@@ -72,7 +81,7 @@ def distort(image, configuration):
 	
 	output_image = _get_style_transfer_runner(
 		image_size, 
-		configuration['style']['key']
+		configuration['style']['name']
 	).run(image)
 	
 	return output_image[0:image_size, 0:image_size, :] / 255

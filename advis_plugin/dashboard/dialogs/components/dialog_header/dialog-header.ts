@@ -3,7 +3,11 @@
 Polymer({
   is: 'dialog-header',
 	properties: {
-		eventId: String
+		eventId: String,
+		modal: {
+			type: Boolean,
+			value: false
+		}
 	},
 	
 	closeButtonClicked: function() {

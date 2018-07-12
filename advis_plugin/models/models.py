@@ -342,19 +342,12 @@ class ModelManager:
 	def __init__(self, directory, dataset_manager, distortion_manager):
 		self._dataset_manager = dataset_manager
 		self._distortion_manager = distortion_manager
-		
 		self.directory = path.join(directory, 'models')
-		
-		if not path.exists(self.directory):
-			makedirs(self.directory)
 		
 		self._copy_preset_models()
 		self._update_model_modules()
 		
 		tf.logging.warn('Model setup finished!')
-	
-	def is_setup(self):
-		return self.directory != None
 	
 	def get_model_modules(self):
 		return self.model_modules
@@ -392,8 +385,10 @@ class ModelManager:
 					.format(name, traceback.format_exc()))
 	
 	def _copy_preset_models(self):
-		if not self.is_setup():
+		if path.exists(self.directory):
 			return
+		else:
+			makedirs(self.directory)
 		
 		# Extract a list of presets supplied during the build
 		preset_directory = path.join(path.dirname(__file__), 'presets')

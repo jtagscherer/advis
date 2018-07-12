@@ -33,14 +33,15 @@ class Parameter:
 		
 		self._configuration_file = configuration_file
 		
-		# Fetch the current value from the configuration file or use the default 
-		# one if none exists
-		configuration = self._get_configuration()
-		
-		if self.name in configuration.keys():
-			self._value = configuration[self.name]
-		else:
-			self.set_value(content['default'])
+		if self._configuration_file is not None:
+			# Fetch the current value from the configuration file or use the default 
+			# one if none exists
+			configuration = self._get_configuration()
+			
+			if self.name in configuration.keys():
+				self._value = configuration[self.name]
+			else:
+				self.set_value(content['default'])
 	
 	def get_value(self):
 		return self._value
@@ -62,19 +63,20 @@ class Parameter:
 			value['lower'] = max(min(value['lower'], max_value), min_value)
 			value['upper'] = max(min(value['upper'], max_value), min_value)
 		elif self.type is ParameterType.ENUM:
-			key = value
-			value = self.options[key]
-			value['key'] = key
+			for option in self.options:
+				if option['name'] == value:
+					value = option
 		
 		# Update the non-persistent representation of the value
 		self._value = value
 		
-		# Write the new value to the configuration file for persistent storage
-		configuration = self._get_configuration()
-		
-		with open(self._configuration_file, 'w+') as f:
-			configuration[self.name] = value
-			f.write(json.dumps(configuration))
+		if self._configuration_file is not None:
+			# Write the new value to the configuration file for persistent storage
+			configuration = self._get_configuration()
+			
+			with open(self._configuration_file, 'w+') as f:
+				configuration[self.name] = value
+				f.write(json.dumps(configuration))
 	
 	def _get_configuration(self):
 		configuration = {}
@@ -109,7 +111,13 @@ def _is_valid_value(value, type, options=None):
 	elif type is ParameterType.CONSTANT:
 		return isinstance(value, numbers.Number)
 	elif type is ParameterType.ENUM:
-		return options is not None and value in options
+		if options is not None:
+			for option in options:
+				if option['name'] == value:
+					return True
+			return False
+		else:
+			return False
 	else:
 		return False
 
@@ -151,3 +159,33 @@ def generate_configuration(parameters, percentage=None, randomize=True):
 			configuration[parameter_name] = parameter.get_value()
 	
 	return configuration
+
+def from_json(data):
+	"""Initialize a dictionary of parameters from JSON data.
+
+	Arguments:
+		parameters: A valid set of configuration parameters as JSON data. Each 
+			parameter has to contain its name, type, and value.
+	Returns:
+		A dictionary containing all initialized parameters.
+	"""
+	
+	data = json.loads(data)
+	parameters = {}
+	
+	for _parameter in data:
+		parameter = Parameter(
+			{
+				'name': _parameter['name'],
+				'display_name': _parameter['displayName'],
+				'type': _parameter['type'],
+				'constraints': _parameter['constraints'],
+				'options': _parameter['options']
+			},
+			None
+		)
+		parameter._value = _parameter['value']
+		
+		parameters[_parameter['name']] = parameter
+	
+	return parameters

@@ -1,0 +1,28 @@
+<link rel="import" href="../../polymer/polymer.html">
+
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+
+<!--
+	This component displays a radio button group for adjusting an enumeration 
+	parameter.
+-->
+<dom-module id="enum-parameter">
+	<template>
+		<div id="container">
+			<p class="title">[[parameter.displayName]]: [[parameter.value.displayName]]</p>
+			<div>
+				<paper-radio-group selected={{parameter.value.name}}>
+					<template is="dom-repeat" items="{{parameter.options}}">
+						<paper-radio-button name="[[item.name]]">
+							[[item.displayName]]
+						</paper-radio-button>
+					</template>
+				</paper-radio-group>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="enum-parameter.css">
+	</template>
+
+	<script src="enum-parameter.js"></script>
+</dom-module>

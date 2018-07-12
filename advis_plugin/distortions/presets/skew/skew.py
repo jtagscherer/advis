@@ -3,6 +3,9 @@ from skimage.transform import warp, AffineTransform
 def get_display_name():
 	return 'Skew'
 
+def get_type():
+	return 'Preset'
+
 def get_parameters():
 	return [
 		{
@@ -11,7 +14,8 @@ def get_parameters():
 			'type': 'range',
 			'constraints': {
 				'min': -1,
-				'max': 1
+				'max': 1,
+				'step': 0.1
 			},
 			'default': {
 				'lower': -0.5,

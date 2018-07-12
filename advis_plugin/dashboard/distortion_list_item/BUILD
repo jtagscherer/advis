@@ -24,7 +24,8 @@ sass_binary(
   src = "distortion-list-item.scss",
 	deps = [
 		"//advis_plugin/dashboard/shared/style:text",
-		"//advis_plugin/dashboard/shared/style:color"
+		"//advis_plugin/dashboard/shared/style:color",
+		"//advis_plugin/dashboard/shared/style:style"
 	]
 )
 

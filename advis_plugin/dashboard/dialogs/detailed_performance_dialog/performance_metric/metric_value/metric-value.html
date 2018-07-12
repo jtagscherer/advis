@@ -1,0 +1,31 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+
+<!--
+	This component displays a value along with its name and its difference to 
+	another value.
+-->
+<dom-module id="metric-value">
+	<template>
+		<div id="container">
+			<div id="values">
+				<p class="title" id="value">
+					[[_getFormattedValue(value, percent)]]
+				</p>
+				<p id="change"
+					class$="[[_getTextClass(value, originalValue)]]">
+					[[_getFormattedDelta(value, originalValue, percent)]]
+				</p>
+			</div>
+			<div id="description">
+				<p id="name" class="single-line caption">
+					[[name]]
+				</p>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="metric-value.css">
+	</template>
+
+	<script src="metric-value.js"></script>
+</dom-module>

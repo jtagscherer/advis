@@ -8,7 +8,11 @@ Polymer({
     'nodeSelectedEvent': '_nodeSelected',
 		'iron-select': '_itemSelected',
 		'iron-deselect': '_itemDeselected',
-		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged'
+		'model-statistics-selection-changed': '_modelStatisticsSelectionChanged',
+    'dialogReturnedEvent': '_dialogReturned',
+    'open-detailed-performance-dialog': 'openDetailedPerformanceDialog',
+    'open-detailed-predictions-dialog': 'openDetailedPredictionsDialog',
+    'open-distorted-image-prediction-dialog': 'openDistortedImagePredictionDialog'
   },
   properties: {
     selectedModel: {
@@ -24,9 +28,21 @@ Polymer({
 		_inputImageAmount: {
 			type: Number,
 			value: advis.config.requests.imageAmounts.modelAccuracy,
-			observer: '_calculateModelAccuracy'
+			observer: '_calculateModelMetrics'
 		},
 		_accuracyCalculationFlag: Boolean,
+		_selectedRadarChartMetric: {
+			type: String,
+			value: 'top5'
+		},
+		_selectedModelListMetrics: {
+			type: Array,
+			value: ['f1', 'top5']
+		},
+		_availableMetrics: {
+			type: Array,
+			value: ['top1', 'top5', 'f1', 'precision', 'recall']
+		},
     _requestManager: {
       type: Object,
       value: () => new tf_backend.RequestManager()
@@ -45,6 +61,116 @@ Polymer({
 		
     this._reloadModels();
 	},
+  
+  openDistortionConfigurationDialog: function() {
+    this.$$('distortion-configuration-dialog').open({
+      distortions: this._availableDistortions,
+      requestManager: this._requestManager,
+			animationTarget: this.$$('#distortion-configuration-button')
+				.getBoundingClientRect()
+		});
+  },
+  
+  openSettingsDialog: function() {
+		var availableMetrics = [];
+		for (const metric of this._availableMetrics) {
+			availableMetrics.push({
+				name: metric,
+				description: this._getMetricDescription(metric)
+			});
+		}
+		
+    this.$$('sidebar-settings-dialog').open({
+      selectedRadarChartMetric: this._selectedRadarChartMetric,
+      selectedModelListMetrics: this._selectedModelListMetrics,
+			availableMetrics: availableMetrics,
+			animationTarget: this.$$('#sidebar-settings-button')
+				.getBoundingClientRect()
+		});
+  },
+	
+	openDetailedPerformanceDialog: function(e) {
+    // Compile a list of available metrics and display names
+    var availableMetrics = [];
+    for (let metric of this._availableMetrics) {
+      availableMetrics.push({
+        name: metric,
+        displayName: this._getMetricDescription(metric),
+				percent: metric == 'top1' || metric == 'top5'
+      });
+    }
+    
+		this.$$('detailed-performance-dialog').open({
+      model: e.detail.model,
+      availableMetrics: availableMetrics,
+			availableDistortions: this._availableDistortions,
+			animationTarget: e.detail.animationTarget
+		});
+	},
+  
+  openDetailedPredictionsDialog: function(e) {
+		if (this.selectedModel != null
+			&& this._selectedVisualizationDistortion != null) {
+			var invariantDistortion = true;
+			for (const parameter in this._selectedVisualizationDistortion
+				.parameters) {
+				const _parameter = this._selectedVisualizationDistortion
+					.parameters[parameter];
+				
+				if (_parameter.type == 'range') {
+					invariantDistortion = false;
+					break;
+				}
+			}
+			
+			this.$$('detailed-predictions-dialog').open({
+				model: this.selectedModel.name,
+				associatedDataset: e.detail.associatedDataset,
+				imageIndex: e.detail.imageIndex,
+				distortion: this._selectedVisualizationDistortion.name,
+				invariantDistortion: invariantDistortion,
+				requestManager: this._requestManager,
+				animationTarget: e.detail.animationTarget
+			});
+		}
+  },
+	
+	openDistortedImagePredictionDialog: function(e) {
+		this.$$('distorted-image-prediction-dialog').open({
+			model: e.detail.model,
+			associatedDataset: e.detail.associatedDataset,
+			imageIndex: e.detail.imageIndex,
+			distortion: e.detail.distortion,
+      distortionIndex: e.detail.distortionIndex,
+      groundTruthCategory: e.detail.groundTruthCategory,
+			requestManager: this._requestManager,
+			animationTarget: e.detail.animationTarget
+		});
+  },
+	
+	_dialogReturned: function(e) {
+		if (e.detail.eventId == 'distortion-configuration-dialog') {
+			this.$$('distortion-update-confirmation-dialog').open({
+	      changedDistortions: e.detail.content,
+	      requestManager: this._requestManager
+			});
+		} else if (e.detail.eventId == 'distortion-update-confirmation-dialog') {
+			this._reloadDistortions(false);
+			this._calculateModelMetrics();
+		} else if (e.detail.eventId == 'sidebar-settings-dialog') {
+			this.set(
+				'_selectedRadarChartMetric',
+				e.detail.content.selectedRadarChartMetric
+			);
+			this.set(
+				'_selectedModelListMetrics',
+				e.detail.content.selectedModelListMetrics
+			);
+		} else if (e.detail.eventId == 'distorted-image-prediction-dialog') {
+			this.$$('detailed-predictions-dialog').setDistortionIndex(e.detail
+				.content.index);
+		}
+	},
 	
   _reloadModels: function() {
 		if (this.selectedModel != null) {
@@ -57,7 +183,7 @@ Polymer({
 		});
   },
 	
-	_reloadDistortions: function() {
+	_reloadDistortions: function(selectAll: Boolean = true) {
 		var self = this;
 		
 		// Update the list of available distortions
@@ -76,12 +202,14 @@ Polymer({
 			
 			self._availableDistortions = newDistortions;
 			
-			// Select all available distortions
-			for (var distortion of self._availableDistortions) {
-				self.$$('#distortion-selector').select(distortion.index);
+			if (selectAll) {
+				// Select all available distortions
+				for (var distortion of self._availableDistortions) {
+					self.$$('#distortion-selector').select(distortion.index);
+				}
+				
+				this._selectedDistortions = this._availableDistortions;
 			}
-			
-			this._selectedDistortions = this._availableDistortions;
 		});
 	},
 	
@@ -139,7 +267,7 @@ Polymer({
 			newSelectedDistortions.sort(this._compareByName)
 			
 			this._selectedDistortions = newSelectedDistortions;
-			this._calculateModelAccuracy();
+			this._calculateModelMetrics();
 		}
 	},
 	
@@ -156,6 +284,25 @@ Polymer({
 		} else {
 			return 0;
 		}
+	},
+	
+	_getMetricDescription: function(metric) {
+		switch (metric) {
+			case 'top1':
+				return 'Top 1 Accuracy';
+			case 'top5':
+				return 'Top 5 Accuracy';
+			case 'f1':
+				return 'F1 Score';
+			case 'precision':
+				return 'Precision';
+			case 'recall':
+				return 'Recall';
+		}
+	},
+	
+	_getRadarChartMetricTitle: function(metric) {
+		return `Model ${this._getMetricDescription(metric)}`;
 	},
 	
 	_isLastModelItem: function(index) {
@@ -190,7 +337,7 @@ Polymer({
 						version: model['version'],
 						color: colorPalette[Number(index) % maximumAmountOfColors],
 						selectedForStatistics: false,
-						accuracy: {}
+						metrics: {}
 					}
 					
 					// If the model existed beforehand, remember its statistics selection
@@ -201,10 +348,10 @@ Polymer({
 							if (oldModel.name == model['name']) {
 								newModel.selectedForStatistics = oldModel.selectedForStatistics;
 								
-								// If the old model's accuracy had already been calculated, 
+								// If the old model's metrics had already been calculated, 
 								// remember it
-								if ('accuracy' in oldModel) {
-									newModel.accuracy = oldModel.accuracy;
+								if ('metrics' in oldModel) {
+									newModel.metrics = oldModel.metrics;
 								}
 								
 								break;
@@ -217,7 +364,7 @@ Polymer({
 				}
 				
 				this._availableModels = availableModels;
-				this._calculateModelAccuracy();
+				this._calculateModelMetrics();
 				
 				this._dataNotFound = false;
 			} else {
@@ -226,7 +373,7 @@ Polymer({
     });
   },
 	
-	_calculateModelAccuracy: function() {
+	_calculateModelMetrics: function() {
 		if (this._selectedDistortions == null || this._requestManager == null
 			|| this._availableModels == null) {
 			return;
@@ -234,13 +381,17 @@ Polymer({
 		
 		let self = this;
 		
-		// Store the accuracy of the model on the original or a distorted dataset
-		let storeAccuracy = async function(modelName, distortionName, top1, top5) {
+		// Store the metrics of the model on the original or a distorted dataset
+		let storeMetrics = async function(modelName, distortionName, top1, top5,
+			f1, precision, recall) {
 			for (var model of self._availableModels) {
 				if (model.name == modelName) {
-					model.accuracy[distortionName] = {
+					model.metrics[distortionName] = {
 						'top1': top1,
-						'top5': top5
+						'top5': top5,
+						'f1': f1,
+						'precision': precision,
+						'recall': recall
 					}
 				}
 			}
@@ -251,7 +402,7 @@ Polymer({
 		
 		// Loop through all models and request their accuracies
 		for (var model of this._availableModels) {
-			// First of all, request the accuracy of non-distorted input images
+			// First of all, request the metrics of non-distorted input images
 			var originalUrl = tf_backend.addParams(tf_backend.getRouter()
 				.pluginRoute('advis', '/predictions/accuracy'), {
 				model: model.name,
@@ -259,11 +410,14 @@ Polymer({
 			});
 			
 			this._requestManager.request(originalUrl).then(data => {
-				storeAccuracy(
+				storeMetrics(
 					data.model.name,
 					'original',
 					data.accuracy.top1,
-					data.accuracy.top5
+					data.accuracy.top5,
+					data.metrics.f1,
+					data.metrics.precision,
+					data.metrics.recall
 				);
 			});
 			
@@ -278,11 +432,14 @@ Polymer({
 				});
 				
 				this._requestManager.request(url).then(data => {
-					storeAccuracy(
+					storeMetrics(
 						data.model.name,
 						data.input.distortion,
 						data.accuracy.top1,
-						data.accuracy.top5
+						data.accuracy.top5,
+						data.metrics.f1,
+						data.metrics.precision,
+						data.metrics.recall
 					);
 				});
 			}

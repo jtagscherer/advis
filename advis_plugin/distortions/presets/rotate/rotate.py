@@ -3,6 +3,9 @@ from skimage.transform import rotate
 def get_display_name():
 	return 'Rotate'
 
+def get_type():
+	return 'Preset'
+
 def get_parameters():
 	return [
 		{
@@ -11,7 +14,8 @@ def get_parameters():
 			'type': 'range',
 			'constraints': {
 				'min': -180,
-				'max': 180
+				'max': 180,
+				'step': 1
 			},
 			'default': {
 				'lower': -45,
