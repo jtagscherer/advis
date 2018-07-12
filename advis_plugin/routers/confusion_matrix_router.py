@@ -20,7 +20,8 @@ def _predict_image(model, image, distortion, model_manager, distortion_manager,
 		_distortion = None
 	
 	prediction = prediction_router._get_single_prediction(
-		model.name, image['index'], _distortion, model_manager, distortion_manager
+		model.name, image['index'], _distortion, None, None, model_manager,
+		distortion_manager
 	)['predictions'][0]
 	
 	prediction_key = str(prediction['categoryId'] - 1)
@@ -352,12 +353,12 @@ def confusion_images_route(request, model_manager, distortion_manager):
 	for image in input_images:
 		# Make the model predict both the original and the distorted input image
 		original_predictions = prediction_router._get_single_prediction(
-			model_name, int(image['index']), None, model_manager,
+			model_name, int(image['index']), None, None, None, model_manager,
 			distortion_manager, prediction_amount=None
 		)		
 		distorted_predictions = prediction_router._get_single_prediction(
-			model_name, int(image['index']), distortion_name, model_manager,
-			distortion_manager, prediction_amount=None
+			model_name, int(image['index']), distortion_name, None, None,
+			model_manager, distortion_manager, prediction_amount=None
 		)
 		
 		# Retrieve the certainty of the ground-truth category from the predictions
