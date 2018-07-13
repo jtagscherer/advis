@@ -30,7 +30,11 @@ Polymer({
 			value: advis.config.requests.imageAmounts.modelAccuracy,
 			observer: '_calculateModelMetrics'
 		},
-		_accuracyCalculationFlag: Boolean,
+		_accuracyCalculationFlag: {
+			type: Boolean,
+			notify: true,
+			observer: '_updateMetricsLoadedStatus'
+		},
 		_selectedRadarChartMetric: {
 			type: String,
 			value: 'top5'
@@ -42,6 +46,10 @@ Polymer({
 		_availableMetrics: {
 			type: Array,
 			value: ['top1', 'top5', 'f1', 'precision', 'recall']
+		},
+		_metricsLoaded: {
+			type: Boolean,
+			value: false
 		},
 		_modelSelected: {
 			type: Boolean,
@@ -317,6 +325,14 @@ Polymer({
 		}
 	},
 	
+	_getVisibilityClass: function(condition) {
+		if (!condition) {
+			return 'shown';
+		} else {
+			return 'hidden';
+		}
+	},
+	
 	_getMetricDescription: function(metric) {
 		switch (metric) {
 			case 'top1':
@@ -404,8 +420,20 @@ Polymer({
     });
   },
 	
-	_calculateModelMetrics: function() {
-		if (this._selectedDistortions == null || this._requestManager == null
+	_updateMetricsLoadedStatus: function() {
+		for (var model of this._availableModels) {
+			if (!('metrics' in model) || Object.keys(model.metrics).length <
+				(this._availableDistortions.length + 1)) {
+				this.set('_metricsLoaded', false);
+				return;
+			}
+		}
+		
+		this.set('_metricsLoaded', true);
+	},
+  
+  _calculateModelMetrics: function() {
+    if (this._selectedDistortions == null || this._requestManager == null
 			|| this._availableModels == null) {
 			return;
 		}
@@ -475,7 +503,7 @@ Polymer({
 				});
 			}
 		}
-	}
+  }
 });
 
 tf_tensorboard.registerDashboard({

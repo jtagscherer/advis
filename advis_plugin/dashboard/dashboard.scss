@@ -3,6 +3,8 @@
 @import 'advis_plugin/dashboard/shared/style/text';
 
 $sidebar-width: 500px;
+$spinner-size: 20px;
+$spinner-padding: 20px;
 
 :host {
 	--radar-chart-empty-state-opacity: 1;
@@ -71,10 +73,35 @@ $sidebar-width: 500px;
 			display: flex;
 			flex-direction: row;
 			justify-content: center;
+			position: relative;
 			width: 100%;
 			
 			#chart-container {
 				width: 370px;
+			}
+			
+			#chart-spinner {
+				position: absolute;
+				top: $spinner-padding;
+				left: $spinner-padding;
+				
+				paper-spinner-lite {
+					position: relative;
+					
+					width: $spinner-size;
+					height: $spinner-size;
+					
+					--paper-spinner-color: $accent-color;
+					transition: opacity 0.5s ease-in-out;
+					
+					&.shown {
+						opacity: 1;
+					}
+					
+					&.hidden {
+						opacity: 0;
+					}
+				}
 			}
 		}
 		
