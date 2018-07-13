@@ -1,5 +1,6 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
 
 <!--
 	This component displays a numeric value alongside a title.
@@ -7,9 +8,14 @@
 <dom-module id="model-metric">
 	<template>
 		<div id="container">
-			<p class$="[[_getTextClass(value)]]">
-				[[_getFormattedValue(value, percent)]]
-			</p>
+			<template is="dom-if" if="[[!_loading]]">
+				<p class$="[[_getTextClass(value)]]">
+					[[_getFormattedValue(value, percent)]]
+				</p>
+			</template>
+			<template is="dom-if" if="[[_loading]]">
+				<paper-spinner-lite active></paper-spinner-lite>
+			</template>
 			<p class="single-line caption">
 				[[name]]
 			</p>

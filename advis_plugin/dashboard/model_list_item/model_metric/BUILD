@@ -14,7 +14,8 @@ tf_web_library(
 	path = "/model-metric",
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
-		"@org_polymer_paper_tooltip"
+		"@org_polymer_paper_tooltip",
+		"@org_polymer_paper_spinner"
 	]
 )
 
@@ -23,7 +24,8 @@ sass_binary(
   name = "model_metric_scss",
   src = "model-metric.scss",
 	deps = [
-		"//advis_plugin/dashboard/shared/style:text"
+		"//advis_plugin/dashboard/shared/style:text",
+		"//advis_plugin/dashboard/shared/style:color"
 	]
 )
 
