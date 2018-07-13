@@ -27,7 +27,7 @@ const VisualizationComparisonBehavior = {
 		state: {
 			type: String,
 			value: 'empty',
-			observer: 'stateChanged'
+			observer: '_stateChanged'
 		},
 		_requestManager: {
 			type: Object,
@@ -82,6 +82,15 @@ const VisualizationComparisonBehavior = {
 	
 	stateChanged: function() {
 		// Can be implemented by components using this behavior
+	},
+	
+	_stateChanged: function(state) {
+		this.fire('state-changed-event', {
+			element: this.is,
+			state: this.state
+		});
+		
+		this.stateChanged();
 	},
 	
 	_updateState: function() {

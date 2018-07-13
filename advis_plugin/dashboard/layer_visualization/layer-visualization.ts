@@ -8,7 +8,10 @@ Polymer({
 			type: Object,
 			observer: '_fetchAvailableImages'
 		},
-		selectedLayer: String,
+		selectedLayer: {
+			type: String,
+			observer: '_selectedLayerChanged'
+		},
 		associatedDataset: Object,
 		selectedImage: {
 			type: Object,
@@ -29,24 +32,24 @@ Polymer({
 			observer: 'reload'
 		},
 		_availableImages: Array,
+		_layerSelected: {
+			type: Boolean,
+			value: false,
+			observer: '_updateStyles'
+		},
 		requestManager: Object
+	},
+	
+	listeners: {
+		'state-changed-event': '_stateChanged'
 	},
 	
 	reload: function() {
 		// Reload the currently active layer visualization comparison component
-		switch(this.selectedPage) {
-			case 0:
-				this.$$('side-by-side-comparison').reload();
-				break;
-			case 1:
-				this.$$('swipe-comparison').reload();
-				break;
-			case 2:
-				this.$$('crossfade-comparison').reload();
-				break;
-			case 3:
-				this.$$('difference-comparison').reload();
-				break;
+		let comparisonComponent = this.$$(this._getActiveComparisonComponentName());
+		
+		if (comparisonComponent != null) {
+			comparisonComponent.reload();
 		}
 	},
 	
@@ -60,6 +63,19 @@ Polymer({
   		});
     }
 	},
+	
+	_getActiveComparisonComponentName: function() {
+		switch(this.selectedPage) {
+			case 0:
+				return 'side-by-side-comparison';
+			case 1:
+				return 'swipe-comparison';
+			case 2:
+				return 'crossfade-comparison';
+			case 3:
+				return 'difference-comparison';
+		}
+	},
   
   _imageSelected: function() {
     return this.selectedImage != null;
@@ -71,6 +87,22 @@ Polymer({
 	
 	_selectedDistortionChanged: function() {
 		this.reload();
+	},
+	
+	_stateChanged: function(e) {
+		if (e.detail.element == this._getActiveComparisonComponentName()) {
+			if (e.detail.state == 'empty') {
+				this.set('_layerSelected', false);
+			} else {
+				this.set('_layerSelected', true);
+			}
+		}
+	},
+	
+	_selectedLayerChanged: function(value) {
+		if (value == null) {
+			this.set('_layerSelected', false);
+		}
 	},
 	
 	_distortionsChanged: function() {
@@ -170,5 +202,15 @@ Polymer({
 				});
 			});
 		});
+	},
+	
+	_updateStyles: function() {
+		if (this._layerSelected) {
+			this.customStyle['--empty-state-opacity'] = '0';
+		} else {
+			this.customStyle['--empty-state-opacity'] = '1';
+		}
+		
+		this.updateStyles();
 	}
 });

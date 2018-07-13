@@ -6,6 +6,7 @@
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="../advis-icons/icons.html">
+<link rel="import" href="../empty-state/empty-state.html">
 
 <link rel="import" href="../input-image-selector/input-image-selector.html">
 <link rel="import" href="../distortion-selector/distortion-selector.html">
@@ -43,7 +44,7 @@
 			</div>
 			
 			<div id="body">
-				<neon-animated-pages selected=[[selectedPage]]>
+				<neon-animated-pages id="comparison-pages" selected=[[selectedPage]]>
 					<side-by-side-comparison
 						model=[[selectedModel]]
 						layer=[[selectedLayer]]
@@ -73,6 +74,11 @@
 						request-manager=[[requestManager]]>
 					</difference-comparison>
 				</neon-animated-pages>
+				<empty-state
+					headline="No Node Selected"
+					caption="Please select a leaf node from the graph
+						to analyze its activations on the selected input image.">
+				</empty-state>
 			</div>
 			
 			<div id="footer">
