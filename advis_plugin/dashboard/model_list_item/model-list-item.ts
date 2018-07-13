@@ -35,10 +35,21 @@ Polymer({
 	},
 	
 	_openDetailedPerformanceDialog: function(e) {
-		this.fire('open-detailed-performance-dialog', {
-			model: this.model,
-			animationTarget: this.$$('#metrics').getBoundingClientRect()
-		});
+		var allMetricsLoaded = true;
+		
+		for (let metric in this._metricDifferences) {
+			if (this._metricDifferences[metric] == null) {
+				allMetricsLoaded = false;
+				break;
+			}
+		}
+		
+		if (allMetricsLoaded) {
+			this.fire('open-detailed-performance-dialog', {
+				model: this.model,
+				animationTarget: this.$$('#metrics').getBoundingClientRect()
+			});
+		}
 		
 		e.stopPropagation();
 	},
