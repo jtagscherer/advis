@@ -15,6 +15,7 @@ tf_web_library(
 	deps = [
 		"//advis_plugin/dashboard/shared/libraries/palette",
 		"//advis_plugin/dashboard/shared/constants",
+		"//advis_plugin/dashboard/empty_state",
 		"//advis_plugin/dashboard/section_header",
 		"//advis_plugin/dashboard/model_list_item",
 		"//advis_plugin/dashboard/distortion_list_item",

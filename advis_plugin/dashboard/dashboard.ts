@@ -43,6 +43,10 @@ Polymer({
 			type: Array,
 			value: ['top1', 'top5', 'f1', 'precision', 'recall']
 		},
+		_modelSelected: {
+			type: Boolean,
+			value: false
+		},
     _requestManager: {
       type: Object,
       value: () => new tf_backend.RequestManager()
@@ -174,12 +178,20 @@ Polymer({
 	
   _reloadModels: function() {
 		if (this.selectedModel != null) {
+			this.set('_modelSelected', true);
+		} else {
+			this.set('_modelSelected', false);
+		}
+		
+		if (this.selectedModel != null && this.$$('graph-view') != null) {
 			this.$$('graph-view').update();
 		}
 		
 		// Update the layer visualization
 		this._fetchModels().then(() => {
-			this.$$('layer-visualization').reload();
+			if (this.selectedModel != null) {
+				this.$$('layer-visualization').reload();
+			}
 		});
   },
 	
