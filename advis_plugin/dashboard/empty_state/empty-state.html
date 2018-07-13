@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+
+<link rel="import" href="../advis-icons/icons.html">
+
+<!--
+	This component displays an empty state view that explains why nothing is 
+	being shown yet. It can contain a headline, a caption and an icon.
+-->
+<dom-module id="empty-state">
+	<template>
+		<div id="container">
+			<template is="dom-if" if="[[_displayComponent(icon)]]">
+				<div id="icon">
+					<iron-icon icon="[[icon]]"></iron-icon>
+				</div>
+			</template>
+			<template is="dom-if" if="[[_displayComponent(headline)]]">
+				<div class="text" id="headline">
+					<p class="single-line title">[[headline]]</p>
+				</div>
+			</template>
+			<template is="dom-if" if="[[_displayComponent(caption)]]">
+				<div class="text" id="caption">
+					<p class="caption">[[caption]]</p>
+				</div>
+			</template>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="empty-state.css">
+	</template>
+
+	<script src="empty-state.js"></script>
+</dom-module>
