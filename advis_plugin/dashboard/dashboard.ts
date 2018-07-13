@@ -226,6 +226,7 @@ Polymer({
 	},
 	
 	_modelStatisticsSelectionChanged: function(e) {
+    // Update the model's selection state
 		for (var model of this._availableModels) {
 			if (model.name == e.detail.model.name) {
 				model.selectedForStatistics = e.detail.selected;
@@ -233,6 +234,24 @@ Polymer({
 				break;
 			}
 		}
+    
+    // Check whether at least one model is selected
+    var modelSelected = false;
+    for (var model of this._availableModels) {
+      if (model.selectedForStatistics) {
+        modelSelected = true;
+        break;
+      }
+    }
+		
+		// Hide or show the empty state depending on whether at least one model has 
+		// been selected
+		if (modelSelected) {
+			this.customStyle['--radar-chart-empty-state-opacity'] = '0';
+		} else {
+			this.customStyle['--radar-chart-empty-state-opacity'] = '1';
+		}
+		this.updateStyles();
 	},
 	
 	_nodeSelected: function(e) {

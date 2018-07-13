@@ -1,7 +1,12 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 @import 'advis_plugin/dashboard/shared/style/style';
+@import 'advis_plugin/dashboard/shared/style/text';
 
 $sidebar-width: 500px;
+
+:host {
+	--radar-chart-empty-state-opacity: 1;
+}
 
 .sidebar {
 	display: flex;
@@ -60,6 +65,7 @@ $sidebar-width: 500px;
 	
 	#chart {
 		height: 400px;
+		position: relative;
 		
 		#chart-wrapper {
 			display: flex;
@@ -69,6 +75,31 @@ $sidebar-width: 500px;
 			
 			#chart-container {
 				width: 370px;
+			}
+		}
+		
+		#chart-empty-state {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			pointer-events: none;
+			
+			width: 100%;
+			height: 100px;
+			
+			background: linear-gradient(rgba(30, 30, 30, 0.0), rgba(30, 30, 30, 0.8));
+			
+			opacity: var(--radar-chart-empty-state-opacity);
+			transition: opacity 0.5s ease-in-out;
+			
+			p {
+				width: 60%;
+				text-align: center;
+				color: white;
 			}
 		}
 	}
