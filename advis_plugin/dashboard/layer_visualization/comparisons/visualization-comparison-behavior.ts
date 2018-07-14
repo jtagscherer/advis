@@ -116,6 +116,14 @@ const VisualizationComparisonBehavior = {
 		this._updateState();
 	},
 	
+	_getSpinnerClass: function(condition, state) {
+		if (condition && state != 'empty') {
+			return 'hidden';
+		} else {
+			return 'shown';
+		}
+	},
+	
 	_imageClicked: function(e) {
 		if (this.state != 'loaded') {
 			return;

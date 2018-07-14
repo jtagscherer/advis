@@ -23,7 +23,10 @@ tf_web_library(
 # Compile the component's Sass stylesheet to CSS
 sass_binary(
   name = "side_by_side_scss",
-  src = "side-by-side.scss"
+  src = "side-by-side.scss",
+	deps = [
+		"//advis_plugin/dashboard/shared/style:color"
+	]
 )
 
 # Move the compiled CSS file to our desired path
