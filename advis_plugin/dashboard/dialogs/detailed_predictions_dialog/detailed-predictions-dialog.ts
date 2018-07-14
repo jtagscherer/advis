@@ -79,8 +79,8 @@ Polymer({
 			_loadingRightPredictions;
 	},
 	
-	_getRightPredictionsTitle: function(distortionIndex) {
-		if (distortionIndex == null) {
+	_getRightPredictionsTitle: function(distortionIndex, invariantDistortion) {
+		if (distortionIndex == null && !invariantDistortion) {
 			return 'Average Distorted';
 		} else {
 			return 'Distorted';
