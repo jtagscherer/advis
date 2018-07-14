@@ -17,7 +17,8 @@ tf_web_library(
 		"@org_polymer_paper_dialog",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header/categorized_header_item",
-		"//advis_plugin/dashboard/dialogs/components/dialog_behavior"
+		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
+		"//advis_plugin/dashboard/image_loader"
 	]
 )
 
