@@ -124,6 +124,14 @@ const VisualizationComparisonBehavior = {
 		}
 	},
 	
+	_getSpinnerClassByState: function(state) {
+		if (state == 'loading') {
+			return 'shown';
+		} else {
+			return 'hidden';
+		}
+	},
+	
 	_imageClicked: function(e) {
 		if (this.state != 'loaded') {
 			return;
