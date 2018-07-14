@@ -24,7 +24,12 @@ class Distortion:
 		self._directory = directory
 		
 		self.display_name = self._module.get_display_name()
-		self.icon = self._module.get_icon()
+		
+		if hasattr(self._module, 'get_icon'):
+			self.icon = self._module.get_icon()
+		else:
+			self.icon = 'M3,3 L21,3 L21,21 L3,21 L3,3 Z M5,5 L5,19 L19,19 L19,5 '\
+				'L5,5 Z'
 		
 		if hasattr(self._module, 'get_type'):
 			self.type = self._module.get_type()
