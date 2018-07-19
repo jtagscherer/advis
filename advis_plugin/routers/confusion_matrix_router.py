@@ -3,6 +3,8 @@ from advis_plugin.util import argutil
 from advis_plugin.util.cache import DataCache
 from advis_plugin.routers import prediction_router
 
+import math
+
 def _get_images_of_category(dataset, category_id):
 	images = []
 	
@@ -187,6 +189,9 @@ def _calculate_precision_and_recall(matrix):
 	
 	return precision, recall
 
+# DEBUG: 
+import tensorflow as tf
+
 def confusion_matrix_full_route(request, model_manager, distortion_manager):
 	# First of all, retrieve all parameters
 	missing_arguments = argutil.check_missing_arguments(
@@ -261,8 +266,25 @@ def confusion_matrix_full_route(request, model_manager, distortion_manager):
 		recall = [i - j if i is not None and j is not None else None \
 			for i, j in zip(distorted_recall, original_recall)]
 	
+	# Find the minimum and maximum values within the matrix
+	value_range = {
+		'minimum': math.inf,
+		'maximum': -math.inf
+	}
+	
+	for row in matrix.values():
+		for value in row.values():
+			if value < value_range['minimum']:
+				value_range['minimum'] = value
+			
+			if value > value_range['maximum']:
+				value_range['maximum'] = value
+	
 	response = {
-		'confusionMatrix': matrix,
+		'confusionMatrix': {
+			'range': value_range,
+			'matrix': matrix
+		},
 		'precision': precision,
 		'recall': recall
 	}
