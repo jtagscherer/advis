@@ -21,9 +21,19 @@
 			<dialog-header event-id="input-image-selection-dialog">
 				<div class="header-items">
 					<categorized-header-item
+						category="Model"
+						title=[[model.displayName]]
+						caption="Version [[model.version]]">
+					</categorized-header-item>
+					<categorized-header-item
 						category="Dataset"
 						title=[[dataset.displayName]]
 						caption="[[dataset.imageCount]] images">
+					</categorized-header-item>
+					<categorized-header-item
+						category="Distortion"
+						title=[[distortion.displayName]]
+						caption="[[distortion.type]]">
 					</categorized-header-item>
 				</div>
 			</dialog-header>

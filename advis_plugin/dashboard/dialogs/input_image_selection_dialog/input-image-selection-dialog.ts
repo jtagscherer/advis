@@ -7,6 +7,8 @@ Polymer({
 	],
 	
   properties: {
+		model: Object,
+		distortion: Object,
 		dataset: Object,
 		availableImages: Array,
 		selectedImage: Object,
@@ -17,6 +19,8 @@ Polymer({
   },
 	
 	setContent: function(content) {		
+		this.model = content.model;
+		this.distortion = content.distortion;
 		this.dataset = content.dataset;
 		this.availableImages = content.availableImages;
 		this.selectedImage = content.selectedImage;

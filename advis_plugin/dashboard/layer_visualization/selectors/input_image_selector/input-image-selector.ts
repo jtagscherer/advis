@@ -8,6 +8,8 @@ Polymer({
 			type: Object,
 			notify: true
 		},
+		selectedDistortion: Object,
+		selectedModel: Object,
 		associatedDataset: Object,
 		availableImages: Array
 	},
@@ -20,6 +22,8 @@ Polymer({
 		// Open a dialog that lets the user view all input images and select one
 		if (this.hasValidData()) {
 			this.$$('input-image-selection-dialog').open({
+				model: this.selectedModel,
+				distortion: this.selectedDistortion,
 				dataset: this.associatedDataset,
 				availableImages: this.availableImages,
 				selectedImage: this.selectedImage,
