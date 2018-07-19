@@ -133,8 +133,8 @@ def _category_is_a(hierarchy, category_id, superset):
 	except:
 		return False
 
-def _get_empty_matrix(nodes):
-	labels = [node['name'] for node in nodes]
+def _get_empty_matrix(nodes, key='name'):
+	labels = [node[key] for node in nodes]
 	
 	matrix = {}
 	
@@ -186,6 +186,88 @@ def _calculate_precision_and_recall(matrix):
 			precision.append(true_positive / all_positive)
 	
 	return precision, recall
+
+def confusion_matrix_full_route(request, model_manager, distortion_manager):
+	# First of all, retrieve all parameters
+	missing_arguments = argutil.check_missing_arguments(
+		request, ['model', 'distortion', 'mode']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	model_name = request.args.get('model')
+	distortion_name = request.args.get('distortion')
+	mode = request.args.get('mode')
+	
+	model = model_manager.get_model_modules()[model_name]
+	dataset = model._dataset
+	distortion = distortion_manager.distortion_modules[distortion_name]
+	
+	# Make the model predict all input images as well as distorted versions and 
+	# store them in the category hierarchy
+	hierarchy = _get_hierarchical_node_predictions(
+		model, distortion, model_manager, distortion_manager
+	)
+	
+	nodes = _find_all_leaves(hierarchy[0])[::-1]
+	
+	original_confusion_matrix = _get_empty_matrix(nodes, key='category')
+	distorted_confusion_matrix = _get_empty_matrix(nodes, key='category')
+	
+	# Fill up confusion matrices depending on the predictions of all images 
+	# within each category that have been made by the model
+	for node in nodes:
+		actual_category = node['category']
+		
+		for original_prediction in node['predictions']['original']:
+			predicted_category = int(original_prediction)
+			original_confusion_matrix[actual_category][predicted_category] \
+				+= node['predictions']['original'][original_prediction]
+		
+		for distorted_prediction in node['predictions']['distorted']:
+			predicted_category = int(distorted_prediction)
+			distorted_confusion_matrix[actual_category][predicted_category] \
+				+= node['predictions']['distorted'][distorted_prediction]
+	
+	if mode == 'original':
+		matrix = original_confusion_matrix
+		precision, recall = _calculate_precision_and_recall(matrix)
+	elif mode == 'distorted':
+		matrix = distorted_confusion_matrix
+		precision, recall = _calculate_precision_and_recall(matrix)
+	elif mode == 'difference':
+		difference_confusion_matrix = _get_empty_matrix(nodes, key='category')
+		
+		# Calculate the difference between each element in both matrices
+		for actual_label in difference_confusion_matrix:
+			for predicted_label in difference_confusion_matrix[actual_label]:
+				difference_confusion_matrix[actual_label][predicted_label] = \
+					distorted_confusion_matrix[actual_label][predicted_label] \
+					- original_confusion_matrix[actual_label][predicted_label]
+		
+		matrix = difference_confusion_matrix
+		
+		# Calculate the precision and recall differences
+		original_precision, original_recall = _calculate_precision_and_recall(
+			original_confusion_matrix
+		)
+		distorted_precision, distorted_recall = _calculate_precision_and_recall(
+			distorted_confusion_matrix
+		)
+		
+		precision = [i - j if i is not None and j is not None else None \
+			for i, j in zip(distorted_precision, original_precision)]
+		recall = [i - j if i is not None and j is not None else None \
+			for i, j in zip(distorted_recall, original_recall)]
+	
+	response = {
+		'confusionMatrix': matrix,
+		'precision': precision,
+		'recall': recall
+	}
+	
+	return http_util.Respond(request, response, 'application/json')
 
 def confusion_matrix_superset_route(request, model_manager, distortion_manager):
 	# First of all, retrieve all parameters

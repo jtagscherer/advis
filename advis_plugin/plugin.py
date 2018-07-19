@@ -72,6 +72,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/predictions/single': self.single_prediction_route,
 			'/predictions/average': self.average_prediction_route,
 			'/predictions/accuracy': self.accuracy_prediction_route,
+			'/confusion/matrix/full': self.confusion_matrix_full_route,
 			'/confusion/matrix/superset': self.confusion_matrix_superset_route,
 			'/confusion/images': self.confusion_images_route,
 			'/distortions': self.distortions_route,
@@ -185,6 +186,25 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""
 		
 		return prediction_router.accuracy_prediction_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def confusion_matrix_full_route(self, request):
+		"""A route that returns a model's full confusion matrix delta given a 
+		distortion. On top of that, a mode has to be supplied. If it is 'original', 
+		the confusion matrix for original input images will be returned. If it is 
+		'distorted', the confusion matrix for distorted input images will be 
+		returned. If it is 'difference', the delta between the two aforementioned 
+		confusion matrices will be returned.
+
+		Arguments:
+			request: The request which has to contain the model's name and the name 
+				of a distortion.
+		Returns:
+			A response that contains all rows of the confusion matrix.
+		"""
+		
+		return confusion_matrix_router.confusion_matrix_full_route(request, 
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
