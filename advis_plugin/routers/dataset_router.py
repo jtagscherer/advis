@@ -10,6 +10,41 @@ def datasets_route(request, dataset_manager):
 	
 	return http_util.Respond(request, response, 'application/json')
 
+def datasets_categories_list_route(request, dataset_manager):
+	# Check for missing arguments and possibly return an error
+	missing_arguments = argutil.check_missing_arguments(
+		request, ['dataset']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	dataset_name = request.args.get('dataset')
+	
+	categories = dataset_manager.get_dataset_modules()[dataset_name].categories
+	response = [{
+		'index': index,
+		'name': name
+	} for index, name in enumerate(categories)]
+	
+	return http_util.Respond(request, response, 'application/json')
+
+def datasets_categories_hierarchy_route(request, dataset_manager):
+	# Check for missing arguments and possibly return an error
+	missing_arguments = argutil.check_missing_arguments(
+		request, ['dataset']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	dataset_name = request.args.get('dataset')
+	
+	hierarchy = dataset_manager.get_dataset_modules()[dataset_name] \
+		.category_hierarchy
+	
+	return http_util.Respond(request, hierarchy, 'application/json')
+
 def datasets_images_list_route(request, dataset_manager):
 	# Check for missing arguments and possibly return an error
 	missing_arguments = argutil.check_missing_arguments(

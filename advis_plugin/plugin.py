@@ -79,6 +79,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/distortions/single': self.distortions_single_route,
 			'/distortions/update': self.distortions_update_route,
 			'/datasets': self.datasets_route,
+			'/datasets/categories/list': self.datasets_categories_list_route,
+			'/datasets/categories/hierarchy': self.datasets_categories_hierarchy_route,
 			'/datasets/images/list': self.datasets_images_list_route,
 			'/datasets/images/image': self.datasets_images_image_route,
 			'/layer/single/meta': self.layer_single_meta_route,
@@ -307,6 +309,33 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""
 		
 		return dataset_router.datasets_route(request, self.dataset_manager)
+	
+	@wrappers.Request.application
+	def datasets_categories_list_route(self, request):
+		"""A route that returns a list of all categories within a dataset.
+
+		Arguments:
+			request: The request which has to contain the dataset's name.
+		Returns:
+			A response that contains a list of all categories within the dataset.
+		"""
+		
+		return dataset_router.datasets_categories_list_route(request,
+			self.dataset_manager)
+	
+	@wrappers.Request.application
+	def datasets_categories_hierarchy_route(self, request):
+		"""A route that returns all categories within a dataset, embedded in the 
+		category hierarchy.
+
+		Arguments:
+			request: The request which has to contain the dataset's name.
+		Returns:
+			A response that contains the category hierarchy of the dataset.
+		"""
+		
+		return dataset_router.datasets_categories_hierarchy_route(request,
+			self.dataset_manager)
 	
 	@wrappers.Request.application
 	def datasets_images_list_route(self, request):
