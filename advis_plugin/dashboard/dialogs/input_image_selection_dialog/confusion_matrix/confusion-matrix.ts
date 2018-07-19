@@ -22,7 +22,8 @@ Polymer({
 			value: 'original',
 			observer: 'reload'
 		},
-		_matrixImage: String
+		_matrixImage: String,
+		_contentSize: Number
 	},
 	
 	reload: function() {
@@ -81,6 +82,8 @@ Polymer({
       context.putImageData(imageData, 0, 0);
 			
 			self.set('_matrixImage', canvas.toDataURL('image/png'));
+			self.set('_contentSize', Math.min(self.$$('#content').offsetWidth,
+				self.$$('#content').offsetHeight) * 0.6);
 		});
 	}
 });
