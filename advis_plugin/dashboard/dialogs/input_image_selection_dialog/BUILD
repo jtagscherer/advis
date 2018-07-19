@@ -20,7 +20,8 @@ tf_web_library(
 		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/input_image_item",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header/categorized_header_item",
-		"//advis_plugin/dashboard/dialogs/components/dialog_behavior"
+		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
+		"//advis_plugin/dashboard/section_header"
 	]
 )
 
@@ -29,7 +30,8 @@ sass_binary(
   name = "input_image_selection_dialog_scss",
   src = "input-image-selection-dialog.scss",
 	deps = [
-		"//advis_plugin/dashboard/shared/style:style"
+		"//advis_plugin/dashboard/shared/style:style",
+		"//advis_plugin/dashboard/shared/style:color"
 	]
 )
 

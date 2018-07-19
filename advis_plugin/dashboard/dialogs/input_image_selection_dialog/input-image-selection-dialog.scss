@@ -1,21 +1,39 @@
 @import 'advis_plugin/dashboard/shared/style/style';
+@import 'advis_plugin/dashboard/shared/style/color';
 
-$content-size: 80vh;
 $inner-padding: 5px;
 
 #content {
-	width: $content-size;
-	height: $content-size;
+	width: 90vw;
+	height: 80vh;
 	
 	margin: 0;
 	padding: 0;
 	
-	iron-list {
-		width: $content-size;
-		height: $content-size;
+	display: flex;
+	flex-direction: row;
+	
+	.container {
+		display: flex;
+		flex-direction: column;
 	}
 	
-	input-image-item {
-		padding: $inner-padding;
+	#matrix-container {
+		flex: 0.6;
+		border-right: 1px solid $light-foreground-color;
+	}
+	
+	#image-list-container {
+		flex: 0.4;
+		
+		iron-list {
+			flex: 1;
+			overflow: auto;
+			height: 100%;
+			
+			input-image-item {
+				padding: $inner-padding;
+			}
+		}
 	}
 }
