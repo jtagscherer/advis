@@ -11,7 +11,8 @@ Polymer({
 		selectedDistortion: Object,
 		selectedModel: Object,
 		associatedDataset: Object,
-		availableImages: Array
+		availableImages: Array,
+		requestManager: Object
 	},
 	
 	listeners: {
@@ -27,6 +28,7 @@ Polymer({
 				dataset: this.associatedDataset,
 				availableImages: this.availableImages,
 				selectedImage: this.selectedImage,
+				requestManager: this.requestManager,
 				animationTarget: this.$$('#left').getBoundingClientRect()
 			});
 		}

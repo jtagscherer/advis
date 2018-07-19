@@ -12,6 +12,8 @@ Polymer({
 		dataset: Object,
 		availableImages: Array,
 		selectedImage: Object,
+		requestManager: Object,
+		
 		eventId: {
 			type: String,
 			value: 'input-image-selection-dialog'
@@ -24,6 +26,7 @@ Polymer({
 		this.dataset = content.dataset;
 		this.availableImages = content.availableImages;
 		this.selectedImage = content.selectedImage;
+		this.requestManager = content.requestManager;
 		
 		this.$$('iron-list').selectItem(this.selectedImage);
 	},

@@ -18,6 +18,7 @@ tf_web_library(
 		"@org_polymer_iron_list",
 		"@org_polymer_iron_flex_layout",
 		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/input_image_item",
+		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header/categorized_header_item",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
