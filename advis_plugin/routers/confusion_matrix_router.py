@@ -187,7 +187,7 @@ def _calculate_precision_and_recall(matrix):
 	
 	return precision, recall
 
-def confusion_matrix_route(request, model_manager, distortion_manager):
+def confusion_matrix_superset_route(request, model_manager, distortion_manager):
 	# First of all, retrieve all parameters
 	missing_arguments = argutil.check_missing_arguments(
 		request, ['model', 'distortion', 'mode']

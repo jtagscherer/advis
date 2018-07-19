@@ -72,7 +72,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/predictions/single': self.single_prediction_route,
 			'/predictions/average': self.average_prediction_route,
 			'/predictions/accuracy': self.accuracy_prediction_route,
-			'/confusion/matrix': self.confusion_matrix_route,
+			'/confusion/matrix/superset': self.confusion_matrix_superset_route,
 			'/confusion/images': self.confusion_images_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
@@ -188,7 +188,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
-	def confusion_matrix_route(self, request):
+	def confusion_matrix_superset_route(self, request):
 		"""A route that returns a model's confusion matrix delta given a distortion 
 		and a specific dataset hierarchy level.
 
@@ -205,7 +205,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			A response that contains all rows of the confusion matrix.
 		"""
 		
-		return confusion_matrix_router.confusion_matrix_route(request, 
+		return confusion_matrix_router.confusion_matrix_superset_route(request, 
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
