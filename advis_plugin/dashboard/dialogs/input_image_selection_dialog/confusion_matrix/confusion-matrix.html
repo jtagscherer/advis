@@ -1,4 +1,7 @@
+<link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../polymer/polymer.html">
+
+<link rel="import" href="../../libraries/chroma/chroma.html">
 
 <!--
 	This component visualizes a model's predictions as a zoomable and interactive 
@@ -6,7 +9,7 @@
 -->
 <dom-module id="confusion-matrix">
 	<template>
-		<p>TODO</p>
+		<img src$="[[_matrixImage]]"></img>
 		
 		<link rel="stylesheet" type="text/css" href="confusion-matrix.css">
 	</template>

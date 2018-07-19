@@ -14,7 +14,9 @@ tf_web_library(
 	],
 	path = "/confusion-matrix",
 	deps = [
-		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer"
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+		"//advis_plugin/dashboard/shared/libraries/chroma"
 	]
 )
 
