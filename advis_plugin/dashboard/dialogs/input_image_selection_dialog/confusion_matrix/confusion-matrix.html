@@ -11,10 +11,22 @@
 <dom-module id="confusion-matrix">
 	<template>
 		<div id="content">
-			<zoomable-canvas
-				src=[[_matrixImage]]
-				size=[[_contentSize]]>
-			</zoomable-canvas>
+			<div id="matrix">
+				<div class="row">
+					<div id="predicted-labels"></div>
+				</div>
+				<div class="row">
+					<div id="actual-labels"></div>
+					<zoomable-canvas
+						src=[[_matrixImage]]
+						size=[[_contentSize]]>
+					</zoomable-canvas>
+					<div id="recall"></div>
+				</div>
+				<div class="row">
+					<div id="precision"></div>
+				</div>
+			</div>
 		</div>
 		
 		<link rel="stylesheet" type="text/css" href="confusion-matrix.css">

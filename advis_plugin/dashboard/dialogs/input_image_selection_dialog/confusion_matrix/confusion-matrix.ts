@@ -82,8 +82,11 @@ Polymer({
       context.putImageData(imageData, 0, 0);
 			
 			self.set('_matrixImage', canvas.toDataURL('image/png'));
-			self.set('_contentSize', Math.min(self.$$('#content').offsetWidth,
-				self.$$('#content').offsetHeight) * 0.6);
+			self.set('_contentSize', Math.round(Math.min(self.$$('#content')
+				.offsetWidth, self.$$('#content').offsetHeight) * 0.6));
+			
+			this.customStyle['--matrix-size'] = `${self._contentSize}px`;
+			this.updateStyles();
 		});
 	}
 });
