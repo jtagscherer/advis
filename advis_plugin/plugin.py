@@ -315,7 +315,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""A route that returns a list of all categories within a dataset.
 
 		Arguments:
-			request: The request which has to contain the dataset's name.
+			request: The request which has to contain the dataset's name. On top of 
+				that, the list of categories can be ordered by their ID (default) or by 
+				their position in the hierarchy.
 		Returns:
 			A response that contains a list of all categories within the dataset.
 		"""

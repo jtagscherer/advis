@@ -10,6 +10,22 @@ def datasets_route(request, dataset_manager):
 	
 	return http_util.Respond(request, response, 'application/json')
 
+def _find_all_leaves(root, result=[]):
+	stack = [root]
+	leaves = []
+	
+	while stack:
+		node = stack.pop()
+		
+		if 'category' in node:
+			leaves.append(node)
+		
+		if 'children' in node and node['children'] is not None:
+			for child in node['children']:
+				stack.append(child)
+	
+	return leaves
+
 def datasets_categories_list_route(request, dataset_manager):
 	# Check for missing arguments and possibly return an error
 	missing_arguments = argutil.check_missing_arguments(
@@ -20,12 +36,29 @@ def datasets_categories_list_route(request, dataset_manager):
 		return missing_arguments
 	
 	dataset_name = request.args.get('dataset')
+	dataset_module = dataset_manager.get_dataset_modules()[dataset_name]
 	
-	categories = dataset_manager.get_dataset_modules()[dataset_name].categories
-	response = [{
-		'index': index,
-		'name': name
-	} for index, name in enumerate(categories)]
+	ordering = 'index'
+	if 'ordering' in request.args:
+		ordering = request.args.get('ordering')
+	
+	if ordering == 'index':
+		categories = dataset_module.categories
+		
+		response = [{
+			'name': name,
+			'id': index,
+			'index': index
+		} for index, name in enumerate(categories)]
+	elif ordering == 'hierarchical':
+		hierarchy = dataset_module.category_hierarchy
+		leaves = _find_all_leaves(hierarchy[0])[::-1]
+		
+		response = [{
+			'name': category['name'],
+			'id': category['category'],
+			'index': index
+		} for index, category in enumerate(leaves)]
 	
 	return http_util.Respond(request, response, 'application/json')
 
