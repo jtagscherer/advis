@@ -3,6 +3,7 @@
 
 <link rel="import" href="../../libraries/chroma/chroma.html">
 <link rel="import" href="../../zoomable-canvas/zoomable-canvas.html">
+<link rel="import" href="../../label-view/label-view.html">
 
 <!--
 	This component visualizes a model's predictions as a zoomable and interactive 
@@ -13,14 +14,25 @@
 		<div id="content">
 			<div id="matrix">
 				<div class="row">
-					<div id="predicted-labels"></div>
+					<div id="predicted-labels">
+						<label-view
+							width="[[_contentSize]]"
+							height="60"
+							orientation="horizontal"
+							offset=[[horizontalOffset]]
+							category-hierarchy=[[_categoryHierarchy]]
+							category-count=[[_categories.length]]>
+						</label-view>
+					</div>
 				</div>
 				<div class="row">
 					<div id="actual-labels"></div>
 					<zoomable-canvas
 						src=[[_matrixImage]]
 						size=[[_contentSize]]
-						hovered-pixel={{hoveredPixel}}>
+						hovered-pixel={{hoveredPixel}}
+						vertical-offset={{verticalOffset}}
+						horizontal-offset={{horizontalOffset}}>
 					</zoomable-canvas>
 					<div id="recall"></div>
 				</div>

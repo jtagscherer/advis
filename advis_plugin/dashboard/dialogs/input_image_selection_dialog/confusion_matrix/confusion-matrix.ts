@@ -30,6 +30,16 @@ Polymer({
 			type: Object,
 			value: null
 		},
+    verticalOffset: {
+			type: Object,
+			value: null,
+			notify: true
+		},
+    horizontalOffset: {
+			type: Object,
+			value: null,
+			notify: true
+		},
 		_matrixData: Object,
 		_matrixImage: String,
 		_categories: Array,
@@ -46,7 +56,8 @@ Polymer({
 	},
 	
 	_getLabel: function(position) {
-		if (this._categories != null && position != null) {
+		if (this._categories != null && position != null
+			&& this._categories[position] != null) {
 			return this._categories[position].name;
 		} else {
 			return 'None';
@@ -54,7 +65,9 @@ Polymer({
 	},
 	
 	_getMatrixValue: function(x, y) {
-		return this._matrixData[x][y];
+    if (this._matrixData != null && this._matrixData[x] != null) {
+      return this._matrixData[x][y];
+    }
 	},
 	
 	_getHoverClass: function(hoveredPixel) {

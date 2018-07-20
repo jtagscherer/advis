@@ -15,6 +15,14 @@ Polymer({
 			type: Object,
 			notify: true
 		},
+		horizontalOffset: {
+			type: Object,
+			notify: true
+		},
+		verticalOffset: {
+			type: Object,
+			notify: true
+		},
 		_context: Object,
 		_image: Object
 	},
@@ -39,6 +47,7 @@ Polymer({
 			
 			self._context.correctBounds();
 			self._updateHoveredPixel(e.offsetX, e.offsetY);
+			self._updateOffsets();
 			
 			self.redraw();
 		});
@@ -66,6 +75,7 @@ Polymer({
 				);
 				
 				self._context.correctBounds();
+				self._updateOffsets();
 				
 				self.redraw();
 			} else {
@@ -108,6 +118,8 @@ Polymer({
 			let scaleFactor = self.size / self._image.width;
 			self._context.scale(scaleFactor, scaleFactor);
 			
+			self._updateOffsets();
+			
 			self.redraw();
 		};
 		
@@ -130,11 +142,29 @@ Polymer({
 	},
 	
 	_updateHoveredPixel: function(mouseX, mouseY) {
-		let position = this._context.transformedPoint(mouseX, mouseY);
-		this.set('hoveredPixel', {
-			x: Math.floor(position.x),
-			y: Math.floor(position.y)
-		})
+		if (this._context != null) {
+			let position = this._context.transformedPoint(mouseX, mouseY);
+			this.set('hoveredPixel', {
+				x: Math.floor(position.x),
+				y: Math.floor(position.y)
+			});
+		}
+	},
+	
+	_updateOffsets: function() {
+		let leftTop = this._context.transformedPoint(0, 0);
+		let rightTop = this._context.transformedPoint(this.size, 0);
+		let leftBottom = this._context.transformedPoint(0, this.size);
+		
+		this.set('horizontalOffset', {
+			start: leftTop.x,
+			end: rightTop.x
+		});
+		
+		this.set('verticalOffset', {
+			start: leftTop.y,
+			end: leftBottom.y
+		});
 	},
 	
 	_enhanceContext: function(context) {
