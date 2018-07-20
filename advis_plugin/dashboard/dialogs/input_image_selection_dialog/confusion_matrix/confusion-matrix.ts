@@ -9,6 +9,10 @@ Polymer({
 			type: String,
 			observer: 'reload'
 		},
+		dataset: {
+			type: String,
+			observer: 'reload'
+		},
 		distortion: {
 			type: String,
 			observer: 'reload'
@@ -22,15 +26,68 @@ Polymer({
 			value: 'original',
 			observer: 'reload'
 		},
+		hoveredPixel: {
+			type: Object,
+			value: null
+		},
+		_matrixData: Object,
 		_matrixImage: String,
+		_categories: Array,
+		_categoryHierarchy: Object,
 		_contentSize: Number
 	},
 	
 	reload: function() {
-		if (this.model != null && this.distortion != null
+		if (this.model != null && this.dataset != null && this.distortion != null
 			&& this.requestManager != null) {
+			this._retrieveCategories();
 			this._generateMatrixImage();
 		}
+	},
+	
+	_getLabel: function(position) {
+		if (this._categories != null && position != null) {
+			return this._categories[position].name;
+		} else {
+			return 'None';
+		}
+	},
+	
+	_getMatrixValue: function(x, y) {
+		return this._matrixData[x][y];
+	},
+	
+	_getHoverClass: function(hoveredPixel) {
+		if (hoveredPixel == null) {
+			return 'hidden';
+		} else {
+			return 'shown';
+		}
+	},
+	
+	_retrieveCategories: function() {
+		let self = this;
+		
+		// Retrieve all categories as a list
+		let categoryListUrl = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/datasets/categories/list'), {
+			dataset: this.dataset,
+			ordering: 'hierarchical'
+		});
+		
+		this.requestManager.request(categoryListUrl).then(result => {
+			self.set('_categories', result);
+		});
+		
+		// Retrieve the hierarchy of all categories
+		let categoryHierarchyUrl = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/datasets/categories/hierarchy'), {
+			dataset: this.dataset
+		});
+		
+		this.requestManager.request(categoryHierarchyUrl).then(result => {
+			self.set('_categoryHierarchy', result);
+		});
 	},
 	
 	_generateMatrixImage: function() {
@@ -44,6 +101,8 @@ Polymer({
 		});
 		
 		this.requestManager.request(matrixUrl).then(result => {
+			self.set('_matrixData', result.confusionMatrix.matrix);
+			
 			let matrixLabels = Object.keys(result.confusionMatrix.matrix);
 			let matrixSize = matrixLabels.length;
 			let valueRange = result.confusionMatrix.range;

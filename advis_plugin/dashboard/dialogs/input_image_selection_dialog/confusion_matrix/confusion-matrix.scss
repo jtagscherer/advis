@@ -13,6 +13,10 @@ $metric-padding: calc(#{$label-height} - #{$metric-height});
 	width: 100%;
 	height: 100%;
 	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	
 	#matrix {
 		display: flex;
 		flex-direction: column;
@@ -48,6 +52,55 @@ $metric-padding: calc(#{$label-height} - #{$metric-height});
 				height: var(--matrix-size);
 				padding-left: $metric-padding;
 			}
+		}
+	}
+	
+	#hovered {
+		display: flex;
+		flex-direction: row;
+		width: var(--matrix-size);
+		
+		transition: opacity 0.25s ease-in-out;
+		
+		.label {
+			flex: 0.5;
+			min-width: 0;
+			
+			p {
+				margin: 0;
+			}
+		}
+		
+		#actual {
+			text-align: left;
+		}
+		
+		#value {
+			display: flex;
+			align-items: center;
+			
+			text-align: center;
+			flex: 0;
+			
+			padding-left: 10px;
+			padding-right: 10px;
+			
+			.title {
+				margin: 0;
+				font-size: 24px;
+			}
+		}
+		
+		#predicted {
+			text-align: right;
+		}
+		
+		&.hidden {
+			opacity: 0;
+		}
+		
+		&.shown {
+			opacity: 1;
 		}
 	}
 }

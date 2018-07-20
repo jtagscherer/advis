@@ -11,6 +11,10 @@ Polymer({
 			type: Number,
 			observer: 'reload'
 		},
+		hoveredPixel: {
+			type: Object,
+			notify: true
+		},
 		_context: Object,
 		_image: Object
 	},
@@ -34,6 +38,7 @@ Polymer({
 			self._context.translate(-position.x, -position.y);
 			
 			self._context.correctBounds();
+			self._updateHoveredPixel(e.offsetX, e.offsetY);
 			
 			self.redraw();
 		});
@@ -63,6 +68,8 @@ Polymer({
 				self._context.correctBounds();
 				
 				self.redraw();
+			} else {
+				self._updateHoveredPixel(e.offsetX, e.offsetY);
 			}
 		});
 		
@@ -73,6 +80,7 @@ Polymer({
 		
 		canvas.addEventListener('mouseleave', function(e) {
 			e.preventDefault();
+			self.set('hoveredPixel', null);
 			lastPosition = null;
 		});
 	},
@@ -119,6 +127,14 @@ Polymer({
 		
 		// Draw the source image
 		this._context.drawImage(this._image, 0, 0);
+	},
+	
+	_updateHoveredPixel: function(mouseX, mouseY) {
+		let position = this._context.transformedPoint(mouseX, mouseY);
+		this.set('hoveredPixel', {
+			x: Math.floor(position.x),
+			y: Math.floor(position.y)
+		})
 	},
 	
 	_enhanceContext: function(context) {
