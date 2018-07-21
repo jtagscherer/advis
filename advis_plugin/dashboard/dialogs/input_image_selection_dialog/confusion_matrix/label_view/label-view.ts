@@ -81,38 +81,32 @@ Polymer({
 		var levelFloat = this._maximumHierarchyDepth * zoomPercentage * 20;
 		levelFloat = this._maximumHierarchyDepth
 			- Math.max(0, Math.min(this._maximumHierarchyDepth, levelFloat));
-		let level = Math.floor(levelFloat);
 		
-		// Draw two label rows at once
-		if (this.orientation == 'vertical') {
-			let widthRatio = 0.5 * this.width;
-			
-			this._drawLabelRow(
-				level, -(levelFloat - level) * widthRatio, this.width / 2
-			);
-			this._drawLabelRow(
-				level + 1, (1 - (levelFloat - level)) * widthRatio, this.width / 2
-			);
-			this._drawLabelRow(
-				level + 2, (2 - (levelFloat - level)) * widthRatio, this.width / 2
-			);
-		} else if (this.orientation == 'horizontal') {
-			let heightRatio = 0.5 * this.height;
-			
-			this._drawLabelRow(
-				level, -(levelFloat - level) * heightRatio, this.height / 2
-			);
-			this._drawLabelRow(
-				level + 1, (1 - (levelFloat - level)) * heightRatio, this.height / 2
-			);
-			this._drawLabelRow(
-				level + 2, (2 - (levelFloat - level)) * heightRatio, this.height / 2
-			);
+		// Draw three label rows at once
+		for (var i = 0; i < 3; i++) {
+			this._drawNestedLabels(levelFloat, i);
 		}
 	},
 	
 	getLabelsForLevel: function(level) {
 		return this._labelCache[level];
+	},
+	
+	_drawNestedLabels: function(levelFloat, offset) {
+		let level = Math.floor(levelFloat);
+		let limitedLevel = Math.min(level + offset, this._maximumHierarchyDepth);
+		
+		if (this.orientation == 'vertical') {
+			this._drawLabelRow(
+				limitedLevel, (offset - (levelFloat - level)) * 0.5 * this.width,
+				this.width / 2
+			);
+		} else if (this.orientation == 'horizontal') {
+			this._drawLabelRow(
+				limitedLevel, (offset - (levelFloat - level)) * 0.5 * this.height,
+				this.height / 2
+			);
+		}
 	},
 	
 	_drawLabelRow: function(level, offset, size) {
