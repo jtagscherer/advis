@@ -112,7 +112,22 @@ Polymer({
 			}
 			
 			if (this.orientation == 'vertical') {
-				// TODO
+				// Draw a line for the rectangle encompassing the category
+				this._context.beginPath();
+				this._context.moveTo(0, labelStart);
+				this._context.lineTo(this.width, labelStart);
+				this._context.stroke();
+				
+				// Write the label's name inside the rectangle
+				this._drawTextInRectangle(
+					this._getCondensedLabel(label.name),
+          0 + this._textPadding,
+					Math.max(labelStart, 0) + this._textPadding,
+          this.width - (this._textPadding * 2),
+					(Math.min(labelEnd, labelViewLength) - Math.max(labelStart, 0))
+            - (this._textPadding * 2),
+					false
+				);
 			} else if (this.orientation == 'horizontal') {
 				// Draw a line for the rectangle encompassing the category
 				this._context.beginPath();
@@ -210,34 +225,37 @@ Polymer({
     let slicedLines = lines.slice(0, lineCount);
     
     this._context.save();
-    if (rotated) {
-      let leftOffset = (width / 2) - (((slicedLines.length - 1)
+		
+		var textOffset = 0;
+		if (rotated) {
+			textOffset = (width / 2) - (((slicedLines.length - 1) 
+				* this._fontSize) / 2);
+			this._context.translate(x, y + (height / 2));
+			this._context.rotate(-Math.PI / 2);
+		} else {
+			textOffset = (height / 2) - (((slicedLines.length - 1)
         * this._fontSize) / 2);
-      
-      this._context.translate(x, y + (height / 2));
-      this._context.rotate(-Math.PI / 2);
-      
-      for (var lineIndex = 0; lineIndex < slicedLines.length; lineIndex++) {
-        var lineText = slicedLines[lineIndex];
-        
-        // If we are drawing the last line that fits and it is not the last 
-        // line that exists, add an ellipsis
-        if (lineIndex == slicedLines.length - 1
-          && slicedLines.length < lines.length) {
-          if (this._context.measureText(lineText + '…').width > lineWidth) {
-            lineText = lineText.substring(0, lineText.length - 2) + '…';
-          } else {
-            lineText += '…';
-          }
-        }
-        
-        this._context.fillText(
-          lineText, 0, (lineIndex * this._fontSize) + leftOffset
-        );
-      }
-    } else {
-      // TODO
-    }
+      this._context.translate(x + (width / 2), y);
+		}
+		
+		for (var lineIndex = 0; lineIndex < slicedLines.length; lineIndex++) {
+			var lineText = slicedLines[lineIndex];
+			
+			// If we are drawing the last line that fits and it is not the last 
+			// line that exists, add an ellipsis
+			if (lineIndex == slicedLines.length - 1
+				&& slicedLines.length < lines.length) {
+				if (this._context.measureText(lineText + '…').width > lineWidth) {
+					lineText = lineText.substring(0, lineText.length - 2) + '…';
+				} else {
+					lineText += '…';
+				}
+			}
+			
+			this._context.fillText(
+				lineText, 0, (lineIndex * this._fontSize) + textOffset
+			);
+		}
     
     this._context.restore();
 	},

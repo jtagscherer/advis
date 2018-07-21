@@ -26,7 +26,16 @@
 					</div>
 				</div>
 				<div class="row">
-					<div id="actual-labels"></div>
+					<div id="actual-labels">
+						<label-view
+							width="60"
+							height="[[_contentSize]]"
+							orientation="vertical"
+							offset=[[verticalOffset]]
+							category-hierarchy=[[_categoryHierarchy]]
+							category-count=[[_categories.length]]>
+						</label-view>
+					</div>
 					<zoomable-canvas
 						src=[[_matrixImage]]
 						size=[[_contentSize]]
