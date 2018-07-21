@@ -75,6 +75,58 @@ Polymer({
 		
 		this._context.clearRect(0, 0, this.width, this.height);
 		
+		// Choose an appropriate zoom level
+		let zoomPercentage = (this.offset.end - this.offset.start)
+			/ this.categoryCount;
+		var levelFloat = this._maximumHierarchyDepth * zoomPercentage * 20;
+		levelFloat = this._maximumHierarchyDepth
+			- Math.max(0, Math.min(this._maximumHierarchyDepth, levelFloat));
+		let level = Math.floor(levelFloat);
+		
+		// Draw two label rows at once
+		if (this.orientation == 'vertical') {
+			let widthRatio = 0.5 * this.width;
+			
+			this._drawLabelRow(
+				level, -(levelFloat - level) * widthRatio, this.width / 2
+			);
+			this._drawLabelRow(
+				level + 1, (1 - (levelFloat - level)) * widthRatio, this.width / 2
+			);
+			this._drawLabelRow(
+				level + 2, (2 - (levelFloat - level)) * widthRatio, this.width / 2
+			);
+		} else if (this.orientation == 'horizontal') {
+			let heightRatio = 0.5 * this.height;
+			
+			this._drawLabelRow(
+				level, -(levelFloat - level) * heightRatio, this.height / 2
+			);
+			this._drawLabelRow(
+				level + 1, (1 - (levelFloat - level)) * heightRatio, this.height / 2
+			);
+			this._drawLabelRow(
+				level + 2, (2 - (levelFloat - level)) * heightRatio, this.height / 2
+			);
+		}
+	},
+	
+	getLabelsForLevel: function(level) {
+		return this._labelCache[level];
+	},
+	
+	_drawLabelRow: function(level, offset, size) {
+		this._context.save();
+		
+		if (this.orientation == 'vertical') {
+			this._context.translate(offset, 0);
+		} else if (this.orientation == 'horizontal') {
+			this._context.translate(0, offset);
+		}
+		
+		// Retrieve labels for the current zoom level
+		let labels = this.getLabelsForLevel(level);
+		
 		let offsetRange = this.offset.end - this.offset.start;
 		
 		var labelViewLength = 0;
@@ -86,17 +138,44 @@ Polymer({
     
     var categorySize = labelViewLength / offsetRange;
 		
-		// Choose an appropriate zoom level
-		let zoomPercentage = offsetRange / this.categoryCount;
-		var level = this._maximumHierarchyDepth * zoomPercentage * 20;
-		level = this._maximumHierarchyDepth
-			- Math.max(0, Math.min(this._maximumHierarchyDepth, level));
-		
-		// Retrieve labels for the current zoom level
-		let labels = this.getLabelsForLevel(Math.round(level));
-		
 		// Draw a rectangle around the bounds of the label row
-		this._context.strokeRect(0, 0, this.width, this.height);
+		if (this.orientation == 'vertical') {
+			// Vertical line
+			this._context.beginPath();
+			this._context.moveTo(0, 0);
+			this._context.lineTo(0, this.height);
+			this._context.stroke();
+			
+			// Top side line
+			this._context.beginPath();
+			this._context.moveTo(0, 0);
+			this._context.lineTo(size, 0);
+			this._context.stroke();
+			
+			// Bottom side line
+			this._context.beginPath();
+			this._context.moveTo(0, this.height);
+			this._context.lineTo(size, this.height);
+			this._context.stroke();
+		} else if (this.orientation == 'horizontal') {
+			// Horizontal line
+			this._context.beginPath();
+			this._context.moveTo(0, 0);
+			this._context.lineTo(this.width, 0);
+			this._context.stroke();
+			
+			// Left side line
+			this._context.beginPath();
+			this._context.moveTo(0, 0);
+			this._context.lineTo(0, size);
+			this._context.stroke();
+			
+			// Right side line
+			this._context.beginPath();
+			this._context.moveTo(this.width, 0);
+			this._context.lineTo(this.width, size);
+			this._context.stroke();
+		}
 		
 		// Draw labels for the current offset
 		var currentOffset = 0;
@@ -115,7 +194,7 @@ Polymer({
 				// Draw a line for the rectangle encompassing the category
 				this._context.beginPath();
 				this._context.moveTo(0, labelStart);
-				this._context.lineTo(this.width, labelStart);
+				this._context.lineTo(size, labelStart);
 				this._context.stroke();
 				
 				// Write the label's name inside the rectangle
@@ -123,7 +202,7 @@ Polymer({
 					this._getCondensedLabel(label.name),
           0 + this._textPadding,
 					Math.max(labelStart, 0) + this._textPadding,
-          this.width - (this._textPadding * 2),
+          size - (this._textPadding * 2),
 					(Math.min(labelEnd, labelViewLength) - Math.max(labelStart, 0))
             - (this._textPadding * 2),
 					false
@@ -132,7 +211,7 @@ Polymer({
 				// Draw a line for the rectangle encompassing the category
 				this._context.beginPath();
 				this._context.moveTo(labelStart, 0);
-				this._context.lineTo(labelStart, this.height);
+				this._context.lineTo(labelStart, size);
 				this._context.stroke();
 				
 				// Write the label's name inside the rectangle
@@ -142,17 +221,15 @@ Polymer({
           0 + this._textPadding,
           (Math.min(labelEnd, labelViewLength) - Math.max(labelStart, 0))
             - (this._textPadding * 2),
-          this.height - (this._textPadding * 2),
+          size - (this._textPadding * 2),
 					true
 				);
 			}
 			
 			currentOffset += label.size;
 		}
-	},
-	
-	getLabelsForLevel: function(level) {
-		return this._labelCache[level];
+		
+		this._context.restore();
 	},
 	
 	_drawTextInRectangle: function(text, x, y, width, height, rotated) {

@@ -1,7 +1,7 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 @import 'advis_plugin/dashboard/shared/style/text';
 
-$label-height: 60px;
+$label-height: 120px;
 $metric-height: 10px;
 $metric-padding: calc(#{$label-height} - #{$metric-height});
 
