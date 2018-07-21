@@ -227,14 +227,30 @@ Polymer({
 	},
 	
 	_drawTextInRectangle: function(text, x, y, width, height, rotated) {
-		let textHeight = this._fontSize;
-    
     var lineWidth = 0;
     if (rotated) {
       lineWidth = height;
     } else {
       lineWidth = width;
     }
+		
+		// Write all lines to the screen as far as space permits
+    var blockWidth = 0;
+    if (rotated) {
+      blockWidth = width;
+    } else {
+      blockWidth = height;
+    }
+    
+    // If there is no space for at least one line, we lower the font size
+		var textHeight = 0;
+    if (blockWidth < this._fontSize) {
+			textHeight = Math.max(0, blockWidth);
+    } else {
+			textHeight = this._fontSize;
+		}
+		
+		this._context.font = `${textHeight}px Roboto Condensed`;
 		
 		// Wrap the text into lines until we run out of text
 		var lines = [];
@@ -279,20 +295,7 @@ Polymer({
       remainingText = remainingText.substring(line.length).trim();
     }
     
-    // Write all lines to the screen as far as space permits
-    var blockWidth = 0;
-    if (rotated) {
-      blockWidth = width;
-    } else {
-      blockWidth = height;
-    }
-    
-    // If there is no space for at least one line, we can stop here
-    if (blockWidth < this._fontSize) {
-      return;
-    }
-    
-    let lineCount = Math.floor(blockWidth / this._fontSize);
+    let lineCount = Math.floor(blockWidth / textHeight);
     let slicedLines = lines.slice(0, lineCount);
     
     this._context.save();
@@ -300,12 +303,12 @@ Polymer({
 		var textOffset = 0;
 		if (rotated) {
 			textOffset = (width / 2) - (((slicedLines.length - 1) 
-				* this._fontSize) / 2);
+				* textHeight) / 2);
 			this._context.translate(x, y + (height / 2));
 			this._context.rotate(-Math.PI / 2);
 		} else {
 			textOffset = (height / 2) - (((slicedLines.length - 1)
-        * this._fontSize) / 2);
+        * textHeight) / 2);
       this._context.translate(x + (width / 2), y);
 		}
 		
@@ -324,7 +327,7 @@ Polymer({
 			}
 			
 			this._context.fillText(
-				lineText, 0, (lineIndex * this._fontSize) + textOffset
+				lineText, 0, (lineIndex * textHeight) + textOffset
 			);
 		}
     
