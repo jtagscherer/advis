@@ -57,10 +57,16 @@ Polymer({
 		}
 		
 		let canvas = this.$$('canvas');
-		canvas.width = this.width;
-		canvas.height = this.height;
+    
+    // Scale the canvas for sharp rendering on screens with a high pixel density
+    let scale = window.devicePixelRatio;
+		canvas.width = this.width * scale;
+		canvas.height = this.height * scale;
+		canvas.style.width = `${this.width}px`;
+		canvas.style.height = `${this.height}px`;
 		
 		this._context = canvas.getContext('2d');
+		this._context.scale(scale, scale);
 		this._context.strokeStyle = '#5B5C5C';
 		this._context.font = `${this._fontSize}px Roboto Condensed`;
 		this._context.textAlign = 'center';

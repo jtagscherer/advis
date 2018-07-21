@@ -24,7 +24,8 @@ Polymer({
 			notify: true
 		},
 		_context: Object,
-		_image: Object
+		_image: Object,
+		_resolutionScale: Number
 	},
 	
 	attached: function() {
@@ -36,7 +37,7 @@ Polymer({
 			e.preventDefault();
 			
 			let position = self._context.transformedPoint(
-				e.offsetX, e.offsetY
+				e.offsetX * self._resolutionScale, e.offsetY * self._resolutionScale
 			);
 			
 			let factor = Math.pow(1.1, e.wheelDelta * 0.01);
@@ -103,8 +104,13 @@ Polymer({
 		let self = this;
 		
 		let canvas = this.$$('canvas');
-		canvas.width = this.size;
-		canvas.height = this.size;
+		
+		// Scale the canvas for sharp rendering on screens with a high pixel density
+    this.set('_resolutionScale', window.devicePixelRatio);
+		canvas.width = this.size * this._resolutionScale;
+		canvas.height = this.size * this._resolutionScale;
+		canvas.style.width = `${this.size}px`;
+		canvas.style.height = `${this.size}px`;
 		
 		this._context = canvas.getContext('2d');
 		this._context.imageSmoothingEnabled = false;
@@ -115,7 +121,7 @@ Polymer({
 		
 		this._image.onload = function() {
 			// Zoom to a level that makes the image fit the canvas
-			let scaleFactor = self.size / self._image.width;
+			let scaleFactor = (self.size * self._resolutionScale) / self._image.width;
 			self._context.scale(scaleFactor, scaleFactor);
 			
 			self._updateOffsets();
@@ -134,7 +140,10 @@ Polymer({
 		// Clear the canvas
 		this._context.save();
 		this._context.setTransform(1, 0, 0, 1, 0, 0);
-		this._context.clearRect(0, 0, this.size, this.size);
+		this._context.clearRect(
+			0, 0,
+			this.size * this._resolutionScale, this.size * this._resolutionScale
+		);
 		this._context.restore();
 		
 		// Draw the source image
@@ -143,7 +152,10 @@ Polymer({
 	
 	_updateHoveredPixel: function(mouseX, mouseY) {
 		if (this._context != null) {
-			let position = this._context.transformedPoint(mouseX, mouseY);
+			let position = this._context.transformedPoint(
+				mouseX * this._resolutionScale, mouseY * this._resolutionScale
+			);
+			
 			this.set('hoveredPixel', {
 				x: Math.floor(position.x),
 				y: Math.floor(position.y)
@@ -153,8 +165,12 @@ Polymer({
 	
 	_updateOffsets: function() {
 		let leftTop = this._context.transformedPoint(0, 0);
-		let rightTop = this._context.transformedPoint(this.size, 0);
-		let leftBottom = this._context.transformedPoint(0, this.size);
+		let rightTop = this._context.transformedPoint(
+			this.size * this._resolutionScale, 0
+		);
+		let leftBottom = this._context.transformedPoint(
+			0, this.size * this._resolutionScale
+		);
 		
 		this.set('horizontalOffset', {
 			start: leftTop.x,
@@ -195,11 +211,12 @@ Polymer({
 			matrix = matrix.scaleNonUniform(sx, sy);
 			
 			// Constrain the zoom level
-			if (matrix.a + (sx - 1) < self.size / self._image.width) {
+			if (matrix.a + (sx - 1) < (self.size * self._resolutionScale)
+				/ self._image.width) {
 				// We have zoomed too far out, reset the view to show the whole image
 				self._context.setTransform(1, 0, 0, 1, 0, 0);
 				
-				let scaleFactor = self.size / self._image.width;
+				let scaleFactor = (self.size * self._resolutionScale) / self._image.width;
 				matrix = matrix.scaleNonUniform(scaleFactor, scaleFactor);
 				return scale.call(context, scaleFactor, scaleFactor);
 			} else {
@@ -234,7 +251,9 @@ Polymer({
 					corrections.y += topLeft.y;
 				}
 				
-				let bottomRight = self._context.transformedPoint(self.size, self.size);
+				let bottomRight = self._context.transformedPoint(
+					self.size * self._resolutionScale, self.size * self._resolutionScale
+				);
 				
 				if (bottomRight.x > self._image.width) {
 					corrections.x -= (self._image.width - bottomRight.x);
