@@ -29,7 +29,17 @@ Polymer({
 		},
 		_context: Object,
 		_maximumHierarchyDepth: Number,
-		_labelCache: Array
+		_labelCache: Array,
+		_fontSize: {
+			type: Number,
+			value: 12,
+			observer: 'reload'
+		},
+    _textPadding: {
+      type: Number,
+      value: 3,
+      observer: 'redraw'
+    }
 	},
 	
 	reload: function() {
@@ -51,7 +61,8 @@ Polymer({
 		canvas.height = this.height;
 		
 		this._context = canvas.getContext('2d');
-		this._context.font = '12px Roboto Condensed';
+		this._context.strokeStyle = '#5B5C5C';
+		this._context.font = `${this._fontSize}px Roboto Condensed`;
 		this._context.textAlign = 'center';
 		this._context.textBaseline = 'middle';
 	},
@@ -66,12 +77,14 @@ Polymer({
 		
 		let offsetRange = this.offset.end - this.offset.start;
 		
-		var categorySize = 0;
+		var labelViewLength = 0;
 		if (this.orientation == 'vertical') {
-			categorySize = this.height / offsetRange;
+			labelViewLength = this.height;
 		} else if (this.orientation == 'horizontal') {
-			categorySize = this.width / offsetRange;
+			labelViewLength = this.width;
 		}
+    
+    var categorySize = labelViewLength / offsetRange;
 		
 		// Choose an appropriate zoom level
 		let zoomPercentage = offsetRange / this.categoryCount;
@@ -82,31 +95,41 @@ Polymer({
 		// Retrieve labels for the current zoom level
 		let labels = this.getLabelsForLevel(Math.round(level));
 		
+		// Draw a rectangle around the bounds of the label row
+		this._context.strokeRect(0, 0, this.width, this.height);
+		
 		// Draw labels for the current offset
 		var currentOffset = 0;
 		for (var label of labels) {
 			let labelStart = (currentOffset - this.offset.start) * categorySize;
 			let labelEnd = labelStart + (label.size * categorySize);
 			
+			// Skip labels that are currently not on screen
+			if (currentOffset > this.offset.end
+				|| (currentOffset + label.size) < this.offset.start) {
+				currentOffset += label.size;
+				continue;
+			}
+			
 			if (this.orientation == 'vertical') {
 				// TODO
 			} else if (this.orientation == 'horizontal') {
-				// Draw a rectangle encompassing the category
-				this._context.strokeRect(
-					labelStart, 0,
-					label.size * categorySize, this.height
-				);
+				// Draw a line for the rectangle encompassing the category
+				this._context.beginPath();
+				this._context.moveTo(labelStart, 0);
+				this._context.lineTo(labelStart, this.height);
+				this._context.stroke();
 				
 				// Write the label's name inside the rectangle
-				// TODO: Measure text, try wrapping it, and add ellipsis if that fails
-				this._context.save();
-				this._context.translate(
-					labelEnd - ((label.size * categorySize) / 2),
-					this.height / 2
+				this._drawTextInRectangle(
+					this._getCondensedLabel(label.name),
+					Math.max(labelStart, 0) + this._textPadding,
+          0 + this._textPadding,
+          (Math.min(labelEnd, labelViewLength) - Math.max(labelStart, 0))
+            - (this._textPadding * 2),
+          this.height - (this._textPadding * 2),
+					true
 				);
-				this._context.rotate(-Math.PI / 2);
-				this._context.fillText(this._getCondensedLabel(label.name), 0, 0);
-				this._context.restore();
 			}
 			
 			currentOffset += label.size;
@@ -115,6 +138,108 @@ Polymer({
 	
 	getLabelsForLevel: function(level) {
 		return this._labelCache[level];
+	},
+	
+	_drawTextInRectangle: function(text, x, y, width, height, rotated) {
+		let textHeight = this._fontSize;
+    
+    var lineWidth = 0;
+    if (rotated) {
+      lineWidth = height;
+    } else {
+      lineWidth = width;
+    }
+		
+		// Wrap the text into lines until we run out of text
+		var lines = [];
+    var remainingText = text;
+    
+    while (remainingText.length > 0) {
+      // First of all, try wrapping the text at spaces
+      let words = remainingText.split(' ');
+      
+      if (this._context.measureText(words[0]).width > lineWidth) {
+        // The first word is already too long, we have to break at a character
+        var line = '';
+        
+        for (let character of remainingText.split('')) {
+          if (this._context.measureText(line + character).width <= lineWidth) {
+            line += character;
+          } else {
+            break;
+          }
+        }
+      } else {
+        // Collect the maximum amount of words until the line is full
+        var line = '';
+        
+        for (let word of words) {
+          var appendedLine = line;
+          if (appendedLine == '') {
+            appendedLine += word;
+          } else {
+            appendedLine += ` ${word}`;
+          }
+          
+          if (this._context.measureText(appendedLine).width <= lineWidth) {
+            line = appendedLine;
+          } else {
+            break;
+          }
+        }
+      }
+      
+      lines.push(line);
+      remainingText = remainingText.substring(line.length).trim();
+    }
+    
+    // Write all lines to the screen as far as space permits
+    var blockWidth = 0;
+    if (rotated) {
+      blockWidth = width;
+    } else {
+      blockWidth = height;
+    }
+    
+    // If there is no space for at least one line, we can stop here
+    if (blockWidth < this._fontSize) {
+      return;
+    }
+    
+    let lineCount = Math.floor(blockWidth / this._fontSize);
+    let slicedLines = lines.slice(0, lineCount);
+    
+    this._context.save();
+    if (rotated) {
+      let leftOffset = (width / 2) - (((slicedLines.length - 1)
+        * this._fontSize) / 2);
+      
+      this._context.translate(x, y + (height / 2));
+      this._context.rotate(-Math.PI / 2);
+      
+      for (var lineIndex = 0; lineIndex < slicedLines.length; lineIndex++) {
+        var lineText = slicedLines[lineIndex];
+        
+        // If we are drawing the last line that fits and it is not the last 
+        // line that exists, add an ellipsis
+        if (lineIndex == slicedLines.length - 1
+          && slicedLines.length < lines.length) {
+          if (this._context.measureText(lineText + '…').width > lineWidth) {
+            lineText = lineText.substring(0, lineText.length - 2) + '…';
+          } else {
+            lineText += '…';
+          }
+        }
+        
+        this._context.fillText(
+          lineText, 0, (lineIndex * this._fontSize) + leftOffset
+        );
+      }
+    } else {
+      // TODO
+    }
+    
+    this._context.restore();
 	},
 	
 	_getCondensedLabel: function(label) {
