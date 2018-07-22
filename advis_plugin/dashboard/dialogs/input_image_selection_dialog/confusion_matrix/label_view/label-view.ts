@@ -34,6 +34,7 @@ Polymer({
 		_context: Object,
 		_maximumHierarchyDepth: Number,
 		_labelCache: Array,
+		_labelClickMap: Array,
 		_fontSize: {
 			type: Number,
 			value: 12,
@@ -99,6 +100,7 @@ Polymer({
 		}
 		
 		this._context.clearRect(0, 0, this.width, this.height);
+		this.set('_labelClickMap', []);
 		
 		// Choose an appropriate zoom level
 		let zoomPercentage = (this.offset.end - this.offset.start)
@@ -240,6 +242,17 @@ Polymer({
 					);
 				}
 				
+				// Save position of this label
+				this.push('_labelClickMap', {
+					name: label.name,
+					bounds: {
+						horizontalStart: offset,
+						horizontalEnd: offset + size,
+						verticalStart: labelStart,
+						verticalEnd: labelStart + (label.size * categorySize)
+					}
+				});
+				
 				// Draw a line for the rectangle encompassing the category
 				this._context.beginPath();
 				this._context.moveTo(0, labelStart);
@@ -264,6 +277,17 @@ Polymer({
 						labelStart, 0, label.size * categorySize, size
 					);
 				}
+				
+				// Save position of this label
+				this.push('_labelClickMap', {
+					name: label.name,
+					bounds: {
+						horizontalStart: labelStart,
+						horizontalEnd: labelStart + (label.size * categorySize),
+						verticalStart: offset,
+						verticalEnd: offset + size
+					}
+				});
 				
 				// Draw a line for the rectangle encompassing the category
 				this._context.beginPath();
@@ -402,5 +426,22 @@ Polymer({
 	_getCondensedLabel: function(label) {
 		let text = label.split(', ')[0];
 		return text.charAt(0).toUpperCase() + text.substr(1);
+	},
+	
+	_canvasTapped: function(e) {
+		let x = e.detail.sourceEvent.offsetX;
+		let y = e.detail.sourceEvent.offsetY;
+		
+		// Retrieve the label that has been tapped from the click map
+		for (let label of this._labelClickMap) {
+			if (x > label.bounds.horizontalStart && x < label.bounds.horizontalEnd
+				&& y > label.bounds.verticalStart && y < label.bounds.verticalEnd) {
+				this.fire('label-clicked-event', {
+		      name: label.name
+		    });
+				
+				break;
+			}
+		}
 	}
 });
