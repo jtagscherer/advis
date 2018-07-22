@@ -8,7 +8,8 @@
 <dom-module id="label-view">
 	<template>
 		<canvas
-			on-tap="_canvasTapped">
+			on-mousemove="_canvasHovered"
+			on-mouseout="_canvasLeft">
 		</canvas>
 		
 		<link rel="stylesheet" type="text/css" href="label-view.css">

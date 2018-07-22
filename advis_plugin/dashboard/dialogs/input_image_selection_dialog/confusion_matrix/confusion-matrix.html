@@ -70,18 +70,25 @@
 					</div>
 				</div>
 			</div>
-			<div id="hovered" class$="[[_getHoverClass(hoveredPixel)]]">
-				<div id="actual" class="label">
-					<p class="category">Actual</p>
-					<p class="single-line title">[[_getLabel(hoveredPixel.y)]]</p>
-				</div>
-				<div id="value">
-					<p class="title">[[_getMatrixValue(hoveredPixel.y, hoveredPixel.x)]]</p>
-				</div>
-				<div id="predicted" class="label">
-					<p class="category">Predicted</p>
-					<p class="single-line title">[[_getLabel(hoveredPixel.x)]]</p>
-				</div>
+			<div id="hovered" class$="[[_getHoverClass(hoveredPixel, hoveredLabelPath)]]">
+				<template is="dom-if" if="[[_isNotNull(hoveredPixel)]]">
+					<div id="hovered-pixel">
+						<div id="actual" class="label">
+							<p class="category">Actual</p>
+							<p class="single-line title">[[_getLabel(hoveredPixel.y)]]</p>
+						</div>
+						<div id="value">
+							<p class="title">[[_getMatrixValue(hoveredPixel.y, hoveredPixel.x)]]</p>
+						</div>
+						<div id="predicted" class="label">
+							<p class="category">Predicted</p>
+							<p class="single-line title">[[_getLabel(hoveredPixel.x)]]</p>
+						</div>
+					</div>
+				</template>
+				<template is="dom-if" if="[[_isNotNull(hoveredLabelPath)]]">
+					<p id="label-path" class="single-line title">[[hoveredLabelPath]]</p>
+				</template>
 			</div>
 		</div>
 		

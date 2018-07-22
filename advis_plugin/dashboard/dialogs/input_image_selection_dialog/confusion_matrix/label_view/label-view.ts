@@ -428,20 +428,30 @@ Polymer({
 		return text.charAt(0).toUpperCase() + text.substr(1);
 	},
 	
-	_canvasTapped: function(e) {
-		let x = e.detail.sourceEvent.offsetX;
-		let y = e.detail.sourceEvent.offsetY;
+	_canvasHovered: function(e) {
+		let x = e.offsetX;
+		let y = e.offsetY;
 		
-		// Retrieve the label that has been tapped from the click map
+		// Retrieve the label that has been hovered over from the click map
 		for (let label of this._labelClickMap) {
 			if (x > label.bounds.horizontalStart && x < label.bounds.horizontalEnd
 				&& y > label.bounds.verticalStart && y < label.bounds.verticalEnd) {
-				this.fire('label-clicked-event', {
-		      name: label.name
+				this.fire('label-hovered-event', {
+		      name: label.name,
+					path: advis.hierarchy.util.findNodePath(
+						this.categoryHierarchy, label.name
+					)
 		    });
 				
 				break;
 			}
 		}
+	},
+	
+	_canvasLeft: function(e) {
+		this.fire('label-hovered-event', {
+			name: null,
+			path: null
+		});
 	}
 });

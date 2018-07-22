@@ -30,6 +30,10 @@ Polymer({
 			type: Object,
 			value: null
 		},
+		hoveredLabelPath: {
+			type: String,
+			value: null
+		},
     verticalOffset: {
 			type: Object,
 			value: null,
@@ -45,6 +49,10 @@ Polymer({
 		_categories: Array,
 		_categoryHierarchy: Object,
 		_contentSize: Number
+	},
+	
+	listeners: {
+		'label-hovered-event': '_labelHovered'
 	},
 	
 	reload: function() {
@@ -70,12 +78,16 @@ Polymer({
     }
 	},
 	
-	_getHoverClass: function(hoveredPixel) {
-		if (hoveredPixel == null) {
+	_getHoverClass: function(hoveredPixel, hoveredLabelPath) {
+		if (hoveredPixel == null && hoveredLabelPath == null) {
 			return 'hidden';
 		} else {
 			return 'shown';
 		}
+	},
+	
+	_isNotNull: function(value) {
+		return value != null;
 	},
 	
 	_retrieveCategories: function() {
@@ -160,5 +172,19 @@ Polymer({
 			this.customStyle['--matrix-size'] = `${self._contentSize}px`;
 			this.updateStyles();
 		});
+	},
+	
+	_labelHovered: function(e) {
+		if (e.detail.path == null) {
+			this.set('hoveredLabelPath', null);
+		} else {
+			// Create a string from the path
+			let path = e.detail.path.map(n => {
+				let name = n.split(', ')[0];
+				return name.charAt(0).toUpperCase() + name.slice(1);
+			});
+			
+			this.set('hoveredLabelPath', path.join(' > '));
+		}
 	}
 });

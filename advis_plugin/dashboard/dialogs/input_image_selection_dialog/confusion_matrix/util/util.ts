@@ -80,6 +80,49 @@ module advis.hierarchy.util {
 		return result;
 	};
 	
+	export const findNodePath = function(hierarchy, name) {
+		var queue = [hierarchy[0]];
+		var parents = {};
+		parents[hierarchy[0].name] = null;
+		var result;
+		
+		// Perform a breadth-first search through the tree and store all node's 
+		// child-parent relations along the way
+		while (queue.length > 0) {
+			var node = queue.shift();
+			
+			if (node.name == name) {
+				result = node;
+				break;
+			} else if ('children' in node && node.children != null) {
+				for (var child of node.children) {
+					parents[child.name] = node.name;
+					queue.push(child);
+				}
+			}
+		}
+		
+		if (result == null) {
+			return [];
+		}
+		
+		// Reconstruct the path using the child-parent relations
+		var path = [];
+		var currentLevel = result.name;
+		
+		while (true) {
+			path.push(currentLevel);
+			
+			if (!(currentLevel in parents) || parents[currentLevel] == null) {
+				break;
+			}
+			
+			currentLevel = parents[currentLevel];
+		}
+		
+		return path.reverse();
+	};
+	
 	export const categoryContains = function(categoryName, subCategoryName,
 		hierarchy) {
 		var stack = [
