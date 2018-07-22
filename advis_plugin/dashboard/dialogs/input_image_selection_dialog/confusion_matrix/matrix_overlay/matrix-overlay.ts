@@ -89,13 +89,10 @@ Polymer({
 		
 		// Fade in the overlay if we are in the transition period
 		let transitionPercentage = gridAmount - this._maximumGridLines;
-		if (transitionPercentage > 0
-			&& transitionPercentage < this._gridTransitionLength) {
-			this.set(
-				'_opacity',
-				1 - (transitionPercentage / this._gridTransitionLength)
-			);
-		}
+		this.set(
+			'_opacity',
+			1 - (transitionPercentage / this._gridTransitionLength)
+		);
 		
 		// If the amount of visible categories is small enough, draw the overlay
 		if (gridAmount < this._maximumGridLines + this._gridTransitionLength) {
