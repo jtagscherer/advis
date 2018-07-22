@@ -14,50 +14,60 @@
 	<template>
 		<div id="content">
 			<div id="matrix">
-				<div class="row">
-					<div id="predicted-labels">
-						<label-view
-							width="[[_contentSize]]"
-							height="120"
-							orientation="horizontal"
-							offset=[[horizontalOffset]]
-							hovered-pixel=[[hoveredPixel]]
-							category-hierarchy=[[_categoryHierarchy]]
-							category-list=[[_categories]]>
-						</label-view>
+				<div class="described" id="predicted-labels">
+					<div class="descriptor">
+						<p>Predicted</p>
+					</div>
+					<label-view
+						width="[[_contentSize]]"
+						height="120"
+						orientation="horizontal"
+						offset=[[horizontalOffset]]
+						hovered-pixel=[[hoveredPixel]]
+						category-hierarchy=[[_categoryHierarchy]]
+						category-list=[[_categories]]>
+					</label-view>
+				</div>
+				<div class="described" id="actual-labels">
+					<div class="descriptor">
+						<p>Actual</p>
+					</div>
+					<label-view
+						width="120"
+						height="[[_contentSize]]"
+						orientation="vertical"
+						offset=[[verticalOffset]]
+						hovered-pixel=[[hoveredPixel]]
+						category-hierarchy=[[_categoryHierarchy]]
+						category-list=[[_categories]]>
+					</label-view>
+				</div>
+				<div id="matrix-content">
+					<zoomable-canvas
+						src=[[_matrixImage]]
+						size=[[_contentSize]]
+						hovered-pixel={{hoveredPixel}}
+						vertical-offset={{verticalOffset}}
+						horizontal-offset={{horizontalOffset}}>
+					</zoomable-canvas>
+					<matrix-overlay
+						size=[[_contentSize]]
+						data=[[_matrixData]]
+						vertical-offset=[[verticalOffset]]
+						horizontal-offset=[[horizontalOffset]]>
+					</matrix-overlay>
+				</div>
+				<div class="described" id="recall">
+					<div class="placeholder"></div>
+					<div class="descriptor">
+						<p>Recall</p>
 					</div>
 				</div>
-				<div class="row">
-					<div id="actual-labels">
-						<label-view
-							width="120"
-							height="[[_contentSize]]"
-							orientation="vertical"
-							offset=[[verticalOffset]]
-							hovered-pixel=[[hoveredPixel]]
-							category-hierarchy=[[_categoryHierarchy]]
-							category-list=[[_categories]]>
-						</label-view>
+				<div class="described" id="precision">
+					<div class="placeholder"></div>
+					<div class="descriptor">
+						<p>Precision</p>
 					</div>
-					<div id="matrix-content">
-						<zoomable-canvas
-							src=[[_matrixImage]]
-							size=[[_contentSize]]
-							hovered-pixel={{hoveredPixel}}
-							vertical-offset={{verticalOffset}}
-							horizontal-offset={{horizontalOffset}}>
-						</zoomable-canvas>
-						<matrix-overlay
-							size=[[_contentSize]]
-							data=[[_matrixData]]
-							vertical-offset=[[verticalOffset]]
-							horizontal-offset=[[horizontalOffset]]>
-						</matrix-overlay>
-					</div>
-					<div id="recall"></div>
-				</div>
-				<div class="row">
-					<div id="precision"></div>
 				</div>
 			</div>
 			<div id="hovered" class$="[[_getHoverClass(hoveredPixel)]]">
