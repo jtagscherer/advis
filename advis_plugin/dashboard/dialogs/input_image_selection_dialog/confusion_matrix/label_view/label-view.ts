@@ -19,9 +19,13 @@ Polymer({
       type: Object,
       observer: 'reload'
     },
-		categoryCount: {
-			type: Number,
+		categoryList: {
+			type: Array,
 			observer: 'reload'
+		},
+		hoveredPixel: {
+			type: Object,
+			observer: 'redraw'
 		},
 		offset: {
 			type: Object,
@@ -39,12 +43,24 @@ Polymer({
       type: Number,
       value: 3,
       observer: 'redraw'
-    }
+    },
+		_strokeColor: {
+			type: String,
+			value: '#5B5C5C'
+		},
+		_textColor: {
+			type: String,
+			value: '#1B1C1D'
+		},
+		_highlightColor: {
+			type: String,
+			value: '#E0E0E0'
+		}
 	},
 	
 	reload: function() {
 		if (this.width == null || this.height == null || this.orientation == null
-      || this.categoryHierarchy == null || this.categoryCount == null) {
+      || this.categoryHierarchy == null || this.categoryList == null) {
 			return;
 		}
 		
@@ -67,7 +83,7 @@ Polymer({
 		
 		this._context = canvas.getContext('2d');
 		this._context.scale(scale, scale);
-		this._context.strokeStyle = '#5B5C5C';
+		this._context.strokeStyle = this._strokeColor;
 		this._context.font = `${this._fontSize}px Roboto Condensed`;
 		this._context.textAlign = 'center';
 		this._context.textBaseline = 'middle';
@@ -83,7 +99,7 @@ Polymer({
 		
 		// Choose an appropriate zoom level
 		let zoomPercentage = (this.offset.end - this.offset.start)
-			/ this.categoryCount;
+			/ this.categoryList.length;
 		var levelFloat = this._maximumHierarchyDepth * zoomPercentage * 20;
 		levelFloat = this._maximumHierarchyDepth
 			- Math.max(0, Math.min(this._maximumHierarchyDepth, levelFloat));
@@ -190,7 +206,36 @@ Polymer({
 				continue;
 			}
 			
+			// If the category we are currently drawing is represented by this label 
+			// or its parents, we highlight the label
+			var currentHoverPosition;
+			if (this.hoveredPixel != null) {
+				if (this.orientation == 'vertical') {
+					currentHoverPosition = this.hoveredPixel.y;
+				} else if (this.orientation == 'horizontal') {
+					currentHoverPosition = this.hoveredPixel.x;
+				}
+			}
+			
+			var highlighted = false;
+			if (currentHoverPosition != null && currentHoverPosition >= 0
+				&& currentHoverPosition < this.categoryList.length) {
+				let hoveredCategory = this.categoryList[currentHoverPosition].name;
+				
+				if (this._categoryContains(label.name, hoveredCategory)) {
+					highlighted = true;
+				}
+			}
+			
 			if (this.orientation == 'vertical') {
+				// Highlight the label if desired
+				if (highlighted) {
+					this._context.fillStyle = this._highlightColor;
+					this._context.fillRect(
+						0, labelStart, size, label.size * categorySize
+					);
+				}
+				
 				// Draw a line for the rectangle encompassing the category
 				this._context.beginPath();
 				this._context.moveTo(0, labelStart);
@@ -208,6 +253,14 @@ Polymer({
 					false
 				);
 			} else if (this.orientation == 'horizontal') {
+				// Highlight the label if desired
+				if (highlighted) {
+					this._context.fillStyle = this._highlightColor;
+					this._context.fillRect(
+						labelStart, 0, label.size * categorySize, size
+					);
+				}
+				
 				// Draw a line for the rectangle encompassing the category
 				this._context.beginPath();
 				this._context.moveTo(labelStart, 0);
@@ -233,6 +286,8 @@ Polymer({
 	},
 	
 	_drawTextInRectangle: function(text, x, y, width, height, rotated) {
+		this._context.fillStyle = this._textColor;
+		
     var lineWidth = 0;
     if (rotated) {
       lineWidth = height;
@@ -408,6 +463,50 @@ Polymer({
 		}
 		
 		return leafCount;
+	},
+	
+	_getNodeByName: function(root, name) {
+		var stack = [root];
+		var result;
+		
+		while (stack.length > 0) {
+			var node = stack.pop();
+			
+			if (node.name == name) {
+				result = node;
+				break;
+			} else if ('children' in node && node.children != null) {
+				for (var child of node.children) {
+					stack.push(child);
+				}
+			}
+		}
+		
+		return result;
+	},
+	
+	_categoryContains: function(categoryName, subCategoryName) {
+		var stack = [this._getNodeByName(this.categoryHierarchy[0], categoryName)];
+		var result = false;
+		
+		while (stack.length > 0) {
+			var node = stack.pop();
+			
+			if (node == null) {
+				continue;
+			}
+			
+			if (node.name == subCategoryName) {
+				result = true;
+				break;
+			} else if ('children' in node && node.children != null) {
+				for (var child of node.children) {
+					stack.push(child);
+				}
+			}
+		}
+		
+		return result;
 	},
 	
 	_getMaximumDepth: function(hierarchy) {
