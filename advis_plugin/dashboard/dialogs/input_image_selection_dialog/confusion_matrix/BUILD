@@ -18,6 +18,7 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"//advis_plugin/dashboard/shared/libraries/chroma",
 		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix/zoomable_canvas",
+		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix/matrix_overlay",
 		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix/label_view"
 	]
 )

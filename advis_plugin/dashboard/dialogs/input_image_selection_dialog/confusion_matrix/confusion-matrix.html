@@ -3,6 +3,7 @@
 
 <link rel="import" href="../../libraries/chroma/chroma.html">
 <link rel="import" href="../../zoomable-canvas/zoomable-canvas.html">
+<link rel="import" href="../../matrix-overlay/matrix-overlay.html">
 <link rel="import" href="../../label-view/label-view.html">
 
 <!--
@@ -38,13 +39,21 @@
 							category-list=[[_categories]]>
 						</label-view>
 					</div>
-					<zoomable-canvas
-						src=[[_matrixImage]]
-						size=[[_contentSize]]
-						hovered-pixel={{hoveredPixel}}
-						vertical-offset={{verticalOffset}}
-						horizontal-offset={{horizontalOffset}}>
-					</zoomable-canvas>
+					<div id="matrix-content">
+						<zoomable-canvas
+							src=[[_matrixImage]]
+							size=[[_contentSize]]
+							hovered-pixel={{hoveredPixel}}
+							vertical-offset={{verticalOffset}}
+							horizontal-offset={{horizontalOffset}}>
+						</zoomable-canvas>
+						<matrix-overlay
+							size=[[_contentSize]]
+							data=[[_matrixData]]
+							vertical-offset=[[verticalOffset]]
+							horizontal-offset=[[horizontalOffset]]>
+						</matrix-overlay>
+					</div>
 					<div id="recall"></div>
 				</div>
 				<div class="row">
