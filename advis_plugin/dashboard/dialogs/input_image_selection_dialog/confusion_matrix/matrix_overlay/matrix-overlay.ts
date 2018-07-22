@@ -25,10 +25,6 @@ Polymer({
 			value: 0,
 			observer: '_updateStyles'
 		},
-		_fontSize: {
-			type: Number,
-			value: 18
-		},
 		_fontFillColor: {
 			type: String,
 			value: '#FFFFFF'
@@ -67,7 +63,6 @@ Polymer({
 		
 		this._context = canvas.getContext('2d');
 		this._context.scale(scale, scale);
-		this._context.font = `${this._fontSize}px Roboto`;
 		this._context.fillStyle = this._fontFillColor;
 		this._context.textAlign = 'center';
 		this._context.textBaseline = 'middle';
@@ -107,6 +102,7 @@ Polymer({
 			this._context.strokeStyle = this._gridStrokeColor;
 			var position = 0;
 			
+			// Draw a grid
 			for (var y = Math.ceil(this.verticalOffset.start);
 				y < Math.ceil(this.verticalOffset.end); y++) {
 				position = (y - this.verticalOffset.start) * verticalCategorySize;
@@ -125,9 +121,32 @@ Polymer({
 				this._context.stroke();
 			}
 			
-			/*this._context.strokeStyle = this._fontStrokeColor;
-			this._context.strokeText('0', 10, 10);
-			this._context.fillText('0', 10, 10);*/
+			// Draw cell values
+			this._context.strokeStyle = this._fontStrokeColor;
+			let fontSize = Math.min(verticalCategorySize, horizontalCategorySize)
+				* 0.5;
+			this._context.font = `${fontSize}px Roboto`;
+			
+			var verticalPosition = 0;
+			var horizontalPosition = 0;
+			for (var x = Math.floor(this.horizontalOffset.start);
+				x < Math.ceil(this.horizontalOffset.end); x++) {
+				horizontalPosition = ((x - this.horizontalOffset.start) 
+					* horizontalCategorySize) + (horizontalCategorySize / 2);
+				for (var y = Math.floor(this.verticalOffset.start);
+					y < Math.ceil(this.verticalOffset.end); y++) {
+					verticalPosition = ((y - this.verticalOffset.start) 
+						* verticalCategorySize) + (verticalCategorySize / 2);
+					var value = '';
+					if (this.data != null && this.data[y] != null
+						&& this.data[y][x] != null) {
+						value = this.data[y][x];
+					}
+					
+					this._context.strokeText(value, horizontalPosition, verticalPosition);
+					this._context.fillText(value, horizontalPosition, verticalPosition);
+				}
+			}
 		}
 	},
 	
