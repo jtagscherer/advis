@@ -15,7 +15,8 @@ tf_web_library(
 	],
 	path = "/label-view",
 	deps = [
-		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer"
+		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix/util"
 	]
 )
 

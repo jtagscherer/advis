@@ -64,12 +64,15 @@ Polymer({
 			return;
 		}
 		
-		this._maximumHierarchyDepth = this._getMaximumDepth(this.categoryHierarchy);
+		this._maximumHierarchyDepth = advis.hierarchy.util
+			.getMaximumDepth(this.categoryHierarchy);
 		
 		// Cache labels of all levels
 		this._labelCache = [];
 		for (var i = 0; i <= this._maximumHierarchyDepth; i++) {
-			this._labelCache.push(this._findLabelsForLevel(i));
+			this._labelCache.push(advis.hierarchy.util.findLabelsForLevel(
+				i, this.categoryHierarchy
+			));
 		}
 		
 		let canvas = this.$$('canvas');
@@ -222,7 +225,8 @@ Polymer({
 				&& currentHoverPosition < this.categoryList.length) {
 				let hoveredCategory = this.categoryList[currentHoverPosition].name;
 				
-				if (this._categoryContains(label.name, hoveredCategory)) {
+				if (advis.hierarchy.util.categoryContains(label.name, hoveredCategory,
+					this.categoryHierarchy)) {
 					highlighted = true;
 				}
 			}
@@ -398,141 +402,5 @@ Polymer({
 	_getCondensedLabel: function(label) {
 		let text = label.split(', ')[0];
 		return text.charAt(0).toUpperCase() + text.substr(1);
-	},
-	
-	_findLabelsForLevel: function(level) {
-		if (this.categoryHierarchy == null || level == null) {
-			return;
-		}
-		
-		// Iterate through the whole category tree using a stack
-		var stack = [{
-			node: this.categoryHierarchy[0],
-			level: 0
-		}];
-		var labels = [];
-		
-		while (stack.length > 0) {
-			var element = stack.pop();
-			
-			if ('category' in element.node && element.level <= level) {
-				// If the current node has a category, it is a leave node. We append it 
-				// if its level does not exceed the specified level.
-				labels.push({
-					name: element.node.name,
-					size: 1
-				});
-			} else if ('children' in element.node && element.node.children != null) {
-				// If the current node has children, it is an intermediate node.
-				if (element.level == level) {
-					// If the node's level matches the specified level, append it
-					labels.push({
-						name: element.node.name,
-						size: this._getLeafCount(element.node)
-					});
-				} else if (element.level < level) {
-					// If the node's level is lower than the specified level, continue 
-					// searching through its children
-					for (var child of element.node.children) {
-						stack.push({
-							node: child,
-							level: element.level + 1
-						});
-					}
-				}
-			}
-		}
-		
-		return labels.reverse();
-	},
-	
-	_getLeafCount: function(root) {
-		var stack = [root];
-		var leafCount = 0;
-		
-		while (stack.length > 0) {
-			var node = stack.pop();
-			
-			if ('category' in node) {
-				leafCount += 1;
-			} else if ('children' in node && node.children != null) {
-				for (var child of node.children) {
-					stack.push(child);
-				}
-			}
-		}
-		
-		return leafCount;
-	},
-	
-	_getNodeByName: function(root, name) {
-		var stack = [root];
-		var result;
-		
-		while (stack.length > 0) {
-			var node = stack.pop();
-			
-			if (node.name == name) {
-				result = node;
-				break;
-			} else if ('children' in node && node.children != null) {
-				for (var child of node.children) {
-					stack.push(child);
-				}
-			}
-		}
-		
-		return result;
-	},
-	
-	_categoryContains: function(categoryName, subCategoryName) {
-		var stack = [this._getNodeByName(this.categoryHierarchy[0], categoryName)];
-		var result = false;
-		
-		while (stack.length > 0) {
-			var node = stack.pop();
-			
-			if (node == null) {
-				continue;
-			}
-			
-			if (node.name == subCategoryName) {
-				result = true;
-				break;
-			} else if ('children' in node && node.children != null) {
-				for (var child of node.children) {
-					stack.push(child);
-				}
-			}
-		}
-		
-		return result;
-	},
-	
-	_getMaximumDepth: function(hierarchy) {
-		var stack = [{
-			node: hierarchy[0],
-			level: 0
-		}];
-		var depth = 0;
-		
-		while (stack.length > 0) {
-			var element = stack.pop();
-			
-			if (element.level > depth) {
-				depth = element.level;
-			}
-			
-			if ('children' in element.node && element.node.children != null) {
-				for (var child of element.node.children) {
-					stack.push({
-						node: child,
-						level: element.level + 1
-					});
-				}
-			}
-		}
-		
-		return depth;
 	}
 });
