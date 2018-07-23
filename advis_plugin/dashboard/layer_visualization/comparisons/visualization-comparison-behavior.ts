@@ -27,7 +27,7 @@ const VisualizationComparisonBehavior = {
 		state: {
 			type: String,
 			value: 'empty',
-			observer: 'stateChanged'
+			observer: '_stateChanged'
 		},
 		_requestManager: {
 			type: Object,
@@ -84,6 +84,15 @@ const VisualizationComparisonBehavior = {
 		// Can be implemented by components using this behavior
 	},
 	
+	_stateChanged: function(state) {
+		this.fire('state-changed-event', {
+			element: this.is,
+			state: this.state
+		});
+		
+		this.stateChanged();
+	},
+	
 	_updateState: function() {
 		if (this._originalMetaData == null || this._distortedMetaData == null) {
 			this.set('state', 'loading');
@@ -105,6 +114,22 @@ const VisualizationComparisonBehavior = {
 	_distortedImageCallback: function() {
 		this.set('_distortedImageLoaded', true);
 		this._updateState();
+	},
+	
+	_getSpinnerClass: function(condition, state) {
+		if (condition && state != 'empty') {
+			return 'hidden';
+		} else {
+			return 'shown';
+		}
+	},
+	
+	_getSpinnerClassByState: function(state) {
+		if (state == 'loading') {
+			return 'shown';
+		} else {
+			return 'hidden';
+		}
 	},
 	
 	_imageClicked: function(e) {

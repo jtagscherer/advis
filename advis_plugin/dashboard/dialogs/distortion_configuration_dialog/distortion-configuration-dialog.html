@@ -10,6 +10,7 @@
 <link rel="import" href="../../dialog-behavior/dialog-behavior.html">
 <link rel="import" href="../../distortion-list-item/distortion-list-item.html">
 <link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../empty-state/empty-state.html">
 <link rel="import" href="../../distortion-preview/distortion-preview.html">
 <link rel="import" href="../../parameter-configuration/parameter-configuration.html">
 
@@ -44,25 +45,34 @@
 					<div id="parameters">
 						<section-header text="Parameters"></section-header>
 						<div id="parameter-container">
-							<neon-animated-pages selected=[[_selectedDistortionIndex]]>
-								<template id="parameter-list" is="dom-repeat" items="[[modifiedDistortions]]">
-									<div class="parameter-page-container">
-										<parameter-configuration
-											index="[[index]]"
-											parameters="[[item.parameters]]">
-										</parameter-configuration>
-										<div class="reset-button-container">
-											<paper-button
-												on-tap="resetDistortion"
-												data-args$=[[item.index]]
-												disabled="[[!_hasBeenChanged(item, _dirty)]]">
-												Reset
-											</paper-button>
+							<template is="dom-if" if="[[!_noParameters]]">
+								<neon-animated-pages selected=[[_selectedDistortionIndex]]>
+									<template id="parameter-list" is="dom-repeat" items="[[modifiedDistortions]]">
+										<div class="parameter-page-container">
+											<parameter-configuration
+												index="[[index]]"
+												parameters="[[item.parameters]]">
+											</parameter-configuration>
+											<div class="reset-button-container">
+												<paper-button
+													on-tap="resetDistortion"
+													data-args$=[[item.index]]
+													disabled="[[!_hasBeenChanged(item, _dirty)]]">
+													Reset
+												</paper-button>
+											</div>
 										</div>
-									</div>
-								</template>
-							</neon-animated-pages>
-					</div>
+									</template>
+								</neon-animated-pages>
+							</template>
+							<template is="dom-if" if="[[_noParameters]]">
+								<empty-state
+									headline="No Parameters"
+									caption="This distortion contains no parameters that can be used 
+										to configure its effect on distorted input images.">
+								</empty-state>
+							</template>
+						</div>
 					</div>
 					<div id="preview">
 						<section-header text="Preview"></section-header>

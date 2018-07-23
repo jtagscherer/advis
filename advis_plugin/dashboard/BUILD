@@ -15,6 +15,7 @@ tf_web_library(
 	deps = [
 		"//advis_plugin/dashboard/shared/libraries/palette",
 		"//advis_plugin/dashboard/shared/constants",
+		"//advis_plugin/dashboard/empty_state",
 		"//advis_plugin/dashboard/section_header",
 		"//advis_plugin/dashboard/model_list_item",
 		"//advis_plugin/dashboard/distortion_list_item",
@@ -33,6 +34,7 @@ tf_web_library(
 		"@org_polymer_paper_material",
 		"@org_polymer_paper_button",
 		"@org_polymer_paper_icon_button",
+		"@org_polymer_paper_spinner",
     "@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_categorization_utils",
@@ -47,7 +49,8 @@ sass_binary(
   src = "dashboard.scss",
 	deps = [
 		"//advis_plugin/dashboard/shared/style:color",
-		"//advis_plugin/dashboard/shared/style:style"
+		"//advis_plugin/dashboard/shared/style:style",
+		"//advis_plugin/dashboard/shared/style:text"
 	]
 )
 

@@ -27,6 +27,7 @@ const DialogBehavior = {
 		}
 		
 		paperDialog.eventId = this.eventId;
+		paperDialog.cancelAnimation();
 		paperDialog.open();
 	},
 	

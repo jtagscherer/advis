@@ -5,10 +5,17 @@ Polymer({
 	properties: {
 		name: String,
 		description: String,
-		value: Number,
+		value: {
+			type: Number,
+			observer: '_valueChanged'
+		},
 		percent: {
 			type: Boolean,
 			value: false
+		},
+		_loading: {
+			type: Boolean,
+			value: true
 		}
 	},
 	
@@ -28,5 +35,9 @@ Polymer({
 		} else {
 			return 'single-line number positive';
 		}
+	},
+	
+	_valueChanged: function(value) {
+		this.set('_loading', value == null);
 	}
 });

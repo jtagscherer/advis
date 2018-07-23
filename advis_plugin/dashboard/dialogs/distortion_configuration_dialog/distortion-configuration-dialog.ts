@@ -22,11 +22,26 @@ Polymer({
 		_dirty: {
 			type: Boolean,
 			notify: true
-		}
+		},
+		_noParameters: Boolean
   },
 	
 	listeners: {
 		'parametersChangedEvent': '_parametersChanged'
+	},
+	
+	reload: function() {
+		if (this.distortions != null
+			&& this.distortions.length > this._selectedDistortionIndex) {
+			if (this.distortions[this._selectedDistortionIndex].parameters
+				.length == 0) {
+				this.set('_noParameters', true);
+			} else {
+				this.set('_noParameters', false);
+			}
+		}
+		
+		this._updateResetButtonOpacity();
 	},
 	
 	_parametersChanged: function(e) {
@@ -45,7 +60,7 @@ Polymer({
 	},
 	
 	_selectedDistortionChanged: function() {
-		this._updateResetButtonOpacity();
+		this.reload();
 	},
 	
 	_getModifiedDistortionNames: function(originalDistortions,
@@ -120,7 +135,7 @@ Polymer({
 		this.$$('#distortion-list').render();
 		
 		this.set('_dirty', !this._dirty);
-		this._updateResetButtonOpacity();
+		this.reload();
 	},
 	
 	getContentOnApply: function() {

@@ -16,7 +16,8 @@ Polymer({
 		_singlePreviewImage: {
 			type: Boolean,
 			value: false
-		}
+		},
+		_previewAvailable: Boolean
 	},
 	
 	reload: function() {
@@ -37,6 +38,8 @@ Polymer({
 				}
 				
 				if (previewDataset != null) {
+					this.set('_previewAvailable', true);
+					
 					// Now that we have chosen a dataset for our preview images, we 
 					// construct URLs for all of them
 					this.set('_originalImageUrl', 
@@ -74,6 +77,8 @@ Polymer({
 						}));
 					}
 					this.set('_distortedImageUrls', distortedImageUrls);
+				} else {
+					this.set('_previewAvailable', false);
 				}
 			});
 		}

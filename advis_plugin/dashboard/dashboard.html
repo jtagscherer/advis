@@ -1,10 +1,11 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../iron-icon/iron-icon.html">
 <link rel="import" href="../../iron-selector/iron-selector.html">
 <link rel="import" href="../../paper-input/paper-input.html">
 <link rel="import" href="../../paper-material/paper-material.html">
 <link rel="import" href="../../paper-button/paper-button.html">
-<link rel="import" href="../../polymer/polymer.html">
-<link rel="import" href="../../tf-backend/tf-backend.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
 <link rel="import" href="../../tf-categorization-utils/tf-categorization-utils.html">
 <link rel="import" href="../../tf-categorization-utils/tf-category-pane.html">
 <link rel="import" href="../../tf-dashboard-common/dashboard-style.html">
@@ -14,6 +15,7 @@
 <link rel="import" href="../../libraries/palette/palette.html">
 
 <link rel="import" href="../../constants/constants.html">
+<link rel="import" href="../../empty-state/empty-state.html">
 <link rel="import" href="../../section-header/section-header.html">
 <link rel="import" href="../../model-list-item/model-list-item.html">
 <link rel="import" href="../../distortion-list-item/distortion-list-item.html">
@@ -89,6 +91,17 @@
 								accuracy-calculation-flag=[[_accuracyCalculationFlag]]>
 							</accuracy-radar-chart>
 						</div>
+						
+						<div id="chart-spinner">
+							<paper-spinner-lite active
+								class$="[[_getVisibilityClass(_metricsLoaded)]]">
+							</paper-spinner-lite>
+						</div>
+					</div>
+					<div id="chart-empty-state">
+						<p class="caption">
+							Select a model from the list using its checkbox to display it in this chart.
+						</p>
 					</div>
 				</div>
 				
@@ -114,36 +127,33 @@
 					</div>
 				</template>
 				<template is="dom-if" if="[[!_dataNotFound]]">
-					<template is="dom-if" if="[[_graphNotFound]]">
-						<div class="no-data-warning">
-							<h3>No Graph data could be found.</h3>
-							<p>
-								Please make sure you are exporting graph definitions with each 
-								run.
-							</p>
-							<p>
-								Refer to the
-								<a href="https://github.com/jtagscherer/advis#usage">documentation</a> 
-								for more information.
-							</p>
-						</div>
-					</template>
-					<div id="graph-container">
-						<graph-view id="graph"
-							selected-model=[[selectedModel]]
-							distortions=[[_getNodeVisualizationDistortions(_selectedVisualizationDistortion)]]
-							request-manager=[[_requestManager]]>
-						</graph-view>
-					</div>
-					<div id="bottom-container">
-						<layer-visualization
-							selected-model=[[selectedModel]]
-							selected-layer=[[selectedLayer]]
-							distortions=[[_selectedDistortions]]
-							selected-distortion={{_selectedVisualizationDistortion}}
-							request-manager=[[_requestManager]]>
-						</layer-visualization>
-					</div>
+						<template is="dom-if" if="[[_modelSelected]]">
+							<div id="graph-container">
+								<graph-view id="graph"
+									selected-model=[[selectedModel]]
+									distortions=[[_getNodeVisualizationDistortions(_selectedVisualizationDistortion)]]
+									request-manager=[[_requestManager]]>
+								</graph-view>
+							</div>
+							<div id="bottom-container">
+								<layer-visualization
+									selected-model=[[selectedModel]]
+									selected-layer=[[selectedLayer]]
+									distortions=[[_selectedDistortions]]
+									selected-distortion={{_selectedVisualizationDistortion}}
+									request-manager=[[_requestManager]]>
+								</layer-visualization>
+							</div>
+						</template>
+						<template is="dom-if" if="[[!_modelSelected]]">
+							<empty-state
+								headline="No Model Selected"
+								caption="Please select a model from the list
+									to analyze its performance on
+									distorted data."
+								icon="advis-icons:network">
+							</empty-state>
+						</template>
 				</template>
 			</div>
 		</tf-dashboard-layout>

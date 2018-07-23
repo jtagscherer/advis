@@ -30,7 +30,11 @@ Polymer({
 			value: advis.config.requests.imageAmounts.modelAccuracy,
 			observer: '_calculateModelMetrics'
 		},
-		_accuracyCalculationFlag: Boolean,
+		_accuracyCalculationFlag: {
+			type: Boolean,
+			notify: true,
+			observer: '_updateMetricsLoadedStatus'
+		},
 		_selectedRadarChartMetric: {
 			type: String,
 			value: 'top5'
@@ -42,6 +46,14 @@ Polymer({
 		_availableMetrics: {
 			type: Array,
 			value: ['top1', 'top5', 'f1', 'precision', 'recall']
+		},
+		_metricsLoaded: {
+			type: Boolean,
+			value: false
+		},
+		_modelSelected: {
+			type: Boolean,
+			value: false
 		},
     _requestManager: {
       type: Object,
@@ -174,12 +186,20 @@ Polymer({
 	
   _reloadModels: function() {
 		if (this.selectedModel != null) {
+			this.set('_modelSelected', true);
+		} else {
+			this.set('_modelSelected', false);
+		}
+		
+		if (this.selectedModel != null && this.$$('graph-view') != null) {
 			this.$$('graph-view').update();
 		}
 		
 		// Update the layer visualization
 		this._fetchModels().then(() => {
-			this.$$('layer-visualization').reload();
+			if (this.selectedModel != null) {
+				this.$$('layer-visualization').reload();
+			}
 		});
   },
 	
@@ -214,6 +234,7 @@ Polymer({
 	},
 	
 	_modelStatisticsSelectionChanged: function(e) {
+    // Update the model's selection state
 		for (var model of this._availableModels) {
 			if (model.name == e.detail.model.name) {
 				model.selectedForStatistics = e.detail.selected;
@@ -221,6 +242,24 @@ Polymer({
 				break;
 			}
 		}
+    
+    // Check whether at least one model is selected
+    var modelSelected = false;
+    for (var model of this._availableModels) {
+      if (model.selectedForStatistics) {
+        modelSelected = true;
+        break;
+      }
+    }
+		
+		// Hide or show the empty state depending on whether at least one model has 
+		// been selected
+		if (modelSelected) {
+			this.customStyle['--radar-chart-empty-state-opacity'] = '0';
+		} else {
+			this.customStyle['--radar-chart-empty-state-opacity'] = '1';
+		}
+		this.updateStyles();
 	},
 	
 	_nodeSelected: function(e) {
@@ -283,6 +322,14 @@ Polymer({
 			return 1;
 		} else {
 			return 0;
+		}
+	},
+	
+	_getVisibilityClass: function(condition) {
+		if (!condition) {
+			return 'shown';
+		} else {
+			return 'hidden';
 		}
 	},
 	
@@ -373,8 +420,20 @@ Polymer({
     });
   },
 	
-	_calculateModelMetrics: function() {
-		if (this._selectedDistortions == null || this._requestManager == null
+	_updateMetricsLoadedStatus: function() {
+		for (var model of this._availableModels) {
+			if (!('metrics' in model) || Object.keys(model.metrics).length <
+				(this._availableDistortions.length + 1)) {
+				this.set('_metricsLoaded', false);
+				return;
+			}
+		}
+		
+		this.set('_metricsLoaded', true);
+	},
+  
+  _calculateModelMetrics: function() {
+    if (this._selectedDistortions == null || this._requestManager == null
 			|| this._availableModels == null) {
 			return;
 		}
@@ -444,7 +503,7 @@ Polymer({
 				});
 			}
 		}
-	}
+  }
 });
 
 tf_tensorboard.registerDashboard({

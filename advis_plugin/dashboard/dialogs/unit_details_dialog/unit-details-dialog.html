@@ -4,6 +4,7 @@
 <link rel="import" href="../../dialog-header/dialog-header.html">
 <link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
 <link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+<link rel="import" href="../../image-loader/image-loader.html">
 
 <!--
 	When opened, this module displays a zoomed version of a unit's activation or 
@@ -27,7 +28,11 @@
 				</div>
 			</dialog-header>
 			<div id="content">
-				<img src$=[[imageUrl]]></img>
+				<image-loader
+					url=[[imageUrl]]
+					width="100%"
+					height="100%">
+				</image-loader>
 			</div>
 		</paper-dialog>
 		

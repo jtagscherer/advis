@@ -1,7 +1,14 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 @import 'advis_plugin/dashboard/shared/style/style';
+@import 'advis_plugin/dashboard/shared/style/text';
 
 $sidebar-width: 500px;
+$spinner-size: 20px;
+$spinner-padding: 20px;
+
+:host {
+	--radar-chart-empty-state-opacity: 1;
+}
 
 .sidebar {
 	display: flex;
@@ -60,15 +67,66 @@ $sidebar-width: 500px;
 	
 	#chart {
 		height: 400px;
+		position: relative;
 		
 		#chart-wrapper {
 			display: flex;
 			flex-direction: row;
 			justify-content: center;
+			position: relative;
 			width: 100%;
 			
 			#chart-container {
 				width: 370px;
+			}
+			
+			#chart-spinner {
+				position: absolute;
+				top: $spinner-padding;
+				left: $spinner-padding;
+				
+				paper-spinner-lite {
+					position: relative;
+					
+					width: $spinner-size;
+					height: $spinner-size;
+					
+					--paper-spinner-color: $accent-color;
+					transition: opacity 0.5s ease-in-out;
+					
+					&.shown {
+						opacity: 1;
+					}
+					
+					&.hidden {
+						opacity: 0;
+					}
+				}
+			}
+		}
+		
+		#chart-empty-state {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			pointer-events: none;
+			
+			width: 100%;
+			height: 100px;
+			
+			background: linear-gradient(rgba(30, 30, 30, 0.0), rgba(30, 30, 30, 0.8));
+			
+			opacity: var(--radar-chart-empty-state-opacity);
+			transition: opacity 0.5s ease-in-out;
+			
+			p {
+				width: 60%;
+				text-align: center;
+				color: white;
 			}
 		}
 	}
@@ -113,5 +171,11 @@ $sidebar-width: 500px;
 	#bottom-container {
 		flex: 1;
 		overflow: auto;
+	}
+	
+	empty-state {
+		flex: 1;
+		width: 100%;
+		height: 100%;
 	}
 }

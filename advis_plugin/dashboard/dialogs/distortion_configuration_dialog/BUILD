@@ -25,6 +25,7 @@ tf_web_library(
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
 		"//advis_plugin/dashboard/distortion_list_item",
 		"//advis_plugin/dashboard/section_header",
+		"//advis_plugin/dashboard/empty_state",
 		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog/distortion_preview",
 		"//advis_plugin/dashboard/dialogs/distortion_configuration_dialog/parameter_configuration"
 	]

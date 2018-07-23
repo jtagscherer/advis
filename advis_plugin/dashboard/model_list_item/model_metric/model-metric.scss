@@ -1,6 +1,8 @@
 @import 'advis_plugin/dashboard/shared/style/text';
+@import 'advis_plugin/dashboard/shared/style/color';
 
 $side-padding: 5px;
+$spinner-size: 20px;
 
 #container {
 	display: flex;
@@ -13,5 +15,11 @@ $side-padding: 5px;
 	
 	p {
 		margin: 0;
+	}
+	
+	paper-spinner-lite {
+		width: $spinner-size;
+		height: $spinner-size;
+		--paper-spinner-color: $accent-color;
 	}
 }

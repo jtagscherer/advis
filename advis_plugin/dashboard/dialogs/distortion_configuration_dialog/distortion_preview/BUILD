@@ -17,7 +17,8 @@ tf_web_library(
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_polymer_iron_icons",
-		"//advis_plugin/dashboard/image_loader"
+		"//advis_plugin/dashboard/image_loader",
+		"//advis_plugin/dashboard/empty_state"
 	]
 )
 

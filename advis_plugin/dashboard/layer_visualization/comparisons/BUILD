@@ -12,6 +12,7 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
-		"@org_polymer_iron_resizable_behavior"
+		"@org_polymer_iron_resizable_behavior",
+		"@org_polymer_paper_spinner"
 	]
 )

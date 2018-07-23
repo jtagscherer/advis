@@ -23,6 +23,11 @@
 					on-tap="_imageClicked"
 					on-load="_originalImageCallback">
 				</img>
+				<div class="spinner-container">
+					<paper-spinner-lite active
+						class$="[[_getSpinnerClass(_originalImageLoaded, state)]]">
+					</paper-spinner-lite>
+				</div>
 			</div>
 			<div class="image-wrapper">
 				<img id="distorted-image"
@@ -34,6 +39,11 @@
 					on-tap="_imageClicked"
 					on-load="_distortedImageCallback">
 				</img>
+				<div class="spinner-container">
+					<paper-spinner-lite active
+						class$="[[_getSpinnerClass(_distortedImageLoaded, state)]]">
+					</paper-spinner-lite>
+				</div>
 			</div>
 		</div>
 		
