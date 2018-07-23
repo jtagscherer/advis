@@ -185,6 +185,13 @@ def _cache_confusion_matrices(routers, managers):
 				_model, _distortion, model_manager, distortion_manager
 			)
 			
+			for sort_by in ['ascending', 'descending', 'index']:
+				for input_mode in ['original', 'distorted']:
+					confusion_matrix_router._get_listed_node_predictions(
+						model, distortion, model_manager, distortion_manager,
+						sort_by, input_mode
+					)
+			
 			_update_progress('Caching confusion matrices…')
 
 def _get_total_steps(managers):
