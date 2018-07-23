@@ -91,13 +91,16 @@ Polymer({
 		}
 		
 		this._context.clearRect(0, 0, this.width, this.height);
+		this._context.globalAlpha = 1.0;
 		
 		let offsetRange = this.offset.end - this.offset.start;
 		var categorySize = 0;
+		var gridAmount = 0;
 		
 		// Draw the image that visualizes the metric
 		if (this.orientation == 'vertical') {
 			categorySize = this.height / offsetRange;
+			gridAmount = this.height / categorySize;
 			this._context.drawImage(
 				this._image,
 				0, this.offset.start, 1, offsetRange,
@@ -105,11 +108,77 @@ Polymer({
 			);
 		} else if (this.orientation == 'horizontal') {
 			categorySize = this.width / offsetRange;
+			gridAmount = this.width / categorySize;
 			this._context.drawImage(
 				this._image,
 				this.offset.start, 0, offsetRange, 1,
 				0, 0, this.width, this.height
 			);
+		}
+		
+		// When zoomed in far enough, draw a grid and individual values
+		let transitionPercentage = gridAmount - this._maximumGridLines;
+		let opacity = 1 - (transitionPercentage / this._gridTransitionLength);
+		this._context.globalAlpha = opacity;
+		
+		if (gridAmount < this._maximumGridLines + this._gridTransitionLength) {
+			this._context.strokeStyle = this._gridStrokeColor;
+			var position = 0;
+			
+			// Draw a grid
+			var transformedPosition = 0;
+			for (var position = Math.ceil(this.offset.start);
+				position < Math.ceil(this.offset.end); position++) {
+				transformedPosition = (position - this.offset.start) * categorySize;
+				
+				if (this.orientation == 'vertical') {
+					this._context.beginPath();
+					this._context.moveTo(0, transformedPosition);
+					this._context.lineTo(this.width, transformedPosition);
+					this._context.stroke();
+				} else if (this.orientation == 'horizontal') {
+					this._context.beginPath();
+					this._context.moveTo(transformedPosition, 0);
+					this._context.lineTo(transformedPosition, this.height);
+					this._context.stroke();
+				}
+			}
+			
+			// Draw individual values
+			this._context.strokeStyle = this._fontStrokeColor;
+			var fontSize = 0;
+			if (this.orientation == 'vertical') {
+				fontSize = Math.min(categorySize / 2, this.width / 2);
+			} else if (this.orientation == 'horizontal') {
+				fontSize = Math.min(categorySize / 2, this.height / 2);
+			}
+			this._context.font = `${fontSize}px Roboto Condensed`;
+			
+			for (var position = Math.floor(this.offset.start);
+				position < Math.ceil(this.offset.end); position++) {
+				transformedPosition = (position - this.offset.start) * categorySize;
+				let value = this.data[position];
+				
+				var text = '';
+				if (value != null) {
+					text = String(Number.parseFloat(value).toFixed(2));
+				} else {
+					text = '?';
+				}
+				
+				var textX = 0;
+				var textY = 0;
+				if (this.orientation == 'vertical') {
+					textX = this.width / 2;
+					textY = transformedPosition + (categorySize / 2);
+				} else if (this.orientation == 'horizontal') {
+					textX = transformedPosition + (categorySize / 2);
+					textY = this.height / 2;
+				}
+				
+				this._context.strokeText(text, textX, textY);
+				this._context.fillText(text, textX, textY);
+			}
 		}
 	}
 });
