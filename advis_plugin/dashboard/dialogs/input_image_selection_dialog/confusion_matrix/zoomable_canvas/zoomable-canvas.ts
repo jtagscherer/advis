@@ -58,7 +58,7 @@ Polymer({
 		canvas.addEventListener('mousedown', function(e) {
 			e.preventDefault();
 			lastPosition = self._context.transformedPoint(
-				e.offsetX, e.offsetY
+				e.offsetX * self._resolutionScale, e.offsetY * self._resolutionScale
 			);
 		});
 		
@@ -67,7 +67,7 @@ Polymer({
 			
 			if (lastPosition) {
 				let position = self._context.transformedPoint(
-					e.offsetX, e.offsetY
+					e.offsetX * self._resolutionScale, e.offsetY * self._resolutionScale
 				);
 				
 				self._context.translate(
