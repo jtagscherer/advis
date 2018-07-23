@@ -54,7 +54,7 @@ Polymer({
 		_contentSize: Number,
 		_selectedTab: {
 			type: Number,
-			value: 0,
+			value: 1,
 			observer: '_selectedTabChanged'
 		}
 	},
@@ -196,7 +196,7 @@ Polymer({
 			
 			if (updateSize) {
 				self.set('_contentSize', Math.round(Math.min(self.$$('#content')
-					.offsetWidth, self.$$('#content').offsetHeight) * 0.6));
+					.offsetWidth, self.$$('#content').offsetHeight) * 0.5));
 				this.customStyle['--matrix-size'] = `${self._contentSize}px`;
 				this.updateStyles();
 			}
