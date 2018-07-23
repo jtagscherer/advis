@@ -237,7 +237,11 @@ Polymer({
 			var cellColor;
 			
 			if (value != null) {
-				cellColor = colorScale(value).get('rgba');
+				if (this.matrixMode == 'difference') {
+					cellColor = colorScale((value + 1) / 2).get('rgba');
+				} else {
+					cellColor = colorScale(value).get('rgba');
+				}
 			} else {
 				cellColor = colorScale(0).get('rgba');
 			}
