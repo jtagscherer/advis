@@ -10,9 +10,32 @@ Polymer({
 		model: Object,
 		distortion: Object,
 		dataset: Object,
-		availableImages: Array,
+		inputImages: Array,
 		selectedImage: Object,
 		requestManager: Object,
+		
+		_verticalOffset: {
+			type: Object,
+			observer: '_matrixChanged'
+		},
+		_horizontalOffset: {
+			type: Object,
+			observer: '_matrixChanged'
+		},
+		_matrixMode: {
+			type: String,
+			observer: '_matrixChanged'
+		},
+		_imageSortMethod: {
+			type: String,
+			value: 'descending'
+		},
+		_offsetDirty: Boolean,
+		_imageRequestRunning: {
+			type: Boolean,
+			value: false
+		},
+		_intervalId: Number,
 		
 		eventId: {
 			type: String,
@@ -24,15 +47,70 @@ Polymer({
 		this.model = content.model;
 		this.distortion = content.distortion;
 		this.dataset = content.dataset;
-		this.availableImages = content.availableImages;
-		this.selectedImage = content.selectedImage;
+		this.inputImages = [];
+		// this.selectedImage = content.selectedImage;
 		this.requestManager = content.requestManager;
 		
-		this.$$('iron-list').selectItem(this.selectedImage);
+		// Update the image list periodically
+		clearInterval(this._intervalId);
+		
+		let self = this;
+		this._intervalId = setInterval(function() {
+			if (self._offsetDirty && !self._imageRequestRunning) {
+				if (self._matrixMode != null && self.model != null
+					&& self.distortion != null && self._verticalOffset != null
+					&& self._horizontalOffset != null && self._imageSortMethod != null) {
+					self.set('_imageRequestRunning', true);
+					
+					// Fetch all images matching the current selection
+					var inputMode;
+					if (self._matrixMode == 'difference') {
+						inputMode = 'distorted';
+					} else {
+						inputMode = self._matrixMode;
+					}
+					
+					let imagesUrl = tf_backend.addParams(tf_backend.getRouter()
+						.pluginRoute('advis', '/confusion/images/subset'), {
+						model: self.model.name,
+						distortion: self.distortion.name,
+						actualStart: String(Math.floor(self._verticalOffset.start)),
+						actualEnd: String(Math.ceil(self._verticalOffset.end)),
+						predictedStart: String(Math.floor(self._horizontalOffset.start)),
+						predictedEnd: String(Math.ceil(self._horizontalOffset.end)),
+						sort: self._imageSortMethod,
+						inputMode: inputMode
+					});
+					
+					self.requestManager.request(imagesUrl).then(images => {
+						// Add URLs for each image
+						for (let image of images) {
+							image.url = tf_backend.addParams(tf_backend.getRouter()
+								.pluginRoute('advis', '/datasets/images/image'), {
+								dataset: self.dataset.name,
+								index: image.index
+							});
+						}
+						
+						self.set('inputImages', images);
+						
+						self.set('_offsetDirty', false);
+						self.set('_imageRequestRunning', false);
+					});
+				}
+			}
+		}, 1000);
+		
+		// this.$$('iron-list').selectItem(this.selectedImage);
 	},
 	
 	getContentOnDismiss: function() {
+		clearInterval(this._intervalId);
 		return this.selectedImage;
+	},
+	
+	_matrixChanged: function() {
+		this.set('_offsetDirty', true);
 	},
 	
 	_inputImageClicked: function(e) {

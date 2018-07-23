@@ -47,7 +47,10 @@
 						model=[[model.name]]
 						dataset=[[dataset.name]]
 						distortion=[[distortion.name]]
-						request-manager=[[requestManager]]>
+						request-manager=[[requestManager]]
+						vertical-offset={{_verticalOffset}}
+						horizontal-offset={{_horizontalOffset}}
+						matrix-mode={{_matrixMode}}>
 					</confusion-matrix>
 				</div>
 				<div class="container" id="image-list-container">
@@ -55,13 +58,10 @@
 						text="Input Images">
 					</section-header>
 					<iron-list
-						class="flex"
-						items="[[availableImages]]" as="image" grid
-						selection-enabled selected-item="{{selectedImage}}">
+						class="flex" items="[[inputImages]]" as="image" grid>
 						<template>
 							<input-image-item
 								image=[[image]]
-								selected={{selected}}
 								data-image-index$={{index}}
 								on-tap="_inputImageClicked">
 							</input-image-item>

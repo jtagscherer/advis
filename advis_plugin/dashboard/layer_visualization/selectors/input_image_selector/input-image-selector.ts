@@ -26,7 +26,6 @@ Polymer({
 				model: this.selectedModel,
 				distortion: this.selectedDistortion,
 				dataset: this.associatedDataset,
-				availableImages: this.availableImages,
 				selectedImage: this.selectedImage,
 				requestManager: this.requestManager,
 				animationTarget: this.$$('#left').getBoundingClientRect()

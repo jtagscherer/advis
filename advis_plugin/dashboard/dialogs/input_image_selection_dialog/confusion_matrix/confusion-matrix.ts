@@ -23,6 +23,7 @@ Polymer({
 		},
 		matrixMode: {
 			type: String,
+			notify: true,
 			observer: '_matrixModeChanged'
 		},
 		hoveredPixel: {
