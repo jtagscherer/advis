@@ -132,13 +132,11 @@ $hover-padding: 10px;
 				}
 			}
 			
-			.placeholder {
+			matrix-metric {
 				left: $metric-padding;
 				top: 0;
 				width: $metric-height;
 				height: var(--matrix-size);
-				
-				background-color: grey;
 			}
 		}
 		
@@ -163,13 +161,11 @@ $hover-padding: 10px;
 				}
 			}
 			
-			.placeholder {
+			matrix-metric {
 				left: 0;
 				top: $metric-padding;
 				height: $metric-height;
 				width: var(--matrix-size);
-				
-				background-color: grey;
 			}
 		}
 	}

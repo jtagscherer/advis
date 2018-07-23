@@ -5,6 +5,7 @@
 <link rel="import" href="../../zoomable-canvas/zoomable-canvas.html">
 <link rel="import" href="../../matrix-overlay/matrix-overlay.html">
 <link rel="import" href="../../label-view/label-view.html">
+<link rel="import" href="../../matrix-metric/matrix-metric.html">
 
 <!--
 	This component visualizes a model's predictions as a zoomable and interactive 
@@ -58,13 +59,27 @@
 					</matrix-overlay>
 				</div>
 				<div class="described" id="recall">
-					<div class="placeholder"></div>
+					<matrix-metric
+						src=[[_recallImage]]
+						data=[[_recallData]]
+						width="15"
+						height=[[_contentSize]]
+						orientation="vertical"
+						offset=[[verticalOffset]]>
+					</matrix-metric>
 					<div class="descriptor">
 						<p>Recall</p>
 					</div>
 				</div>
 				<div class="described" id="precision">
-					<div class="placeholder"></div>
+					<matrix-metric
+						src=[[_precisionImage]]
+						data=[[_precisionData]]
+						width=[[_contentSize]]
+						height="15"
+						orientation="horizontal"
+						offset=[[horizontalOffset]]>
+					</matrix-metric>
 					<div class="descriptor">
 						<p>Precision</p>
 					</div>

@@ -45,7 +45,11 @@ Polymer({
 			notify: true
 		},
 		_matrixData: Object,
+		_precisionData: Array,
+		_recallData: Array,
 		_matrixImage: String,
+		_precisionImage: String,
+		_recallImage: String,
 		_categories: Array,
 		_categoryHierarchy: Object,
 		_contentSize: Number
@@ -127,6 +131,17 @@ Polymer({
 		
 		this.requestManager.request(matrixUrl).then(result => {
 			self.set('_matrixData', result.confusionMatrix.matrix);
+			self.set('_precisionData', result.precision);
+			self.set('_recallData', result.recall);
+			
+			self.set(
+				'_precisionImage',
+				self._generateMetricImage(result.precision, 'horizontal')
+			);
+			self.set(
+				'_recallImage',
+				self._generateMetricImage(result.recall, 'vertical')
+			);
 			
 			let matrixLabels = Object.keys(result.confusionMatrix.matrix);
 			let matrixSize = matrixLabels.length;
@@ -172,6 +187,47 @@ Polymer({
 			this.customStyle['--matrix-size'] = `${self._contentSize}px`;
 			this.updateStyles();
 		});
+	},
+	
+	_generateMetricImage: function(data, orientation) {
+		var width = 0;
+		var height = 0;
+		if (orientation == 'vertical') {
+			width = 1;
+			height = data.length;
+		} else if (orientation == 'horizontal') {
+			width = data.length;
+			height = 1;
+		}
+		
+		let canvas = document.createElement('canvas');
+		canvas.width = width;
+		canvas.height = height;
+		
+		let context = canvas.getContext('2d');
+		var imageData = context.getImageData(0, 0, width, height);
+		
+		let colorScale = chroma.scale('Spectral').domain([1, 0]);
+		
+		for (var i = 0; i < data.length; i++) {
+			let dataIndex = i * 4;
+			let value = data[i];
+			var cellColor;
+			
+			if (value != null) {
+				cellColor = colorScale(value).get('rgba');
+			} else {
+				cellColor = colorScale(0).get('rgba');
+			}
+			
+			imageData.data[dataIndex] = cellColor[0];
+			imageData.data[dataIndex + 1] = cellColor[1];
+			imageData.data[dataIndex + 2] = cellColor[2];
+			imageData.data[dataIndex + 3] = cellColor[3] * 255;
+		}
+		
+		context.putImageData(imageData, 0, 0);
+		return canvas.toDataURL('image/png');
 	},
 	
 	_labelHovered: function(e) {
