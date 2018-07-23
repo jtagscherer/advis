@@ -1,5 +1,6 @@
 <link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-tabs/paper-tabs.html">
 
 <link rel="import" href="../../libraries/chroma/chroma.html">
 <link rel="import" href="../../zoomable-canvas/zoomable-canvas.html">
@@ -85,25 +86,34 @@
 					</div>
 				</div>
 			</div>
-			<div id="hovered" class$="[[_getHoverClass(hoveredPixel, hoveredLabelPath)]]">
-				<template is="dom-if" if="[[_isNotNull(hoveredPixel)]]">
-					<div id="hovered-pixel">
-						<div id="actual" class="label">
-							<p class="category">Actual</p>
-							<p class="single-line title">[[_getLabel(hoveredPixel.y)]]</p>
+			<div id="footer">
+				<div id="hovered" class$="[[_getHoverClass(hoveredPixel, hoveredLabelPath)]]">
+					<template is="dom-if" if="[[_isNotNull(hoveredPixel)]]">
+						<div id="hovered-pixel">
+							<div id="actual" class="label">
+								<p class="category">Actual</p>
+								<p class="single-line title">[[_getLabel(hoveredPixel.y)]]</p>
+							</div>
+							<div id="value">
+								<p class="title">[[_getMatrixValue(hoveredPixel.y, hoveredPixel.x)]]</p>
+							</div>
+							<div id="predicted" class="label">
+								<p class="category">Predicted</p>
+								<p class="single-line title">[[_getLabel(hoveredPixel.x)]]</p>
+							</div>
 						</div>
-						<div id="value">
-							<p class="title">[[_getMatrixValue(hoveredPixel.y, hoveredPixel.x)]]</p>
-						</div>
-						<div id="predicted" class="label">
-							<p class="category">Predicted</p>
-							<p class="single-line title">[[_getLabel(hoveredPixel.x)]]</p>
-						</div>
-					</div>
-				</template>
-				<template is="dom-if" if="[[_isNotNull(hoveredLabelPath)]]">
-					<p id="label-path" class="single-line title">[[hoveredLabelPath]]</p>
-				</template>
+					</template>
+					<template is="dom-if" if="[[_isNotNull(hoveredLabelPath)]]">
+						<p id="label-path" class="single-line title">[[hoveredLabelPath]]</p>
+					</template>
+				</div>
+				
+				<paper-tabs selected={{_selectedTab}} scrollable fit-container
+					class$="[[_getTabsClass(hoveredPixel, hoveredLabelPath)]]">
+					<paper-tab>Original</paper-tab>
+					<paper-tab>Difference</paper-tab>
+					<paper-tab>Distorted</paper-tab>
+				</paper-tabs>
 			</div>
 		</div>
 		

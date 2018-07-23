@@ -23,8 +23,7 @@ Polymer({
 		},
 		matrixMode: {
 			type: String,
-			value: 'original',
-			observer: 'reload'
+			observer: '_matrixModeChanged'
 		},
 		hoveredPixel: {
 			type: Object,
@@ -52,7 +51,12 @@ Polymer({
 		_recallImage: String,
 		_categories: Array,
 		_categoryHierarchy: Object,
-		_contentSize: Number
+		_contentSize: Number,
+		_selectedTab: {
+			type: Number,
+			value: 0,
+			observer: '_selectedTabChanged'
+		}
 	},
 	
 	listeners: {
@@ -61,7 +65,7 @@ Polymer({
 	
 	reload: function() {
 		if (this.model != null && this.dataset != null && this.distortion != null
-			&& this.requestManager != null) {
+			&& this.matrixMode != null && this.requestManager != null) {
 			this._retrieveCategories();
 			this._generateMatrixImage();
 		}
@@ -84,6 +88,14 @@ Polymer({
 	
 	_getHoverClass: function(hoveredPixel, hoveredLabelPath) {
 		if (hoveredPixel == null && hoveredLabelPath == null) {
+			return 'hidden';
+		} else {
+			return 'shown';
+		}
+	},
+	
+	_getTabsClass: function(hoveredPixel, hoveredLabelPath) {
+		if (hoveredPixel != null || hoveredLabelPath != null) {
 			return 'hidden';
 		} else {
 			return 'shown';
@@ -119,7 +131,7 @@ Polymer({
 		});
 	},
 	
-	_generateMatrixImage: function() {
+	_generateMatrixImage: function(updateSize=true) {
 		let self = this;
 		
 		const matrixUrl = tf_backend.addParams(tf_backend.getRouter()
@@ -181,12 +193,22 @@ Polymer({
       context.putImageData(imageData, 0, 0);
 			
 			self.set('_matrixImage', canvas.toDataURL('image/png'));
-			self.set('_contentSize', Math.round(Math.min(self.$$('#content')
-				.offsetWidth, self.$$('#content').offsetHeight) * 0.6));
 			
-			this.customStyle['--matrix-size'] = `${self._contentSize}px`;
-			this.updateStyles();
+			if (updateSize) {
+				self.set('_contentSize', Math.round(Math.min(self.$$('#content')
+					.offsetWidth, self.$$('#content').offsetHeight) * 0.6));
+				this.customStyle['--matrix-size'] = `${self._contentSize}px`;
+				this.updateStyles();
+			}
 		});
+	},
+	
+	_matrixModeChanged: function() {
+		if (this.model != null && this.dataset != null && this.distortion != null
+			&& this.matrixMode != null && this.requestManager != null
+			&& this._contentSize != null) {
+			this._generateMatrixImage(false);
+		}
 	},
 	
 	_generateMetricImage: function(data, orientation) {
@@ -241,6 +263,20 @@ Polymer({
 			});
 			
 			this.set('hoveredLabelPath', path.join(' > '));
+		}
+	},
+	
+	_selectedTabChanged: function(value) {
+		switch (value) {
+			case 0:
+				this.set('matrixMode', 'original');
+				break;
+			case 1:
+				this.set('matrixMode', 'difference');
+				break;
+			case 2:
+				this.set('matrixMode', 'distorted');
+				break;
 		}
 	}
 });

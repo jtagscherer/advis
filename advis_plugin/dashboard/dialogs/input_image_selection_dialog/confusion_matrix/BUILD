@@ -16,6 +16,7 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_backend",
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
+		"@org_polymer_paper_tabs",
 		"//advis_plugin/dashboard/shared/libraries/chroma",
 		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix/zoomable_canvas",
 		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix/matrix_overlay",

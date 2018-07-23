@@ -5,7 +5,7 @@ Polymer({
 	properties: {
 		src: {
 			type: String,
-			observer: 'reload'
+			observer: '_imageSourceChanged'
 		},
 		size: {
 			type: Number,
@@ -130,6 +130,20 @@ Polymer({
 		};
 		
 		this._image.src = this.src;
+	},
+	
+	_imageSourceChanged: function(source) {
+		if (this._image == null) {
+			return;
+		}
+		
+		let self = this;
+		
+		this._image.onload = function() {
+			self.redraw();
+		};
+		
+		this._image.src = source;
 	},
 	
 	redraw: function() {

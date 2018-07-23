@@ -170,67 +170,87 @@ $hover-padding: 10px;
 		}
 	}
 	
-	#hovered {
+	#footer {
 		width: 100%;
-		transition: opacity 0.25s ease-in-out;
+		position: relative;
 		
-		#hovered-pixel {
+		* {
 			width: 100%;
-			display: flex;
-			flex-direction: row;
+			transition: opacity 0.25s ease-in-out;
 			
-			padding-bottom: $hover-padding;
-			
-			.label {
-				flex: 0.5;
-				min-width: 0;
-				
-				p {
-					margin: 0;
-				}
+			&.hidden {
+				opacity: 0;
 			}
 			
-			#actual {
-				font-family: 'Roboto Condensed';
-				text-align: left;
-				padding-left: $hover-padding;
+			&.shown {
+				opacity: 1;
 			}
+		}
+		
+		#hovered {
+			position: absolute;
+			left: 0;
+			top: 0;
 			
-			#value {
+			#hovered-pixel {
+				width: 100%;
 				display: flex;
-				align-items: center;
+				flex-direction: row;
 				
-				text-align: center;
-				flex: 0;
+				padding-bottom: $hover-padding;
 				
-				padding-left: 10px;
-				padding-right: 10px;
+				.label {
+					flex: 0.5;
+					min-width: 0;
+					
+					p {
+						margin: 0;
+					}
+				}
 				
-				.title {
-					margin: 0;
-					font-size: 24px;
+				#actual {
+					font-family: 'Roboto Condensed';
+					text-align: left;
+					padding-left: $hover-padding;
+				}
+				
+				#value {
+					display: flex;
+					align-items: center;
+					
+					text-align: center;
+					flex: 0;
+					
+					padding-left: 10px;
+					padding-right: 10px;
+					
+					.title {
+						margin: 0;
+						font-size: 24px;
+					}
+				}
+				
+				#predicted {
+					font-family: 'Roboto Condensed';
+					text-align: right;
+					padding-right: $hover-padding;
 				}
 			}
 			
-			#predicted {
+			#label-path {
 				font-family: 'Roboto Condensed';
-				text-align: right;
+				padding-left: $hover-padding;
 				padding-right: $hover-padding;
 			}
 		}
 		
-		#label-path {
-			font-family: 'Roboto Condensed';
-			padding-left: $hover-padding;
-			padding-right: $hover-padding;
-		}
-		
-		&.hidden {
-			opacity: 0;
-		}
-		
-		&.shown {
-			opacity: 1;
+		paper-tabs {
+			--paper-tabs-selection-bar-color: $accent-color;
+			width: 100%;
+			
+			paper-tab {
+				width: auto;
+			}
 		}
 	}
 }
