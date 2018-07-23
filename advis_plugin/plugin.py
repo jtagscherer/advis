@@ -74,7 +74,8 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/predictions/accuracy': self.accuracy_prediction_route,
 			'/confusion/matrix/full': self.confusion_matrix_full_route,
 			'/confusion/matrix/superset': self.confusion_matrix_superset_route,
-			'/confusion/images': self.confusion_images_route,
+			'/confusion/images/superset': self.confusion_images_superset_route,
+			'/confusion/images/subset': self.confusion_images_subset_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
 			'/distortions/update': self.distortions_update_route,
@@ -231,7 +232,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
-	def confusion_images_route(self, request):
+	def confusion_images_superset_route(self, request):
 		"""A route that returns a list of input images within a superset given a 
 		model name.
 
@@ -249,7 +250,31 @@ class AdvisPlugin(base_plugin.TBPlugin):
 				superset.
 		"""
 		
-		return confusion_matrix_router.confusion_images_route(request, 
+		return confusion_matrix_router.confusion_images_superset_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def confusion_images_subset_route(self, request):
+		"""A route that returns a list of input images within a subset of actual 
+		and predicted categories.
+
+		Arguments:
+			request: The request which has to contain the model's name as well as the 
+				name of a distortion that will be used to compare prediction 
+				certainties. The input mode can be either original or distorted, 
+				depending on the confusion matrix mode this list should be based on. 
+				On top of that, four more parameters have to define the starting and 
+				ending indices of actual and predicted categories.
+				Moreover, a sort method has to be supplied that will be used to sort 
+				the list of images. This can be either 'ascending' to sort by the 
+				increasing amount of certainty change, 'descending' to do the same but 
+				in reverse or 'index' to sort by image indices.
+		Returns:
+			A response that contains a list of all input images within the given 
+				actual and predicted category constraints.
+		"""
+		
+		return confusion_matrix_router.confusion_images_subset_route(request, 
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application

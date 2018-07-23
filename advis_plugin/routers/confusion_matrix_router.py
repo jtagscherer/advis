@@ -4,6 +4,10 @@ from advis_plugin.util.cache import DataCache
 from advis_plugin.routers import prediction_router
 
 import math
+import copy
+
+# DEBUG: 
+import tensorflow as tf
 
 def _get_images_of_category(dataset, category_id):
 	images = []
@@ -69,14 +73,14 @@ def _find_node_by_name(root, name, result=None):
 	
 	return result
 
-data_type = 'hierarchical_node_predictions'
+hierarchical_data_type = 'hierarchical_node_predictions'
 
 def _get_hierarchical_node_predictions(model, distortion, model_manager,
 	distortion_manager):
 	key_tuple = (model.name, distortion.name)
 	
-	if DataCache().has_data(data_type, key_tuple):
-		return DataCache().get_data(data_type, key_tuple)
+	if DataCache().has_data(hierarchical_data_type, key_tuple):
+		return DataCache().get_data(hierarchical_data_type, key_tuple)
 	
 	dataset = model._dataset
 	category_hierarchy = dataset.category_hierarchy.copy()
@@ -111,9 +115,79 @@ def _get_hierarchical_node_predictions(model, distortion, model_manager,
 			'distorted': distorted_predictions
 		}
 	
-	DataCache().set_data(data_type, key_tuple, category_hierarchy)
+	DataCache().set_data(hierarchical_data_type, key_tuple, category_hierarchy)
 	
 	return category_hierarchy
+
+listed_data_type = 'listed_node_predictions'
+
+def _get_listed_node_predictions(model_name, distortion_name, model_manager,
+	distortion_manager, sort_by, input_mode):
+	# `sort_by` can be either, ascending, descending or index
+	# `input_mode` can be either original or distorted
+	
+	key_tuple = (model_name, distortion_name, sort_by, input_mode)
+	
+	if DataCache().has_data(listed_data_type, key_tuple):
+		return DataCache().get_data(listed_data_type, key_tuple)
+	
+	model = model_manager.get_model_modules()[model_name]
+	dataset = model._dataset
+	
+	images = copy.deepcopy(dataset.images)
+	
+	# Add prediction certainties to each image
+	for image in images:
+		# Make the model predict the input image
+		original_predictions = prediction_router._get_single_prediction(
+			model_name, int(image['index']), None, None, None, model_manager,
+			distortion_manager, prediction_amount=None
+		)		
+		distorted_predictions = prediction_router._get_single_prediction(
+			model_name, int(image['index']), distortion_name, None, None,
+			model_manager, distortion_manager, prediction_amount=None
+		)
+		
+		# Append predicted image categories to the image
+		if (input_mode == 'original'):
+			image['prediction'] = original_predictions['predictions'][0]
+		elif (input_mode == 'distorted'):
+			image['prediction'] = distorted_predictions['predictions'][0]
+		
+		# Retrieve the certainty of the ground-truth category from the predictions
+		original_certainty = _get_prediction_certainty(
+			original_predictions['predictions'], int(image['categoryId'])
+		)
+		distorted_certainty = _get_prediction_certainty(
+			distorted_predictions['predictions'], int(image['categoryId'])
+		)
+		
+		# Add the data to each image
+		certainty = {}
+		certainty['original'] = original_certainty
+		certainty['distorted'] = distorted_certainty
+		certainty['difference'] = distorted_certainty - original_certainty
+		
+		image['certainty'] = certainty
+	
+	# Finally, sort the list of images
+	if sort_by == 'ascending':
+		images = sorted(
+			images, key=lambda image: image['certainty']['difference']
+		)
+	elif sort_by == 'descending':
+		images = sorted(
+			images, key=lambda image: image['certainty']['difference'],
+			reverse=True
+		)
+	elif sort_by == 'index':
+		images = sorted(
+			images, key=lambda image: image['index']
+		)
+	
+	DataCache().set_data(listed_data_type, key_tuple, images)
+	
+	return images
 
 def _get_node_path_by_category(root, category_id):
 	if not root:
@@ -188,9 +262,6 @@ def _calculate_precision_and_recall(matrix):
 			precision.append(true_positive / all_positive)
 	
 	return precision, recall
-
-# DEBUG: 
-import tensorflow as tf
 
 def confusion_matrix_full_route(request, model_manager, distortion_manager):
 	# First of all, retrieve all parameters
@@ -415,7 +486,7 @@ def _get_prediction_certainty(predictions, category_id):
 	
 	return 0.0
 
-def confusion_images_route(request, model_manager, distortion_manager):
+def confusion_images_superset_route(request, model_manager, distortion_manager):
 	# First of all, retrieve all parameters
 	missing_arguments = argutil.check_missing_arguments(
 		request, ['model', 'distortion', 'superset', 'sort']
@@ -497,3 +568,35 @@ def confusion_images_route(request, model_manager, distortion_manager):
 		)
 	
 	return http_util.Respond(request, input_images, 'application/json')
+
+def confusion_images_subset_route(request, model_manager, distortion_manager):
+	# First of all, retrieve all parameters
+	missing_arguments = argutil.check_missing_arguments(
+		request, ['model', 'distortion', 'sort', 'inputMode', 
+		'actualStart', 'actualEnd', 'predictedStart', 'predictedEnd']
+	)
+	
+	if missing_arguments != None:
+		return missing_arguments
+	
+	model_name = request.args.get('model')
+	distortion_name = request.args.get('distortion')
+	sort_by = request.args.get('sort')
+	input_mode = request.args.get('inputMode')
+	
+	actual_start = int(request.args.get('actualStart'))
+	actual_end = int(request.args.get('actualEnd'))
+	predicted_start = int(request.args.get('predictedStart'))
+	predicted_end = int(request.args.get('predictedEnd'))
+	
+	all_images = _get_listed_node_predictions(model_name, distortion_name,
+		model_manager, distortion_manager, sort_by, input_mode)
+	
+	# Only keep images that fall into our constraints
+	filtered_images = [image for image in all_images \
+		if image['categoryId'] >= actual_start \
+		and image['categoryId'] <= actual_end \
+		and image['prediction']['categoryId'] >= predicted_start \
+		and image['prediction']['categoryId'] <= predicted_end]
+	
+	return http_util.Respond(request, filtered_images, 'application/json')
