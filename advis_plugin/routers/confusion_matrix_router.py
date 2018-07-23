@@ -119,6 +119,13 @@ def _get_hierarchical_node_predictions(model, distortion, model_manager,
 	
 	return category_hierarchy
 
+def _find_position_in_hierarchical_list(hierarchical_list, categoryIndex):
+	for item_index, item in enumerate(hierarchical_list):
+		if item['category'] == categoryIndex:
+			return item_index
+	
+	return 0
+
 listed_data_type = 'listed_node_predictions'
 
 def _get_listed_node_predictions(model_name, distortion_name, model_manager,
@@ -134,6 +141,8 @@ def _get_listed_node_predictions(model_name, distortion_name, model_manager,
 	model = model_manager.get_model_modules()[model_name]
 	dataset = model._dataset
 	
+	hierarchical_list = _find_all_leaves(dataset.category_hierarchy[0])[::-1]
+	
 	images = copy.deepcopy(dataset.images)
 	
 	# Add prediction certainties to each image
@@ -148,11 +157,23 @@ def _get_listed_node_predictions(model_name, distortion_name, model_manager,
 			model_manager, distortion_manager, prediction_amount=None
 		)
 		
+		image['hierarchicalCategoryId'] = _find_position_in_hierarchical_list(
+			hierarchical_list, image['categoryId']
+		)
+		
 		# Append predicted image categories to the image
 		if (input_mode == 'original'):
-			image['prediction'] = original_predictions['predictions'][0]
+			image['prediction'] = {
+				'list': original_predictions['predictions'][0]['categoryId'],
+				'hierarchical': _find_position_in_hierarchical_list(hierarchical_list,
+					original_predictions['predictions'][0]['categoryId'])
+			}
 		elif (input_mode == 'distorted'):
-			image['prediction'] = distorted_predictions['predictions'][0]
+			image['prediction'] = {
+				'list': distorted_predictions['predictions'][0]['categoryId'],
+				'hierarchical': _find_position_in_hierarchical_list(hierarchical_list,
+					distorted_predictions['predictions'][0]['categoryId'])
+			}
 		
 		# Retrieve the certainty of the ground-truth category from the predictions
 		original_certainty = _get_prediction_certainty(
@@ -594,9 +615,9 @@ def confusion_images_subset_route(request, model_manager, distortion_manager):
 	
 	# Only keep images that fall into our constraints
 	filtered_images = [image for image in all_images \
-		if image['categoryId'] >= actual_start \
-		and image['categoryId'] <= actual_end \
-		and image['prediction']['categoryId'] >= predicted_start \
-		and image['prediction']['categoryId'] <= predicted_end]
+		if image['hierarchicalCategoryId'] >= actual_start \
+		and image['hierarchicalCategoryId'] <= actual_end \
+		and image['prediction']['hierarchical'] >= predicted_start \
+		and image['prediction']['hierarchical'] <= predicted_end]
 	
 	return http_util.Respond(request, filtered_images, 'application/json')
