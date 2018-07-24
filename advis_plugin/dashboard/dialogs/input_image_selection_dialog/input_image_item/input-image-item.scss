@@ -29,6 +29,11 @@ paper-card {
 		.certainty-bar {
 			height: $certainty-bar-height;
 			background-color: $accent-color;
+			transition: color 0.5s ease;
+			
+			&.selected {
+				background-color: white;
+			}
 		}
 		
 		#original-certainty {

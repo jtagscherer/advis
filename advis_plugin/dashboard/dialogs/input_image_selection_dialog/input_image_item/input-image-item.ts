@@ -87,6 +87,12 @@ Polymer({
 			if (this.selected) {
 				computedClass += ' selected-text';
 			}
+		} else if (type == 'certainty-bar') {
+			computedClass += 'certainty-bar';
+			
+			if (this.selected) {
+				computedClass += ' selected';
+			}
 		}
 		
 		return computedClass;
