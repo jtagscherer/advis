@@ -71,6 +71,10 @@ def cache_route(request, routers, managers):
 	_cache_node_differences(routers, managers, node_activation)
 	DataCache().persist_cache()
 	
+	# Cache all node differences
+	_cache_confusion_matrices(routers, managers)
+	DataCache().persist_cache()
+	
 	# Re-enable caching
 	DataCache().enable_caching()
 	
@@ -163,6 +167,33 @@ def _cache_node_differences(routers, managers, input_image_amount):
 		
 		DataCache().persist_cache()
 
+def _cache_confusion_matrices(routers, managers):
+	confusion_matrix_router = routers['confusionMatrix']
+	model_manager = managers['model']
+	distortion_manager = managers['distortion']
+	
+	model_modules = model_manager.get_model_modules()
+	distortion_modules = distortion_manager.get_distortion_modules()
+	
+	for model in model_modules:
+		_model = model_modules[model]
+		
+		for distortion in distortion_modules:
+			_distortion = distortion_modules[distortion]
+			
+			confusion_matrix_router._get_hierarchical_node_predictions(
+				_model, _distortion, model_manager, distortion_manager
+			)
+			
+			for sort_by in ['ascending', 'descending', 'index']:
+				for input_mode in ['original', 'distorted']:
+					confusion_matrix_router._get_listed_node_predictions(
+						model, distortion, model_manager, distortion_manager,
+						sort_by, input_mode
+					)
+			
+			_update_progress('Caching confusion matrices…')
+
 def _get_total_steps(managers):
 	model_manager = managers['model']
 	distortion_manager = managers['distortion']
@@ -184,6 +215,9 @@ def _get_total_steps(managers):
 	# Add steps for caching node differences
 	for model in model_modules:
 		total_steps += len(model_modules[model]._activation_tensors)
+	
+	# Add steps for caching confusion matrices
+	total_steps += len(model_modules) * len(distortion_modules)
 	
 	return total_steps
 

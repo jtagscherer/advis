@@ -8,8 +8,11 @@ Polymer({
 			type: Object,
 			notify: true
 		},
+		selectedDistortion: Object,
+		selectedModel: Object,
 		associatedDataset: Object,
-		availableImages: Array
+		availableImages: Array,
+		requestManager: Object
 	},
 	
 	listeners: {
@@ -20,9 +23,11 @@ Polymer({
 		// Open a dialog that lets the user view all input images and select one
 		if (this.hasValidData()) {
 			this.$$('input-image-selection-dialog').open({
+				model: this.selectedModel,
+				distortion: this.selectedDistortion,
 				dataset: this.associatedDataset,
-				availableImages: this.availableImages,
-				selectedImage: this.selectedImage,
+				selectedImageIndex: this.selectedImage.index,
+				requestManager: this.requestManager,
 				animationTarget: this.$$('#left').getBoundingClientRect()
 			});
 		}
@@ -35,7 +40,14 @@ Polymer({
 	
 	_handleDialogReturnedEvent: function(e) {
 		if (e.detail.eventId === 'input-image-selection-dialog') {
-			this.selectedImage = e.detail.content;
+			let selectedImageIndex = e.detail.content;
+			
+			for (let image of this.availableImages) {
+				if (image.index == selectedImageIndex) {
+					this.set('selectedImage', image);
+					return;
+				}
+			}
 		}
 	}
 });

@@ -1,0 +1,19 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../util/util.html">
+
+<!--
+	This component contains a canvas that displays hierarchical category labels 
+	depending on the zoom level and panning position of a confusion matrix.
+-->
+<dom-module id="label-view">
+	<template>
+		<canvas
+			on-mousemove="_canvasHovered"
+			on-mouseout="_canvasLeft">
+		</canvas>
+		
+		<link rel="stylesheet" type="text/css" href="label-view.css">
+	</template>
+
+	<script src="label-view.js"></script>
+</dom-module>

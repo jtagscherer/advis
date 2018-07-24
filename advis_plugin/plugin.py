@@ -13,8 +13,9 @@ from advis_plugin.datasets import datasets
 from advis_plugin.distortions import distortions
 
 from advis_plugin.routers import model_router, prediction_router, \
-	distortion_router, dataset_router, single_visualization_router, \
-	composite_visualization_router, node_difference_router, cache_router
+	confusion_matrix_router, distortion_router, dataset_router, \
+	single_visualization_router, composite_visualization_router, \
+	node_difference_router, cache_router
 
 from advis_plugin.util.cache import DataCache
 
@@ -71,10 +72,16 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			'/predictions/single': self.single_prediction_route,
 			'/predictions/average': self.average_prediction_route,
 			'/predictions/accuracy': self.accuracy_prediction_route,
+			'/confusion/matrix/full': self.confusion_matrix_full_route,
+			'/confusion/matrix/superset': self.confusion_matrix_superset_route,
+			'/confusion/images/superset': self.confusion_images_superset_route,
+			'/confusion/images/subset': self.confusion_images_subset_route,
 			'/distortions': self.distortions_route,
 			'/distortions/single': self.distortions_single_route,
 			'/distortions/update': self.distortions_update_route,
 			'/datasets': self.datasets_route,
+			'/datasets/categories/list': self.datasets_categories_list_route,
+			'/datasets/categories/hierarchy': self.datasets_categories_hierarchy_route,
 			'/datasets/images/list': self.datasets_images_list_route,
 			'/datasets/images/image': self.datasets_images_image_route,
 			'/layer/single/meta': self.layer_single_meta_route,
@@ -185,6 +192,92 @@ class AdvisPlugin(base_plugin.TBPlugin):
 			self.model_manager, self.distortion_manager)
 	
 	@wrappers.Request.application
+	def confusion_matrix_full_route(self, request):
+		"""A route that returns a model's full confusion matrix delta given a 
+		distortion. On top of that, a mode has to be supplied. If it is 'original', 
+		the confusion matrix for original input images will be returned. If it is 
+		'distorted', the confusion matrix for distorted input images will be 
+		returned. If it is 'difference', the delta between the two aforementioned 
+		confusion matrices will be returned.
+
+		Arguments:
+			request: The request which has to contain the model's name and the name 
+				of a distortion.
+		Returns:
+			A response that contains all rows of the confusion matrix.
+		"""
+		
+		return confusion_matrix_router.confusion_matrix_full_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def confusion_matrix_superset_route(self, request):
+		"""A route that returns a model's confusion matrix delta given a distortion 
+		and a specific dataset hierarchy level.
+
+		Arguments:
+			request: The request which has to contain the model's name, the name of 
+				a distortion and the name of a hierarchy superset. If no superset name 
+				is supplied, the most high-level one is used. On top of that, a mode 
+				has to be supplied. If it is 'original', the confusion matrix for 
+				original input images will be returned. If it is 'distorted', the 
+				confusion matrix for distorted input images will be returned. If it is 
+				'difference', the delta between the two aforementioned confusion 
+				matrices will be returned.
+		Returns:
+			A response that contains all rows of the confusion matrix.
+		"""
+		
+		return confusion_matrix_router.confusion_matrix_superset_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def confusion_images_superset_route(self, request):
+		"""A route that returns a list of input images within a superset given a 
+		model name.
+
+		Arguments:
+			request: The request which has to contain the model's name and the name 
+				of a superset within the category hierarchy of the dataset that the 
+				model uses. On top of that, the request has to contain the name of a 
+				distortion that will be used to compare prediction certainties. 
+				Moreover, a sort method has to be supplied that will be used to sort 
+				the list of images. This can be either 'ascending' to sort by the 
+				increasing amount of certainty change, 'descending' to do the same but 
+				in reverse or 'index' to sort by image indices.
+		Returns:
+			A response that contains a list of all input images within the given 
+				superset.
+		"""
+		
+		return confusion_matrix_router.confusion_images_superset_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
+	def confusion_images_subset_route(self, request):
+		"""A route that returns a list of input images within a subset of actual 
+		and predicted categories.
+
+		Arguments:
+			request: The request which has to contain the model's name as well as the 
+				name of a distortion that will be used to compare prediction 
+				certainties. The input mode can be either original or distorted, 
+				depending on the confusion matrix mode this list should be based on. 
+				On top of that, four more parameters have to define the starting and 
+				ending indices of actual and predicted categories.
+				Moreover, a sort method has to be supplied that will be used to sort 
+				the list of images. This can be either 'ascending' to sort by the 
+				increasing amount of certainty change, 'descending' to do the same but 
+				in reverse or 'index' to sort by image indices.
+		Returns:
+			A response that contains a list of all input images within the given 
+				actual and predicted category constraints.
+		"""
+		
+		return confusion_matrix_router.confusion_images_subset_route(request, 
+			self.model_manager, self.distortion_manager)
+	
+	@wrappers.Request.application
 	def distortions_route(self, request):
 		"""A route that returns a list of all available distortion methods.
 
@@ -241,6 +334,35 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		"""
 		
 		return dataset_router.datasets_route(request, self.dataset_manager)
+	
+	@wrappers.Request.application
+	def datasets_categories_list_route(self, request):
+		"""A route that returns a list of all categories within a dataset.
+
+		Arguments:
+			request: The request which has to contain the dataset's name. On top of 
+				that, the list of categories can be ordered by their ID (default) or by 
+				their position in the hierarchy.
+		Returns:
+			A response that contains a list of all categories within the dataset.
+		"""
+		
+		return dataset_router.datasets_categories_list_route(request,
+			self.dataset_manager)
+	
+	@wrappers.Request.application
+	def datasets_categories_hierarchy_route(self, request):
+		"""A route that returns all categories within a dataset, embedded in the 
+		category hierarchy.
+
+		Arguments:
+			request: The request which has to contain the dataset's name.
+		Returns:
+			A response that contains the category hierarchy of the dataset.
+		"""
+		
+		return dataset_router.datasets_categories_hierarchy_route(request,
+			self.dataset_manager)
 	
 	@wrappers.Request.application
 	def datasets_images_list_route(self, request):
@@ -421,6 +543,7 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		routers = {
 			'model': model_router,
 			'prediction': prediction_router,
+			'confusionMatrix': confusion_matrix_router,
 			'distortion': distortion_router,
 			'dataset': dataset_router,
 			'singleVisualization': single_visualization_router,

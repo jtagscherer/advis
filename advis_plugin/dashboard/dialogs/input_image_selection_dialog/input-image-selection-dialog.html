@@ -2,16 +2,22 @@
 <link rel="import" href="../../iron-list/iron-list.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../../input-image-item/input-image-item.html">
+<link rel="import" href="../../confusion-matrix/confusion-matrix.html">
 <link rel="import" href="../../dialog-header/dialog-header.html">
 <link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
 <link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+<link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../empty-state/empty-state.html">
 
 <!--
-	When opened, this module displays a list of all images within a dataset. By 
-	clicking on one of them they can be selected as the input image for further 
-	visualizations.
+	When opened, this module displays a confusion matrix of the currently 
+	selected model predicting all of its input images. When navigating this 
+	matrix, a list of relevant input images is shown. By clicking on one of them 
+	they can be selected as the input image for further visualizations.
 -->
 <dom-module id="input-image-selection-dialog">
 	<template>
@@ -19,26 +25,78 @@
 			<dialog-header event-id="input-image-selection-dialog">
 				<div class="header-items">
 					<categorized-header-item
+						category="Model"
+						title=[[model.displayName]]
+						caption="Version [[model.version]]">
+					</categorized-header-item>
+					<categorized-header-item
 						category="Dataset"
 						title=[[dataset.displayName]]
 						caption="[[dataset.imageCount]] images">
 					</categorized-header-item>
+					<categorized-header-item
+						category="Distortion"
+						title=[[distortion.displayName]]
+						caption="[[distortion.type]]">
+					</categorized-header-item>
 				</div>
 			</dialog-header>
 			<div id="content">
-				<iron-list
-					class="flex"
-					items="[[availableImages]]" as="image" grid
-					selection-enabled selected-item="{{selectedImage}}">
-					<template>
-						<input-image-item
-							image=[[image]]
-							selected={{selected}}
-							data-image-index$={{index}}
-							on-tap="_inputImageClicked">
-						</input-image-item>
-					</template>
-				</iron-list>
+				<div class="container" id="matrix-container">
+					<section-header
+						text="Confusion Matrix">
+					</section-header>
+					<confusion-matrix
+						model=[[model.name]]
+						dataset=[[dataset.name]]
+						distortion=[[distortion.name]]
+						request-manager=[[requestManager]]
+						vertical-offset={{_verticalOffset}}
+						horizontal-offset={{_horizontalOffset}}
+						selection-rectangle={{_selectionRectangle}}
+						matrix-mode={{_matrixMode}}>
+					</confusion-matrix>
+				</div>
+				<div class="container" id="image-list-container">
+					<section-header
+						text="Input Images">
+					</section-header>
+					<div id="image-list-wrapper">
+						<iron-list
+							class$="[[_getVisibilityClass(_loadingInputImages, 'negative', 'flex')]]"
+							items="[[inputImages]]" as="image" grid selection-enabled>
+							<template>
+								<input-image-item
+									image=[[image]]
+									selected={{selected}}
+									data-image-index$={{image.index}}
+									on-tap="_inputImageClicked">
+								</input-image-item>
+							</template>
+						</iron-list>
+						<div class="spinner-container">
+							<paper-spinner-lite active
+								class$="[[_getVisibilityClass(_loadingInputImages, 'positive')]]">
+							</paper-spinner-lite>
+						</div>
+						<empty-state class$="[[_getEmptyStateClass(inputImages, _loadingInputImages)]]"
+							headline="No Input Images Found"
+							caption="Please use the confusion matrix to navigate to an area 
+								that contains values which correspond to input images. 
+								Alternatively, you can shift-click and drag to create a 
+								selection rectangle.">
+						</empty-state>
+					</div>
+					<div id="sort-dropdown">
+						<paper-dropdown-menu label="Sort By">
+							<paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{_sortSelection}}">
+								<paper-item>Loss of Certainty, descending</paper-item>
+								<paper-item>Loss of Certainty, ascending</paper-item>
+								<paper-item>Image Index</paper-item>
+							</paper-listbox>
+						</paper-dropdown-menu>
+					</div>
+				</div>
 			</div>
 		</paper-dialog>
 		

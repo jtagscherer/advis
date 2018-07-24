@@ -1,0 +1,301 @@
+@import 'advis_plugin/dashboard/shared/style/color';
+@import 'advis_plugin/dashboard/shared/style/text';
+
+$label-height: 140px;
+$metric-height: 30px;
+$metric-padding: 20px;
+$descriptor-height: 20px;
+$descriptor-letter-spacing: 10px;
+
+$hover-padding: 10px;
+
+:host {
+	--matrix-size: 0px;
+}
+
+#content {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	
+	.spinner-container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		height: 100%;
+		
+		pointer-events: none;
+		z-index: 10;
+		
+		paper-spinner-lite {
+			--paper-spinner-color: $accent-color;
+			transition: opacity 0.5s ease-in-out;
+			
+			&.shown {
+				opacity: 1;
+			}
+			
+			&.hidden {
+				opacity: 0;
+			}
+		}
+	}
+	
+	#matrix {
+		flex: 1;
+		position: relative;
+		width: calc(var(--matrix-size) + (2 * #{$descriptor-height}) + #{$label-height} + #{$metric-height} + #{$metric-padding});
+		height: calc(var(--matrix-size) + (2 * #{$descriptor-height}) + #{$label-height} + #{$metric-height} + #{$metric-padding});
+		
+		transition: opacity 0.5s ease-in-out;
+		
+		&.shown {
+			opacity: 1;
+		}
+		
+		&.hidden {
+			opacity: 0;
+		}
+		
+		* {
+			position: absolute;
+		}
+		
+		#matrix-content {
+			left: calc(#{$descriptor-height} + #{$label-height});
+			top: calc(#{$descriptor-height} + #{$label-height});
+			width: var(--matrix-size);
+			height: var(--matrix-size);
+			
+			matrix-overlay {
+				pointer-events: none;
+				z-index: 10;
+				position: absolute;
+				
+				left: 0;
+				top: 0;
+				width: var(--matrix-size);
+				height: var(--matrix-size);
+			}
+		}
+		
+		#predicted-labels {
+			left: calc(#{$descriptor-height} + #{$label-height});
+			top: 0;
+			width: var(--matrix-size);
+			height: calc(#{$label-height} + #{$descriptor-height});
+			
+			.descriptor {
+				height: $descriptor-height;
+				position: relative;
+				
+				p {
+					width: 100%;
+					margin: 0;
+					text-align: center;
+					font-weight: bold;
+					letter-spacing: $descriptor-letter-spacing;
+					text-transform: uppercase;
+				}
+			}
+			
+			label-view {
+				height: $label-height;
+			}
+		}
+		
+		#actual-labels {
+			left: 0;
+			top: calc(#{$descriptor-height} + #{$label-height});
+			height: var(--matrix-size);
+			width: calc(#{$label-height} + #{$descriptor-height});
+			
+			.descriptor {
+				width: $descriptor-height;
+				height: var(--matrix-size);
+				
+				p {
+					width: var(--matrix-size);
+					margin: 0;
+					text-align: center;
+					font-weight: bold;
+					letter-spacing: $descriptor-letter-spacing;
+					text-transform: uppercase;
+					
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+				}
+			}
+			
+			label-view {
+				left: $descriptor-height;
+				top: 0;
+				width: $label-height;
+			}
+		}
+		
+		#recall {
+			left: calc(var(--matrix-size) + #{$descriptor-height} + #{$label-height});
+			top: calc(#{$descriptor-height} + #{$label-height});
+			height: var(--matrix-size);
+			width: calc(#{$metric-height} + #{$metric-padding} + #{$descriptor-height});
+			
+			.descriptor {
+				right: 0;
+				width: $descriptor-height;
+				height: var(--matrix-size);
+				
+				p {
+					width: var(--matrix-size);
+					margin: 0;
+					text-align: center;
+					font-weight: bold;
+					letter-spacing: $descriptor-letter-spacing;
+					text-transform: uppercase;
+					
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translateX(-50%) translateY(-50%) rotate(-90deg);
+				}
+			}
+			
+			matrix-metric {
+				left: $metric-padding;
+				top: 0;
+				width: $metric-height;
+				height: var(--matrix-size);
+			}
+		}
+		
+		#precision {
+			left: calc(#{$descriptor-height} + #{$label-height});
+			top: calc(var(--matrix-size) + #{$descriptor-height} + #{$label-height});;
+			width: var(--matrix-size);
+			height: calc(#{$metric-height} + #{$metric-padding} + #{$descriptor-height});
+			
+			.descriptor {
+				bottom: 0;
+				width: var(--matrix-size);
+				height: $descriptor-height;
+				
+				p {
+					width: 100%;
+					margin: 0;
+					text-align: center;
+					font-weight: bold;
+					letter-spacing: $descriptor-letter-spacing;
+					text-transform: uppercase;
+				}
+			}
+			
+			matrix-metric {
+				left: 0;
+				top: $metric-padding;
+				height: $metric-height;
+				width: var(--matrix-size);
+			}
+		}
+		
+		#clear-button-container {
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
+	}
+	
+	#footer {
+		width: 100%;
+		position: relative;
+		
+		* {
+			width: 100%;
+			transition: opacity 0.25s ease-in-out;
+			
+			&.hidden {
+				opacity: 0;
+			}
+			
+			&.shown {
+				opacity: 1;
+			}
+		}
+		
+		#hovered {
+			position: absolute;
+			left: 0;
+			top: 0;
+			
+			#hovered-pixel {
+				width: 100%;
+				display: flex;
+				flex-direction: row;
+				
+				padding-bottom: $hover-padding;
+				
+				.label {
+					flex: 0.5;
+					min-width: 0;
+					
+					p {
+						margin: 0;
+					}
+				}
+				
+				#actual {
+					font-family: 'Roboto Condensed';
+					text-align: left;
+					padding-left: $hover-padding;
+				}
+				
+				#value {
+					display: flex;
+					align-items: center;
+					
+					text-align: center;
+					flex: 0;
+					
+					padding-left: 10px;
+					padding-right: 10px;
+					
+					.title {
+						margin: 0;
+						font-size: 24px;
+					}
+				}
+				
+				#predicted {
+					font-family: 'Roboto Condensed';
+					text-align: right;
+					padding-right: $hover-padding;
+				}
+			}
+			
+			#label-path {
+				font-family: 'Roboto Condensed';
+				padding-left: $hover-padding;
+				padding-right: $hover-padding;
+			}
+		}
+		
+		paper-tabs {
+			--paper-tabs-selection-bar-color: $accent-color;
+			width: 100%;
+			
+			paper-tab {
+				width: auto;
+			}
+		}
+	}
+}

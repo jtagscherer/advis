@@ -25,8 +25,11 @@
 			<div id="header">
 				<input-image-selector
 					associated-dataset=[[associatedDataset]]
+					selected-model=[[selectedModel]]
+					selected-distortion=[[selectedDistortion]]
 					available-images=[[_availableImages]]
-					selected-image={{selectedImage}}>
+					selected-image={{selectedImage}}
+					request-manager=[[requestManager]]>
 				</input-image-selector>
 				
 				<div id="predictions-button-container">

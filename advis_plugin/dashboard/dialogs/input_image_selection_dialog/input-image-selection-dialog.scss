@@ -1,21 +1,124 @@
 @import 'advis_plugin/dashboard/shared/style/style';
+@import 'advis_plugin/dashboard/shared/style/color';
 
-$content-size: 80vh;
 $inner-padding: 5px;
 
 #content {
-	width: $content-size;
-	height: $content-size;
+	width: 90vw;
+	height: 80vh;
 	
 	margin: 0;
 	padding: 0;
 	
-	iron-list {
-		width: $content-size;
-		height: $content-size;
+	.container {
+		display: flex;
+		flex-direction: column;
 	}
 	
-	input-image-item {
-		padding: $inner-padding;
+	#matrix-container {
+		width: calc(60% - 1px);
+		height: 100%;
+		float: left;
+		
+		border-right: 1px solid $light-foreground-color;
+		
+		confusion-matrix {
+			flex: 1;
+			width: 100%;
+		}
+	}
+	
+	#image-list-container {
+		width: 40%;
+		height: 100%;
+		float: right;
+		
+		#image-list-wrapper {
+			position: relative;
+			flex: 1;
+			overflow: auto;
+			height: 100%;
+			
+			iron-list {
+				width: 100%;
+				height: 100%;
+				
+				transition: opacity 0.25s ease-in-out;
+				
+				&.shown {
+					opacity: 1;
+				}
+				
+				&.hidden {
+					opacity: 0;
+				}
+				
+				input-image-item {
+					padding: $inner-padding;
+				}
+			}
+			
+			.spinner-container {
+				position: absolute;
+				top: 0;
+				left: 0;
+				
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 100%;
+				height: 100%;
+				
+				pointer-events: none;
+				z-index: 10;
+				
+				paper-spinner-lite {
+					--paper-spinner-color: $accent-color;
+					transition: opacity 0.5s ease-in-out;
+					
+					&.shown {
+						opacity: 1;
+					}
+					
+					&.hidden {
+						opacity: 0;
+					}
+				}
+			}
+			
+			empty-state {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				
+				transition: opacity 0.5s ease-in-out;
+				
+				&.shown {
+					opacity: 1;
+				}
+				
+				&.hidden {
+					opacity: 0;
+				}
+			}
+		}
+		
+		#sort-dropdown {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-end;
+			
+			border-top: 1px solid $light-foreground-color;
+			
+			paper-dropdown-menu {
+				flex: 1;
+				--paper-input-container-focus-color: $accent-color;
+				
+				padding-left: 10px;
+				padding-right: 10px;
+			}
+		}
 	}
 }

@@ -9,6 +9,7 @@ py_library(
 		"model_router.py",
 		"prediction_router.py",
 		"distortion_router.py",
+		"confusion_matrix_router.py",
 		"dataset_router.py",
 		"single_visualization_router.py",
 		"composite_visualization_router.py",

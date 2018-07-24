@@ -32,9 +32,7 @@ class DataCache:
 		
 		def set_data(self, type, key, data):
 			self.__cache[(type, key)] = copy.deepcopy(data)
-			
-			if self.caching_enabled and self.storage_file != None:
-				self.__cache_dirty = True
+			self.__cache_dirty = True
 		
 		def enable_caching(self):
 			self.caching_enabled = True
@@ -65,7 +63,8 @@ class DataCache:
 		
 		def _timed_persist(self):
 			while True:
-				if self.__cache_dirty:
+				if self.__cache_dirty and self.caching_enabled \
+					and self.storage_file is not None:
 					self.persist_cache()
 				
 				time.sleep(10)

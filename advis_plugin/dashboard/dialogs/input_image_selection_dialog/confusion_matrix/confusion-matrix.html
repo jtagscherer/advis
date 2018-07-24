@@ -1,0 +1,143 @@
+<link rel="import" href="../../tf-backend/tf-backend.html">
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-tabs/paper-tabs.html">
+<link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
+
+<link rel="import" href="../../libraries/chroma/chroma.html">
+<link rel="import" href="../../zoomable-canvas/zoomable-canvas.html">
+<link rel="import" href="../../matrix-overlay/matrix-overlay.html">
+<link rel="import" href="../../label-view/label-view.html">
+<link rel="import" href="../../matrix-metric/matrix-metric.html">
+
+<!--
+	This component visualizes a model's predictions as a zoomable and interactive 
+	confusion matrix.
+-->
+<dom-module id="confusion-matrix">
+	<template>
+		<div id="content">
+			<div id="matrix"
+				class$="[[_getVisibilityClass(_loadingConfusionMatrix, 'negative')]]">
+				<div class="described" id="predicted-labels">
+					<div class="descriptor">
+						<p>Predicted</p>
+					</div>
+					<label-view
+						width="[[_contentSize]]"
+						height="140"
+						orientation="horizontal"
+						offset=[[horizontalOffset]]
+						hovered-pixel=[[hoveredPixel]]
+						category-hierarchy=[[_categoryHierarchy]]
+						category-list=[[_categories]]>
+					</label-view>
+				</div>
+				<div class="described" id="actual-labels">
+					<div class="descriptor">
+						<p>Actual</p>
+					</div>
+					<label-view
+						width="140"
+						height="[[_contentSize]]"
+						orientation="vertical"
+						offset=[[verticalOffset]]
+						hovered-pixel=[[hoveredPixel]]
+						category-hierarchy=[[_categoryHierarchy]]
+						category-list=[[_categories]]>
+					</label-view>
+				</div>
+				<div id="matrix-content">
+					<zoomable-canvas
+						src=[[_matrixImage]]
+						size=[[_contentSize]]
+						hovered-pixel={{hoveredPixel}}
+						vertical-offset={{verticalOffset}}
+						horizontal-offset={{horizontalOffset}}
+						selection-rectangle={{selectionRectangle}}>
+					</zoomable-canvas>
+					<matrix-overlay
+						size=[[_contentSize]]
+						data=[[_matrixData]]
+						labels=[[_labels]]
+						vertical-offset=[[verticalOffset]]
+						horizontal-offset=[[horizontalOffset]]
+						selection-rectangle=[[selectionRectangle]]>
+					</matrix-overlay>
+				</div>
+				<div class="described" id="recall">
+					<matrix-metric
+						src=[[_recallImage]]
+						data=[[_recallData]]
+						width="30"
+						height=[[_contentSize]]
+						orientation="vertical"
+						offset=[[verticalOffset]]>
+					</matrix-metric>
+					<div class="descriptor">
+						<p>Recall</p>
+					</div>
+				</div>
+				<div class="described" id="precision">
+					<matrix-metric
+						src=[[_precisionImage]]
+						data=[[_precisionData]]
+						width=[[_contentSize]]
+						height="30"
+						orientation="horizontal"
+						offset=[[horizontalOffset]]>
+					</matrix-metric>
+					<div class="descriptor">
+						<p>Precision</p>
+					</div>
+				</div>
+				<template is="dom-if" if="[[_isNotNull(selectionRectangle)]]">
+					<div id="clear-button-container">
+						<paper-button
+							on-tap="_clearSelection">
+							Clear Selection
+						</paper-button>
+					</div>
+				</template>
+			</div>
+			<div class="spinner-container">
+				<paper-spinner-lite active
+					class$="[[_getVisibilityClass(_loadingConfusionMatrix, 'positive')]]">
+				</paper-spinner-lite>
+			</div>
+			<div id="footer">
+				<div id="hovered" class$="[[_getHoverClass(hoveredPixel, hoveredLabelPath)]]">
+					<template is="dom-if" if="[[_isNotNull(hoveredPixel)]]">
+						<div id="hovered-pixel">
+							<div id="actual" class="label">
+								<p class="category">Actual</p>
+								<p class="single-line title">[[_getLabel(hoveredPixel.y)]]</p>
+							</div>
+							<div id="value">
+								<p class="title">[[_getMatrixValue(hoveredPixel.y, hoveredPixel.x)]]</p>
+							</div>
+							<div id="predicted" class="label">
+								<p class="category">Predicted</p>
+								<p class="single-line title">[[_getLabel(hoveredPixel.x)]]</p>
+							</div>
+						</div>
+					</template>
+					<template is="dom-if" if="[[_isNotNull(hoveredLabelPath)]]">
+						<p id="label-path" class="single-line title">[[hoveredLabelPath]]</p>
+					</template>
+				</div>
+				
+				<paper-tabs selected={{_selectedTab}} scrollable fit-container
+					class$="[[_getTabsClass(hoveredPixel, hoveredLabelPath)]]">
+					<paper-tab>Original</paper-tab>
+					<paper-tab>Difference</paper-tab>
+					<paper-tab>Distorted</paper-tab>
+				</paper-tabs>
+			</div>
+		</div>
+		
+		<link rel="stylesheet" type="text/css" href="confusion-matrix.css">
+	</template>
+
+	<script src="confusion-matrix.js"></script>
+</dom-module>
