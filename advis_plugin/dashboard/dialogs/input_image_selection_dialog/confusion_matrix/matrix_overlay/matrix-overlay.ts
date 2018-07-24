@@ -11,6 +11,10 @@ Polymer({
 			type: Object,
 			observer: 'redraw'
 		},
+		labels: {
+			type: Array,
+			observer: 'redraw'
+		},
 		verticalOffset: {
 			type: Object,
 			observer: 'redraw'
@@ -69,7 +73,7 @@ Polymer({
 	},
 	
 	redraw: function() {
-		if (this._context == null || this.data == null
+		if (this._context == null || this.data == null || this.labels == null
 			|| this.verticalOffset == null || this.horizontalOffset == null) {
 			return;
 		}
@@ -135,9 +139,16 @@ Polymer({
 					verticalPosition = ((y - this.verticalOffset.start) 
 						* verticalCategorySize) + (verticalCategorySize / 2);
 					var value = '';
-					if (this.data != null && this.data[y] != null
-						&& this.data[y][x] != null) {
-						value = this.data[y][x];
+					
+					if (x >= 0 && x < this.labels.length
+						&& y >= 0 && y < this.labels.length) {
+						let predictedLabel = this.labels[x];
+						let actualLabel = this.labels[y];
+						
+						if (this.data != null && this.data[actualLabel] != null
+							&& this.data[actualLabel][predictedLabel] != null) {
+							value = this.data[actualLabel][predictedLabel];
+						}
 					}
 					
 					this._context.strokeText(value, horizontalPosition, verticalPosition);

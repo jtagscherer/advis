@@ -45,6 +45,7 @@ Polymer({
 			notify: true
 		},
 		_matrixData: Object,
+		_labels: Array,
 		_precisionData: Array,
 		_recallData: Array,
 		_matrixImage: String,
@@ -143,6 +144,8 @@ Polymer({
 		});
 		
 		this.requestManager.request(matrixUrl).then(result => {
+			this.set('_matrixData', result.confusionMatrix.matrix);
+			this.set('_labels', result.confusionMatrix.labels);
 			self.set('_precisionData', result.precision);
 			self.set('_recallData', result.recall);
 			
