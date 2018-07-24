@@ -16,15 +16,21 @@ Polymer({
 		
 		_verticalOffset: {
 			type: Object,
-			observer: '_matrixChanged'
+			observer: '_reloadImageList'
 		},
 		_horizontalOffset: {
 			type: Object,
-			observer: '_matrixChanged'
+			observer: '_reloadImageList'
 		},
+		_selectionRectangle: {
+      type: Object,
+			value: null,
+      notify: true,
+			observer: '_reloadImageList'
+    },
 		_matrixMode: {
 			type: String,
-			observer: '_matrixChanged'
+			observer: '_reloadImageList'
 		},
 		_imageSortMethod: {
 			type: String,
@@ -72,14 +78,36 @@ Polymer({
 						inputMode = self._matrixMode;
 					}
 					
+					// Use the selection rectangle as the input image's bounds if one has 
+					// been selected, and the current viewport rectangle otherwise
+					var actualStart = 0;
+					var actualEnd = 0;
+					var predictedStart = 0;
+					var predictedEnd = 0;
+					
+					if (self._selectionRectangle != null) {
+						actualStart = self._selectionRectangle.y;
+						actualEnd = self._selectionRectangle.y
+							+ self._selectionRectangle.height;
+						predictedStart = self._selectionRectangle.x;
+						predictedEnd = self._selectionRectangle.x
+							+ self._selectionRectangle.width;
+					} else {
+						actualStart = Math.floor(self._verticalOffset.start);
+						actualEnd = Math.floor(self._verticalOffset.end);
+						predictedStart = Math.floor(self._horizontalOffset.start);
+						predictedEnd = Math.floor(self._horizontalOffset.end);
+					}
+					
+					// Construct the URL for retrieving the input images
 					let imagesUrl = tf_backend.addParams(tf_backend.getRouter()
 						.pluginRoute('advis', '/confusion/images/subset'), {
 						model: self.model.name,
 						distortion: self.distortion.name,
-						actualStart: String(Math.floor(self._verticalOffset.start)),
-						actualEnd: String(Math.floor(self._verticalOffset.end)),
-						predictedStart: String(Math.floor(self._horizontalOffset.start)),
-						predictedEnd: String(Math.floor(self._horizontalOffset.end)),
+						actualStart: String(actualStart),
+						actualEnd: String(actualEnd),
+						predictedStart: String(predictedStart),
+						predictedEnd: String(predictedEnd),
 						sort: self._imageSortMethod,
 						inputMode: inputMode
 					});
@@ -118,7 +146,7 @@ Polymer({
 		return this.selectedImageIndex;
 	},
 	
-	_matrixChanged: function() {
+	_reloadImageList: function() {
 		this.set('_offsetDirty', true);
 	},
 	

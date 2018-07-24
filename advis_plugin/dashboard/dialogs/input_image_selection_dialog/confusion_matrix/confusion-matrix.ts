@@ -44,6 +44,10 @@ Polymer({
 			value: null,
 			notify: true
 		},
+    selectionRectangle: {
+      type: Object,
+      notify: true
+    },
 		_matrixData: Object,
 		_labels: Array,
 		_precisionData: Array,
@@ -106,6 +110,10 @@ Polymer({
 	
 	_isNotNull: function(value) {
 		return value != null;
+	},
+	
+	_clearSelection: function() {
+		this.set('selectionRectangle', null);
 	},
 	
 	_retrieveCategories: function() {

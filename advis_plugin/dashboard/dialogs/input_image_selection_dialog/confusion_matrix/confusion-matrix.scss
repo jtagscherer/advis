@@ -168,6 +168,12 @@ $hover-padding: 10px;
 				width: var(--matrix-size);
 			}
 		}
+		
+		#clear-button-container {
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
 	}
 	
 	#footer {

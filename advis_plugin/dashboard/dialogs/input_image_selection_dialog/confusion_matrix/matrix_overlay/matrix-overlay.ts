@@ -23,11 +23,15 @@ Polymer({
 			type: Object,
 			observer: 'redraw'
 		},
+		selectionRectangle: {
+			type: Object,
+			observer: 'redraw'
+		},
 		_context: Object,
 		_opacity: {
 			type: Number,
 			value: 0,
-			observer: '_updateStyles'
+			observer: 'redraw'
 		},
 		_fontFillColor: {
 			type: String,
@@ -48,6 +52,14 @@ Polymer({
 		_gridStrokeColor: {
 			type: String,
 			value: '#FFFFFF'
+		},
+		_selectionRectangleColor: {
+			type: String,
+			value: '#F47000'
+		},
+		_selectionRectangleWidth: {
+			type: Number,
+			value: 3
 		}
 	},
 	
@@ -79,6 +91,7 @@ Polymer({
 		}
 		
 		this._context.clearRect(0, 0, this.size, this.size);
+		this._context.lineWidth = 1;
 		
 		let verticalOffsetRange = this.verticalOffset.end
 			- this.verticalOffset.start;
@@ -93,10 +106,8 @@ Polymer({
 		
 		// Fade in the overlay if we are in the transition period
 		let transitionPercentage = gridAmount - this._maximumGridLines;
-		this.set(
-			'_opacity',
-			1 - (transitionPercentage / this._gridTransitionLength)
-		);
+		this._context.globalAlpha = 1 - (transitionPercentage
+			/ this._gridTransitionLength);
 		
 		// If the amount of visible categories is small enough, draw the overlay
 		if (gridAmount < this._maximumGridLines + this._gridTransitionLength) {
@@ -156,10 +167,21 @@ Polymer({
 				}
 			}
 		}
-	},
-	
-	_updateStyles: function() {
-		this.customStyle['--overlay-opacity'] = String(this._opacity);
-		this.updateStyles();
+		
+		// Draw the rectangle of the current selection if one has been made
+		if (this.selectionRectangle != null) {
+			this._context.globalAlpha = 1.0;
+			this._context.strokeStyle = this._selectionRectangleColor;
+			this._context.lineWidth = this._selectionRectangleWidth;
+			
+			this._context.strokeRect(
+				(this.selectionRectangle.x - this.horizontalOffset.start)
+					* horizontalCategorySize,
+				(this.selectionRectangle.y - this.verticalOffset.start)
+					* verticalCategorySize,
+				this.selectionRectangle.width * horizontalCategorySize,
+				this.selectionRectangle.height * verticalCategorySize
+			);
+		}
 	}
 });

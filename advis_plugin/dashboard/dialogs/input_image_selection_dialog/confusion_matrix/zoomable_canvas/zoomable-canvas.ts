@@ -23,6 +23,10 @@ Polymer({
 			type: Object,
 			notify: true
 		},
+		selectionRectangle: {
+			type: Object,
+			notify: true
+		},
 		_context: Object,
 		_image: Object,
 		_resolutionScale: Number
@@ -54,12 +58,20 @@ Polymer({
 		});
 		
 		var lastPosition = null;
+		var selectionStartPosition = null;
 		
 		canvas.addEventListener('mousedown', function(e) {
 			e.preventDefault();
-			lastPosition = self._context.transformedPoint(
-				e.offsetX * self._resolutionScale, e.offsetY * self._resolutionScale
-			);
+			
+			if (e.shiftKey) {
+				selectionStartPosition = self._context.transformedPoint(
+					e.offsetX * self._resolutionScale, e.offsetY * self._resolutionScale
+				);
+			} else {
+				lastPosition = self._context.transformedPoint(
+					e.offsetX * self._resolutionScale, e.offsetY * self._resolutionScale
+				);
+			}
 		});
 		
 		canvas.addEventListener('mousemove', function(e) {
@@ -79,6 +91,23 @@ Polymer({
 				self._updateOffsets();
 				
 				self.redraw();
+			} else if (selectionStartPosition) {
+				let position = self._context.transformedPoint(
+					e.offsetX * self._resolutionScale, e.offsetY * self._resolutionScale
+				);
+				
+				if (position.x > selectionStartPosition.x
+					&& position.y > selectionStartPosition.y) {
+					self.set('selectionRectangle', {
+						x: Math.floor(selectionStartPosition.x),
+						y: Math.floor(selectionStartPosition.y),
+						width: Math.ceil(position.x - selectionStartPosition.x),
+						height: Math.ceil(position.y - selectionStartPosition.y)
+					});
+				} else {
+					self.set('selectionRectangle', null);
+				}
+				
 			} else {
 				self._updateHoveredPixel(e.offsetX, e.offsetY);
 			}
@@ -87,12 +116,14 @@ Polymer({
 		canvas.addEventListener('mouseup', function(e) {
 			e.preventDefault();
 			lastPosition = null;
+			selectionStartPosition = null;
 		});
 		
 		canvas.addEventListener('mouseleave', function(e) {
 			e.preventDefault();
 			self.set('hoveredPixel', null);
 			lastPosition = null;
+			selectionStartPosition = null;
 		});
 	},
 	

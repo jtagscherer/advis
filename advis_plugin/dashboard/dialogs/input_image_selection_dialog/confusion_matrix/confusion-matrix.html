@@ -1,6 +1,7 @@
 <link rel="import" href="../../tf-backend/tf-backend.html">
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-tabs/paper-tabs.html">
+<link rel="import" href="../../paper-button/paper-button.html">
 
 <link rel="import" href="../../libraries/chroma/chroma.html">
 <link rel="import" href="../../zoomable-canvas/zoomable-canvas.html">
@@ -50,14 +51,16 @@
 						size=[[_contentSize]]
 						hovered-pixel={{hoveredPixel}}
 						vertical-offset={{verticalOffset}}
-						horizontal-offset={{horizontalOffset}}>
+						horizontal-offset={{horizontalOffset}}
+						selection-rectangle={{selectionRectangle}}>
 					</zoomable-canvas>
 					<matrix-overlay
 						size=[[_contentSize]]
 						data=[[_matrixData]]
 						labels=[[_labels]]
 						vertical-offset=[[verticalOffset]]
-						horizontal-offset=[[horizontalOffset]]>
+						horizontal-offset=[[horizontalOffset]]
+						selection-rectangle=[[selectionRectangle]]>
 					</matrix-overlay>
 				</div>
 				<div class="described" id="recall">
@@ -86,6 +89,14 @@
 						<p>Precision</p>
 					</div>
 				</div>
+				<template is="dom-if" if="[[_isNotNull(selectionRectangle)]]">
+					<div id="clear-button-container">
+						<paper-button
+							on-tap="_clearSelection">
+							Clear Selection
+						</paper-button>
+					</div>
+				</template>
 			</div>
 			<div id="footer">
 				<div id="hovered" class$="[[_getHoverClass(hoveredPixel, hoveredLabelPath)]]">
