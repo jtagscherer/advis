@@ -56,7 +56,19 @@ Polymer({
 		_highlightColor: {
 			type: String,
 			value: '#E0E0E0'
-		}
+		},
+		_backgroundColor: {
+			type: String,
+			value: '#FFFFFF'
+		},
+    _encompassingHierarchy: {
+      type: String,
+      value: null
+    },
+    _encompassingHierarchyHeight: {
+      type: Number,
+      value: 20
+    }
 	},
 	
 	reload: function() {
@@ -109,14 +121,132 @@ Polymer({
 		levelFloat = this._maximumHierarchyDepth
 			- Math.max(0, Math.min(this._maximumHierarchyDepth, levelFloat));
 		
+		this._updateEncompassingLevels(levelFloat);
+		
 		// Draw three label rows at once
 		for (var i = 0; i < 3; i++) {
 			this._drawNestedLabels(levelFloat, i);
+		}
+		
+		// Draw the encompassing hierarchy label at the very edge
+		var currentHoverPosition;
+		if (this.hoveredPixel != null) {
+			if (this.orientation == 'vertical') {
+				currentHoverPosition = this.hoveredPixel.y;
+			} else if (this.orientation == 'horizontal') {
+				currentHoverPosition = this.hoveredPixel.x;
+			}
+		}
+		
+		let hovered = currentHoverPosition != null && currentHoverPosition >= 0
+			&& currentHoverPosition < this.categoryList.length;
+		
+		if (hovered && this._encompassingHierarchy != null) {
+			this._context.fillStyle = this._highlightColor;
+		} else {
+			this._context.fillStyle = this._backgroundColor;
+		}
+		
+		if (this.orientation == 'vertical') {
+			this._context.fillRect(
+				0, 0, this._encompassingHierarchyHeight, this.height
+			);
+			
+			if (this._encompassingHierarchy != null) {
+				this._context.strokeRect(
+					0, 0, this._encompassingHierarchyHeight, this.height
+				);
+				this._drawTextInRectangle(
+					this._encompassingHierarchy,
+					0, 0,
+					this._encompassingHierarchyHeight, this.height,
+					true
+				);
+			}
+		} else if (this.orientation == 'horizontal') {
+			this._context.fillRect(
+				0, 0, this.width, this._encompassingHierarchyHeight
+			);
+			
+			if (this._encompassingHierarchy != null) {
+				this._context.strokeRect(
+					0, 0, this.width, this._encompassingHierarchyHeight
+				);
+				this._drawTextInRectangle(
+					this._encompassingHierarchy,
+					0, 0,
+					this.width, this._encompassingHierarchyHeight,
+					false
+				);
+			}
 		}
 	},
 	
 	getLabelsForLevel: function(level) {
 		return this._labelCache[level];
+	},
+	
+	_updateEncompassingLevels: function(levelFloat) {
+		if (this.offset == null) {
+			return;
+		}
+		
+		// Retrieve all visible labels on the current level
+		let level = Math.floor(levelFloat);
+		let limitedLevel = Math.min(level, this._maximumHierarchyDepth);
+		let labels = this.getLabelsForLevel(level);
+		
+		var visibleLabels = [];
+		var currentOffset = 0;
+		for (let label of labels) {
+			if (currentOffset <= this.offset.end
+				&& currentOffset + label.size >= this.offset.start) {
+				visibleLabels.push(label.name);
+			}
+			
+			currentOffset += label.size;
+		}
+		
+		if (visibleLabels.length == 0 || limitedLevel == 0) {
+			this.set('_encompassingHierarchy', null);
+			return;
+		}
+		
+		// Retrieve hierarchy paths for all visible labels
+		var paths = [];
+		for (let label of visibleLabels) {
+			paths.push(
+				advis.hierarchy.util.findNodePath(this.categoryHierarchy, label)
+			);
+		}
+		
+		// Find all common predecessors that all visible labels share
+		var common_path = [];
+		
+		outer:
+		for (var i = 0; i < paths[0].length; i++) {
+			let level_name = paths[0][i];
+			
+			for (let path of paths) {
+				if (i + 1 > path.length || path[i] != level_name) {
+					break outer;
+				}
+			}
+			
+			common_path.push(level_name);
+		}
+		
+		// Remove the last element of the path since it is already being shown as a 
+		// label
+		common_path.pop();
+		
+		// Create a string from the path
+		let hierarchy_path = common_path.map(n => {
+			let name = n.split(', ')[0];
+			return name.charAt(0).toUpperCase() + name.slice(1);
+		});
+		
+		this.set('_encompassingHierarchy', hierarchy_path.join(' > '));
 	},
 	
 	_drawNestedLabels: function(levelFloat, offset) {
@@ -125,13 +255,15 @@ Polymer({
 		
 		if (this.orientation == 'vertical') {
 			this._drawLabelRow(
-				limitedLevel, (offset - (levelFloat - level)) * 0.5 * this.width,
-				this.width / 2
+				limitedLevel, (offset - (levelFloat - level)) * 0.5 
+				* (this.width - this._encompassingHierarchyHeight),
+				(this.width - this._encompassingHierarchyHeight) / 2
 			);
 		} else if (this.orientation == 'horizontal') {
 			this._drawLabelRow(
-				limitedLevel, (offset - (levelFloat - level)) * 0.5 * this.height,
-				this.height / 2
+				limitedLevel, (offset - (levelFloat - level)) * 0.5
+				* (this.height - this._encompassingHierarchyHeight),
+				(this.height - this._encompassingHierarchyHeight) / 2
 			);
 		}
 	},
@@ -140,9 +272,9 @@ Polymer({
 		this._context.save();
 		
 		if (this.orientation == 'vertical') {
-			this._context.translate(offset, 0);
+			this._context.translate(offset + this._encompassingHierarchyHeight, 0);
 		} else if (this.orientation == 'horizontal') {
-			this._context.translate(0, offset);
+			this._context.translate(0, offset + this._encompassingHierarchyHeight);
 		}
 		
 		// Retrieve labels for the current zoom level
