@@ -60,7 +60,7 @@ Polymer({
 		_contentSize: Number,
 		_selectedTab: {
 			type: Number,
-			value: 1,
+			value: 0,
 			observer: '_selectedTabChanged'
 		},
 		
