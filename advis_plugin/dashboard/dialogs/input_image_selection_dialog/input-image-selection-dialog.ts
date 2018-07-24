@@ -99,10 +99,10 @@ Polymer({
 					if (self._selectionRectangle != null) {
 						actualStart = self._selectionRectangle.y;
 						actualEnd = self._selectionRectangle.y
-							+ self._selectionRectangle.height;
+							+ self._selectionRectangle.height - 1;
 						predictedStart = self._selectionRectangle.x;
 						predictedEnd = self._selectionRectangle.x
-							+ self._selectionRectangle.width;
+							+ self._selectionRectangle.width - 1;
 					} else {
 						actualStart = Math.floor(self._verticalOffset.start);
 						actualEnd = Math.floor(self._verticalOffset.end);
