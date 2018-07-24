@@ -2,12 +2,63 @@
 @import 'advis_plugin/dashboard/shared/style/text';
 
 $line-margin: 2px;
+$certainty-bar-height: 5px;
+
+:host {
+	--original-certainty-value: 0%;
+	--distorted-certainty-value: 0%;
+	--certainty-difference-value: 0%;
+}
 
 paper-card {
+	position: relative;
 	width: 150px;
-	height: 228px;
+	height: calc(228px + (3 * #{$certainty-bar-height}));
 	
 	cursor: pointer;
+	
+	#card-footer {
+		position: absolute;
+		width: 100%;
+		left: 0;
+		bottom: 0;
+		
+		border-radius: 0px 0px 2px 2px;
+		overflow: hidden;
+		
+		.certainty-bar {
+			height: $certainty-bar-height;
+			background-color: $accent-color;
+		}
+		
+		#original-certainty {
+			width: var(--original-certainty-value);
+		}
+		
+		#distorted-certainty {
+			width: var(--distorted-certainty-value);
+		}
+		
+		#difference-wrapper {
+			width: 100%;
+			height: $certainty-bar-height;
+			position: relative;
+			
+			#certainty-difference {
+				position: absolute;
+				width: var(--certainty-difference-value);
+				background-color: $secondary-accent-color;
+				
+				&.negative {
+					right: 50%;
+				}
+				
+				&.positive {
+					left: 50%;
+				}
+			}
+		}
+	}
 }
 
 .selected-card {

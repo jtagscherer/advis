@@ -12,12 +12,36 @@
 		<paper-card image=[[image.url]] class$="[[_getClass(selected, 'card')]]">
 			<div class="card-content">
 				<p id="title" class$="[[_getClass(selected, 'title')]]">[[image.categoryName]]</p>
-				<p id="caption" class$="[[_getClass(selected, 'caption')]]">[[image.id]]</p>
+				<p id="caption" class$="[[_getClass(selected, 'caption')]]">[[image.prediction.name]]</p>
 				
-				<paper-tooltip for="title">
-					[[image.categoryName]]
+				<paper-tooltip position="top" for="title">
+					Actual: [[image.categoryName]]
+				</paper-tooltip>
+				
+				<paper-tooltip position="top" for="caption">
+					Predicted: [[image.prediction.name]]
 				</paper-tooltip>
 			</div>
+			
+			<div id="card-footer">
+				<div id="original-certainty" class="certainty-bar"></div>
+				<div id="distorted-certainty" class="certainty-bar"></div>
+				<div id="difference-wrapper">
+					<div id="certainty-difference" class$="[[_getCertaintyDifferenceBarClass(_certaintyDifferenceNegative)]]"></div>
+				</div>
+			</div>
+			
+			<paper-tooltip position="top" for="card-footer">
+				<p>
+					Certainty for Original Input: [[_getFormattedValue(image.certainty.original)]]
+				</p>
+				<p>
+					Certainty for Distorted Input: [[_getFormattedValue(image.certainty.distorted)]]
+				</p>
+				<p>
+					Certainty Change: [[_getFormattedValue(image.certainty.difference)]]
+				</p>
+			</paper-tooltip>
 			
 			<paper-ripple></paper-ripple>
 		</paper-card>
