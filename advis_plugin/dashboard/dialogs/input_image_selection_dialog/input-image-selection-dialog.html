@@ -58,11 +58,12 @@
 						text="Input Images">
 					</section-header>
 					<iron-list
-						class="flex" items="[[inputImages]]" as="image" grid>
+						class="flex" items="[[inputImages]]" as="image" grid selection-enabled>
 						<template>
 							<input-image-item
 								image=[[image]]
-								data-image-index$={{index}}
+								selected={{selected}}
+								data-image-index$={{image.index}}
 								on-tap="_inputImageClicked">
 							</input-image-item>
 						</template>

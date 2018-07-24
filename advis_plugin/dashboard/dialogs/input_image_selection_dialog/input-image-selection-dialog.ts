@@ -11,7 +11,7 @@ Polymer({
 		distortion: Object,
 		dataset: Object,
 		inputImages: Array,
-		selectedImage: Object,
+		selectedImageIndex: Number,
 		requestManager: Object,
 		
 		_verticalOffset: {
@@ -48,7 +48,9 @@ Polymer({
 		this.distortion = content.distortion;
 		this.dataset = content.dataset;
 		this.inputImages = [];
-		// this.selectedImage = content.selectedImage;
+		this.selectedImageIndex = content.selectedImageIndex;
+		this._offsetDirty = true;
+		this._imageRequestRunning = false;
 		this.requestManager = content.requestManager;
 		
 		// Update the image list periodically
@@ -94,6 +96,15 @@ Polymer({
 						
 						self.set('inputImages', images);
 						
+						// If the currently selected item is present within the list we 
+						// have retrieved, select it in the list
+						for (let image of images) {
+							if (image.index == self.selectedImageIndex) {
+								self.$$('iron-list').selectItem(image);
+								break;
+							}
+						}
+						
 						self.set('_offsetDirty', false);
 						self.set('_imageRequestRunning', false);
 					});
@@ -104,7 +115,7 @@ Polymer({
 	
 	getContentOnDismiss: function() {
 		clearInterval(this._intervalId);
-		return this.selectedImage;
+		return this.selectedImageIndex;
 	},
 	
 	_matrixChanged: function() {
@@ -132,9 +143,11 @@ Polymer({
 				
 				// If the input image item that has been clicked is the one that is 
 				// already selected, prevent it from being deselected
-				if (imageIndex == this.selectedImage.index) {
+				if (imageIndex == this.selectedImageIndex) {
 					e.stopPropagation();
 				}
+				
+				this.set('selectedImageIndex', imageIndex);
 			}
 		}
 	}

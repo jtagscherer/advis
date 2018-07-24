@@ -26,7 +26,7 @@ Polymer({
 				model: this.selectedModel,
 				distortion: this.selectedDistortion,
 				dataset: this.associatedDataset,
-				selectedImage: this.selectedImage,
+				selectedImageIndex: this.selectedImage.index,
 				requestManager: this.requestManager,
 				animationTarget: this.$$('#left').getBoundingClientRect()
 			});
@@ -40,7 +40,14 @@ Polymer({
 	
 	_handleDialogReturnedEvent: function(e) {
 		if (e.detail.eventId === 'input-image-selection-dialog') {
-			this.selectedImage = e.detail.content;
+			let selectedImageIndex = e.detail.content;
+			
+			for (let image of this.availableImages) {
+				if (image.index == selectedImageIndex) {
+					this.set('selectedImage', image);
+					return;
+				}
+			}
 		}
 	}
 });
