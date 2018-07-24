@@ -625,4 +625,11 @@ def confusion_images_subset_route(request, model_manager, distortion_manager):
 		and image['prediction']['hierarchical'] >= predicted_start \
 		and image['prediction']['hierarchical'] <= predicted_end]
 	
+	# Add category names
+	model = model_manager.get_model_modules()[model_name]
+	categories = model._dataset.categories
+	
+	for image in filtered_images:
+		image['prediction']['name'] = categories[image['prediction']['list']]
+	
 	return http_util.Respond(request, filtered_images, 'application/json')
