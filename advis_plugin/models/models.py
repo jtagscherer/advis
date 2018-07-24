@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from skimage.transform import resize
+import math
 
 import traceback
 import logging
@@ -314,7 +315,7 @@ class Model:
 				)[0]
 				
 				predictions = [{
-					'categoryId': int(index),
+					'categoryId': int(index) - 1,
 					'categoryName': self._dataset.categories[int(index) - 1],
 					'certainty': float(model_output[index])
 				} for index in model_output.argsort()[::-1]]
