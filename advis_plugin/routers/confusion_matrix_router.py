@@ -30,7 +30,7 @@ def _predict_image(model, image, distortion, model_manager, distortion_manager,
 		distortion_manager
 	)['predictions'][0]
 	
-	prediction_key = str(prediction['categoryId'] - 1)
+	prediction_key = str(prediction['categoryId'])
 	
 	if prediction_key in prediction_dictionary:
 		prediction_dictionary[prediction_key] += 1
@@ -314,18 +314,20 @@ def confusion_matrix_full_route(request, model_manager, distortion_manager):
 	
 	# Fill up confusion matrices depending on the predictions of all images 
 	# within each category that have been made by the model
-	for node in nodes:
-		actual_category = node['category']
-		
-		for original_prediction in node['predictions']['original']:
-			predicted_category = int(original_prediction)
-			original_confusion_matrix[actual_category][predicted_category] \
-				+= node['predictions']['original'][original_prediction]
-		
-		for distorted_prediction in node['predictions']['distorted']:
-			predicted_category = int(distorted_prediction)
-			distorted_confusion_matrix[actual_category][predicted_category] \
-				+= node['predictions']['distorted'][distorted_prediction]
+	original_images = _get_listed_node_predictions(model_name, distortion_name,
+		model_manager, distortion_manager, 'index', 'original')
+	distorted_images = _get_listed_node_predictions(model_name, distortion_name,
+		model_manager, distortion_manager, 'index', 'distorted')
+	
+	for original_image in original_images:
+		actual_category = original_image['categoryId']
+		original_confusion_matrix[actual_category] \
+			[original_image['prediction']['list']] += 1
+	
+	for distorted_image in distorted_images:
+		actual_category = distorted_image['categoryId']
+		distorted_confusion_matrix[actual_category] \
+			[distorted_image['prediction']['list']] += 1
 	
 	if mode == 'original':
 		matrix = original_confusion_matrix
@@ -358,6 +360,8 @@ def confusion_matrix_full_route(request, model_manager, distortion_manager):
 		recall = [i - j if i is not None and j is not None else None \
 			for i, j in zip(distorted_recall, original_recall)]
 	
+	matrix_labels = [str(key) for key in matrix.keys()]
+	
 	# Find the minimum and maximum values within the matrix
 	value_range = {
 		'minimum': math.inf,
@@ -375,6 +379,7 @@ def confusion_matrix_full_route(request, model_manager, distortion_manager):
 	response = {
 		'confusionMatrix': {
 			'range': value_range,
+			'labels': matrix_labels,
 			'matrix': matrix
 		},
 		'precision': precision,

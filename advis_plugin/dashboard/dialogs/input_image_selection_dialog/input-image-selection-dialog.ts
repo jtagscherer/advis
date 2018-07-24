@@ -75,9 +75,9 @@ Polymer({
 						model: self.model.name,
 						distortion: self.distortion.name,
 						actualStart: String(Math.floor(self._verticalOffset.start)),
-						actualEnd: String(Math.ceil(self._verticalOffset.end)),
+						actualEnd: String(Math.floor(self._verticalOffset.end)),
 						predictedStart: String(Math.floor(self._horizontalOffset.start)),
-						predictedEnd: String(Math.ceil(self._horizontalOffset.end)),
+						predictedEnd: String(Math.floor(self._horizontalOffset.end)),
 						sort: self._imageSortMethod,
 						inputMode: inputMode
 					});
@@ -100,8 +100,6 @@ Polymer({
 				}
 			}
 		}, 1000);
-		
-		// this.$$('iron-list').selectItem(this.selectedImage);
 	},
 	
 	getContentOnDismiss: function() {

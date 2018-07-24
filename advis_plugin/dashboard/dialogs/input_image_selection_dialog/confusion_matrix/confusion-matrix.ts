@@ -143,7 +143,6 @@ Polymer({
 		});
 		
 		this.requestManager.request(matrixUrl).then(result => {
-			self.set('_matrixData', result.confusionMatrix.matrix);
 			self.set('_precisionData', result.precision);
 			self.set('_recallData', result.recall);
 			
@@ -156,11 +155,12 @@ Polymer({
 				self._generateMetricImage(result.recall, 'vertical')
 			);
 			
-			let matrixLabels = Object.keys(result.confusionMatrix.matrix);
+			let matrixLabels = result.confusionMatrix.labels;
 			let matrixSize = matrixLabels.length;
 			let valueRange = result.confusionMatrix.range;
 			let valueSpan = Math.abs(valueRange.maximum - valueRange.minimum);
 			
+			// Generate an image of the confusion matrix
 			let canvas = document.createElement('canvas');
 			canvas.width = matrixSize;
 			canvas.height = matrixSize;
@@ -172,12 +172,13 @@ Polymer({
 			
 			for (var x = 0; x < matrixSize; x++) {
 				for (var y = 0; y < matrixSize; y++) {
-					let dataIndex = (x + (y * matrixSize)) * 4;
+					let dataIndex = (y + (x * matrixSize)) * 4;
 					
 					let predictedLabel = matrixLabels[x];
 					let actualLabel = matrixLabels[y];
-					let value = result.confusionMatrix
-						.matrix[actualLabel][predictedLabel];
+					
+					var value = result.confusionMatrix
+						.matrix[predictedLabel][actualLabel];
 					
 					let cellColor = colorScale(
 						(value + valueRange.minimum) / valueSpan
