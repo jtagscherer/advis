@@ -184,7 +184,7 @@ Polymer({
 						.matrix[predictedLabel][actualLabel];
 					
 					let cellColor = colorScale(
-						(value + valueRange.minimum) / valueSpan
+						(value + Math.abs(valueRange.minimum)) / valueSpan
 					).get('rgba');
 					
 					imageData.data[dataIndex] = cellColor[0];
