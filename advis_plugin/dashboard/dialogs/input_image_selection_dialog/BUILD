@@ -24,7 +24,8 @@ tf_web_library(
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header/categorized_header_item",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
-		"//advis_plugin/dashboard/section_header"
+		"//advis_plugin/dashboard/section_header",
+		"//advis_plugin/dashboard/empty_state"
 	]
 )
 

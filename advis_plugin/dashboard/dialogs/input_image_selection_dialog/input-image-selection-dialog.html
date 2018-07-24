@@ -11,6 +11,7 @@
 <link rel="import" href="../../dialog-header/categorized-header-item/categorized-header-item.html">
 <link rel="import" href="../../dialog-behavior/dialog-behavior.html">
 <link rel="import" href="../../section-header/section-header.html">
+<link rel="import" href="../../empty-state/empty-state.html">
 
 <!--
 	When opened, this module displays a confusion matrix of the currently 
@@ -78,6 +79,13 @@
 								class$="[[_getVisibilityClass(_loadingInputImages, 'positive')]]">
 							</paper-spinner-lite>
 						</div>
+						<empty-state class$="[[_getEmptyStateClass(inputImages, _loadingInputImages)]]"
+							headline="No Input Images Found"
+							caption="Please use the confusion matrix to navigate to an area 
+								that contains values which correspond to input images. 
+								Alternatively, you can shift-click and drag to create a 
+								selection rectangle.">
+						</empty-state>
 					</div>
 					<div id="sort-dropdown">
 						<paper-dropdown-menu label="Sort By">

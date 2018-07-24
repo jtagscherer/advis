@@ -157,6 +157,15 @@ Polymer({
 		clearInterval(this._intervalId);
 		return this.selectedImageIndex;
 	},
+	
+	_getEmptyStateClass: function(inputImages, loadingInputImages) {
+		if ((inputImages != null && inputImages.length > 0)
+			|| loadingInputImages) {
+			return 'hidden';
+		} else {
+			return 'shown';
+		}
+	},
   
   _getVisibilityClass: function(condition, negation, prefix='') {
     if (negation == 'negative') {
