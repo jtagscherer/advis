@@ -48,6 +48,11 @@ Polymer({
 		},
 		_intervalId: Number,
 		
+		_loadingInputImages: {
+			type: Boolean,
+			value: false
+		},
+		
 		eventId: {
 			type: String,
 			value: 'input-image-selection-dialog'
@@ -73,6 +78,7 @@ Polymer({
 				if (self._matrixMode != null && self.model != null
 					&& self.distortion != null && self._verticalOffset != null
 					&& self._horizontalOffset != null && self._imageSortMethod != null) {
+					self.set('_loadingInputImages', true);
 					self.set('_imageRequestRunning', true);
 					
 					// Fetch all images matching the current selection
@@ -140,6 +146,7 @@ Polymer({
 						
 						self.set('_offsetDirty', false);
 						self.set('_imageRequestRunning', false);
+						self.set('_loadingInputImages', false);
 					});
 				}
 			}
@@ -150,6 +157,18 @@ Polymer({
 		clearInterval(this._intervalId);
 		return this.selectedImageIndex;
 	},
+  
+  _getVisibilityClass: function(condition, negation, prefix='') {
+    if (negation == 'negative') {
+      condition = !condition;
+    }
+    
+    if (condition) {
+      return `${prefix} shown`;
+    } else {
+			return `${prefix} hidden`;
+		}
+  },
 	
 	_sortSelectionChanged: function(value) {
 		switch (value) {

@@ -3,6 +3,7 @@
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../paper-dialog/paper-dialog.html">
 <link rel="import" href="../../paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../../input-image-item/input-image-item.html">
 <link rel="import" href="../../confusion-matrix/confusion-matrix.html">
@@ -59,17 +60,25 @@
 					<section-header
 						text="Input Images">
 					</section-header>
-					<iron-list
-						class="flex" items="[[inputImages]]" as="image" grid selection-enabled>
-						<template>
-							<input-image-item
-								image=[[image]]
-								selected={{selected}}
-								data-image-index$={{image.index}}
-								on-tap="_inputImageClicked">
-							</input-image-item>
-						</template>
-					</iron-list>
+					<div id="image-list-wrapper">
+						<iron-list
+							class$="[[_getVisibilityClass(_loadingInputImages, 'negative', 'flex')]]"
+							items="[[inputImages]]" as="image" grid selection-enabled>
+							<template>
+								<input-image-item
+									image=[[image]]
+									selected={{selected}}
+									data-image-index$={{image.index}}
+									on-tap="_inputImageClicked">
+								</input-image-item>
+							</template>
+						</iron-list>
+						<div class="spinner-container">
+							<paper-spinner-lite active
+								class$="[[_getVisibilityClass(_loadingInputImages, 'positive')]]">
+							</paper-spinner-lite>
+						</div>
+					</div>
 					<div id="sort-dropdown">
 						<paper-dropdown-menu label="Sort By">
 							<paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{_sortSelection}}">

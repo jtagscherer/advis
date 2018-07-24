@@ -62,6 +62,11 @@ Polymer({
 			type: Number,
 			value: 1,
 			observer: '_selectedTabChanged'
+		},
+		
+		_loadingConfusionMatrix: {
+			type: Boolean,
+			value: true
 		}
 	},
 	
@@ -72,6 +77,7 @@ Polymer({
 	reload: function() {
 		if (this.model != null && this.dataset != null && this.distortion != null
 			&& this.matrixMode != null && this.requestManager != null) {
+			this.set('_loadingConfusionMatrix', true);
 			this._retrieveCategories();
 			this._generateMatrixImage();
 		}
@@ -144,6 +150,8 @@ Polymer({
 	_generateMatrixImage: function(updateSize=true) {
 		let self = this;
 		
+		this.set('_loadingConfusionMatrix', true);
+		
 		const matrixUrl = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/confusion/matrix/full'), {
 			model: this.model,
@@ -213,8 +221,22 @@ Polymer({
 				this.customStyle['--matrix-size'] = `${self._contentSize}px`;
 				this.updateStyles();
 			}
+			
+			self.set('_loadingConfusionMatrix', false);
 		});
 	},
+	
+	_getVisibilityClass: function(condition, negation) {
+    if (negation == 'negative') {
+      condition = !condition;
+    }
+    
+    if (condition) {
+      return 'shown';
+    } else {
+			return 'hidden';
+		}
+  },
 	
 	_matrixModeChanged: function() {
 		if (this.model != null && this.dataset != null && this.distortion != null

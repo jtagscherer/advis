@@ -2,6 +2,7 @@
 <link rel="import" href="../../polymer/polymer.html">
 <link rel="import" href="../../paper-tabs/paper-tabs.html">
 <link rel="import" href="../../paper-button/paper-button.html">
+<link rel="import" href="../../paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../../libraries/chroma/chroma.html">
 <link rel="import" href="../../zoomable-canvas/zoomable-canvas.html">
@@ -16,7 +17,8 @@
 <dom-module id="confusion-matrix">
 	<template>
 		<div id="content">
-			<div id="matrix">
+			<div id="matrix"
+				class$="[[_getVisibilityClass(_loadingConfusionMatrix, 'negative')]]">
 				<div class="described" id="predicted-labels">
 					<div class="descriptor">
 						<p>Predicted</p>
@@ -97,6 +99,11 @@
 						</paper-button>
 					</div>
 				</template>
+			</div>
+			<div class="spinner-container">
+				<paper-spinner-lite active
+					class$="[[_getVisibilityClass(_loadingConfusionMatrix, 'positive')]]">
+				</paper-spinner-lite>
 			</div>
 			<div id="footer">
 				<div id="hovered" class$="[[_getHoverClass(hoveredPixel, hoveredLabelPath)]]">
