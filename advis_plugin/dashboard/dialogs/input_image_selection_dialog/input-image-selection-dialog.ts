@@ -34,7 +34,12 @@ Polymer({
 		},
 		_imageSortMethod: {
 			type: String,
-			value: 'descending'
+			observer: '_reloadImageList'
+		},
+		_sortSelection: {
+			type: Number,
+			value: 0,
+			observer: '_sortSelectionChanged'
 		},
 		_offsetDirty: Boolean,
 		_imageRequestRunning: {
@@ -144,6 +149,20 @@ Polymer({
 	getContentOnDismiss: function() {
 		clearInterval(this._intervalId);
 		return this.selectedImageIndex;
+	},
+	
+	_sortSelectionChanged: function(value) {
+		switch (value) {
+			case 0:
+				this.set('_imageSortMethod', 'descending');
+				break;
+			case 1:
+				this.set('_imageSortMethod', 'ascending');
+				break;
+			case 2:
+				this.set('_imageSortMethod', 'index');
+				break;
+		}
 	},
 	
 	_reloadImageList: function() {

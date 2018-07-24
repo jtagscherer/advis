@@ -42,5 +42,21 @@ $inner-padding: 5px;
 				padding: $inner-padding;
 			}
 		}
+		
+		#sort-dropdown {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-end;
+			
+			border-top: 1px solid $light-foreground-color;
+			
+			paper-dropdown-menu {
+				flex: 1;
+				--paper-input-container-focus-color: $accent-color;
+				
+				padding-left: 10px;
+				padding-right: 10px;
+			}
+		}
 	}
 }
