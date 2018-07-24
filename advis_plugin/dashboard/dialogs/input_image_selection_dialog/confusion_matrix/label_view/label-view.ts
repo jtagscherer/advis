@@ -236,10 +236,6 @@ Polymer({
 			common_path.push(level_name);
 		}
 		
-		// Remove the last element of the path since it is already being shown as a 
-		// label
-		common_path.pop();
-		
 		// Create a string from the path
 		let hierarchy_path = common_path.map(n => {
 			let name = n.split(', ')[0];
