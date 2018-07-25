@@ -6,9 +6,6 @@ from advis_plugin.routers import prediction_router
 import math
 import copy
 
-# DEBUG: 
-import tensorflow as tf
-
 def _get_images_of_category(dataset, category_id):
 	images = []
 	
