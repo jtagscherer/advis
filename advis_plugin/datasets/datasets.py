@@ -7,6 +7,7 @@ from io import BytesIO
 import traceback
 import logging
 import importlib.util
+import tensorflow as tf
 
 from os import makedirs, path, listdir, walk
 from os.path import isdir, join, dirname
@@ -55,6 +56,8 @@ class DatasetManager:
 	dataset_modules = None
 	
 	def __init__(self, directory):
+		tf.logging.warn('Setting up all datasets...')
+		
 		self.directory = path.join(directory, 'datasets')
 		self.dataset_modules = {}
 		
