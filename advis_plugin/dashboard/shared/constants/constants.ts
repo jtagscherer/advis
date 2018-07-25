@@ -1,10 +1,10 @@
 module advis.config {
 	export const requests = {
 		imageAmounts: {
-			modelAccuracy: 100,
+			modelAccuracy: 50000,
 			activationVisualization: 10,
-			distortedPredictions: 10,
-			nodeActivation: 10
+			distortedPredictions: 50,
+			nodeActivation: 100
 		}
 	};
 	
