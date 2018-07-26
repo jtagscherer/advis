@@ -1,6 +1,7 @@
 from __future__ import division
 import numpy as np
 from skimage.io import imread
+from skimage.color import gray2rgb
 from PIL import Image
 from io import BytesIO
 
@@ -39,6 +40,10 @@ class Dataset:
 	
 	def load_image(self, index, output='array'):
 		image_data = imread(self.images[index]['path'])
+		
+		# Turn potential gray-level images into RGB images with the right shape
+		if len(image_data.shape) == 2:
+			image_data = gray2rgb(image_data)
 		
 		if output == 'array':
 			return image_data / 255
