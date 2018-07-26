@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from skimage.transform import resize
+from skimage.color import gray2rgb
 import math
 
 import traceback
@@ -330,6 +331,10 @@ class Model:
 			return input_image
 		
 		image_dimensions = (self._input_image_size, self._input_image_size)
+		
+		# Turn potential gray-level images into RGB images with the right shape
+		if len(input_image.shape) == 2:
+			input_image = gray2rgb(input_image)
 		
 		return resize(input_image, image_dimensions, mode='constant',
 			order=0, anti_aliasing=False)
