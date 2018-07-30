@@ -259,11 +259,14 @@ def _get_node_difference(model_name, layer, distortion_name, input_image_amount,
 	else:
 		_model = model_manager.get_model_modules()[model_name]
 		
-		# Pick random input images
-		input_images = [
-			_model._dataset.images[randrange(0, len(_model._dataset.images))] \
-			for i in range(0, input_image_amount)
-		]
+		# Pick input images
+		if input_image_amount >= len(_model._dataset.images):
+			input_images = _model._dataset.images
+		else:
+			input_images = [
+				_model._dataset.images[randrange(0, len(_model._dataset.images))] \
+				for i in range(0, input_image_amount)
+			]
 		
 		# Create a list that will contain all activation difference values
 		activation_differences = []
