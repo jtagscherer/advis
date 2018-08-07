@@ -132,6 +132,10 @@ def _cache_prediction_accuracy(routers, managers, input_image_amount):
 	for model in model_modules:
 		_model = model_modules[model]
 		
+		prediction_router._get_accuracy_prediction(
+			model, None, input_image_amount, model_manager, distortion_manager
+		)
+		
 		for distortion in distortion_manager.get_distortion_modules():
 			prediction_router._get_accuracy_prediction(
 				model, distortion, input_image_amount, model_manager, distortion_manager
