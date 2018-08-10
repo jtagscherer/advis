@@ -66,6 +66,9 @@ const VisualizationComparisonBehavior = {
 			return;
 		}
 		
+		this.set('_originalMetaData', null);
+		this.set('_distortedMetaData', null);
+		
 		this.set('state', 'loading');
 		
 		this._loadMetaData();
@@ -97,7 +100,8 @@ const VisualizationComparisonBehavior = {
 		if (this._originalMetaData == null || this._distortedMetaData == null) {
 			this.set('state', 'loading');
 		} else if (Object.keys(this._originalMetaData).length == 0
-			|| Object.keys(this._distortedMetaData).length == 0) {
+			|| Object.keys(this._distortedMetaData).length == 0
+			|| this.layer == null) {
 			this.set('state', 'empty');
 		} else if (!this._originalImageLoaded || !this._distortedImageLoaded) {
 			this.set('state', 'loading');
@@ -133,7 +137,7 @@ const VisualizationComparisonBehavior = {
 	},
 	
 	_imageClicked: function(e) {
-		if (this.state != 'loaded') {
+		if (this.state != 'loaded' || this.layer == null) {
 			return;
 		}
 		
