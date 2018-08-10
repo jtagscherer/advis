@@ -24,6 +24,7 @@ Polymer({
 		_availableDistortions: Array,
 		_selectedDistortions: Array,
 		_selectedVisualizationDistortion: Object,
+		_selectedImage: Object,
     _dataNotFound: Boolean,
 		_inputImageAmount: {
 			type: Number,

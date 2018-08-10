@@ -131,6 +131,7 @@
 							<div id="graph-container">
 								<graph-view id="graph"
 									selected-model=[[selectedModel]]
+									selected-image=[[selectedImage]]
 									distortions=[[_getNodeVisualizationDistortions(_selectedVisualizationDistortion)]]
 									request-manager=[[_requestManager]]>
 								</graph-view>
@@ -139,6 +140,7 @@
 								<layer-visualization
 									selected-model=[[selectedModel]]
 									selected-layer=[[selectedLayer]]
+									selected-image={{selectedImage}}
 									distortions=[[_selectedDistortions]]
 									selected-distortion={{_selectedVisualizationDistortion}}
 									request-manager=[[_requestManager]]>

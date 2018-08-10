@@ -18,6 +18,7 @@ module advis.config {
 			displayNodeInformation: false,
 			displayMinimap: false,
 			displayLegend: true,
+			dataMode: 'average',
 			accumulationMethod: 'maximum',
 			percentageMode: 'relative',
 			colorScaleName: 'spectral'

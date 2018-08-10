@@ -29,6 +29,11 @@ def node_difference_list_route(request, model_manager, distortion_manager):
 	else:
 		output_mode = request.args['outputMode']
 	
+	if 'imageIndex' not in request.args:
+		image_index = None
+	else:
+		image_index = request.args['imageIndex']
+	
 	# Check parameter validity
 	if percentage_mode not in ['relative', 'absolute']:
 		return http_util.Respond(
@@ -50,7 +55,7 @@ def node_difference_list_route(request, model_manager, distortion_manager):
 	
 	response = _list_node_differences(model_name, distortions, input_image_amount,
 		accumulation_method, percentage_mode, output_mode, model_manager,
-		distortion_manager)
+		distortion_manager, image_index=image_index)
 	
 	return http_util.Respond(request, response, 'application/json')
 
@@ -145,7 +150,7 @@ def node_difference_list_meta_route(request, model_manager, distortion_manager):
 
 def _list_node_differences(model_name, distortions, input_image_amount,
 	accumulation_method, percentage_mode, output_mode, model_manager,
-	distortion_manager):
+	distortion_manager, image_index=None):
 	_model = model_manager.get_model_modules()[model_name]
 	low_level_nodes = _model._activation_tensors.keys()
 	
@@ -155,8 +160,8 @@ def _list_node_differences(model_name, distortions, input_image_amount,
 	
 	for node in low_level_nodes:
 		node_activation_differences = [_get_node_difference(model_name, \
-			node, distortion, input_image_amount, model_manager, distortion_manager) \
-			for distortion in distortions]
+			node, distortion, input_image_amount, model_manager, distortion_manager, \
+			image_index=image_index) for distortion in distortions]
 		activation_differences[node] = \
 			sum(node_activation_differences) / len(node_activation_differences)
 	
@@ -251,16 +256,18 @@ def _accumulate_activation_difference(differences, accumulation_method):
 data_type = 'node_difference'
 
 def _get_node_difference(model_name, layer, distortion_name, input_image_amount,
-	model_manager, distortion_manager):
+	model_manager, distortion_manager, image_index=None):
 	key_tuple = (model_name, layer, distortion_name, input_image_amount)
 	
-	if DataCache().has_data(data_type, key_tuple):
+	if DataCache().has_data(data_type, key_tuple) and image_index is None:
 		return DataCache().get_data(data_type, key_tuple)
 	else:
 		_model = model_manager.get_model_modules()[model_name]
 		
 		# Pick input images
-		if input_image_amount >= len(_model._dataset.images):
+		if image_index is not None:
+			input_images = [_model._dataset.images[int(image_index)]]
+		elif input_image_amount >= len(_model._dataset.images):
 			input_images = _model._dataset.images
 		else:
 			input_images = [
@@ -311,6 +318,7 @@ def _get_node_difference(model_name, layer, distortion_name, input_image_amount,
 		# Calculate the average of the activation differences
 		result = sum(activation_differences) / (len(activation_differences) * 1.0)
 		
-		DataCache().set_data(data_type, key_tuple, result)
+		if image_index is None:
+			DataCache().set_data(data_type, key_tuple, result)
 		
 		return result

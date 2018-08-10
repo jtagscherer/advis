@@ -15,7 +15,8 @@ Polymer({
 		associatedDataset: Object,
 		selectedImage: {
 			type: Object,
-			observer: '_selectedImageChanged'
+			observer: '_selectedImageChanged',
+			notify: true
 		},
 		distortions: {
 			type: Array,

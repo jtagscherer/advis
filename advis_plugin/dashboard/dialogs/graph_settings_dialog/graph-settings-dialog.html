@@ -32,6 +32,16 @@
 				
 				<h3>Node Activation Difference Visualization</h3>
 				
+				<h4>Input data for which activation differences should be calculated</h4>
+				<paper-radio-group selected={{dataMode}}>
+					<paper-radio-button name="average">
+						Average activations of all input images
+					</paper-radio-button>
+					<paper-radio-button name="single">
+						Only activations of selected input image
+					</paper-radio-button>
+				</paper-radio-group>
+				
 				<h4>Method to calculate parent node values from child nodes</h4>
 				<paper-radio-group selected={{accumulationMethod}}>
 					<paper-radio-button name="minimum">

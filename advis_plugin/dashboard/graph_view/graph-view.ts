@@ -21,6 +21,10 @@ Polymer({
 			type: String,
 			observer: '_updateNodeSelection'
 		},
+		selectedImage: {
+			type: Object,
+			observer: '_selectedImageChanged'
+		},
 		
 		nodeColors: {
 			type: Object,
@@ -43,6 +47,11 @@ Polymer({
 		displayLegend: {
 			type: Boolean,
 			value: advis.config.graphView.defaults.displayLegend
+		},
+		dataMode: {
+			type: String,
+			value: advis.config.graphView.defaults.dataMode,
+			observer: '_updateNodeColors'
 		},
 		accumulationMethod: {
 			type: String,
@@ -100,6 +109,7 @@ Polymer({
 			displayNodeInformation: this.displayNodeInformation,
 			displayMinimap: this.displayMinimap,
 			displayLegend: this.displayLegend,
+			dataMode: this.dataMode,
 			accumulationMethod: this.accumulationMethod,
 			colorScaleName: this.colorScaleName,
 			animationTarget: this.$$('#settings-button').getBoundingClientRect()
@@ -114,6 +124,7 @@ Polymer({
 			this.set('displayNodeInformation', content.displayNodeInformation);
 			this.set('displayMinimap', content.displayMinimap);
 			this.set('displayLegend', content.displayLegend);
+			this.set('dataMode', content.dataMode);
 			this.set('accumulationMethod', content.accumulationMethod);
 			this.set('colorScaleName', content.colorScaleName);
 		}
@@ -138,6 +149,12 @@ Polymer({
       return NaN;
     }
   },
+	
+	_selectedImageChanged: function(selectedImage) {
+		if (this.dataMode == 'single') {
+			this._updateNodeColors();
+		}
+	},
 	
 	_updateNodeSelection: function() {
 		this.fire('nodeSelectedEvent', {
@@ -210,7 +227,8 @@ Polymer({
 		});
   },
 	_updateNodeColors: function() {
-		if (this.requestManager == null || this.selectedModel == null) {
+		if (this.requestManager == null || this.selectedModel == null
+			|| this._colorScale == null) {
 			this.$$('color-legend').state = 'empty';
 			return;
 		}
@@ -224,6 +242,8 @@ Polymer({
 		
 		this.$$('color-legend').state = 'loading';
 		
+		let self = this;
+		
 		// First of all, retrieve meta information to configure the node colors
 		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
 			.pluginRoute('advis', '/node/list/meta'), {
@@ -235,34 +255,40 @@ Polymer({
 		});
 		
 		this.requestManager.request(metaUrl).then(meta => {
-			this.set('_valueRange', meta.range);
+			self.set('_valueRange', meta.range);
 			
 			// Construct a URL for the node activation list
-			const url = tf_backend.addParams(tf_backend.getRouter()
-				.pluginRoute('advis', '/node/list'), {
-				model: this.selectedModel.name,
-				distortion: this.distortions.map(d => d.name).join(','),
+			var parameters = {
+				model: self.selectedModel.name,
+				distortion: self.distortions.map(d => d.name).join(','),
 				inputImageAmount: String(advis.config.requests.imageAmounts
 					.nodeActivation),
-				accumulationMethod: this.accumulationMethod,
-				percentageMode: this.percentageMode,
+				accumulationMethod: self.accumulationMethod,
+				percentageMode: self.percentageMode,
 				outputMode: 'mapping'
-			});
+			};
+			
+			if (self.dataMode == 'single' && self.selectedImage != null) {
+				parameters['imageIndex'] = self.selectedImage.index;
+			}
+			
+			const url = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/node/list'), parameters);
 			
 			// Fetch the node activations and calculate node colors
-			this.requestManager.request(url).then(data => {
+			self.requestManager.request(url).then(data => {
 				var nodeColors = {};
 				let nodes = data.data;
 	      
-	      this.set('_nodeValues', nodes);
+	      self.set('_nodeValues', nodes);
 				
 				for (let node in nodes) {
-					nodeColors[node] = this._colorScale(nodes[node].percentual).hex();
+					nodeColors[node] = self._colorScale(nodes[node].percentual).hex();
 				}
 				
-				this.set('nodeColors', nodeColors);
+				self.set('nodeColors', nodeColors);
 				
-				this.$$('color-legend').state = 'loaded';
+				self.$$('color-legend').state = 'loaded';
 			});
 		});
 	}
