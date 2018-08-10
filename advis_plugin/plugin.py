@@ -495,7 +495,9 @@ class AdvisPlugin(base_plugin.TBPlugin):
 				of distortion method has to be supplied, which will be used to 
 				manipulate each input image before its evaluation. On top of that, the 
 				request must specify a method of accumulating activation differences in 
-				higher-level nodes.
+				higher-level nodes. If an image index is defined, activation 
+				differences only for this specific input image will be computed rather 
+				than average ones for multiple images.
 				Optionally, the output can be retrieved as a simple node name to value 
 				mapping (default) or as a graph. Percentual values can be computed 
 				relatively (default) or absolutely to the full range.
