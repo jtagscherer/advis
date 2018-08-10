@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import sys
 from os.path import join
 
 import tensorflow as tf
@@ -45,6 +46,10 @@ class AdvisPlugin(base_plugin.TBPlugin):
 		self._multiplexer = context.multiplexer
 		self.storage_path = context.logdir
 		
+		if 'read-only-cache' in sys.argv:
+			DataCache().disable_caching()
+		
+		tf.logging.warn('Loading cached data...')
 		DataCache().set_storage_file(join(self.storage_path, 'cache.pickle'))
 		
 		self.dataset_manager = datasets.DatasetManager(self.storage_path)
