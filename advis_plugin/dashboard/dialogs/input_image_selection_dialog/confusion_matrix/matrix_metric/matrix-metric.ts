@@ -121,6 +121,10 @@ Polymer({
 		let opacity = 1 - (transitionPercentage / this._gridTransitionLength);
 		this._context.globalAlpha = opacity;
 		
+		if (transitionPercentage < 0) {
+			this._context.globalAlpha = 1;
+		}
+		
 		if (gridAmount < this._maximumGridLines + this._gridTransitionLength) {
 			this._context.strokeStyle = this._gridStrokeColor;
 			var position = 0;

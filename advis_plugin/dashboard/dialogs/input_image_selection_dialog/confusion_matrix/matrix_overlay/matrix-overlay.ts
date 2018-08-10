@@ -109,6 +109,10 @@ Polymer({
 		this._context.globalAlpha = 1 - (transitionPercentage
 			/ this._gridTransitionLength);
 		
+    if (transitionPercentage < 0) {
+			this._context.globalAlpha = 1;
+		}
+		
 		// If the amount of visible categories is small enough, draw the overlay
 		if (gridAmount < this._maximumGridLines + this._gridTransitionLength) {
 			this._context.strokeStyle = this._gridStrokeColor;
