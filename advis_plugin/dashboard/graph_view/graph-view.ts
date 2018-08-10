@@ -162,6 +162,9 @@ Polymer({
 			case 'spectral':
 				this.set('_colorScale', chroma.scale('Spectral').domain([1, 0]));
 				break;
+      case 'red':
+        this.set('_colorScale', chroma.scale(['ffffff', 'b2182b']));
+        break;
 		}
 		
 		this._updateNodeColors();
