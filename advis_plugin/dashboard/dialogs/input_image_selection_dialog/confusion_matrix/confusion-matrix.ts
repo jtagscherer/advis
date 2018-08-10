@@ -177,7 +177,6 @@ Polymer({
 			let matrixLabels = result.confusionMatrix.labels;
 			let matrixSize = matrixLabels.length;
 			let valueRange = result.confusionMatrix.range;
-			let valueSpan = Math.abs(valueRange.maximum - valueRange.minimum);
 			
 			// Generate an image of the confusion matrix
 			let canvas = document.createElement('canvas');
@@ -187,7 +186,8 @@ Polymer({
 			
 			var imageData = context.getImageData(0, 0, matrixSize, matrixSize);
 			
-			let colorScale = chroma.scale('Spectral').domain([1, 0]);
+			let positiveColorScale = chroma.scale(['ffffff', '2166ac']);
+			let negativeColorScale = chroma.scale(['ffffff', 'b2182b']);
 			
 			for (var x = 0; x < matrixSize; x++) {
 				for (var y = 0; y < matrixSize; y++) {
@@ -199,9 +199,16 @@ Polymer({
 					var value = result.confusionMatrix
 						.matrix[predictedLabel][actualLabel];
 					
-					let cellColor = colorScale(
-						(value + Math.abs(valueRange.minimum)) / valueSpan
-					).get('rgba');
+					var cellColor;
+					if (self.matrixMode == 'difference' && value <= 0) {
+						cellColor = negativeColorScale(
+							Math.abs(value) / Math.abs(valueRange.minimum)
+						).get('rgba');
+					} else {
+						cellColor = positiveColorScale(
+							value / valueRange.maximum
+						).get('rgba');
+					}
 					
 					imageData.data[dataIndex] = cellColor[0];
           imageData.data[dataIndex + 1] = cellColor[1];
@@ -264,7 +271,8 @@ Polymer({
 		let context = canvas.getContext('2d');
 		var imageData = context.getImageData(0, 0, width, height);
 		
-		let colorScale = chroma.scale('Spectral').domain([1, 0]);
+		let positiveColorScale = chroma.scale(['ffffff', '2166ac']);
+		let negativeColorScale = chroma.scale(['ffffff', 'b2182b']);
 		
 		for (var i = 0; i < data.length; i++) {
 			let dataIndex = i * 4;
@@ -272,13 +280,13 @@ Polymer({
 			var cellColor;
 			
 			if (value != null) {
-				if (this.matrixMode == 'difference') {
-					cellColor = colorScale((value + 1) / 2).get('rgba');
+				if (this.matrixMode == 'difference' && value <= 0) {
+					cellColor = negativeColorScale(Math.abs(value)).get('rgba');
 				} else {
-					cellColor = colorScale(value).get('rgba');
+					cellColor = positiveColorScale(value).get('rgba');
 				}
 			} else {
-				cellColor = colorScale(0).get('rgba');
+				cellColor = chroma('white').rgba();
 			}
 			
 			imageData.data[dataIndex] = cellColor[0];
