@@ -42,6 +42,16 @@
 					</paper-radio-button>
 				</paper-radio-group>
 				
+				<h4>Distortions that should be used for calculating activation differences</h4>
+				<paper-radio-group selected={{distortionMode}}>
+					<paper-radio-button name="average">
+						Average activations for all active distortions
+					</paper-radio-button>
+					<paper-radio-button name="single">
+						Only activations for the selected distortion
+					</paper-radio-button>
+				</paper-radio-group>
+				
 				<h4>Method to calculate parent node values from child nodes</h4>
 				<paper-radio-group selected={{accumulationMethod}}>
 					<paper-radio-button name="minimum">

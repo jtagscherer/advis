@@ -16,6 +16,10 @@ Polymer({
 			type: Array,
 			observer: '_updateNodeColors'
 		},
+		selectedDistortion: {
+			type: Object,
+			observer: '_updateNodeColors'
+		},
 		
 		selectedNode: {
 			type: String,
@@ -51,6 +55,11 @@ Polymer({
 		dataMode: {
 			type: String,
 			value: advis.config.graphView.defaults.dataMode,
+			observer: '_updateNodeColors'
+		},
+		distortionMode: {
+			type: String,
+			value: advis.config.graphView.defaults.distortionMode,
 			observer: '_updateNodeColors'
 		},
 		accumulationMethod: {
@@ -110,6 +119,7 @@ Polymer({
 			displayMinimap: this.displayMinimap,
 			displayLegend: this.displayLegend,
 			dataMode: this.dataMode,
+			distortionMode: this.distortionMode,
 			accumulationMethod: this.accumulationMethod,
 			colorScaleName: this.colorScaleName,
 			animationTarget: this.$$('#settings-button').getBoundingClientRect()
@@ -125,6 +135,7 @@ Polymer({
 			this.set('displayMinimap', content.displayMinimap);
 			this.set('displayLegend', content.displayLegend);
 			this.set('dataMode', content.dataMode);
+			this.set('distortionMode', content.distortionMode);
 			this.set('accumulationMethod', content.accumulationMethod);
 			this.set('colorScaleName', content.colorScaleName);
 		}
@@ -260,13 +271,18 @@ Polymer({
 			// Construct a URL for the node activation list
 			var parameters = {
 				model: self.selectedModel.name,
-				distortion: self.distortions.map(d => d.name).join(','),
 				inputImageAmount: String(advis.config.requests.imageAmounts
 					.nodeActivation),
 				accumulationMethod: self.accumulationMethod,
 				percentageMode: self.percentageMode,
 				outputMode: 'mapping'
 			};
+			
+			if (self.distortionMode == 'single') {
+				parameters['distortion'] = self.selectedDistortion.name;
+			} else if (self.distortionMode == 'average') {
+				parameters['distortion'] = self.distortions.map(d => d.name).join(',');
+			}
 			
 			if (self.dataMode == 'single' && self.selectedImage != null) {
 				parameters['imageIndex'] = self.selectedImage.index;

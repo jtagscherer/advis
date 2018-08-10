@@ -12,6 +12,7 @@ Polymer({
 		displayMinimap: Boolean,
 		displayLegend: Boolean,
 		dataMode: String,
+		distortionMode: String,
 		accumulationMethod: String,
 		colorScaleName: String,
 		
@@ -27,6 +28,7 @@ Polymer({
 		this.displayMinimap = content.displayMinimap;
 		this.displayLegend = content.displayLegend;
 		this.dataMode = content.dataMode;
+		this.distortionMode = content.distortionMode;
 		this.accumulationMethod = content.accumulationMethod;
 		this.colorScaleName = content.colorScaleName;
 	},
@@ -38,6 +40,7 @@ Polymer({
 			displayMinimap: this.displayMinimap,
 			displayLegend: this.displayLegend,
 			dataMode: this.dataMode,
+			distortionMode: this.distortionMode,
 			accumulationMethod: this.accumulationMethod,
 			percentageMode: this.percentageMode,
 			colorScaleName: this.colorScaleName
