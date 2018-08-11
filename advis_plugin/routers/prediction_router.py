@@ -30,7 +30,7 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 			distortion_index = 0
 	
 	key_tuple = (model, image_index, distortion, distortion_index, \
-		distortion_amount)
+		distortion_amount, prediction_amount, only_category)
 	
 	if DataCache().has_data(data_type_single_prediction, key_tuple):
 		response = DataCache().get_data(data_type_single_prediction, key_tuple)
@@ -86,21 +86,29 @@ def _get_single_prediction(model, image_index, distortion, distortion_index,
 					= original_distortion_index
 				response['input']['distortion']['distortionAmount'] = distortion_amount
 		
+		# Store the ground-truth prediction certainty specifically
+		ground_truth_prediction = None
+		for prediction in response['predictions']:
+			if prediction['categoryId'] == response['input']['categoryId']:
+				ground_truth_prediction = prediction
+				break
+		response['groundTruthPrediction'] = ground_truth_prediction
+		
+		# Remove all categories other than a single one if so desired
+		if only_category is not None:
+			single_prediction = None
+			for prediction in response['predictions']:
+				if prediction['categoryId'] == only_category:
+					single_prediction = prediction
+					break
+			response['predictions'] = [single_prediction]
+		
+		# Limit the amount of predictions if so desired
+		if prediction_amount is not None:
+			response['predictions'] = response['predictions'][:prediction_amount]
+		
 		if cache_data:
 			DataCache().set_data(data_type_single_prediction, key_tuple, response)
-	
-	# Remove all categories other than a single one if so desired
-	if only_category is not None:
-		single_prediction = None
-		for prediction in response['predictions']:
-			if prediction['categoryId'] == only_category:
-				single_prediction = prediction
-				break
-		response['predictions'] = [single_prediction]
-	
-	# Limit the amount of predictions if so desired
-	if prediction_amount is not None:
-		response['predictions'] = response['predictions'][:prediction_amount]
 	
 	return response
 

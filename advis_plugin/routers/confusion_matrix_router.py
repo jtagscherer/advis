@@ -147,11 +147,11 @@ def _get_listed_node_predictions(model_name, distortion_name, model_manager,
 		# Make the model predict the input image
 		original_predictions = prediction_router._get_single_prediction(
 			model_name, int(image['index']), None, None, None, model_manager,
-			distortion_manager, prediction_amount=None
+			distortion_manager
 		)		
 		distorted_predictions = prediction_router._get_single_prediction(
 			model_name, int(image['index']), distortion_name, None, None,
-			model_manager, distortion_manager, prediction_amount=None
+			model_manager, distortion_manager
 		)
 		
 		image['hierarchicalCategoryId'] = _find_position_in_hierarchical_list(
@@ -173,12 +173,10 @@ def _get_listed_node_predictions(model_name, distortion_name, model_manager,
 			}
 		
 		# Retrieve the certainty of the ground-truth category from the predictions
-		original_certainty = _get_prediction_certainty(
-			original_predictions['predictions'], int(image['categoryId'])
-		)
-		distorted_certainty = _get_prediction_certainty(
-			distorted_predictions['predictions'], int(image['categoryId'])
-		)
+		original_certainty = original_predictions['groundTruthPrediction'] \
+			['certainty']
+		distorted_certainty = distorted_predictions['groundTruthPrediction'] \
+			['certainty']
 		
 		# Add the data to each image
 		certainty = {}
@@ -552,20 +550,18 @@ def confusion_images_superset_route(request, model_manager, distortion_manager):
 		# Make the model predict both the original and the distorted input image
 		original_predictions = prediction_router._get_single_prediction(
 			model_name, int(image['index']), None, None, None, model_manager,
-			distortion_manager, prediction_amount=None
+			distortion_manager
 		)		
 		distorted_predictions = prediction_router._get_single_prediction(
 			model_name, int(image['index']), distortion_name, None, None,
-			model_manager, distortion_manager, prediction_amount=None
+			model_manager, distortion_manager
 		)
 		
 		# Retrieve the certainty of the ground-truth category from the predictions
-		original_certainty = _get_prediction_certainty(
-			original_predictions['predictions'], int(image['categoryId'])
-		)
-		distorted_certainty = _get_prediction_certainty(
-			distorted_predictions['predictions'], int(image['categoryId'])
-		)
+		original_certainty = original_predictions['groundTruthPrediction'] \
+			['certainty']
+		distorted_certainty = distorted_predictions['groundTruthPrediction'] \
+			['certainty']
 		
 		# Add the data to each image
 		certainty = {}
