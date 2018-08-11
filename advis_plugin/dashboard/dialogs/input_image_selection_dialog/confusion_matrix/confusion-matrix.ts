@@ -93,8 +93,12 @@ Polymer({
 	},
 	
 	_getMatrixValue: function(x, y) {
-    if (this._matrixData != null && this._matrixData[x] != null) {
-      return this._matrixData[x][y];
+    if (this._matrixData != null && this._matrixData[x] != null
+			&& this._labels != null) {
+			let predictedLabel = this._labels[x];
+			let actualLabel = this._labels[y];
+			
+      return this._matrixData[actualLabel][predictedLabel];
     }
 	},
 	
