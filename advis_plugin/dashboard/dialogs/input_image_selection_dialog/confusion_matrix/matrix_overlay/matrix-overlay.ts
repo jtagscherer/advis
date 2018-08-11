@@ -51,7 +51,7 @@ Polymer({
 		},
 		_gridStrokeColor: {
 			type: String,
-			value: '#FFFFFF'
+			value: '#5B5C5C'
 		},
 		_selectionRectangleColor: {
 			type: String,
