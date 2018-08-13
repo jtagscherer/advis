@@ -15,6 +15,11 @@ Polymer({
 			type: String,
 			observer: '_updateGraph'
 		},
+		activeModels: Array,
+		selectedModel: {
+			type: Object,
+			notify: true
+		},
 		selectedDistortion: {
 			type: Object,
 			notify: true
@@ -56,6 +61,8 @@ Polymer({
 				selectedModels.push(model);
 			}
 		}
+		
+		this.set('activeModels', selectedModels);
 		
 		// Create a label for each selected distortion method
 		var labels = [];

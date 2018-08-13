@@ -106,6 +106,12 @@ Polymer({
 	listeners: {
     'dialogReturnedEvent': '_handleDialogReturnedEvent'
   },
+  
+  ready: function() {
+		if (this.selectedModel != null) {
+			this.update();
+		}
+  },
 	
 	update: function() {
 		this._updateGraph();

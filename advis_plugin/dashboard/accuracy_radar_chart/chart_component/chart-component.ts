@@ -17,7 +17,13 @@ Polymer({
 		availableDistortions: Array,
 		selectedDistortion: {
 			type: Object,
-			observer: '_selectedDistortionChanged',
+			observer: '_selectionChanged',
+			notify: true
+		},
+		availableModels: Array,
+		selectedModel: {
+			type: Object,
+			observer: '_selectionChanged',
 			notify: true
 		},
 		_selectedDataPoint: {
@@ -28,7 +34,7 @@ Polymer({
   },
 	
 	updateChart: function() {
-		this._selectedDistortionChanged();
+		this._selectionChanged();
 		
     this.async(function() {
       if (this.chart) {
@@ -101,29 +107,34 @@ Polymer({
 					datasetIndex: data[0]._datasetIndex
 				});
 				
-				if (self.availableDistortions != null) {
-					self.set(
-						'selectedDistortion',
-						self.availableDistortions[self._selectedDataPoint.pointIndex]
-					);
-				}
+				self.set(
+					'selectedModel', self.availableModels[data[0]._datasetIndex]
+				);
+				
+				self.set(
+					'selectedDistortion', self.availableDistortions[data[0]._index]
+				);
 			}
 		});
 		
 		this.updateChart();
   },
 	
-	_selectedDistortionChanged: function(newValue) {
+	_selectionChanged: function(newValue) {
 		if (this.data == null || !('datasets' in this.data)
-			|| this.data.datasets.length == 0 || this.selectedDistortion == null) {
+			|| this.data.datasets.length == 0 || this.selectedDistortion == null
+			|| this.selectedModel == null || this.availableModels == null) {
+			this.set('_selectedDataPoint', null);
 			return;
 		}
 		
 		var datasetIndex = 0;
 		
-		if (this._selectedDataPoint != null) {
-			datasetIndex = this._selectedDataPoint.datasetIndex;
-		}
+		this.availableModels.forEach((model, index) => {
+			if (model.name == this.selectedModel.name) {
+				datasetIndex = index;
+			}
+		});
 		
 		var pointIndex = 0;
 		

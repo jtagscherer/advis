@@ -59,7 +59,8 @@
 					<div class="sidebar-item" id="model-list">
 						<section-header text="Models"></section-header>
 						<div id="model-list-container">
-							<iron-selector id="model-selector">
+							<iron-selector id="model-selector"
+								selected=[[selectedModel.index]]>
 								<template id="model-list-template"
 									is="dom-repeat"
 									items="[[_availableModels]]">
@@ -87,6 +88,7 @@
 								models=[[_availableModels]]
 								distortions=[[_selectedDistortions]]
 								metric=[[_selectedRadarChartMetric]]
+								selected-model={{selectedModel}}
 								selected-distortion={{_selectedVisualizationDistortion}}
 								accuracy-calculation-flag=[[_accuracyCalculationFlag]]>
 							</accuracy-radar-chart>
