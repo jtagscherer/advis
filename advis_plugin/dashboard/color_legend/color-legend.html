@@ -31,16 +31,14 @@
 					</div>
 				</template>
 				<canvas id="gradient"></canvas>
-				<template is="dom-if" if="{{!onlyGradient}}">
-					<div id="range-markers" class="marker-container">
-						<div id="upper" class="caption">
-							[[_getFormattedNumber(valueRange.maximum)]]
-						</div>
-						<div id="lower" class="caption">
-							[[_getFormattedNumber(valueRange.minimum)]]
-						</div>
+				<div id="range-markers" class="marker-container">
+					<div id="upper" class="caption">
+						[[_getFormattedNumber(valueRange.maximum)]]
 					</div>
-				</template>
+					<div id="lower" class="caption">
+						[[_getFormattedNumber(valueRange.minimum)]]
+					</div>
+				</div>
 			</div>
 		</div>
 		

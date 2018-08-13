@@ -22,6 +22,13 @@ Polymer({
 		_colorScale: {
 			type: Object,
 			observer: '_updateImages'
+		},
+		_valueRange: {
+			type: Object,
+			value: {
+				minimum: 0,
+				maximum: 1
+			}
 		}
 	},
 	
