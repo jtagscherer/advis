@@ -126,11 +126,20 @@ Polymer({
 					self.requestManager.request(imagesUrl).then(images => {
 						// Add URLs for each image
 						for (let image of images) {
-							image.url = tf_backend.addParams(tf_backend.getRouter()
-								.pluginRoute('advis', '/datasets/images/image'), {
-								dataset: self.dataset.name,
-								index: image.index
-							});
+							if (self._matrixMode == 'original') {
+								image.url = tf_backend.addParams(tf_backend.getRouter()
+									.pluginRoute('advis', '/datasets/images/image'), {
+									dataset: self.dataset.name,
+									index: image.index
+								});
+							} else {
+								image.url = tf_backend.addParams(tf_backend.getRouter()
+									.pluginRoute('advis', '/distortions/single'), {
+									dataset: self.dataset.name,
+									distortion: self.distortion.name,
+									imageIndex: image.index
+								});
+							}
 						}
 						
 						self.set('inputImages', images);
@@ -178,6 +187,16 @@ Polymer({
 			return `${prefix} hidden`;
 		}
   },
+	
+	_getImageListTitle: function(matrixMode) {
+		let titleBase = 'Input Images';
+		
+		if (matrixMode == 'original') {
+			return `Original ${titleBase}`;
+		} else {
+			return `Distorted ${titleBase}`;
+		}
+	},
 	
 	_sortSelectionChanged: function(value) {
 		switch (value) {
