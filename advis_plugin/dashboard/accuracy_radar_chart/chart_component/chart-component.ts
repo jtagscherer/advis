@@ -64,7 +64,7 @@ Polymer({
 												.label;
 											let percentage = tooltipItem.yLabel.toString();
 											
-											return modelName + ': ' + percentage + '%';
+											return `${modelName}: ${Number(percentage).toFixed(2)}%`;
 										}
 									}
 								},
