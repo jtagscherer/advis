@@ -24,9 +24,13 @@
 			</div>
 			
 			<div id="card-footer">
-				<div id="original-certainty" class$="[[_getClass(selected, 'certainty-bar')]]"></div>
-				<div id="distorted-certainty" class$="[[_getClass(selected, 'certainty-bar')]]"></div>
-				<div id="difference-wrapper">
+				<div class="certainty-bar-wrapper">
+					<div id="original-certainty" class$="[[_getClass(selected, 'certainty-bar')]]"></div>
+				</div>
+				<div class="certainty-bar-wrapper">
+					<div id="distorted-certainty" class$="[[_getClass(selected, 'certainty-bar')]]"></div>
+				</div>
+				<div id="difference-wrapper" class="certainty-bar-wrapper">
 					<div id="certainty-difference" class$="[[_getCertaintyDifferenceBarClass(_certaintyDifferenceNegative)]]"></div>
 				</div>
 			</div>

@@ -36,6 +36,13 @@ paper-card {
 			}
 		}
 		
+		.certainty-bar-wrapper {
+			width: 100%;
+			height: $certainty-bar-height;
+			position: relative;
+			border-top: 1px solid $light-foreground-color;
+		}
+		
 		#original-certainty {
 			width: var(--original-certainty-value);
 		}
@@ -45,10 +52,6 @@ paper-card {
 		}
 		
 		#difference-wrapper {
-			width: 100%;
-			height: $certainty-bar-height;
-			position: relative;
-			
 			#certainty-difference {
 				position: absolute;
 				width: var(--certainty-difference-value);
