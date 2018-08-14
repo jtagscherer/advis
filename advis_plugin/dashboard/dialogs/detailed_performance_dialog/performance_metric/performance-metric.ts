@@ -11,10 +11,13 @@ Polymer({
 		percent: Boolean,
 		_originalValue: Object,
 		_distortedValue: Object,
-		_valueList: Array
+		_valueList: Array,
+		_noDistortions: Boolean
 	},
 	
 	_generateValueData: function(values) {
+		this.set('_noDistortions', Object.keys(values).length <= 1);
+		
 		this.set('_originalValue', {
 			value: values['original'].value
 		});

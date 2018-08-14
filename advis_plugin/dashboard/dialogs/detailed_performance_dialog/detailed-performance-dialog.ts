@@ -38,23 +38,26 @@ Polymer({
 			};
 			
 			for (let distortion in this.model.metrics) {
-				metricItem.values[distortion] = {
-					value: this.model.metrics[distortion][metric.name],
-					displayName: this._getDistortionDisplayName(distortion)
-				};
+				if (distortion == 'original') {
+					metricItem.values['original'] = {
+						value: this.model.metrics['original'][metric.name],
+						displayName: 'Original'
+					};
+				} else {
+					for (let availableDistortion of this.availableDistortions) {
+						if (availableDistortion.name == distortion) {
+							metricItem.values[distortion] = {
+								value: this.model.metrics[distortion][metric.name],
+								displayName: availableDistortion.displayName
+							};
+						}
+					}
+				}
 			}
 			
 			metricList.push(metricItem);
 		}
 		
 		this.set('_metricList', metricList);
-	},
-	
-	_getDistortionDisplayName: function(name) {
-		for (let distortion of this.availableDistortions) {
-			if (distortion.name == name) {
-				return distortion.displayName;
-			}
-		}
 	}
 });

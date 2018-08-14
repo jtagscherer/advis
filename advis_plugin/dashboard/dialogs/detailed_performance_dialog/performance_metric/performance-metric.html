@@ -16,20 +16,22 @@
 					value=[[_originalValue.value]]
 					percent=[[percent]]>
 				</metric-value>
-				<metric-value
-					name="Distorted"
-					value=[[_distortedValue.value]]
-					original-value=[[_distortedValue.originalValue]]
-					percent=[[percent]]>
-				</metric-value>
-				<div id="separator"></div>
-				<template is="dom-repeat" items="[[_valueList]]">
+				<template is="dom-if" if="[[!_noDistortions]]">
 					<metric-value
-						name=[[item.name]]
-						value=[[item.value]]
-						original-value=[[item.originalValue]]
+						name="Distorted"
+						value=[[_distortedValue.value]]
+						original-value=[[_distortedValue.originalValue]]
 						percent=[[percent]]>
 					</metric-value>
+					<div id="separator"></div>
+					<template is="dom-repeat" items="[[_valueList]]">
+						<metric-value
+							name=[[item.name]]
+							value=[[item.value]]
+							original-value=[[item.originalValue]]
+							percent=[[percent]]>
+						</metric-value>
+					</template>
 				</template>
 			</div>
 		</div>

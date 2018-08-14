@@ -116,7 +116,7 @@ Polymer({
 		this.$$('detailed-performance-dialog').open({
       model: e.detail.model,
       availableMetrics: availableMetrics,
-			availableDistortions: this._availableDistortions,
+			availableDistortions: this._selectedDistortions,
 			animationTarget: e.detail.animationTarget
 		});
 	},
