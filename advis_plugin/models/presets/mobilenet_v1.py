@@ -25,4 +25,5 @@ def get_output_node():
 	return 'Softmax'
 
 def annotate_node(node):
-	return node.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2']
+	return node.op in ['Conv2D', 'Relu', 'MaxPool', 'AvgPool', 'ConcatV2', \
+		'DepthwiseConv2dNative', 'Relu6']
