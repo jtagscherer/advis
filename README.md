@@ -34,3 +34,27 @@ Firstly, visualization annotation operations need to be added to the computation
 Secondly, all expensive computations, especially ones concerning model predictions, are lazily cached after they have been executed. They are written to the `logdir` as a file called `cache.pickle`. If you want to eagerly cache every important computation result you can do so by sending a request to the [`/cache`](http://localhost:6006/data/plugin/advis/cache?modelAccuracy=<number>&nodeActivation=<number>&verbose=True) route while specifying the amount of samples to be used to calculate `modelAccuracy` and `nodeActivation`. These should correspond with the constants defined in the dashboard. The `verbose` flag specifies whether the current caching process should be written to the terminal. Please be aware that depending on your hardware, caching parameters, and data complexity this process can take a long time.
 
 If you have a cache prepared and simply want to use it rather than update it, you can prevent Advis from writing new data to it by specifying the command line parameter `read-only-cache`.
+
+## Screenshots
+
+A few screenshots of selected features within Advis.
+
+### Overview
+
+![Overview](screenshots/overview.jpg?raw=true "Overview")
+
+### Detailed Model Performance
+
+![Detailed Model Performance](screenshots/detailed-model-performance.jpg?raw=true "Detailed Model Performance")
+
+### Input Image Predictions
+
+![Input Image Predictions](screenshots/predictions-average.jpg?raw=true "Input Image Predictions")
+
+### Input Image Selection
+
+![Input Image Selection](screenshots/input-image-selection-difference.jpg?raw=true "Input Image Selection")
+
+### Distortion Configuration
+
+![Distortion Configuration](screenshots/distortion-configuration.jpg?raw=true "Distortion Configuration")
