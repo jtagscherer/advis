@@ -1,6 +1,6 @@
 @import 'advis_plugin/dashboard/shared/style/color';
 
-$legend-width: 70px;
+$legend-width: 100px;
 
 #content {
 	width: 100%;
@@ -16,7 +16,10 @@ $legend-width: 70px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		width: $legend-width;
+		// width: $legend-width;
+		
+		padding-left: 10px;
+		padding-right: 50px;
 		
 		height: 100%;
 		
@@ -43,10 +46,7 @@ $legend-width: 70px;
 	flex-direction: row;
 	justify-content: center;
 	
-	// width: calc(100% - #{$legend-width});
 	height: 100%;
-	
-	// padding-left: $legend-width;
 	
 	.image-wrapper {
 		display: flex;
