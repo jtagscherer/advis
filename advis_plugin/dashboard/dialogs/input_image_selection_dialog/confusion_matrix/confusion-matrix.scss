@@ -298,4 +298,26 @@ $hover-padding: 10px;
 			}
 		}
 	}
+	
+	#matrix-settings-button {
+		position: absolute;
+		left: 5px;
+		bottom: 5px;
+		
+		color: $light-foreground-color;
+		opacity: 0.5;
+		transition: opacity 0.5s ease;
+		
+		&:hover {
+			opacity: 1 !important;
+		}
+		
+		&.hidden {
+			opacity: 0;
+		}
+		
+		&.shown {
+			opacity: 0.5;
+		}
+	}
 }

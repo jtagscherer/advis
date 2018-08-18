@@ -1,0 +1,37 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../paper-dialog/paper-dialog.html">
+<link rel="import" href="../../paper-radio-group/paper-radio-group.html">
+
+<link rel="import" href="../../dialog-header/dialog-header.html">
+<link rel="import" href="../../dialog-behavior/dialog-behavior.html">
+
+<!--
+	When opened, this module displays options for configuring the confusion 
+	matrix in a dialog.
+-->
+<dom-module id="confusion-matrix-settings-dialog">
+	<template>
+		<paper-dialog with-backdrop>
+			<dialog-header event-id="confusion-matrix-settings-dialog">
+				<div class="header-items">
+					<h2>Confusion Matrix Settings</h2>
+				</div>
+			</dialog-header>
+			<div id="content">
+				<h3>Color Scale Options</h3>
+				<paper-radio-group selected={{selectedColorScaleOption}}>
+					<paper-radio-button name="with-diagonal">
+						Display Diagonal Colors
+					</paper-radio-button>
+					<paper-radio-button name="without-diagonal">
+						Omit Diagonal Colors
+					</paper-radio-button>
+				</paper-radio-group>
+			</div>
+		</paper-dialog>
+		
+		<link rel="stylesheet" type="text/css" href="confusion-matrix-settings-dialog.css">
+	</template>
+
+	<script src="confusion-matrix-settings-dialog.js"></script>
+</dom-module>

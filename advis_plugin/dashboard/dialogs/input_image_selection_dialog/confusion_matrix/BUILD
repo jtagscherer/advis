@@ -20,6 +20,7 @@ tf_web_library(
 		"@org_polymer_paper_button",
 		"@org_polymer_paper_spinner",
 		"//advis_plugin/dashboard/shared/libraries/chroma",
+		"//advis_plugin/dashboard/dialogs/confusion_matrix_settings_dialog",
 		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix/zoomable_canvas",
 		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix/matrix_overlay",
 		"//advis_plugin/dashboard/dialogs/input_image_selection_dialog/confusion_matrix/label_view",

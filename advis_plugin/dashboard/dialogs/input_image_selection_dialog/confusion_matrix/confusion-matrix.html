@@ -5,6 +5,7 @@
 <link rel="import" href="../../paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../../libraries/chroma/chroma.html">
+<link rel="import" href="../../dialogs/confusion-matrix-settings-dialog/confusion-matrix-settings-dialog.html">
 <link rel="import" href="../../zoomable-canvas/zoomable-canvas.html">
 <link rel="import" href="../../matrix-overlay/matrix-overlay.html">
 <link rel="import" href="../../label-view/label-view.html">
@@ -23,7 +24,7 @@
 					<div class="descriptor">
 						<p>Predicted</p>
 					</div>
-					<label-view
+					<label-view id="horizontal-label-view"
 						width="[[_contentSize]]"
 						height="140"
 						orientation="horizontal"
@@ -37,7 +38,7 @@
 					<div class="descriptor">
 						<p>Actual</p>
 					</div>
-					<label-view
+					<label-view id="vertical-label-view"
 						width="140"
 						height="[[_contentSize]]"
 						orientation="vertical"
@@ -134,7 +135,15 @@
 					<paper-tab>Distorted</paper-tab>
 				</paper-tabs>
 			</div>
+			
+			<paper-icon-button id="matrix-settings-button"
+				class$="[[_getTabsClass(hoveredPixel, hoveredLabelPath)]]"
+				icon="settings"
+				on-tap="openMatrixSettingsDialog">
+			</paper-icon-button>
 		</div>
+		
+		<confusion-matrix-settings-dialog></confusion-matrix-settings-dialog>
 		
 		<link rel="stylesheet" type="text/css" href="confusion-matrix.css">
 	</template>

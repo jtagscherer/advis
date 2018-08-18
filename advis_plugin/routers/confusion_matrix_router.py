@@ -363,17 +363,32 @@ def confusion_matrix_full_route(request, model_manager, distortion_manager):
 		'maximum': -math.inf
 	}
 	
-	for row in matrix.values():
-		for value in row.values():
+	value_range_without_diagonal = {
+		'minimum': math.inf,
+		'maximum': -math.inf
+	}
+	
+	for row_index, row in enumerate(matrix.values()):
+		for column_index, value in enumerate(row.values()):
+			# Update the value range if the current value is not from the diagonal
+			if row_index != column_index:
+				if value < value_range_without_diagonal['minimum']:
+					value_range_without_diagonal['minimum'] = value
+				if value > value_range_without_diagonal['maximum']:
+					value_range_without_diagonal['maximum'] = value
+			
+			# Always update the full value range
 			if value < value_range['minimum']:
 				value_range['minimum'] = value
-			
 			if value > value_range['maximum']:
 				value_range['maximum'] = value
 	
 	response = {
 		'confusionMatrix': {
-			'range': value_range,
+			'range': {
+				'full': value_range,
+				'withoutDiagonal': value_range_without_diagonal
+			},
 			'labels': matrix_labels,
 			'matrix': matrix
 		},

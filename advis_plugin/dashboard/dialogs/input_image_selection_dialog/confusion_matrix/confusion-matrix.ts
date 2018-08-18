@@ -17,6 +17,11 @@ Polymer({
 			type: String,
 			observer: 'reload'
 		},
+    displayDiagonal: {
+      type: Boolean,
+      value: true,
+      observer: 'reload'
+    },
 		requestManager: {
 			type: Object,
 			observer: 'reload'
@@ -71,12 +76,14 @@ Polymer({
 	},
 	
 	listeners: {
-		'label-hovered-event': '_labelHovered'
+		'label-hovered-event': '_labelHovered',
+		'dialogReturnedEvent': '_dialogReturned'
 	},
 	
 	reload: function() {
 		if (this.model != null && this.dataset != null && this.distortion != null
-			&& this.matrixMode != null && this.requestManager != null) {
+			&& this.matrixMode != null && this.requestManager != null
+      && this.displayDiagonal != null) {
 			this.set('_loadingConfusionMatrix', true);
 			this._retrieveCategories();
 			this._generateMatrixImage();
@@ -180,7 +187,13 @@ Polymer({
 			
 			let matrixLabels = result.confusionMatrix.labels;
 			let matrixSize = matrixLabels.length;
-			let valueRange = result.confusionMatrix.range;
+			var valueRange;
+      
+      if (this.displayDiagonal) {
+        valueRange = result.confusionMatrix.range.full;
+      } else {
+        valueRange = result.confusionMatrix.range.withoutDiagonal;
+      }
 			
 			// Generate an image of the confusion matrix
 			let canvas = document.createElement('canvas');
@@ -195,24 +208,28 @@ Polymer({
 			
 			for (var x = 0; x < matrixSize; x++) {
 				for (var y = 0; y < matrixSize; y++) {
-					let dataIndex = (y + (x * matrixSize)) * 4;
-					
-					let predictedLabel = matrixLabels[x];
-					let actualLabel = matrixLabels[y];
-					
-					var value = result.confusionMatrix
-						.matrix[predictedLabel][actualLabel];
-					
-					var cellColor;
-					if (self.matrixMode == 'difference' && value <= 0) {
-						cellColor = negativeColorScale(
-							Math.abs(value) / Math.abs(valueRange.minimum)
-						).get('rgba');
-					} else {
-						cellColor = positiveColorScale(
-							value / valueRange.maximum
-						).get('rgba');
-					}
+          let dataIndex = (y + (x * matrixSize)) * 4;
+          var cellColor;
+          
+          if (x == y && !this.displayDiagonal) {
+            cellColor = chroma('white').get('rgba');
+          } else {
+            let predictedLabel = matrixLabels[x];
+  					let actualLabel = matrixLabels[y];
+  					
+  					var value = result.confusionMatrix
+  						.matrix[predictedLabel][actualLabel];
+  					
+  					if (self.matrixMode == 'difference' && value <= 0) {
+  						cellColor = negativeColorScale(
+  							Math.abs(value) / Math.abs(valueRange.minimum)
+  						).get('rgba');
+  					} else {
+  						cellColor = positiveColorScale(
+  							value / valueRange.maximum
+  						).get('rgba');
+  					}
+          }
 					
 					imageData.data[dataIndex] = cellColor[0];
           imageData.data[dataIndex + 1] = cellColor[1];
@@ -233,6 +250,8 @@ Polymer({
 				this.updateStyles();
 			}
 			
+			self.$$('#vertical-label-view').redraw();
+			self.$$('#horizontal-label-view').redraw();
 			self.set('_loadingConfusionMatrix', false);
 		});
 	},
@@ -328,6 +347,34 @@ Polymer({
 			case 2:
 				this.set('matrixMode', 'distorted');
 				break;
+		}
+	},
+	
+	openMatrixSettingsDialog: function() {
+		var colorScaleOption;
+		
+		if (this.displayDiagonal) {
+			colorScaleOption = 'with-diagonal';
+		} else {
+			colorScaleOption = 'without-diagonal';
+		}
+		
+		this.$$('confusion-matrix-settings-dialog').open({
+      selectedColorScaleOption: colorScaleOption,
+			animationTarget: this.$$('#matrix-settings-button')
+				.getBoundingClientRect()
+		});
+	},
+	
+	_dialogReturned: function(e) {
+		if (e.detail.eventId == 'confusion-matrix-settings-dialog') {
+			let chosenOption = e.detail.content.selectedColorScaleOption;
+			
+			if (chosenOption == 'with-diagonal') {
+				this.set('displayDiagonal', true);
+			} else if (chosenOption == 'without-diagonal') {
+				this.set('displayDiagonal', false);
+			}
 		}
 	}
 });
