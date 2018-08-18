@@ -24,6 +24,14 @@ Polymer({
 			type: Boolean,
 			value: false
 		},
+		percent: {
+			type: Boolean,
+			value: false
+		},
+		caption: {
+			type: String,
+			value: ''
+		},
 		width: {
 			type: Number,
 			value: 20,
@@ -64,8 +72,18 @@ Polymer({
 		}
 	},
 	
+	_isCaptionVisible: function(caption) {
+		return caption != '';
+	},
+	
 	_getFormattedNumber: function(value) {
-		return Math.round(value);
+		let formattedNumber = Math.round(value);
+		
+		if (this.percent) {
+			return `${formattedNumber}%`;
+		} else {
+			return formattedNumber;
+		}
 	},
 	
 	_getSelectionHeight: function(selectedValue) {

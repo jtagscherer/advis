@@ -27,7 +27,7 @@ Polymer({
 			type: Object,
 			value: {
 				minimum: 0,
-				maximum: 1
+				maximum: 100
 			}
 		}
 	},

@@ -3,6 +3,7 @@
 
 $border-size: 1px;
 $marker-width: 40px;
+$caption-font-size: 12px;
 
 :host {
 	--legend-width: 0px;
@@ -11,11 +12,14 @@ $marker-width: 40px;
 
 #legend-container {
 	position: absolute;
+	display: flex;
+	flex-direction: row;
 	
 	transition: opacity 0.5s ease-in-out;
 	
 	.content {
 		position: relative;
+		left: 5px;
 		white-space: nowrap;
 		
 		display: flex;
@@ -66,6 +70,29 @@ $marker-width: 40px;
 			#lower {
 				bottom: 0px;
 			}
+		}
+	}
+	
+	#legend-caption {
+		position: relative;
+		display: inline-block;
+		min-width: $caption-font-size;
+		height: var(--legend-height);
+		
+		p {
+			position: absolute;
+			width: var(--legend-height);
+			height: $caption-font-size;
+			bottom: -$caption-font-size;
+			overflow: hidden;
+			
+			transform: rotate(-90deg);
+			transform-origin: top left;
+			
+			font-size: $caption-font-size;
+			line-height: $caption-font-size;
+			text-align: center;
+			margin: 0;
 		}
 	}
 	

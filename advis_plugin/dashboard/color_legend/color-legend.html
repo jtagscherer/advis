@@ -21,6 +21,11 @@
 		
 		<div id="legend-container"
 			class$="[[_getLegendClass(state, displayLegend)]]">
+			<template is="dom-if" if="[[_isCaptionVisible(caption)]]">
+				<div id="legend-caption">
+					<p class="single-line caption">[[caption]]</p>
+				</div>
+			</template>
 			<div class="content">
 				<template is="dom-if" if="{{!onlyGradient}}">
 					<div id="selected-marker" class="marker-container">
