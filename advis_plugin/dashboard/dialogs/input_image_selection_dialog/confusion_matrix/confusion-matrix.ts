@@ -53,6 +53,8 @@ Polymer({
       type: Object,
       notify: true
     },
+		_zoomLevel: Number,
+		_maximumHierarchyDepth: Number,
 		_matrixData: Object,
 		_labels: Array,
 		_precisionData: Array,
@@ -78,6 +80,31 @@ Polymer({
 	listeners: {
 		'label-hovered-event': '_labelHovered',
 		'dialogReturnedEvent': '_dialogReturned'
+	},
+	
+	ready: function() {
+		let self = this;
+		
+		var updateZoomLevel = function(e) {
+			if (self._maximumHierarchyDepth != null) {
+				if (self._zoomLevel == null) {
+					self.set('_zoomLevel', self._maximumHierarchyDepth);
+				} else {
+					self.set(
+						'_zoomLevel', 
+						Math.max(Math.min(self._zoomLevel + (e.wheelDelta * 0.001), 
+							self._maximumHierarchyDepth), 0)
+					);
+				}
+			}
+			
+			e.preventDefault();
+		};
+		
+		this.$$('#horizontal-label-view')
+			.addEventListener('wheel', updateZoomLevel);
+		this.$$('#vertical-label-view')
+			.addEventListener('wheel', updateZoomLevel);
 	},
 	
 	reload: function() {
@@ -250,6 +277,8 @@ Polymer({
 				this.updateStyles();
 			}
 			
+			self._maximumHierarchyDepth = advis.hierarchy.util
+				.getMaximumDepth(self._categoryHierarchy);
 			self.$$('#vertical-label-view').redraw();
 			self.$$('#horizontal-label-view').redraw();
 			self.set('_loadingConfusionMatrix', false);

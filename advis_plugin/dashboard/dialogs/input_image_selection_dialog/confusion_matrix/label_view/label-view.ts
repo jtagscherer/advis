@@ -29,6 +29,10 @@ Polymer({
 		},
 		offset: {
 			type: Object,
+			observer: '_offsetUpdated'
+		},
+		zoomLevel: {
+			type: Number,
 			observer: 'redraw'
 		},
 		_context: Object,
@@ -115,12 +119,18 @@ Polymer({
 		this.set('_labelClickMap', []);
 		
 		// Choose an appropriate zoom level
-		let zoomPercentage = (this.offset.end - this.offset.start)
-			/ this.categoryList.length;
-		var levelFloat = this._maximumHierarchyDepth * zoomPercentage * 20;
+		var levelFloat = 0;
+		
+		if (this.zoomLevel == null) {
+			let zoomPercentage = (this.offset.end - this.offset.start)
+				/ this.categoryList.length;
+			levelFloat = this._maximumHierarchyDepth * zoomPercentage * 20;
+		} else {
+			levelFloat = this.zoomLevel;
+		}
+		
 		levelFloat = this._maximumHierarchyDepth
 			- Math.max(0, Math.min(this._maximumHierarchyDepth, levelFloat));
-		
 		this._updateEncompassingLevels(levelFloat);
 		
 		// Draw three label rows at once
@@ -184,6 +194,11 @@ Polymer({
 	
 	getLabelsForLevel: function(level) {
 		return this._labelCache[level];
+	},
+	
+	_offsetUpdated: function() {
+		this.zoomLevel = null;
+		this.redraw();
 	},
 	
 	_updateEncompassingLevels: function(levelFloat) {
