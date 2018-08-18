@@ -28,6 +28,10 @@ Polymer({
 			type: Boolean,
 			value: false
 		},
+		outlined: {
+			type: Boolean,
+			value: false
+		},
 		caption: {
 			type: String,
 			value: ''
@@ -105,10 +109,23 @@ Polymer({
 	},
 	
 	_getSelectionClass: function(selectedValue) {
+		var baseClass = 'caption';
+		if (this.outlined) {
+			baseClass = `${baseClass} outlined`;
+		}
+		
 		if (selectedValue != null && typeof selectedValue === 'object') {
-			return 'caption visible';
+			return `${baseClass} visible`;
 		} else {
-			return 'caption invisible';
+			return `${baseClass} invisible`;
+		}
+	},
+	
+	_getTextClass: function(outlined, prefix) {
+		if (outlined) {
+			return `${prefix} outlined`;
+		} else {
+			return prefix;
 		}
 	},
 	

@@ -23,7 +23,9 @@
 			class$="[[_getLegendClass(state, displayLegend)]]">
 			<template is="dom-if" if="[[_isCaptionVisible(caption)]]">
 				<div id="legend-caption">
-					<p class="single-line caption">[[caption]]</p>
+					<p class$="[[_getTextClass(outlined, 'single-line caption')]]">
+						[[caption]]
+					</p>
 				</div>
 			</template>
 			<div class="content">
@@ -37,10 +39,10 @@
 				</template>
 				<canvas id="gradient"></canvas>
 				<div id="range-markers" class="marker-container">
-					<div id="upper" class="caption">
+					<div id="upper" class$="[[_getTextClass(outlined, 'caption')]]">
 						[[_getFormattedNumber(valueRange.maximum)]]
 					</div>
-					<div id="lower" class="caption">
+					<div id="lower" class$="[[_getTextClass(outlined, 'caption')]]">
 						[[_getFormattedNumber(valueRange.minimum)]]
 					</div>
 				</div>
