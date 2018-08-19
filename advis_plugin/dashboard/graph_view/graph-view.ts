@@ -262,14 +262,16 @@ Polymer({
 		let self = this;
 		
 		// First of all, retrieve meta information to configure the node colors
-		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
-			.pluginRoute('advis', '/node/list/meta'), {
+		var metaParameters = {
 			model: this.selectedModel.name,
 			inputImageAmount: String(advis.config.requests.imageAmounts
 				.nodeActivation),
 			accumulationMethod: this.accumulationMethod,
 			percentageMode: this.percentageMode
-		});
+		};
+		
+		const metaUrl = tf_backend.addParams(tf_backend.getRouter()
+			.pluginRoute('advis', '/node/list/meta'), metaParameters);
 		
 		this.requestManager.request(metaUrl).then(meta => {
 			self.set('_valueRange', meta.range);
@@ -303,6 +305,7 @@ Polymer({
 				let nodes = data.data;
 	      
 	      self.set('_nodeValues', nodes);
+				self.set('_valueRange', data.meta.range);
 				
 				for (let node in nodes) {
 					nodeColors[node] = self._colorScale(nodes[node].percentual).hex();

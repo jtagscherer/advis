@@ -106,6 +106,16 @@ def node_difference_list_meta_route(request, model_manager, distortion_manager):
 	percentage_mode = request.args.get('percentageMode')
 	output_mode = 'mapping'
 	
+	if 'imageIndex' not in request.args:
+		image_index = None
+	else:
+		image_index = request.args['imageIndex']
+	
+	if 'distortion' not in request.args:
+		distortions = distortion_manager.get_distortion_modules()
+	else:
+		distortions = request.args.get('distortion').split(',')
+	
 	# Check parameter validity
 	if percentage_mode not in ['relative', 'absolute']:
 		return http_util.Respond(
@@ -119,11 +129,11 @@ def node_difference_list_meta_route(request, model_manager, distortion_manager):
 	# Retrieve node differences for all available distortions
 	differences = []
 	
-	for distortion in distortion_manager.get_distortion_modules():
+	for distortion in distortions:
 		differences.append(
 			_list_node_differences(model_name, [distortion], input_image_amount,
 				accumulation_method, percentage_mode, output_mode, model_manager,
-				distortion_manager)
+				distortion_manager, image_index=image_index)
 		)
 	
 	# Sum up some meta information
@@ -200,7 +210,7 @@ def _list_node_differences(model_name, distortions, input_image_amount,
 		if len(sliced_path) > 0:
 			if percentage_mode == 'relative':
 				percentual_value = (node_value - minimum_activation_difference) / \
-					(maximum_activation_difference -  minimum_activation_difference)
+					(maximum_activation_difference - minimum_activation_difference)
 			elif percentage_mode == 'absolute':
 				percentual_value = node_value / maximum_activation_difference
 			

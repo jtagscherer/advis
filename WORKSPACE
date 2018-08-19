@@ -163,14 +163,6 @@ sass_repositories()
 ################################################################################
 # TENSORBOARD - Framework for visualizing machines learning
 #
-# NOTE: If the need should arise to patch TensorBoard's codebase, then
-#       git clone it to local disk and use local_repository() instead of
-#       http_archive(). This should be a temporary measure until a pull
-#       request can be merged upstream. It is an anti-pattern to
-#       check-in a WORKSPACE file that uses local_repository() since,
-#       unlike http_archive(), it isn't automated. If upstreaming a
-#       change takes too long, then consider checking in a change where
-#       http_archive() points to the forked repository.
 
 http_archive(
 	name = "org_tensorflow_tensorboard",
