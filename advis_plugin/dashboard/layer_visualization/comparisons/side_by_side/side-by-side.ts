@@ -21,24 +21,5 @@ Polymer({
 		} else {
 			return 'activation-visualization invisible';
 		}
-	},
-	
-	getDialogImageSource: function(data, callback) {
-		let source = this.getSingleTileImageUrl(
-			data.visualizationType,
-			data.selectedTile.index
-		);
-		
-		callback(source);
-	},
-	
-	getDialogTitle: function(data) {
-		let title = `Slice ${Number(data.selectedTile.index) + 1}`;
-		
-		if (data.visualizationType == 'distorted') {
-			return title + ' (Distorted)';
-		} else {
-			return title;
-		}
 	}
 } as any);

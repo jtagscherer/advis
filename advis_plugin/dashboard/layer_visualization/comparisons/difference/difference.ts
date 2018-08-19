@@ -41,6 +41,21 @@ Polymer({
 		(Polymer as any).NeonAnimatableBehavior
 	],
 	
+	reload: function() {
+		if (this._requestManager == null || !this._hasValidData()) {
+			return;
+		}
+		
+		this.set('_originalMetaData', null);
+		this.set('_distortedMetaData', null);
+		
+		this.set('state', 'loading');
+		
+		this._loadMetaData();
+		this._updateImageUrls();
+		this._updateImages();
+	},
+	
 	getImageContainerSize: function() {
 		return {
 			width: this.$$('#container').offsetWidth,
@@ -64,33 +79,6 @@ Polymer({
 			let content = e.detail.content;
 			
 			this.set('colorScaleName', content.colorScaleName);
-		}
-	},
-	
-	getDialogImageSource: function(data, callback) {
-		// Retrieve the two tiles that will be compared
-		let unitIndex = data.selectedTile.index;
-		let originalUnit = this.getSingleTileImageUrl('original', unitIndex);
-		let distortedUnit = this.getSingleTileImageUrl('distorted', unitIndex);
-		
-		// Perform the comparison and asynchronously return its result
-		this._calculateImageDifference(originalUnit, distortedUnit,
-			function(result) {
-				callback(result);
-			}
-		);
-	},
-	
-	getDialogTitle: function(data) {
-		let title = `Slice ${Number(data.selectedTile.index) + 1}`;
-		
-		switch (this.differenceMode) {
-			case 'difference-highlight':
-				return title + ' (Difference Highlight)';
-			case 'difference-intensity-highlight':
-				return title + ' (Difference Intensity Highlight)';
-			case 'only-difference':
-				return title + ' (Only Difference)';
 		}
 	},
 	

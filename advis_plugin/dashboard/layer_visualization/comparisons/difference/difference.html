@@ -6,7 +6,6 @@
 <link rel="import" href="../color-legend/color-legend.html">
 <link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
 
-<link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
 <link rel="import" href="../dialogs/activation-visualization-settings-dialog/activation-visualization-settings-dialog.html">
 
 <!--
@@ -36,8 +35,8 @@
 						class="activation-visualization"
 						src$=[[_differenceImageUrl]]
 						data-visualization-type="difference"
-						width$=[[_originalMetaData.configuration.width]]
-						height$=[[_originalMetaData.configuration.height]]
+						width$="[[_getImageWidth(_originalMetaData, unitIndex)]]"
+						height$="[[_getImageHeight(_originalMetaData, unitIndex)]]"
 						on-tap="_imageClicked"
 						on-load="_differenceImageCallback">
 					</img>
@@ -52,7 +51,6 @@
 		</div>
 		
 		<activation-visualization-settings-dialog></activation-visualization-settings-dialog>
-		<unit-details-dialog></unit-details-dialog>
 		
 		<link rel="stylesheet" type="text/css" href="difference.css">
 	</template>

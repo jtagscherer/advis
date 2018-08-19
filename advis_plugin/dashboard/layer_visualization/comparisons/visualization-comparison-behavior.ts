@@ -18,6 +18,11 @@ const VisualizationComparisonBehavior = {
 			type: Object,
 			observer: 'reload'
 		},
+		unitIndex: {
+			type: Number,
+			value: null,
+			observer: 'reload'
+		},
 		_originalImageUrl: String,
 		_distortedImageUrl: String,
 		_originalMetaData: Object,
@@ -137,7 +142,8 @@ const VisualizationComparisonBehavior = {
 	},
 	
 	_imageClicked: function(e) {
-		if (this.state != 'loaded' || this.layer == null) {
+		if (this.state != 'loaded' || this.layer == null
+			|| this.unitIndex != null) {
 			return;
 		}
 		
@@ -191,33 +197,55 @@ const VisualizationComparisonBehavior = {
 	_updateImageUrls: function() {
 		let containerSize = this.getImageContainerSize();
 		
-		// Construct the URL for the composite image of activations from the
-		// original input
+		// Construct the URL for the first image of the comparison
 		this.set('_originalImageLoaded', false);
 		this.set('_originalImageUrl', null);
-		this._originalImageUrl = tf_backend.addParams(tf_backend.getRouter()
-			.pluginRoute('advis', '/layer/composite/image'), {
-			model: this.model.name,
-			layer: this.layer,
-			imageIndex: this.imageIndex,
-			width: String(Math.round(containerSize.width)),
-			height: String(Math.round(containerSize.height))
-		});
 		
-		// Construct the URL for the composite image of activations from the
-		// distorted input
+		if (this.unitIndex == null) {
+			this._originalImageUrl = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/composite/image'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex,
+				width: String(Math.round(containerSize.width)),
+				height: String(Math.round(containerSize.height))
+			});
+		} else {
+			this._originalImageUrl = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/single/image'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex,
+				unitIndex: String(this.unitIndex)
+			});
+		}
+		
+		// Construct the URL for the second image of the comparison
 		this.set('_distortedImageLoaded', false);
 		this.set('_distortedImageUrl', null);
-		this._distortedImageUrl = tf_backend.addParams(tf_backend.getRouter()
-			.pluginRoute('advis', '/layer/composite/image'), {
-			model: this.model.name,
-			layer: this.layer,
-			imageIndex: this.imageIndex,
-			width: String(Math.round(containerSize.width)),
-			height: String(Math.round(containerSize.height)),
-			distortion: this.distortion.name,
-			imageAmount: this.distortion.imageAmount
-		});
+		
+		if (this.unitIndex == null) {
+			this._distortedImageUrl = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/composite/image'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex,
+				width: String(Math.round(containerSize.width)),
+				height: String(Math.round(containerSize.height)),
+				distortion: this.distortion.name,
+				imageAmount: this.distortion.imageAmount
+			});
+		} else {
+			this._distortedImageUrl = tf_backend.addParams(tf_backend.getRouter()
+				.pluginRoute('advis', '/layer/single/image'), {
+				model: this.model.name,
+				layer: this.layer,
+				imageIndex: this.imageIndex,
+				distortion: this.distortion.name,
+				imageAmount: this.distortion.imageAmount,
+				unitIndex: String(this.unitIndex)
+			});
+		}
 	},
 	
 	getSingleTileImageUrl: function(visualizationType, tileIndex) {
@@ -288,38 +316,56 @@ const VisualizationComparisonBehavior = {
 			&& this.distortion != null;
 	},
 	
+	_getImageWidth: function(metaData, unitIndex) {
+		if (unitIndex != null) {
+			return Math.min(
+				this.getImageContainerSize().width, this.getImageContainerSize().height
+			);
+		} else {
+			if (metaData == null || metaData.configuration == null) {
+				return 0;
+			} else {
+				return metaData.configuration.width;
+			}
+		}
+	},
+	
+	_getImageHeight: function(metaData, unitIndex) {
+		if (unitIndex != null) {
+			return Math.min(
+				this.getImageContainerSize().width, this.getImageContainerSize().height
+			);
+		} else {
+			if (metaData == null || metaData.configuration == null) {
+				return 0;
+			} else {
+				return metaData.configuration.height;
+			}
+		}
+	},
+	
 	_sizeChanged: function() {
 		this._updateTileSize();
 		this.sizeChanged();
 	},
 	
-	getDialogImageSource: function(data, callback) {
-		// Has to be implemented by components using this behavior
-	},
-	
-	getDialogTitle: function(data) {
-		// Has to be implemented by components using this behavior
-	},
-	
 	_openUnitDialog: function(data) {
-		let unitDialog = this.$$('unit-details-dialog');
-		
-		// Open the bare unit dialog
-		unitDialog.open({
-			model: {
+		this.fire('open-unit-dialog-event', {
+			modelDescription: {
 				title: this.model.displayName,
 				caption: `Version ${this.model.version}`
 			},
-			unit: {
-				title: this.getDialogTitle(data),
+			unitDescription: {
+				title: `Slice ${Number(data.selectedTile.index) + 1}`,
 				caption: this.layer
 			},
+			model: this.model,
+			layer: this.layer,
+			imageIndex: this.imageIndex,
+			distortion: this.distortion,
+			unitIndex: data.selectedTile.index,
+			requestManager: this._requestManager,
 			animationTarget: data.selectedTile.bounds
-		});
-		
-		// Asynchronously construct and set the source of the image to be shown
-		this.getDialogImageSource(data, function(source) {
-			unitDialog.updateImageSource(source);
-		});
+    });
 	}
 };

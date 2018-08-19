@@ -4,8 +4,6 @@
 
 <link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
 
-<link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
-
 <!--
 	This component displays the activation of an input image and the average 
 	distorted activation side by side.
@@ -17,8 +15,8 @@
 				<img id="original-image"
 					class$="[[getImageClass(_originalImageLoaded, state)]]"
 					src$=[[_originalImageUrl]]
-					width$=[[_originalMetaData.configuration.width]]
-					height$=[[_originalMetaData.configuration.height]]
+					width$="[[_getImageWidth(_originalMetaData, unitIndex)]]"
+					height$="[[_getImageHeight(_originalMetaData, unitIndex)]]"
 					data-visualization-type="original"
 					on-tap="_imageClicked"
 					on-load="_originalImageCallback">
@@ -33,8 +31,8 @@
 				<img id="distorted-image"
 					class$="[[getImageClass(_distortedImageLoaded, state)]]"
 					src$=[[_distortedImageUrl]]
-					width$=[[_distortedMetaData.configuration.width]]
-					height$=[[_distortedMetaData.configuration.height]]
+					width$="[[_getImageWidth(_originalMetaData, unitIndex)]]"
+					height$="[[_getImageHeight(_originalMetaData, unitIndex)]]"
 					data-visualization-type="distorted"
 					on-tap="_imageClicked"
 					on-load="_distortedImageCallback">
@@ -46,8 +44,6 @@
 				</div>
 			</div>
 		</div>
-		
-		<unit-details-dialog></unit-details-dialog>
 		
 		<link rel="stylesheet" type="text/css" href="side-by-side.css">
 	</template>

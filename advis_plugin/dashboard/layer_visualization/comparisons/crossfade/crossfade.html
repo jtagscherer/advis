@@ -5,8 +5,6 @@
 
 <link rel="import" href="../visualization-comparison-behavior/visualization-comparison-behavior.html">
 
-<link rel="import" href="../dialogs/unit-details-dialog/unit-details-dialog.html">
-
 <!--
 	This component displays the activation of an input image and the average 
 	distorted activation on top of each other. The user can use a slider to 
@@ -20,8 +18,8 @@
 				<div id="original-image-wrapper" class="image-wrapper">
 					<img id="original-image"
 						src$=[[_originalImageUrl]]
-						width$=[[_originalMetaData.configuration.width]]
-						height$=[[_originalMetaData.configuration.height]]
+						width$="[[_getImageWidth(_originalMetaData, unitIndex)]]"
+						height$="[[_getImageHeight(_originalMetaData, unitIndex)]]"
 						data-visualization-type="original"
 						on-tap="_imageClicked"
 						on-load="_originalImageCallback">
@@ -30,8 +28,8 @@
 				<div class="image-wrapper">
 					<img id="distorted-image"
 						src$=[[_distortedImageUrl]]
-						width$=[[_distortedMetaData.configuration.width]]
-						height$=[[_distortedMetaData.configuration.height]]
+						width$="[[_getImageWidth(_originalMetaData, unitIndex)]]"
+						height$="[[_getImageHeight(_originalMetaData, unitIndex)]]"
 						data-visualization-type="distorted"
 						on-tap="_imageClicked"
 						on-load="_distortedImageCallback">
@@ -51,8 +49,6 @@
 				class$="[[_getSpinnerClassByState(state)]]">
 			</paper-spinner-lite>
 		</div>
-		
-		<unit-details-dialog></unit-details-dialog>
 		
 		<link rel="stylesheet" type="text/css" href="crossfade.css">
 	</template>

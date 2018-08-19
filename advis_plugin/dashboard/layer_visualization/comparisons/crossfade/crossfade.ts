@@ -35,25 +35,6 @@ Polymer({
 		};
 	},
 	
-	getDialogImageSource: function(data, callback) {
-		let source = this.getSingleTileImageUrl(
-			this._foregroundVisualization,
-			data.selectedTile.index
-		);
-		
-		callback(source);
-	},
-	
-	getDialogTitle: function(data) {
-		let title = `Slice ${Number(data.selectedTile.index) + 1}`;
-		
-		if (this._foregroundVisualization == 'distorted') {
-			return title + ' (Distorted)';
-		} else {
-			return title;
-		}
-	},
-	
 	getImageClass: function(condition) {
 		if (this.state == 'loaded') {
 			return 'visible';

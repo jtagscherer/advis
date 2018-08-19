@@ -39,27 +39,6 @@ Polymer({
 		}
 	},
 	
-	getDialogImageSource: function(data, callback) {
-		let source = this.getSingleTileImageUrl(
-			this._getClickedVisualizationType(data.clickCoordinates),
-			data.selectedTile.index
-		);
-		
-		callback(source);
-	},
-	
-	getDialogTitle: function(data) {
-		let title = `Slice ${Number(data.selectedTile.index) + 1}`;
-		let visualizationType = this._getClickedVisualizationType(
-			data.clickCoordinates);
-		
-		if (visualizationType == 'distorted') {
-			return title + ' (Distorted)';
-		} else {
-			return title;
-		}
-	},
-	
 	sizeChanged: function() {
 		this._updateClipRectangle();
 	},

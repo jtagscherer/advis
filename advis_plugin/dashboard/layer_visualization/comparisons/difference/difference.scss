@@ -16,7 +16,6 @@ $legend-width: 100px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		// width: $legend-width;
 		
 		padding-left: 10px;
 		padding-right: 50px;
@@ -53,7 +52,7 @@ $legend-width: 100px;
 		justify-content: center;
 		align-items: center;
 		
-		.activation-visualization {
+		img {
 			image-rendering: pixelated;
 		}
 	}

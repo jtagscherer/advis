@@ -15,7 +15,6 @@ tf_web_library(
 	path = "/side-by-side",
 	deps = [
 		"//advis_plugin/dashboard/layer_visualization/comparisons:visualization_comparison_behavior",
-		"//advis_plugin/dashboard/dialogs/unit_details_dialog",
 		"@org_polymer_neon_animation"
 	]
 )

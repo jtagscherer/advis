@@ -42,7 +42,8 @@ Polymer({
 	},
 	
 	listeners: {
-		'state-changed-event': '_stateChanged'
+		'state-changed-event': '_stateChanged',
+		'open-unit-dialog-event': '_openUnitDialog'
 	},
 	
 	reload: function() {
@@ -203,6 +204,12 @@ Polymer({
 				});
 			});
 		});
+	},
+	
+	_openUnitDialog: function(e) {
+		let unitDialog = this.$$('unit-details-dialog');
+		e.detail.selectedPage = this.selectedPage;
+		unitDialog.open(e.detail);
 	},
 	
 	_updateStyles: function() {

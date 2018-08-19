@@ -15,10 +15,15 @@ tf_web_library(
 	deps = [
 		"@org_tensorflow_tensorboard//tensorboard/components/tf_imports:polymer",
 		"@org_polymer_paper_dialog",
+		"@org_polymer_neon_animation",
+		"@org_polymer_paper_tabs",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header",
 		"//advis_plugin/dashboard/dialogs/components/dialog_header/categorized_header_item",
 		"//advis_plugin/dashboard/dialogs/components/dialog_behavior",
-		"//advis_plugin/dashboard/image_loader"
+		"//advis_plugin/dashboard/layer_visualization/comparisons/side_by_side",
+		"//advis_plugin/dashboard/layer_visualization/comparisons/swipe",
+		"//advis_plugin/dashboard/layer_visualization/comparisons/crossfade",
+		"//advis_plugin/dashboard/layer_visualization/comparisons/difference"
 	]
 )
 

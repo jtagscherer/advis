@@ -16,7 +16,6 @@ tf_web_library(
 	deps = [
 		"//advis_plugin/dashboard/shared/libraries/chroma",
 		"//advis_plugin/dashboard/layer_visualization/comparisons:visualization_comparison_behavior",
-		"//advis_plugin/dashboard/dialogs/unit_details_dialog",
 		"//advis_plugin/dashboard/dialogs/activation_visualization_settings_dialog",
 		"//advis_plugin/dashboard/color_legend",
 		"//advis_plugin/dashboard/shared/constants",
