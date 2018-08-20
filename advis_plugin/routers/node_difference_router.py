@@ -320,7 +320,7 @@ def _get_node_difference(model_name, layer, distortion_name, input_image_amount,
 			
 			# Normalize the output to be between 0 and 100
 			difference = np.clip(difference, -1, 1)
-			difference = (difference + 1) / 2
+			difference = abs(difference)
 			difference *= 100
 			
 			activation_differences.append(difference)
